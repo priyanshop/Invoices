@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
+import Icon from 'react-native-vector-icons/Ionicons';
 import FloatingButton from '../../../CustomComponent/FloatingButton';
 const invoices = [
   {
@@ -81,13 +82,71 @@ const AllRoute = () => {
   );
 };
 
-const SecondRoute = () => (
-  <View style={[styles.scene, {backgroundColor: '#fff'}]} />
-);
+const OutStandingRoute = () => {
+  const renderInvoiceItem = ({item}: any) => (
+    <View style={styles.invoiceItem}>
+      <View>
+        <Text style={styles.clientText}>{`${item.client}`}</Text>
+        <Text style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
+      </View>
+      <View>
+        <Text style={styles.priceText}>{`$${item.price}`}</Text>
+        <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
+      </View>
+    </View>
+  );
 
-const ThirdRoute = () => (
-  <View style={[styles.scene, {backgroundColor: '#fff'}]} />
-);
+  const renderSectionHeader = ({section: {year}}) => (
+    <View style={styles.sectionHeaderContain}>
+      <Text style={styles.sectionHeader}>{year}</Text>
+      <Text style={styles.sectionHeader}>{'$635'}</Text>
+    </View>
+  );
+  return (
+    <View style={[styles.scene, {backgroundColor: '#fff'}]}>
+      <SectionList
+        sections={invoices}
+        keyExtractor={(item: any, index: any) => item + index}
+        renderItem={renderInvoiceItem}
+        renderSectionHeader={renderSectionHeader}
+      />
+      <FloatingButton />
+    </View>
+  );
+};
+
+const PaidRoute = () => {
+  const renderInvoiceItem = ({item}: any) => (
+    <View style={styles.invoiceItem}>
+      <View>
+        <Text style={styles.clientText}>{`${item.client}`}</Text>
+        <Text style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
+      </View>
+      <View>
+        <Text style={styles.priceText}>{`$${item.price}`}</Text>
+        <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
+      </View>
+    </View>
+  );
+
+  const renderSectionHeader = ({section: {year}}) => (
+    <View style={styles.sectionHeaderContain}>
+      <Text style={styles.sectionHeader}>{year}</Text>
+      <Text style={styles.sectionHeader}>{'$635'}</Text>
+    </View>
+  );
+  return (
+    <View style={[styles.scene, {backgroundColor: '#fff'}]}>
+      <SectionList
+        sections={invoices}
+        keyExtractor={(item: any, index: any) => item + index}
+        renderItem={renderInvoiceItem}
+        renderSectionHeader={renderSectionHeader}
+      />
+      <FloatingButton />
+    </View>
+  );
+};
 
 const data = [
   {key: 'first', title: 'All'},
@@ -103,23 +162,25 @@ function InvoicesScreen(): JSX.Element {
       <StatusBar backgroundColor={'#3B51C0'} />
       <View style={styles.headerContainer}>
         <View>
-          {/* <Ionicons name="flower-outline" size={20} color="#fff" /> */}
+          <Icon name="flower-outline" size={20} color="#fff" />
         </View>
         <View>
           <Text style={styles.headerText}>Invoices</Text>
         </View>
-        <View>{/* <Ionicons name="search" size={20} color="#fff" /> */}</View>
+        <View>
+          <Icon name="search" size={20} color="#fff" />
+        </View>
       </View>
       <TabView
         navigationState={{index, routes}}
         renderScene={SceneMap({
           first: AllRoute,
-          second: SecondRoute,
-          third: ThirdRoute,
+          second: OutStandingRoute,
+          third: PaidRoute,
         })}
         onIndexChange={setIndex}
         initialLayout={{width: Dimensions.get('window').width}}
-        style={styles.container}
+        style={styles.container2}
         renderTabBar={props => {
           return (
             <TabBar
@@ -153,10 +214,10 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    // justifyContent: 'center',
-    // // paddingTop: Constants.statusBarHeight,
-    // backgroundColor: '#FF5733',
-    // padding: 8,
+    backgroundColor: '#3B51C0',
+  },
+  container2: {
+    flex: 1,
   },
   paragraph: {
     marginVertical: 10,
@@ -200,7 +261,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   headerText: {
-    fontSize: 15,
+    fontSize: 20,
     fontWeight: '400',
     textAlign: 'center',
     color: '#fff',
