@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {
+  FlatList,
   SafeAreaView,
   SectionList,
   StatusBar,
@@ -13,12 +14,37 @@ import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FloatingButton from '../../../CustomComponent/FloatingButton';
 
+const data = [
+  {
+    item: 'Item1',
+    description: 'sssss',
+    price: 150.0,
+  },
+  {
+    item: 'Item1',
+    description: 'sssss',
+    price: 150.0,
+  },
+];
 function ItemsScreen({navigation}: any): JSX.Element {
   const [searchStart, setSearchStart] = useState(false);
 
   function navigateToSetting() {
     navigation.navigate('Settings');
   }
+
+  const renderItem = ({item}: any) => (
+    <View style={styles.invoiceItem}>
+      <View>
+        <Text style={styles.clientText}>{`${item.item}`}</Text>
+        <Text style={styles.invoiceNumberText}>{`${item.description}`}</Text>
+      </View>
+      <View style={styles.priceView}>
+        <Text style={styles.priceText}>{`$${item.price}`}</Text>
+      </View>
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#3B51C0'} />
@@ -51,6 +77,11 @@ function ItemsScreen({navigation}: any): JSX.Element {
         </View>
       )}
       <View style={{flex: 1, backgroundColor: '#fff'}}>
+        <FlatList
+          data={data}
+          renderItem={renderItem}
+          keyExtractor={(item: any, index: any) => item + index}
+        />
         <FloatingButton />
       </View>
     </SafeAreaView>
@@ -179,6 +210,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
   },
+  priceView: {justifyContent: 'center'},
 });
 
 export default ItemsScreen;

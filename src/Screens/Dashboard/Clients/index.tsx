@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {
+  FlatList,
   SafeAreaView,
   SectionList,
   StatusBar,
@@ -13,12 +14,38 @@ import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FloatingButton from '../../../CustomComponent/FloatingButton';
 
-function ClientScreen({navigation}:any): JSX.Element {
+const data = [
+  {
+    client: 'Client A',
+    invoiceNumber: 'INV-001',
+    price: 100.0,
+  },
+  {
+    client: 'Client B',
+    invoiceNumber: 'INV-002',
+    price: 200.0,
+  },
+];
+
+function ClientScreen({navigation}: any): JSX.Element {
   const [searchStart, setSearchStart] = useState(false);
 
   function navigateToSetting() {
     navigation.navigate('Settings');
   }
+
+  const renderItem = ({item}: any) => (
+    <View style={styles.invoiceItem}>
+      <View>
+        <Text style={styles.clientText}>{`${item.client}`}</Text>
+        <Text style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
+      </View>
+      <View style={styles.priceView}>
+        <Text style={styles.priceText}>{`$${item.price}`}</Text>
+      </View>
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#3B51C0'} />
@@ -38,7 +65,7 @@ function ClientScreen({navigation}:any): JSX.Element {
         </View>
       ) : (
         <View style={styles.headerContainer}>
-         <TouchableOpacity onPress={navigateToSetting}>
+          <TouchableOpacity onPress={navigateToSetting}>
             <Icon name="flower-outline" size={20} color="#fff" />
           </TouchableOpacity>
           <View style={styles.onSearch}>
@@ -51,6 +78,15 @@ function ClientScreen({navigation}:any): JSX.Element {
         </View>
       )}
       <View style={{flex: 1, backgroundColor: '#fff'}}>
+        <View style={styles.titleHeader}>
+          <Text style={styles.tileHeaderTxt}>{'Name'}</Text>
+          <Text style={styles.tileHeaderTxt}>{'Total Billed'}</Text>
+        </View>
+        <FlatList
+          data={data}
+          renderItem={renderItem}
+          keyExtractor={(item: any, index: any) => item + index}
+        />
         <FloatingButton />
       </View>
     </SafeAreaView>
@@ -179,6 +215,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
   },
+  priceView: {justifyContent: 'center'},
+  titleHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    backgroundColor: 'grey',
+    paddingVertical: 10,
+  },
+  tileHeaderTxt: {color: '#fff', fontSize: 15, fontWeight: '500'},
 });
 
 export default ClientScreen;
