@@ -87,7 +87,7 @@ const AllRoute = () => {
   );
 };
 
-const OutStandingRoute = () => {
+const OpenRoute = () => {
   const renderInvoiceItem = ({item}: any) => (
     <View style={styles.invoiceItem}>
       <View>
@@ -120,7 +120,7 @@ const OutStandingRoute = () => {
   );
 };
 
-const PaidRoute = () => {
+const ClosedRoute = () => {
   const renderInvoiceItem = ({item}: any) => (
     <View style={styles.invoiceItem}>
       <View>
@@ -155,10 +155,10 @@ const PaidRoute = () => {
 
 const data = [
   {key: 'first', title: 'All'},
-  {key: 'second', title: 'OutStanding'},
-  {key: 'third', title: 'Paid'},
+  {key: 'second', title: 'Open'},
+  {key: 'third', title: 'Closed'},
 ];
-function InvoicesScreen({navigation}: any): JSX.Element {
+function EstimatesScreen({navigation}: any): JSX.Element {
   const [index, setIndex] = useState(0);
   const [searchStart, setSearchStart] = useState(false);
   const [routes] = useState(data);
@@ -175,7 +175,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
             <Icon name="flower-outline" size={20} color="#fff" />
           </TouchableOpacity>
           <View>
-            <Text style={styles.headerText}>Invoices</Text>
+            <Text style={styles.headerText}>Estimates</Text>
           </View>
           <View>
             <TouchableOpacity onPress={() => setSearchStart(true)}>
@@ -201,8 +201,8 @@ function InvoicesScreen({navigation}: any): JSX.Element {
         navigationState={{index, routes}}
         renderScene={SceneMap({
           first: AllRoute,
-          second: OutStandingRoute,
-          third: PaidRoute,
+          second: OpenRoute,
+          third: ClosedRoute,
         })}
         onIndexChange={setIndex}
         initialLayout={{width: screenWidth}}
@@ -346,4 +346,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default InvoicesScreen;
+export default EstimatesScreen;

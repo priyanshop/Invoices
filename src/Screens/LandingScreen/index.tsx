@@ -5,26 +5,32 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
 } from 'react-native';
 
+function LandingScreen({navigation}: any): JSX.Element {
+  function navigateToSignIn() {
+    navigation.navigate('Dashboard');
+  }
 
-function LandingScreen(): JSX.Element {
+  function navigateToSignUP() {
+    navigation.navigate('SignUp');
+  }
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar
-        backgroundColor={'#FF5733'}
-      />
+      <StatusBar backgroundColor={'#FF5733'} />
       <Text style={styles.title}>Invoice Simple</Text>
       <Text style={styles.paragraph}>
         Create professional invoices in secounds!
       </Text>
-      <TouchableOpacity style={styles.btn}>
+      <TouchableOpacity onPress={navigateToSignUP} style={styles.btn}>
         <Text style={styles.btnTxt}>GET STARTED</Text>
       </TouchableOpacity>
       <Text style={styles.paragraph}>
-        Already have an account? <Text style={styles.underLine}>Login</Text>
+        Already have an account?{' '}
+        <Text onPress={navigateToSignIn} style={styles.underLine}>
+          Login
+        </Text>
       </Text>
     </SafeAreaView>
   );

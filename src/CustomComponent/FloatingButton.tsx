@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, View, StyleSheet } from 'react-native';
+import {TouchableOpacity, View, StyleSheet} from 'react-native';
 
 const FloatingButton = () => {
   return (
@@ -25,6 +25,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#3B51C0',
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#171717',
+    shadowOffset: {width: -2, height: 4},
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
 });
 
