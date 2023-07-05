@@ -33,7 +33,7 @@ function SignInScreen(): JSX.Element {
     }
     setPassword(text);
   };
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#FF5733'} />
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 18,
+    fontSize: 25,
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#fff',
@@ -92,9 +92,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     width: '75%',
     alignSelf: 'center',
-    height: 30,
-    padding: 4,
-    fontSize: 12,
+    height: 40,
+    padding: 5,
+    fontSize: 15,
     color: '#000',
   },
   errorView: {
@@ -115,10 +115,11 @@ const styles = StyleSheet.create({
     borderTopColor: 'grey',
     marginBottom: 10,
     padding: 4,
+    justifyContent: 'center',
   },
   hyperlink: {
-    fontSize: 12,
-    fontWeight: '600',
+    fontSize: 13,
+    fontWeight: '700',
     color: '#fff',
     textDecorationLine: 'underline',
   },
@@ -130,10 +131,12 @@ const styles = StyleSheet.create({
   },
   errorTxt: {fontSize: 10, fontWeight: '600', color: 'red'},
   loginBtnTxt: {
-    fontSize: 12,
+    fontSize: 15,
     fontWeight: '600',
     color: '#000',
     alignSelf: 'center',
+    textAlign: 'center',
+    textAlignVertical: 'center',
   },
 });
 

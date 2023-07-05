@@ -66,7 +66,7 @@ function App(): JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  return <InvoicesScreen />;
+  return <SignUpScreen />;
 }
 
 const styles = StyleSheet.create({

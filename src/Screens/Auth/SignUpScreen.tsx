@@ -14,17 +14,39 @@ import {getScreenDimensions} from '../../Helper/ScreenDimension';
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
 
-function SignUpScreen(): JSX.Element {
+function SignUpScreen({navigation}: any): JSX.Element {
   const carouselRef = useRef(null);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [businessName, setBusinessName] = useState('');
+  const [address1, setAddress1] = useState('');
+  const [address2, setAddress2] = useState('');
+  const [address3, setAddress3] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
 
   const pages = [{index: 1}, {index: 2}, {index: 3}];
+
   const handlePrevious = () => {
-    carouselRef.current.snapToPrev();
+    if (activeSlide === 0) {
+      navigation.goBack();
+    } else {
+      carouselRef.current.snapToPrev();
+    }
   };
 
   const handleNext = () => {
     carouselRef.current.snapToNext();
+  };
+
+  const validateEmail = (text: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(text)) {
+      setEmailError('Invalid email format');
+    } else {
+      setEmailError('');
+    }
+    setEmail(text);
   };
 
   const renderItem = ({item}) => {
@@ -34,28 +56,54 @@ function SignUpScreen(): JSX.Element {
           <Text style={styles.title}>Business Info</Text>
           <Text style={styles.paragraph}>(All fields are optional)</Text>
           <TextInput
+            value={businessName}
+            onChangeText={setBusinessName}
             style={[styles.input, styles.businessName]}
             placeholder={'Business Name'}
+            placeholderTextColor={'grey'}
           />
+
           <TextInput
+            value={email}
             style={[styles.input, styles.emailInput]}
             placeholder={'Email'}
+            keyboardType={'email-address'}
+            onChangeText={validateEmail}
+            placeholderTextColor={'grey'}
           />
+          {emailError.trim() !== '' && (
+            <View style={styles.errorView}>
+              <Text style={styles.errorTxt}>{emailError}</Text>
+            </View>
+          )}
           <TextInput
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
             style={[styles.input, styles.phoneInput]}
             placeholder={'Phone'}
+            placeholderTextColor={'grey'}
+            keyboardType={'phone-pad'}
           />
           <TextInput
+            value={address1}
+            onChangeText={setAddress1}
             style={[styles.input, styles.addressInput1]}
             placeholder={'Address Line 1'}
+            placeholderTextColor={'grey'}
           />
           <TextInput
+            value={address2}
+            onChangeText={setAddress2}
             style={[styles.input, styles.addressInput]}
             placeholder={'Address Line 2'}
+            placeholderTextColor={'grey'}
           />
           <TextInput
+            value={address3}
+            onChangeText={setAddress3}
             style={[styles.input, styles.lastAddressInput]}
             placeholder={'Address Line 3'}
+            placeholderTextColor={'grey'}
           />
         </View>
       );
@@ -107,7 +155,7 @@ function SignUpScreen(): JSX.Element {
         </View>
         <View style={{width: '20%'}}>
           <Text onPress={handleNext} style={styles.finishTxt}>
-            Finish
+            {activeSlide !== 2 ? 'Next' : 'Finish'}
           </Text>
         </View>
       </View>
@@ -138,8 +186,8 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   title: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 24,
+    fontWeight: '500',
     textAlign: 'center',
     color: '#fff',
   },
@@ -151,7 +199,7 @@ const styles = StyleSheet.create({
   },
   btn: {
     backgroundColor: '#fff',
-    padding: 8,
+    padding: 10,
     alignSelf: 'center',
     paddingHorizontal: 15,
     borderRadius: 5,
@@ -161,8 +209,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     width: '60%',
     alignSelf: 'center',
-    height: 30,
-    padding: 4,
+    height: 40,
+    padding: 5,
+    fontSize: 15,
+    color:'#000'
   },
   emailInput: {
     borderTopRightRadius: 5,
@@ -219,6 +269,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginVertical: 10,
   },
+  errorView: {
+    backgroundColor: '#fff',
+    width: '60%',
+    alignSelf: 'center',
+    paddingHorizontal: 4,
+  },
+  errorTxt: {fontSize: 10, fontWeight: '600', color: 'red'},
 });
 
 export default SignUpScreen;
