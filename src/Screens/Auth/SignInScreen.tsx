@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -10,20 +10,60 @@ import {
 } from 'react-native';
 
 function SignInScreen(): JSX.Element {
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [Password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
+  const validateEmail = (text: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(text)) {
+      setEmailError('Invalid email format');
+    } else {
+      setEmailError('');
+    }
+    setEmail(text);
+  };
+
+  const validatePassword = (text: string) => {
+    if (!(text.length >= 8)) {
+      setPasswordError('Invalid Password');
+    } else {
+      setPasswordError('');
+    }
+    setPassword(text);
+  };
+  
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#FF5733'} />
       <Text style={styles.title}>Login</Text>
       <TextInput
+        value={email}
         style={[styles.input, styles.addressInput1]}
         placeholder={'Email'}
+        onChangeText={validateEmail}
+        placeholderTextColor={'grey'}
       />
-      {/* <View style={styles.errorView}>
-        <Text>Error</Text>
-      </View> */}
-      <TextInput style={styles.input} placeholder={'Password'} />
+      {emailError.trim() !== '' && (
+        <View style={styles.errorView}>
+          <Text style={styles.errorTxt}>{emailError}</Text>
+        </View>
+      )}
+      <TextInput
+        value={Password}
+        style={styles.input}
+        placeholder={'Password'}
+        onChangeText={validatePassword}
+        placeholderTextColor={'grey'}
+      />
+      {passwordError.trim() !== '' && (
+        <View style={styles.errorView}>
+          <Text style={styles.errorTxt}>{passwordError}</Text>
+        </View>
+      )}
       <TouchableOpacity style={[styles.input, styles.lastAddressInput]}>
-        <Text style={{alignSelf: 'center'}}>Login</Text>
+        <Text style={styles.loginBtnTxt}>Login</Text>
       </TouchableOpacity>
 
       <View style={styles.hyperlinkView}>
@@ -54,12 +94,14 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     height: 30,
     padding: 4,
+    fontSize: 12,
+    color: '#000',
   },
   errorView: {
     backgroundColor: '#fff',
     width: '75%',
     alignSelf: 'center',
-    padding: 4,
+    paddingHorizontal: 4,
   },
   addressInput1: {
     padding: 4,
@@ -85,6 +127,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignSelf: 'center',
     flexDirection: 'row',
+  },
+  errorTxt: {fontSize: 10, fontWeight: '600', color: 'red'},
+  loginBtnTxt: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#000',
+    alignSelf: 'center',
   },
 });
 

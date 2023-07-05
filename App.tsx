@@ -27,6 +27,7 @@ import {
 import LandingScreen from './src/Screens/LandingScreen';
 import SignInScreen from './src/Screens/Auth/SignInScreen';
 import SignUpScreen from './src/Screens/Auth/SignUpScreen';
+import InvoicesScreen from './src/Screens/Dashboard/Invoices';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -65,7 +66,7 @@ function App(): JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  return <SignUpScreen />;
+  return <InvoicesScreen />;
 }
 
 const styles = StyleSheet.create({
