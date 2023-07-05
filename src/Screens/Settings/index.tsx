@@ -60,7 +60,7 @@ const data = [
   },
 ];
 const SettingScreen = () => {
-  const renderSectionHeader = ({section}) => (
+  const renderSectionHeader = ({section}: any) => (
     <View style={styles.headerView}>
       <Text style={{fontSize: 18, color: '#fff', fontWeight: '500'}}>
         {section.sectionName}
@@ -71,7 +71,7 @@ const SettingScreen = () => {
     </View>
   );
 
-  const renderItem = ({item, index}) => (
+  const renderItem = ({item, index}: any) => (
     <View
       style={[
         styles.itemView,
@@ -94,7 +94,7 @@ const SettingScreen = () => {
     <View style={styles.mainContainer}>
       <SectionList
         sections={data}
-        keyExtractor={(item, index) => item + index}
+        keyExtractor={(item: any, index: any) => item + index}
         renderItem={renderItem}
         renderSectionHeader={renderSectionHeader}
         showsVerticalScrollIndicator={false}
