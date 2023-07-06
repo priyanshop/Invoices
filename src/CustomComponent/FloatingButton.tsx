@@ -3,10 +3,10 @@ import {TouchableOpacity, View, StyleSheet} from 'react-native';
 import {Colors} from '../Helper/Colors';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-const FloatingButton = () => {
+const FloatingButton = ({onPress}: any) => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity onPress={onPress} style={styles.button}>
         <AntDesign name="plus" size={30} color={'#fff'} />
       </TouchableOpacity>
     </View>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useLayoutEffect, useState} from 'react';
 import {
   ScrollView,
   SectionList,
@@ -81,6 +81,16 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
   function navigateToSetting() {
     navigation.navigate('Settings');
   }
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity style={{marginRight: 10}} onPress={() => {}}>
+          <Entypo name="dots-three-vertical" size={20} color="#fff" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   const AllRoute = () => {
  
@@ -515,14 +525,8 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
   };
 
   return (
-    <SafeAreaView edges={['top']} style={styles.container}>
+    <View style={styles.container}>
       <StatusBar backgroundColor={'#3B51C0'} />
-      <CustomHeader
-        searchStart={searchStart}
-        navigateToSetting={navigateToSetting}
-        setSearchStart={setSearchStart}
-        title={'Invoice'}
-      />
       <TabView
         navigationState={{index, routes}}
         renderScene={SceneMap({
@@ -545,7 +549,7 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
           );
         }}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   SectionList,
@@ -7,9 +7,13 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  Platform,
+  PermissionsAndroid,
+  Alert,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import {Colors} from '../../Helper/Colors';
+import {selectContactPhone} from 'react-native-select-contact';
 
 const AddClientScreen = () => {
   const [businessName, setBusinessName] = useState('');
@@ -21,6 +25,52 @@ const AddClientScreen = () => {
   const [Phone, setPhone] = useState('');
   const [Mobile, setMobile] = useState('');
   const [fax, setFax] = useState('');
+  const [hasPermission, setHasPermission] = useState(false);
+
+  useEffect(() => {
+    checkContactPermission();
+  }, []);
+
+  const checkContactPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
+        {
+          title: 'Contacts Permission',
+          message: 'This app needs access to your contacts.',
+          buttonPositive: 'OK',
+          buttonNegative: 'Cancel',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        setHasPermission(true);
+      } else {
+        setHasPermission(false);
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  const getPhoneNumber = () => {
+    return selectContactPhone().then(selection => {
+      if (!selection) {
+        return null;
+      }
+
+      let {contact, selectedPhone} = selection;
+      console.log(
+        `Selected ${selectedPhone.type} phone number ${selectedPhone.number} from ${contact.name}`,
+      );
+      return selectedPhone.number;
+    });
+  };
+  const selectContact = () => {
+    //    get().then(()=>{})
+    if (hasPermission) {
+      getPhoneNumber();
+    }
+  };
 
   return (
     <View style={styles.mainContainer}>
@@ -29,7 +79,7 @@ const AddClientScreen = () => {
           <TextInput
             value={businessName}
             onChangeText={setBusinessName}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+            style={{...styles.titleTxt, textAlign: 'left'}}
             placeholder="Client Name"
             placeholderTextColor={'grey'}
           />
@@ -38,7 +88,7 @@ const AddClientScreen = () => {
           <TextInput
             value={email}
             onChangeText={setEmail}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+            style={{...styles.titleTxt, textAlign: 'left'}}
             placeholder="Email"
             placeholderTextColor={'grey'}
           />
@@ -48,7 +98,7 @@ const AddClientScreen = () => {
           <TextInput
             value={Mobile}
             onChangeText={setMobile}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'right'}}
+            style={{...styles.titleTxt, textAlign: 'right'}}
             placeholder="Mobile Number"
             placeholderTextColor={'grey'}
           />
@@ -58,7 +108,7 @@ const AddClientScreen = () => {
           <TextInput
             value={Phone}
             onChangeText={setPhone}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'right'}}
+            style={{...styles.titleTxt, textAlign: 'right'}}
             placeholder="Phone Number"
             placeholderTextColor={'grey'}
           />
@@ -68,7 +118,7 @@ const AddClientScreen = () => {
           <TextInput
             value={fax}
             onChangeText={setFax}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'right'}}
+            style={{...styles.titleTxt, textAlign: 'right'}}
             placeholder="Fax Number"
             placeholderTextColor={'grey'}
           />
@@ -114,12 +164,12 @@ const AddClientScreen = () => {
         </View>
       </View>
 
-      <TouchableOpacity style={styles.contactBtn}>
-        <Text style={styles.titleTxt}>{'Import from contacts'}</Text>
+      <TouchableOpacity onPress={selectContact} style={styles.contactBtn}>
+        <Text style={styles.titleTxt2}>{'Import from contacts'}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.statementBtn}>
-        <Text style={[styles.titleTxt, {color: '#fff', fontWeight: '600'}]}>
+        <Text style={[styles.titleTxt2, {color: '#fff', fontWeight: '600'}]}>
           {'Create Statement'}
         </Text>
       </TouchableOpacity>
@@ -140,9 +190,11 @@ const styles = StyleSheet.create({
   rowView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 8,
+    marginVertical: Platform.OS === 'ios' ? 8 : 0,
+    alignItems: 'center',
   },
-  titleTxt: {fontSize: 17, color: '#000', fontWeight: '400'},
+  titleTxt: {fontSize: 17, color: '#000', fontWeight: '400', height: 40},
+  titleTxt2: {fontSize: 17, color: '#000', fontWeight: '400'},
   mainContain: {
     borderRadius: 8,
     backgroundColor: '#fff',

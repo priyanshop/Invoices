@@ -1,5 +1,6 @@
 import React, {useLayoutEffect, useState} from 'react';
 import {
+  Platform,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -130,7 +131,7 @@ const styles = StyleSheet.create({
   mainView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 5,
+    marginVertical: Platform.OS === 'ios' ? 5 : 0,
     alignItems: 'center',
   },
   label: {
@@ -146,6 +147,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#000',
     textAlign: 'right',
+    height: 40,
   },
   itemView: {
     backgroundColor: '#fff',
@@ -175,7 +177,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   totalTxt: {fontSize: 18, fontWeight: '500', color: '#fff'},
-  detailText: {height: 70, fontSize: 18, fontWeight: '400', color: '#000'},
+  detailText: {
+    height: 75,
+    fontSize: 18,
+    fontWeight: '400',
+    color: '#000',
+    textAlignVertical: 'top',
+  },
   saveText: {fontSize: 18, fontWeight: '400', color: '#000'},
 });
 

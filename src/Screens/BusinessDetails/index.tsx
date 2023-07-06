@@ -6,6 +6,8 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  Platform,
+  ScrollView,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import ImagePickerComponent from '../../CustomComponent/ImagePickerComponent';
@@ -28,7 +30,7 @@ const BusinessDetails = () => {
     setOpenModal(!openModal);
   };
   return (
-    <View style={styles.mainContainer}>
+    <ScrollView style={styles.mainContainer}>
       <View style={styles.businessContainer}>
         <View style={styles.header}>
           <Text style={styles.headerText}>Business Logo</Text>
@@ -81,7 +83,7 @@ const BusinessDetails = () => {
           <TextInput
             value={address1}
             onChangeText={setAddress1}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+            style={{...styles.titleTxt, textAlign: 'left'}}
             placeholder="Address Line 1"
             placeholderTextColor={'grey'}
           />
@@ -90,7 +92,7 @@ const BusinessDetails = () => {
           <TextInput
             value={address2}
             onChangeText={setAddress2}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+            style={{...styles.titleTxt, textAlign: 'left'}}
             placeholder="Address Line 2"
             placeholderTextColor={'grey'}
           />
@@ -99,7 +101,7 @@ const BusinessDetails = () => {
           <TextInput
             value={address3}
             onChangeText={setAddress3}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+            style={{...styles.titleTxt, textAlign: 'left'}}
             placeholder="Address Line 3"
             placeholderTextColor={'grey'}
           />
@@ -148,7 +150,7 @@ const BusinessDetails = () => {
         closeBottomSheet={closeBottomSheet}
         setImage={setBusinessImage}
       />
-    </View>
+    </ScrollView>
   );
 };
 
@@ -165,9 +167,10 @@ const styles = StyleSheet.create({
   rowView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 8,
+    marginVertical: Platform.OS === 'ios' ? 8 : 0,
+    alignItems: 'center',
   },
-  titleTxt: {fontSize: 17, color: '#000', fontWeight: '400'},
+  titleTxt: {fontSize: 17, color: '#000', fontWeight: '400', height: 40},
   mainContain: {
     borderRadius: 8,
     backgroundColor: '#fff',

@@ -50,7 +50,13 @@ const PaymentInfo = () => {
           <TextInput
             value={paymentInstructions}
             onChangeText={setPaymentInstructions}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left', height: 60}}
+            style={{
+              ...styles.titleTxt,
+              flex: 1,
+              textAlign: 'left',
+              height: 60,
+              textAlignVertical: 'top',
+            }}
             placeholder="Specify instructions for the payments of deposits"
             placeholderTextColor={'grey'}
             multiline
@@ -67,7 +73,13 @@ const PaymentInfo = () => {
           <TextInput
             value={additionalDetails}
             onChangeText={setAdditionalDetails}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left', height: 60}}
+            style={{
+              ...styles.titleTxt,
+              flex: 1,
+              textAlign: 'left',
+              height: 60,
+              textAlignVertical: 'top',
+            }}
             placeholder="Additional payment instructions"
             placeholderTextColor={'grey'}
             multiline
@@ -93,13 +105,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     // marginVertical: 8,
-    padding: 10,
+    padding: 8,
   },
   titleTxt: {
     fontSize: 17,
     color: '#000',
     fontWeight: '400',
     textAlign: 'center',
+    height: 40,
   },
   mainContain: {
     borderRadius: 8,

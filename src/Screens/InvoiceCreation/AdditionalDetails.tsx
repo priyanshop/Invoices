@@ -8,9 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import {Switch} from 'react-native-paper';
-import {Colors} from '../../Helper/Colors';
 
 function AdditionalDetails({navigation}: any): JSX.Element {
   const [additionalDetails, setAdditionalDetails] = useState('');
@@ -94,7 +92,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   totalTxt: {fontSize: 18, fontWeight: '500', color: '#fff'},
-  detailText: {height: 70, fontSize: 18, fontWeight: '400', color: '#000'},
+  detailText: {
+    height: 70,
+    fontSize: 15,
+    fontWeight: '400',
+    color: '#000',
+    textAlignVertical: 'top',
+  },
   saveText: {fontSize: 18, fontWeight: '400', color: '#000'},
 });
 

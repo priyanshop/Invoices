@@ -18,43 +18,43 @@ import EmptyViewComponent from '../../../CustomComponent/EmptyViewComponent';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
-const invoices = [];
-// const invoices = [
-//   {
-//     year: 2021,
-//     data: [
-//       {
-//         client: 'Client A',
-//         invoiceNumber: 'INV-001',
-//         price: 100.0,
-//         date: '2021-01-01',
-//       },
-//       {
-//         client: 'Client B',
-//         invoiceNumber: 'INV-002',
-//         price: 200.0,
-//         date: '2021-02-01',
-//       },
-//     ],
-//   },
-//   {
-//     year: 2022,
-//     data: [
-//       {
-//         client: 'Client C',
-//         invoiceNumber: 'INV-003',
-//         price: 150.0,
-//         date: '2022-01-01',
-//       },
-//       {
-//         client: 'Client D',
-//         invoiceNumber: 'INV-004',
-//         price: 250.0,
-//         date: '2022-02-01',
-//       },
-//     ],
-//   },
-// ];
+// const invoices = [];
+const invoices = [
+  {
+    year: 2021,
+    data: [
+      {
+        client: 'Client A',
+        invoiceNumber: 'INV-001',
+        price: 100.0,
+        date: '2021-01-01',
+      },
+      {
+        client: 'Client B',
+        invoiceNumber: 'INV-002',
+        price: 200.0,
+        date: '2021-02-01',
+      },
+    ],
+  },
+  {
+    year: 2022,
+    data: [
+      {
+        client: 'Client C',
+        invoiceNumber: 'INV-003',
+        price: 150.0,
+        date: '2022-01-01',
+      },
+      {
+        client: 'Client D',
+        invoiceNumber: 'INV-004',
+        price: 250.0,
+        date: '2022-02-01',
+      },
+    ],
+  },
+];
 
 const data = [
   {key: 'first', title: 'All'},
@@ -68,6 +68,10 @@ function InvoicesScreen({navigation}: any): JSX.Element {
 
   function navigateToSetting() {
     navigation.navigate('Settings');
+  }
+
+  function navigateToAddInvoice() {
+    navigation.navigate('InvoiceCreation');
   }
 
   const AllRoute = () => {
@@ -196,6 +200,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     );
   };
 
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#3B51C0'} />
@@ -226,7 +231,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
           );
         }}
       />
-      <FloatingButton />
+      <FloatingButton onPress={navigateToAddInvoice} />
     </SafeAreaView>
   );
 }

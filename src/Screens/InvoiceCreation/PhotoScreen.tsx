@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     // marginVertical: 5,
     alignItems: 'center',
-    padding: 12,
+    padding: 8,
   },
   label: {
     fontSize: 18,
@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#000',
     textAlign: 'right',
+    height: 40,
   },
   itemView: {
     backgroundColor: '#fff',
@@ -125,7 +126,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   totalTxt: {fontSize: 18, fontWeight: '500', color: '#fff'},
-  detailText: {height: 70, fontSize: 18, fontWeight: '400', color: '#000'},
+  detailText: {
+    height: 70,
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#000',
+    textAlignVertical: 'top',
+  },
   saveText: {fontSize: 18, fontWeight: '400', color: '#000'},
 });
 

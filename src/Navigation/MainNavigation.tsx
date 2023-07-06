@@ -29,8 +29,11 @@ const headerStyle = {
   headerTitleStyle: {
     fontSize: 18,
     fontWeight: '600',
+    alignSelf: 'center'
   },
   headerBackTitleVisible: false,
+  headerShadowVisible: false,
+  headerTitleAlign: 'center'
 };
 
 const Tab = createBottomTabNavigator();
@@ -115,7 +118,7 @@ function Dashboard() {
 
 function MainNavigator() {
   return (
-    <Stack.Navigator initialRouteName='AdditionalDetails'>
+    <Stack.Navigator initialRouteName='AddClientScreen'>
       <Stack.Screen
         name="LandingPage"
         component={LandingScreen}
@@ -144,7 +147,7 @@ function MainNavigator() {
       <Stack.Screen
         name="InvoiceCreation"
         component={InvoiceCreationScreen}
-        options={{headerShown: false}}
+        options={{headerTitle:"Invoice",...headerStyle}}
       />
       <Stack.Screen
         name="InvoiceNumber"
