@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {View, SectionList, Text, StyleSheet, TextInput} from 'react-native';
 import TermsComponent from '../../CustomComponent/TermsComponent';
+import DatePicker from 'react-native-date-picker';
 
 const InvoiceNumber = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -8,8 +9,9 @@ const InvoiceNumber = () => {
   const [invoiceNumber, setInvoiceNumber] = useState('');
   const [date, setDate] = useState(new Date());
   const [poNumber, setPoNumber] = useState('');
-  const [dueDate, setDueDate] = useState('');
-  
+  const [dueDate, setDueDate] = useState(null);
+  const [openDate, setOpenDate] = useState(false);
+
   return (
     <View style={styles.mainContainer}>
       <View style={{borderRadius: 8, backgroundColor: '#fff', padding: 8}}>
@@ -49,6 +51,19 @@ const InvoiceNumber = () => {
         setModalVisible={() => setOpenModal(false)}
         setSelectedTerm={setSelectedTerm}
       />
+      <View>
+        {/* <DatePicker
+          open={false}
+          date={date}
+          onConfirm={date => {
+            setDueDate(date);
+            setOpenDate(false);
+          }}
+          onCancel={() => {
+            setOpenDate(false);
+          }}
+        /> */}
+      </View>
     </View>
   );
 };

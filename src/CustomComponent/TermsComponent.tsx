@@ -42,8 +42,12 @@ const TermsComponent = ({
   const renderItem = ({item}) => (
     <TouchableOpacity
       onPress={() => {
-        setSelectedTerm(item.value);
-        setModalVisible();
+        if (item.value === 'Cancel') {
+          setModalVisible();
+        } else {
+          setSelectedTerm(item.value);
+          setModalVisible();
+        }
       }}
       style={styles.item}>
       <Text style={styles.itemText}>{item.value}</Text>

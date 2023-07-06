@@ -15,7 +15,6 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import {Switch, FAB, Portal, Provider} from 'react-native-paper';
 
 import FloatingButton from '../../CustomComponent/FloatingButton';
