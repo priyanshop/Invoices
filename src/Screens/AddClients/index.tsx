@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {
   View,
+  SectionList,
   Text,
   StyleSheet,
   TextInput,
@@ -8,75 +9,82 @@ import {
   Image,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import ImagePickerComponent from '../../CustomComponent/ImagePickerComponent';
+import {Colors} from '../../Helper/Colors';
 
-const BusinessDetails = () => {
-  const [openModal, setOpenModal] = useState(false);
-  const [BusinessImage, setBusinessImage] = useState(null);
+const AddClientScreen = () => {
   const [businessName, setBusinessName] = useState('');
-  const [ownerName, setOwnerName] = useState('');
-  const [businessNumber, setBusinessNumber] = useState('');
+  const [contact, setContact] = useState('');
   const [address1, setAddress1] = useState('');
   const [address2, setAddress2] = useState('');
   const [address3, setAddress3] = useState('');
   const [email, setEmail] = useState('');
   const [Phone, setPhone] = useState('');
   const [Mobile, setMobile] = useState('');
-  const [Website, setWebsite] = useState('');
+  const [fax, setFax] = useState('');
 
-  const closeBottomSheet = () => {
-    setOpenModal(!openModal);
-  };
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.businessContainer}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>Business Logo</Text>
-        </View>
-        <View style={styles.content}>
-          <TouchableOpacity onPress={closeBottomSheet}>
-            {BusinessImage ? (
-              <Image
-                source={{uri: BusinessImage}}
-                resizeMode="contain"
-                style={styles.businessImage}
-              />
-            ) : (
-              <Feather name="camera" style={styles.cameraIcon} />
-            )}
-          </TouchableOpacity>
-        </View>
-      </View>
       <View style={styles.mainContain}>
         <View style={styles.rowView}>
           <TextInput
             value={businessName}
             onChangeText={setBusinessName}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder="Business Name"
+            placeholder="Client Name"
             placeholderTextColor={'grey'}
           />
         </View>
         <View style={styles.rowView}>
           <TextInput
-            value={ownerName}
-            onChangeText={setOwnerName}
+            value={email}
+            onChangeText={setEmail}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder="Business Owner Name"
+            placeholder="Email"
             placeholderTextColor={'grey'}
           />
         </View>
         <View style={styles.rowView}>
+          <Text style={styles.titleTxt}>Mobile</Text>
           <TextInput
-            value={businessNumber}
-            onChangeText={setBusinessNumber}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder="Business Number"
+            value={Mobile}
+            onChangeText={setMobile}
+            style={{...styles.titleTxt, flex: 1, textAlign: 'right'}}
+            placeholder="Mobile Number"
+            placeholderTextColor={'grey'}
+          />
+        </View>
+        <View style={styles.rowView}>
+          <Text style={styles.titleTxt}>Phone</Text>
+          <TextInput
+            value={Phone}
+            onChangeText={setPhone}
+            style={{...styles.titleTxt, flex: 1, textAlign: 'right'}}
+            placeholder="Phone Number"
+            placeholderTextColor={'grey'}
+          />
+        </View>
+        <View style={styles.rowView}>
+          <Text style={styles.titleTxt}>Fax</Text>
+          <TextInput
+            value={fax}
+            onChangeText={setFax}
+            style={{...styles.titleTxt, flex: 1, textAlign: 'right'}}
+            placeholder="Fax Number"
             placeholderTextColor={'grey'}
           />
         </View>
       </View>
+
       <View style={styles.mainContain}>
+        <View style={styles.rowView}>
+          <TextInput
+            value={contact}
+            onChangeText={setContact}
+            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+            placeholder="Contact"
+            placeholderTextColor={'grey'}
+          />
+        </View>
         <View style={styles.rowView}>
           <TextInput
             value={address1}
@@ -105,49 +113,16 @@ const BusinessDetails = () => {
           />
         </View>
       </View>
-      <View style={styles.mainContain}>
-        <View style={styles.rowView}>
-          <TextInput
-            value={email}
-            onChangeText={setEmail}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder="Email"
-            placeholderTextColor={'grey'}
-          />
-        </View>
-        <View style={styles.rowView}>
-          <TextInput
-            value={Phone}
-            onChangeText={setPhone}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder="Phone"
-            placeholderTextColor={'grey'}
-          />
-        </View>
-        <View style={styles.rowView}>
-          <TextInput
-            value={Mobile}
-            onChangeText={setMobile}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder="Mobile"
-            placeholderTextColor={'grey'}
-          />
-        </View>
-        <View style={styles.rowView}>
-          <TextInput
-            value={Website}
-            onChangeText={setWebsite}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder="Website"
-            placeholderTextColor={'grey'}
-          />
-        </View>
-      </View>
-      <ImagePickerComponent
-        openModal={openModal}
-        closeBottomSheet={closeBottomSheet}
-        setImage={setBusinessImage}
-      />
+
+      <TouchableOpacity style={styles.contactBtn}>
+        <Text style={styles.titleTxt}>{'Import from contacts'}</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.statementBtn}>
+        <Text style={[styles.titleTxt, {color: '#fff', fontWeight: '600'}]}>
+          {'Create Statement'}
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -216,6 +191,22 @@ const styles = StyleSheet.create({
     fontSize: 50,
     color: '#d4d4d4',
   },
+  contactBtn: {
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    padding: 8,
+    borderRadius: 8,
+    justifyContent: 'center',
+    marginVertical: 5,
+  },
+  statementBtn: {
+    backgroundColor: Colors.appColor,
+    alignItems: 'center',
+    padding: 15,
+    borderRadius: 8,
+    justifyContent: 'center',
+    marginVertical: 5,
+  },
 });
 
-export default BusinessDetails;
+export default AddClientScreen;
