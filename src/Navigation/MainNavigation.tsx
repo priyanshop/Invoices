@@ -12,6 +12,7 @@ import ClientScreen from '../Screens/Dashboard/Clients';
 import ReportScreen from '../Screens/Dashboard/Reports';
 import SettingScreen from '../Screens/Settings';
 import {Colors} from '../Helper/Colors';
+import InvoiceCreationScreen from '../Screens/InvoiceCreation';
 
 const headerStyle = {
   headerStyle: {
@@ -107,7 +108,7 @@ function Dashboard() {
 
 function MainNavigator() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName='InvoiceCreation'>
       <Stack.Screen
         name="LandingPage"
         component={LandingScreen}
@@ -132,6 +133,11 @@ function MainNavigator() {
         name="Settings"
         component={SettingScreen}
         options={headerStyle}
+      />
+      <Stack.Screen
+        name="InvoiceCreation"
+        component={InvoiceCreationScreen}
+        options={{headerShown: false}}
       />
     </Stack.Navigator>
   );
