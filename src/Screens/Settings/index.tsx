@@ -25,7 +25,7 @@ const data = [
       {title: 'Invoice Number', description: ''},
       {title: 'Export Expense Summary', description: ''},
       {title: 'Export as Spreadsheet', description: ''},
-      {title: 'Customise', description: ''},
+      {title: 'Customize', description: ''},
       {title: 'Default Email Message', description: ''},
       {title: 'Send me a copy of emails', description: ''},
     ],

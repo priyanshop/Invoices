@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
+import { Colors } from '../../Helper/Colors';
 
 function LandingScreen({navigation}: any): JSX.Element {
   function navigateToSignIn() {
@@ -18,7 +19,7 @@ function LandingScreen({navigation}: any): JSX.Element {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={'#FF5733'} />
+      <StatusBar backgroundColor={Colors.landingColor} />
       <Text style={styles.title}>Invoice Simple</Text>
       <Text style={styles.paragraph}>
         Create professional invoices in secounds!
@@ -56,8 +57,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    // paddingTop: Constants.statusBarHeight,
-    backgroundColor: '#FF5733',
+    backgroundColor: Colors.landingColor,
     padding: 8,
   },
   paragraph: {
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '500',
     textAlign: 'center',
-    color: '#FF5733',
+    color: Colors.landingColor,
   },
   btn: {
     backgroundColor: '#fff',

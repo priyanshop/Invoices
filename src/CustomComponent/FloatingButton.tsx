@@ -1,5 +1,6 @@
 import React from 'react';
 import {TouchableOpacity, View, StyleSheet} from 'react-native';
+import { Colors } from '../Helper/Colors';
 
 const FloatingButton = () => {
   return (
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#3B51C0',
+    backgroundColor: Colors.appColor,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#171717',

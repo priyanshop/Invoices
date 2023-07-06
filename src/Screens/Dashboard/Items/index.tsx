@@ -13,6 +13,7 @@ import {
 import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FloatingButton from '../../../CustomComponent/FloatingButton';
+import { Colors } from '../../../Helper/Colors';
 
 const data = [
   {
@@ -107,7 +108,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#3B51C0',
+    backgroundColor:Colors.appColor,
   },
   container2: {
     flex: 1,
@@ -133,7 +134,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '500',
     textAlign: 'center',
-    color: '#FF5733',
+    color: Colors.landingColor,
   },
   btn: {
     backgroundColor: '#fff',
@@ -150,7 +151,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 10,
     alignItems: 'center',
-    backgroundColor: '#3B51C0',
+    backgroundColor:Colors.appColor,
     paddingVertical: 8,
   },
   headerText: {

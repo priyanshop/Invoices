@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Colors } from '../../Helper/Colors';
 
 function SignInScreen(): JSX.Element {
   const [email, setEmail] = useState('');
@@ -36,7 +37,7 @@ function SignInScreen(): JSX.Element {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={'#FF5733'} />
+      <StatusBar backgroundColor={Colors.landingColor} />
       <Text style={styles.title}>Login</Text>
       <TextInput
         value={email}
@@ -77,7 +78,7 @@ function SignInScreen(): JSX.Element {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FF5733',
+    backgroundColor: Colors.landingColor,
     padding: 8,
     justifyContent: 'center',
   },

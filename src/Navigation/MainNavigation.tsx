@@ -11,10 +11,11 @@ import ItemsScreen from '../Screens/Dashboard/Items';
 import ClientScreen from '../Screens/Dashboard/Clients';
 import ReportScreen from '../Screens/Dashboard/Reports';
 import SettingScreen from '../Screens/Settings';
+import { Colors } from '../Helper/Colors';
 
 const headerStyle = {
   headerStyle: {
-    backgroundColor: '#3B51C0',
+    backgroundColor: Colors.appColor,
   },
   headerTintColor: "#fff",
   headerTitleStyle: {

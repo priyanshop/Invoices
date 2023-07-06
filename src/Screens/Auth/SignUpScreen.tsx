@@ -11,6 +11,7 @@ import {
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {getScreenDimensions} from '../../Helper/ScreenDimension';
+import { Colors } from '../../Helper/Colors';
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
 
@@ -136,7 +137,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={'#FF5733'} />
+      <StatusBar backgroundColor={Colors.landingColor} />
       <View style={styles.header}>
         <View style={{width: '20%'}}>
           <TouchableOpacity onPress={handlePrevious}>
@@ -176,7 +177,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FF5733',
+    backgroundColor: Colors.landingColor,
   },
   paragraph: {
     marginVertical: 10,
@@ -195,7 +196,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '500',
     textAlign: 'center',
-    color: '#FF5733',
+    color: Colors.landingColor,
   },
   btn: {
     backgroundColor: '#fff',
