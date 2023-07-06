@@ -1,72 +1,61 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
-  FlatList,
-  SafeAreaView,
-  SectionList,
-  StatusBar,
-  StyleSheet,
+  View,
+  TouchableOpacity,
   Text,
   TextInput,
-  TouchableOpacity,
-  View,
+  StyleSheet,
 } from 'react-native';
-import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import Icon from 'react-native-vector-icons/Ionicons';
-import FloatingButton from '../../../CustomComponent/FloatingButton';
-import { Colors } from '../../../Helper/Colors';
-import CustomHeader from '../../../CustomComponent/CustomHeader';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
+import {Colors} from '../Helper/Colors';
 
-const data = [
-  {
-    item: 'Item1',
-    description: 'sssss',
-    price: 150.0,
-  },
-  {
-    item: 'Item1',
-    description: 'sssss',
-    price: 150.0,
-  },
-];
-function ItemsScreen({navigation}: any): JSX.Element {
-  const [searchStart, setSearchStart] = useState(false);
+const CustomHeader = ({
+  searchStart=false,
+  navigateToSetting,
+  setSearchStart,
+  title=""
+}: any) => {
+  const renderHeader = () => {
+    if (!searchStart) {
+      return (
+        <View style={styles.headerContainer}>
+          <TouchableOpacity onPress={navigateToSetting}>
+            <SimpleLineIcons name="settings" size={20} color="#fff" />
+          </TouchableOpacity>
+          <View>
+            <Text style={styles.headerText}>{title}</Text>
+          </View>
+          <View>
+            <TouchableOpacity onPress={() => setSearchStart(true)}>
+              <Icon name="search" size={20} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.headerContainer}>
+          <TouchableOpacity onPress={navigateToSetting}>
+            <SimpleLineIcons name="settings" size={20} color="#fff" />
+          </TouchableOpacity>
+          <View style={styles.onSearch}>
+            <Icon name="search" size={20} color="#000" />
+            <TextInput style={{width: '65%'}} />
+            <TouchableOpacity onPress={() => setSearchStart(false)}>
+              <Entypo name="circle-with-cross" size={20} color="#000" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    }
+  };
 
-  function navigateToSetting() {
-    navigation.navigate('Settings');
-  }
+  return renderHeader();
+};
 
-  const renderItem = ({item}: any) => (
-    <View style={styles.invoiceItem}>
-      <View>
-        <Text style={styles.clientText}>{`${item.item}`}</Text>
-        <Text style={styles.invoiceNumberText}>{`${item.description}`}</Text>
-      </View>
-      <View style={styles.priceView}>
-        <Text style={styles.priceText}>{`$${item.price}`}</Text>
-      </View>
-    </View>
-  );
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={'#3B51C0'} />
-      <CustomHeader
-        searchStart={searchStart}
-        navigateToSetting={navigateToSetting}
-        setSearchStart={setSearchStart}
-        title={"Items"}
-      />
-      <View style={{flex: 1, backgroundColor: '#fff'}}>
-        <FlatList
-          data={data}
-          renderItem={renderItem}
-          keyExtractor={(item: any, index: any) => item + index}
-        />
-        <FloatingButton />
-      </View>
-    </SafeAreaView>
-  );
-}
+export default CustomHeader;
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -87,7 +76,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor:Colors.appColor,
+    backgroundColor: Colors.appColor,
   },
   container2: {
     flex: 1,
@@ -130,7 +119,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 10,
     alignItems: 'center',
-    backgroundColor:Colors.appColor,
+    backgroundColor: Colors.appColor,
     paddingVertical: 8,
   },
   headerText: {
@@ -190,7 +179,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
   },
-  priceView: {justifyContent: 'center'},
 });
-
-export default ItemsScreen;

@@ -1,10 +1,9 @@
 import {createStackNavigator} from '@react-navigation/stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+
 import SignInScreen from '../Screens/Auth/SignInScreen';
 import SignUpScreen from '../Screens/Auth/SignUpScreen';
 import LandingScreen from '../Screens/LandingScreen';
-
-const Stack = createStackNavigator();
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import InvoicesScreen from '../Screens/Dashboard/Invoices';
 import EstimatesScreen from '../Screens/Dashboard/Estimates';
 import ItemsScreen from '../Screens/Dashboard/Items';
@@ -26,6 +25,7 @@ const headerStyle = {
 };
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 function Dashboard() {
   return (

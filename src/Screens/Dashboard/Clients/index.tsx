@@ -12,8 +12,11 @@ import {
 } from 'react-native';
 import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import Icon from 'react-native-vector-icons/Ionicons';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import FloatingButton from '../../../CustomComponent/FloatingButton';
 import { Colors } from '../../../Helper/Colors';
+import CustomHeader from '../../../CustomComponent/CustomHeader';
 
 const data = [
   {
@@ -50,34 +53,12 @@ function ClientScreen({navigation}: any): JSX.Element {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#3B51C0'} />
-      {!searchStart ? (
-        <View style={styles.headerContainer}>
-          <TouchableOpacity onPress={navigateToSetting}>
-            <Icon name="flower-outline" size={20} color="#fff" />
-          </TouchableOpacity>
-          <View>
-            <Text style={styles.headerText}>Clients</Text>
-          </View>
-          <View>
-            <TouchableOpacity onPress={() => setSearchStart(true)}>
-              <Icon name="search" size={20} color="#fff" />
-            </TouchableOpacity>
-          </View>
-        </View>
-      ) : (
-        <View style={styles.headerContainer}>
-          <TouchableOpacity onPress={navigateToSetting}>
-            <Icon name="flower-outline" size={20} color="#fff" />
-          </TouchableOpacity>
-          <View style={styles.onSearch}>
-            <Icon name="search" size={20} color="#000" />
-            <TextInput style={{width: '65%'}} />
-            <TouchableOpacity onPress={() => setSearchStart(false)}>
-              <Icon name="search" size={20} color="#000" />
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
+      <CustomHeader
+        searchStart={searchStart}
+        navigateToSetting={navigateToSetting}
+        setSearchStart={setSearchStart}
+        title={"Clients"}
+      />
       <View style={{flex: 1, backgroundColor: '#fff'}}>
         <View style={styles.titleHeader}>
           <Text style={styles.tileHeaderTxt}>{'Name'}</Text>

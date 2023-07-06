@@ -9,12 +9,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import { Colors } from '../../../Helper/Colors';
+import Feather from 'react-native-vector-icons/Feather';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import {Colors} from '../../../Helper/Colors';
 
 function ReportScreen({navigation}: any): JSX.Element {
   const [searchStart, setSearchStart] = useState(false);
-  
+
   function navigateToSetting() {
     navigation.navigate('Setting');
   }
@@ -23,14 +24,14 @@ function ReportScreen({navigation}: any): JSX.Element {
       <StatusBar backgroundColor={'#3B51C0'} />
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={navigateToSetting}>
-          <Icon name="flower-outline" size={20} color="#fff" />
+          <SimpleLineIcons name="settings" size={20} color="#fff" />
         </TouchableOpacity>
         <View>
           <Text style={styles.headerText}>Reports</Text>
         </View>
         <View>
           <TouchableOpacity>
-            <Icon name="search" size={20} color="#fff" />
+            <Feather name="refresh-ccw" size={18} color="#fff" />
           </TouchableOpacity>
         </View>
       </View>
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor:Colors.appColor,
+    backgroundColor: Colors.appColor,
   },
   container2: {
     flex: 1,
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 10,
     alignItems: 'center',
-    backgroundColor:Colors.appColor,
+    backgroundColor: Colors.appColor,
     paddingVertical: 8,
   },
   headerText: {

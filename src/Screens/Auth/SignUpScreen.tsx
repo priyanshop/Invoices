@@ -10,8 +10,9 @@ import {
 } from 'react-native';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getScreenDimensions} from '../../Helper/ScreenDimension';
-import { Colors } from '../../Helper/Colors';
+import {Colors} from '../../Helper/Colors';
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
 
@@ -37,7 +38,15 @@ function SignUpScreen({navigation}: any): JSX.Element {
   };
 
   const handleNext = () => {
-    carouselRef.current.snapToNext();
+    if (activeSlide === 2) {
+      navigation.navigate('Dashboard');
+      //     navigation.reset({
+      //       index: 0,
+      //       routes: [{ name: 'Dashboard' }]
+      //  });
+    } else {
+      carouselRef.current.snapToNext();
+    }
   };
 
   const validateEmail = (text: string) => {
@@ -53,7 +62,12 @@ function SignUpScreen({navigation}: any): JSX.Element {
   const renderItem = ({item}) => {
     if (item.index === 1) {
       return (
-        <View>
+        <View style={{alignItems: 'center'}}>
+          <MaterialCommunityIcons
+            name="email-edit-outline"
+            color={'#fff'}
+            size={45}
+          />
           <Text style={styles.title}>Business Info</Text>
           <Text style={styles.paragraph}>(All fields are optional)</Text>
           <TextInput
@@ -110,7 +124,8 @@ function SignUpScreen({navigation}: any): JSX.Element {
       );
     } else if (item.index === 2) {
       return (
-        <View>
+        <View style={{alignItems: 'center'}}>
+          <Ionicons name="ios-images-outline" color={'#fff'} size={45} />
           <Text style={styles.title}>Business Logo</Text>
           <Text style={styles.paragraph}>
             Appears on all invoices. Can be edited ny time
@@ -122,7 +137,12 @@ function SignUpScreen({navigation}: any): JSX.Element {
       );
     } else {
       return (
-        <View>
+        <View style={{alignItems: 'center'}}>
+          <Ionicons
+            name="ios-checkmark-circle-outline"
+            color={'#fff'}
+            size={45}
+          />
           <Text style={styles.title}>All Set!</Text>
           <Text style={styles.paragraph}>
             You're ready to create your first Invoice
@@ -213,7 +233,7 @@ const styles = StyleSheet.create({
     height: 40,
     padding: 5,
     fontSize: 15,
-    color:'#000'
+    color: '#000',
   },
   emailInput: {
     borderTopRightRadius: 5,

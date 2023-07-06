@@ -11,9 +11,12 @@ import {
 } from 'react-native';
 import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import Icon from 'react-native-vector-icons/Ionicons';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import FloatingButton from '../../../CustomComponent/FloatingButton';
 import {getScreenDimensions} from '../../../Helper/ScreenDimension';
 import {Colors} from '../../../Helper/Colors';
+import CustomHeader from '../../../CustomComponent/CustomHeader';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -170,34 +173,12 @@ function InvoicesScreen({navigation}: any): JSX.Element {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#3B51C0'} />
-      {!searchStart ? (
-        <View style={styles.headerContainer}>
-          <TouchableOpacity onPress={navigateToSetting}>
-            <Icon name="flower-outline" size={20} color="#fff" />
-          </TouchableOpacity>
-          <View>
-            <Text style={styles.headerText}>Invoices</Text>
-          </View>
-          <View>
-            <TouchableOpacity onPress={() => setSearchStart(true)}>
-              <Icon name="search" size={20} color="#fff" />
-            </TouchableOpacity>
-          </View>
-        </View>
-      ) : (
-        <View style={styles.headerContainer}>
-          <TouchableOpacity onPress={navigateToSetting}>
-            <Icon name="flower-outline" size={20} color="#fff" />
-          </TouchableOpacity>
-          <View style={styles.onSearch}>
-            <Icon name="search" size={20} color="#000" />
-            <TextInput style={{width: '65%'}} />
-            <TouchableOpacity onPress={() => setSearchStart(false)}>
-              <Icon name="search" size={20} color="#000" />
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
+      <CustomHeader
+        searchStart={searchStart}
+        navigateToSetting={navigateToSetting}
+        setSearchStart={setSearchStart}
+        title={"Invoices"}
+      />
       <TabView
         navigationState={{index, routes}}
         renderScene={SceneMap({
