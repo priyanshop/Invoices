@@ -12,13 +12,17 @@ import {
 import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import Entypo from 'react-native-vector-icons/Entypo';
+import Fontisto from 'react-native-vector-icons/Fontisto';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import {Switch, FAB, Portal, Provider} from 'react-native-paper';
 
 import FloatingButton from '../../CustomComponent/FloatingButton';
 import {getScreenDimensions} from '../../Helper/ScreenDimension';
 import {Colors} from '../../Helper/Colors';
 import CustomHeader from '../../CustomComponent/CustomHeader';
 import EmptyViewComponent from '../../CustomComponent/EmptyViewComponent';
-import {Switch} from 'react-native-paper';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -69,318 +73,363 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
   const [index, setIndex] = useState(0);
   const [searchStart, setSearchStart] = useState(false);
   const [routes] = useState(data);
+  const [state, setState] = React.useState({open: false});
+
+  const onStateChange = ({open}) => setState({open});
+
+  const {open} = state;
 
   function navigateToSetting() {
     navigation.navigate('Settings');
   }
 
   const AllRoute = () => {
-    const renderInvoiceItem = ({item}: any) => (
-      <View style={styles.invoiceItem}>
-        <View>
-          <Text style={styles.clientText}>{`${item.client}`}</Text>
-          <Text
-            style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
-        </View>
-        <View>
-          <Text style={styles.priceText}>{`$${item.price}`}</Text>
-          <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
-        </View>
-      </View>
-    );
-
-    const renderSectionHeader = ({section: {year}}) => (
-      <View style={styles.sectionHeaderContain}>
-        <Text style={styles.sectionHeader}>{year}</Text>
-        <Text style={styles.sectionHeader}>{'$635'}</Text>
-      </View>
-    );
-
-    const renderEmptyComponent = () => (
-      <EmptyViewComponent
-        message={
-          'Your invoices will show up here. Click the plus button below to create your first invoice!'
-        }
-      />
-    );
+ 
     return (
-      <ScrollView
-        style={[styles.scene, {backgroundColor: '#d2d2d2', padding: 8}]}>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            backgroundColor: '#fff',
-            borderRadius: 8,
-            padding: 12,
-            marginVertical: 5,
-          }}>
-          <View style={{justifyContent: 'space-between'}}>
-            <Text style={{fontSize: 18, fontWeight: '600', color: '#000'}}>
-              INV0001
-            </Text>
-            <Text style={{fontSize: 18, fontWeight: '400', color: '#d1d1d1'}}>
-              Business Info
-            </Text>
-          </View>
-          <View style={{justifyContent: 'space-between'}}>
+      <Provider>
+        <Portal>
+          <ScrollView
+            style={[styles.scene, {backgroundColor: '#d2d2d2', padding: 8}]}>
             <View
               style={{
-                borderWidth: 1,
-                borderRadius: 5,
-                padding: 4,
-                borderColor: 'grey',
-                marginBottom: 10,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                backgroundColor: '#fff',
+                borderRadius: 8,
+                padding: 12,
+                marginVertical: 5,
               }}>
-              <Text style={{fontSize: 14, fontWeight: '400', color: 'grey'}}>
-                Due on Receipt
+              <View style={{justifyContent: 'space-between'}}>
+                <Text style={{fontSize: 18, fontWeight: '600', color: '#000'}}>
+                  INV0001
+                </Text>
+                <Text
+                  style={{fontSize: 18, fontWeight: '400', color: '#d1d1d1'}}>
+                  Business Info
+                </Text>
+              </View>
+              <View style={{justifyContent: 'space-between'}}>
+                <View
+                  style={{
+                    borderWidth: 1,
+                    borderRadius: 5,
+                    padding: 4,
+                    borderColor: 'grey',
+                    marginBottom: 10,
+                  }}>
+                  <Text
+                    style={{fontSize: 14, fontWeight: '400', color: 'grey'}}>
+                    Due on Receipt
+                  </Text>
+                </View>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontWeight: '400',
+                    color: '#000',
+                    textAlign: 'right',
+                  }}>
+                  06/07/2023
+                </Text>
+              </View>
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                backgroundColor: '#fff',
+                borderRadius: 8,
+                padding: 12,
+                marginVertical: 5,
+              }}>
+              <Text style={{fontSize: 18, fontWeight: '400', color: '#000'}}>
+                To :{' '}
+              </Text>
+              <Text style={{fontSize: 18, fontWeight: '400', color: '#d1d1d1'}}>
+                Client
               </Text>
             </View>
-            <Text
+
+            <View
               style={{
-                fontSize: 18,
-                fontWeight: '400',
-                color: '#000',
-                textAlign: 'right',
+                backgroundColor: '#fff',
+                borderRadius: 8,
+                marginVertical: 5,
               }}>
-              06/07/2023
-            </Text>
-          </View>
-        </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  padding: 12,
+                }}>
+                <View>
+                  <Text
+                    style={{fontSize: 18, fontWeight: '500', color: '#d1d1d1'}}>
+                    {'Add Item '}
+                  </Text>
+                </View>
+                <View>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: '400',
+                      color: '#d1d1d1',
+                      textAlign: 'right',
+                    }}>
+                    {'0 * $0.00'}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: '400',
+                      color: '#d1d1d1',
+                      textAlign: 'right',
+                    }}>
+                    {'$0.00'}
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  backgroundColor: 'grey',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  borderBottomLeftRadius: 8,
+                  borderBottomRightRadius: 8,
+                  padding: 8,
+                }}>
+                <Text style={{fontSize: 18, fontWeight: '500', color: '#fff'}}>
+                  Subtotal
+                </Text>
+                <Text style={{fontSize: 18, fontWeight: '500', color: '#fff'}}>
+                  195
+                </Text>
+              </View>
+            </View>
 
-        <View
-          style={{
-            flexDirection: 'row',
-            backgroundColor: '#fff',
-            borderRadius: 8,
-            padding: 12,
-            marginVertical: 5,
-          }}>
-          <Text style={{fontSize: 18, fontWeight: '400', color: '#000'}}>
-            To :{' '}
-          </Text>
-          <Text style={{fontSize: 18, fontWeight: '400', color: '#d1d1d1'}}>
-            Client
-          </Text>
-        </View>
+            <View
+              style={{
+                backgroundColor: '#fff',
+                borderRadius: 8,
+                marginVertical: 5,
+              }}>
+              <View
+                style={{
+                  padding: 12,
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: '400',
+                      color: '#000',
+                    }}>
+                    {'Discount'}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: '400',
+                      color: '#000',
+                    }}>
+                    {'$0.00'}
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  backgroundColor: 'grey',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  borderBottomLeftRadius: 8,
+                  borderBottomRightRadius: 8,
+                  padding: 8,
+                }}>
+                <Text style={{fontSize: 18, fontWeight: '500', color: '#fff'}}>
+                  Balance Due
+                </Text>
+                <Text style={{fontSize: 18, fontWeight: '500', color: '#fff'}}>
+                  195
+                </Text>
+              </View>
+            </View>
 
-        <View
-          style={{
-            backgroundColor: '#fff',
-            borderRadius: 8,
-            marginVertical: 5,
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              padding: 12,
-            }}>
-            <View>
+            <View
+              style={{
+                flexDirection: 'row',
+                backgroundColor: '#fff',
+                borderRadius: 8,
+                padding: 12,
+                marginVertical: 5,
+                justifyContent: 'space-between',
+              }}>
               <Text style={{fontSize: 18, fontWeight: '500', color: '#d1d1d1'}}>
-                {'Add Item '}
+                Add photo
               </Text>
+              <TouchableOpacity>
+                <Icon name="attach" size={18} color="#d2d2d2" />
+              </TouchableOpacity>
             </View>
-            <View>
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontWeight: '400',
-                  color: '#d1d1d1',
-                  textAlign: 'right',
-                }}>
-                {'0 * $0.00'}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontWeight: '400',
-                  color: '#d1d1d1',
-                  textAlign: 'right',
-                }}>
-                {'$0.00'}
-              </Text>
-            </View>
-          </View>
-          <View
-            style={{
-              backgroundColor: 'grey',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              borderBottomLeftRadius: 8,
-              borderBottomRightRadius: 8,
-              padding: 8,
-            }}>
-            <Text style={{fontSize: 18, fontWeight: '500', color: '#fff'}}>
-              Subtotal
-            </Text>
-            <Text style={{fontSize: 18, fontWeight: '500', color: '#fff'}}>
-              195
-            </Text>
-          </View>
-        </View>
 
-        <View
-          style={{
-            backgroundColor: '#fff',
-            borderRadius: 8,
-            marginVertical: 5,
-          }}>
-          <View
-            style={{
-              padding: 12,
-            }}>
             <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Text
+              style={{
+                backgroundColor: '#fff',
+                borderRadius: 8,
+
+                marginVertical: 5,
+              }}>
+              <View
                 style={{
-                  fontSize: 18,
-                  fontWeight: '400',
-                  color: '#000',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 12,
+                  paddingVertical: 8,
+                  borderBottomColor: 'grey',
+                  borderBottomWidth: 0.3,
                 }}>
-                {'Discount'}
-              </Text>
-              <Text
+                <Text
+                  style={{fontSize: 18, fontWeight: '500', color: '#d1d1d1'}}>
+                  Payment Info
+                </Text>
+              </View>
+              <View
                 style={{
-                  fontSize: 18,
-                  fontWeight: '400',
-                  color: '#000',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 12,
+                  paddingVertical: 8,
+                  borderBottomColor: 'grey',
+                  borderBottomWidth: 0.3,
                 }}>
-                {'$0.00'}
+                <Text
+                  style={{fontSize: 18, fontWeight: '500', color: '#d1d1d1'}}>
+                  Signature
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 12,
+                  paddingVertical: 8,
+                  height: 70,
+                }}>
+                <Text
+                  style={{fontSize: 18, fontWeight: '500', color: '#d1d1d1'}}>
+                  Notes
+                </Text>
+              </View>
+            </View>
+
+            <View
+              style={{
+                backgroundColor: '#fff',
+                borderRadius: 8,
+                marginVertical: 5,
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 12,
+                  paddingVertical: 8,
+                  borderBottomColor: 'grey',
+                  borderBottomWidth: 0.3,
+                  alignItems: 'center',
+                }}>
+                <Text style={{fontSize: 18, fontWeight: '400', color: '#000'}}>
+                  Request Review
+                </Text>
+                <Switch value={true} />
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 12,
+                  paddingVertical: 8,
+                }}>
+                <Text
+                  style={{fontSize: 18, fontWeight: '500', color: '#d1d1d1'}}>
+                  Review Link
+                </Text>
+              </View>
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                backgroundColor: '#fff',
+                borderRadius: 8,
+                padding: 12,
+                marginVertical: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text style={{fontSize: 18, fontWeight: '400', color: '#000'}}>
+                Mark Paid
               </Text>
             </View>
-          </View>
-          <View
-            style={{
-              backgroundColor: 'grey',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              borderBottomLeftRadius: 8,
-              borderBottomRightRadius: 8,
-              padding: 8,
-            }}>
-            <Text style={{fontSize: 18, fontWeight: '500', color: '#fff'}}>
-              Balance Due
-            </Text>
-            <Text style={{fontSize: 18, fontWeight: '500', color: '#fff'}}>
-              195
-            </Text>
-          </View>
-        </View>
-
-        <View
-          style={{
-            flexDirection: 'row',
-            backgroundColor: '#fff',
-            borderRadius: 8,
-            padding: 12,
-            marginVertical: 5,
-            justifyContent: 'space-between',
-          }}>
-          <Text style={{fontSize: 18, fontWeight: '500', color: '#d1d1d1'}}>
-            Add photo
-          </Text>
-          <TouchableOpacity>
-            <Icon name="attach" size={18} color="#d2d2d2" />
-          </TouchableOpacity>
-        </View>
-
-        <View
-          style={{
-            backgroundColor: '#fff',
-            borderRadius: 8,
-
-            marginVertical: 5,
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingHorizontal: 12,
-              paddingVertical: 8,
-              borderBottomColor: 'grey',
-              borderBottomWidth: 0.3,
-            }}>
-            <Text style={{fontSize: 18, fontWeight: '500', color: '#d1d1d1'}}>
-              Payment Info
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingHorizontal: 12,
-              paddingVertical: 8,
-              borderBottomColor: 'grey',
-              borderBottomWidth: 0.3,
-            }}>
-            <Text style={{fontSize: 18, fontWeight: '500', color: '#d1d1d1'}}>
-              Signature
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingHorizontal: 12,
-              paddingVertical: 8,
-              height: 70,
-            }}>
-            <Text style={{fontSize: 18, fontWeight: '500', color: '#d1d1d1'}}>
-              Notes
-            </Text>
-          </View>
-        </View>
-
-        <View
-          style={{
-            backgroundColor: '#fff',
-            borderRadius: 8,
-            marginVertical: 5,
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingHorizontal: 12,
-              paddingVertical: 8,
-              borderBottomColor: 'grey',
-              borderBottomWidth: 0.3,
+          </ScrollView>
+          <FAB.Group
+            open={open}
+            icon={() => <Entypo name="paper-plane" size={22} color="#fff" />}
+            actions={[
+              {
+                icon: () => (
+                  <MaterialCommunityIcons
+                    name="message-bulleted"
+                    size={22}
+                    color="#000"
+                  />
+                ),
+                label: 'Text',
+                onPress: () => console.log('Pressed notifications'),
+                style: {backgroundColor: '#fff', borderRadius: 50},
+                color: '#000',
+                labelTextColor: '#000',
+                containerStyle: {
+                  backgroundColor: '#fff',
+                  borderRadius: 5,
+                },
+              },
+              {
+                icon: () => <Fontisto name="email" size={22} color="#000" />,
+                label: 'Email',
+                onPress: () => console.log('Pressed email'),
+                style: {backgroundColor: '#fff', borderRadius: 50},
+                color: '#000',
+                labelTextColor: '#000',
+                containerStyle: {
+                  backgroundColor: '#fff',
+                  borderRadius: 5,
+                },
+              },
+            ]}
+            onStateChange={onStateChange}
+            onPress={() => {
+              if (open) {
+                // do something if the speed dial is open
+              }
+            }}
+            fabStyle={{
+              backgroundColor: Colors.appColor,
+              borderRadius: 50,
+              justifyContent: 'center',
               alignItems: 'center',
-            }}>
-            <Text style={{fontSize: 18, fontWeight: '400', color: '#000'}}>
-              Request Review
-            </Text>
-            <Switch value={true} />
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingHorizontal: 12,
-              paddingVertical: 8,
-            }}>
-            <Text style={{fontSize: 18, fontWeight: '500', color: '#d1d1d1'}}>
-              Review Link
-            </Text>
-          </View>
-        </View>
-
-        <View
-          style={{
-            flexDirection: 'row',
-            backgroundColor: '#fff',
-            borderRadius: 8,
-            padding: 12,
-            marginVertical: 5,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text style={{fontSize: 18, fontWeight: '400', color: '#000'}}>
-            Mark Paid
-          </Text>
-        </View>
-      </ScrollView>
+              shadowColor: '#171717',
+              shadowOffset: {width: -2, height: 4},
+              shadowOpacity: 0.2,
+              shadowRadius: 3,
+            }}
+            backdropColor="rgba(0,0,0,0.5)"
+          />
+        </Portal>
+      </Provider>
     );
   };
 
@@ -622,6 +671,86 @@ const styles = StyleSheet.create({
     height: 28,
     alignItems: 'center',
     borderRadius: 5,
+  },
+  main: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 12,
+    marginVertical: 5,
+  },
+  textHeader: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#000',
+  },
+  textSubheader: {
+    fontSize: 18,
+    fontWeight: '400',
+    color: '#d1d1d1',
+  },
+  textSmall: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: 'grey',
+  },
+  textRight: {
+    fontSize: 18,
+    fontWeight: '400',
+    color: '#000',
+    textAlign: 'right',
+  },
+  borderedBox: {
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 4,
+    borderColor: 'grey',
+    marginBottom: 10,
+  },
+  subtotalBox: {
+    backgroundColor: 'grey',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+    padding: 8,
+  },
+  balanceDueBox: {
+    backgroundColor: 'grey',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+    padding: 8,
+  },
+  paymentInfoBox: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderBottomColor: 'grey',
+    borderBottomWidth: 0.3,
+  },
+  notesBox: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    height: 70,
+  },
+  switchBox: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderBottomColor: 'grey',
+    borderBottomWidth: 0.3,
+    alignItems: 'center',
+  },
+  centeredBox: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
