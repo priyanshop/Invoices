@@ -18,6 +18,8 @@ import BusinessDetails from '../Screens/BusinessDetails';
 import AddClientScreen from '../Screens/AddClients';
 import AddItemScreen from '../Screens/AddItems';
 import AddPhotoScreen from '../Screens/InvoiceCreation/PhotoScreen';
+import PaymentInfo from '../Screens/Payments/PaymentInfo';
+import AdditionalDetails from '../Screens/InvoiceCreation/AdditionalDetails';
 
 const headerStyle = {
   headerStyle: {
@@ -113,7 +115,7 @@ function Dashboard() {
 
 function MainNavigator() {
   return (
-    <Stack.Navigator initialRouteName='AddPhotoScreen'>
+    <Stack.Navigator initialRouteName='AdditionalDetails'>
       <Stack.Screen
         name="LandingPage"
         component={LandingScreen}
@@ -168,6 +170,16 @@ function MainNavigator() {
         name="AddPhotoScreen"
         component={AddPhotoScreen}
         options={{headerTitle:"Photo",...headerStyle}}
+      />
+       <Stack.Screen
+        name="PaymentInfo"
+        component={PaymentInfo}
+        options={{headerTitle:"Payment Info",...headerStyle}}
+      />
+      <Stack.Screen
+        name="AdditionalDetails"
+        component={AdditionalDetails}
+        options={{headerTitle:"Additional Details",...headerStyle}}
       />
     </Stack.Navigator>
   );
