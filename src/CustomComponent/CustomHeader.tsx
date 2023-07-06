@@ -41,10 +41,10 @@ const CustomHeader = ({
             <SimpleLineIcons name="settings" size={20} color="#fff" />
           </TouchableOpacity>
           <View style={styles.onSearch}>
-            <Icon name="search" size={20} color="#000" />
-            <TextInput style={{width: '65%'}} />
+            <Icon name="search" size={18} color="#d2d2d2" />
+            <TextInput placeholder='Search' placeholderTextColor={"#d2d2d2"} style={{width: '80%'}} />
             <TouchableOpacity onPress={() => setSearchStart(false)}>
-              <Entypo name="circle-with-cross" size={20} color="#000" />
+              <Entypo name="circle-with-cross" size={18} color="#d2d2d2" />
             </TouchableOpacity>
           </View>
         </View>

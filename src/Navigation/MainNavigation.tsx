@@ -1,5 +1,6 @@
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import SignInScreen from '../Screens/Auth/SignInScreen';
 import SignUpScreen from '../Screens/Auth/SignUpScreen';
@@ -10,16 +11,16 @@ import ItemsScreen from '../Screens/Dashboard/Items';
 import ClientScreen from '../Screens/Dashboard/Clients';
 import ReportScreen from '../Screens/Dashboard/Reports';
 import SettingScreen from '../Screens/Settings';
-import { Colors } from '../Helper/Colors';
+import {Colors} from '../Helper/Colors';
 
 const headerStyle = {
   headerStyle: {
     backgroundColor: Colors.appColor,
   },
-  headerTintColor: "#fff",
+  headerTintColor: '#fff',
   headerTitleStyle: {
     fontSize: 18,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   headerBackTitleVisible: false,
 };
@@ -33,27 +34,72 @@ function Dashboard() {
       <Tab.Screen
         name="Invoices"
         component={InvoicesScreen}
-        options={{headerShown: false}}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({focused, tintColor}: any) => (
+            <Icon
+              name="ios-home"
+              color={focused ? Colors.appColor : tintColor}
+              size={25}
+            />
+          ),
+        }}
       />
       <Tab.Screen
         name="Estimates"
         component={EstimatesScreen}
-        options={{headerShown: false}}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({focused, tintColor}: any) => (
+            <Icon
+              name="ios-home"
+              color={focused ? Colors.appColor : tintColor}
+              size={25}
+            />
+          ),
+        }}
       />
       <Tab.Screen
         name="Clients"
         component={ClientScreen}
-        options={{headerShown: false}}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({focused, tintColor}: any) => (
+            <Icon
+              name="ios-home"
+              color={focused ? Colors.appColor : tintColor}
+              size={25}
+            />
+          ),
+        }}
       />
       <Tab.Screen
         name="Items"
         component={ItemsScreen}
-        options={{headerShown: false}}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({focused, tintColor}: any) => (
+            <Icon
+              name="ios-home"
+              color={focused ? Colors.appColor : tintColor}
+              size={25}
+            />
+          ),
+        }}
       />
       <Tab.Screen
         name="Reports"
         component={ReportScreen}
-        options={{headerShown: false}}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({focused, tintColor}: any) => (
+            <Icon
+              name="ios-home"
+              color={focused ? Colors.appColor : tintColor}
+              size={25}
+            />
+          ),
+        }}
       />
     </Tab.Navigator>
   );

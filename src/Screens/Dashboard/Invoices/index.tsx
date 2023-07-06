@@ -10,152 +10,51 @@ import {
   View,
 } from 'react-native';
 import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
-import Icon from 'react-native-vector-icons/Ionicons';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import Entypo from 'react-native-vector-icons/Entypo';
 import FloatingButton from '../../../CustomComponent/FloatingButton';
 import {getScreenDimensions} from '../../../Helper/ScreenDimension';
 import {Colors} from '../../../Helper/Colors';
 import CustomHeader from '../../../CustomComponent/CustomHeader';
+import EmptyViewComponent from '../../../CustomComponent/EmptyViewComponent';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
-
-const invoices = [
-  {
-    year: 2021,
-    data: [
-      {
-        client: 'Client A',
-        invoiceNumber: 'INV-001',
-        price: 100.0,
-        date: '2021-01-01',
-      },
-      {
-        client: 'Client B',
-        invoiceNumber: 'INV-002',
-        price: 200.0,
-        date: '2021-02-01',
-      },
-    ],
-  },
-  {
-    year: 2022,
-    data: [
-      {
-        client: 'Client C',
-        invoiceNumber: 'INV-003',
-        price: 150.0,
-        date: '2022-01-01',
-      },
-      {
-        client: 'Client D',
-        invoiceNumber: 'INV-004',
-        price: 250.0,
-        date: '2022-02-01',
-      },
-    ],
-  },
-];
-
-const AllRoute = () => {
-  const renderInvoiceItem = ({item}: any) => (
-    <View style={styles.invoiceItem}>
-      <View>
-        <Text style={styles.clientText}>{`${item.client}`}</Text>
-        <Text style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
-      </View>
-      <View>
-        <Text style={styles.priceText}>{`$${item.price}`}</Text>
-        <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
-      </View>
-    </View>
-  );
-
-  const renderSectionHeader = ({section: {year}}) => (
-    <View style={styles.sectionHeaderContain}>
-      <Text style={styles.sectionHeader}>{year}</Text>
-      <Text style={styles.sectionHeader}>{'$635'}</Text>
-    </View>
-  );
-  return (
-    <View style={[styles.scene, {backgroundColor: '#fff'}]}>
-      <SectionList
-        sections={invoices}
-        keyExtractor={(item: any, index: any) => item + index}
-        renderItem={renderInvoiceItem}
-        renderSectionHeader={renderSectionHeader}
-      />
-      <FloatingButton />
-    </View>
-  );
-};
-
-const OutStandingRoute = () => {
-  const renderInvoiceItem = ({item}: any) => (
-    <View style={styles.invoiceItem}>
-      <View>
-        <Text style={styles.clientText}>{`${item.client}`}</Text>
-        <Text style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
-      </View>
-      <View>
-        <Text style={styles.priceText}>{`$${item.price}`}</Text>
-        <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
-      </View>
-    </View>
-  );
-
-  const renderSectionHeader = ({section: {year}}) => (
-    <View style={styles.sectionHeaderContain}>
-      <Text style={styles.sectionHeader}>{year}</Text>
-      <Text style={styles.sectionHeader}>{'$635'}</Text>
-    </View>
-  );
-  return (
-    <View style={[styles.scene, {backgroundColor: '#fff'}]}>
-      <SectionList
-        sections={invoices}
-        keyExtractor={(item: any, index: any) => item + index}
-        renderItem={renderInvoiceItem}
-        renderSectionHeader={renderSectionHeader}
-      />
-      <FloatingButton />
-    </View>
-  );
-};
-
-const PaidRoute = () => {
-  const renderInvoiceItem = ({item}: any) => (
-    <View style={styles.invoiceItem}>
-      <View>
-        <Text style={styles.clientText}>{`${item.client}`}</Text>
-        <Text style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
-      </View>
-      <View>
-        <Text style={styles.priceText}>{`$${item.price}`}</Text>
-        <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
-      </View>
-    </View>
-  );
-
-  const renderSectionHeader = ({section: {year}}) => (
-    <View style={styles.sectionHeaderContain}>
-      <Text style={styles.sectionHeader}>{year}</Text>
-      <Text style={styles.sectionHeader}>{'$635'}</Text>
-    </View>
-  );
-  return (
-    <View style={[styles.scene, {backgroundColor: '#fff'}]}>
-      <SectionList
-        sections={invoices}
-        keyExtractor={(item: any, index: any) => item + index}
-        renderItem={renderInvoiceItem}
-        renderSectionHeader={renderSectionHeader}
-      />
-      <FloatingButton />
-    </View>
-  );
-};
+const invoices = [];
+// const invoices = [
+//   {
+//     year: 2021,
+//     data: [
+//       {
+//         client: 'Client A',
+//         invoiceNumber: 'INV-001',
+//         price: 100.0,
+//         date: '2021-01-01',
+//       },
+//       {
+//         client: 'Client B',
+//         invoiceNumber: 'INV-002',
+//         price: 200.0,
+//         date: '2021-02-01',
+//       },
+//     ],
+//   },
+//   {
+//     year: 2022,
+//     data: [
+//       {
+//         client: 'Client C',
+//         invoiceNumber: 'INV-003',
+//         price: 150.0,
+//         date: '2022-01-01',
+//       },
+//       {
+//         client: 'Client D',
+//         invoiceNumber: 'INV-004',
+//         price: 250.0,
+//         date: '2022-02-01',
+//       },
+//     ],
+//   },
+// ];
 
 const data = [
   {key: 'first', title: 'All'},
@@ -170,6 +69,133 @@ function InvoicesScreen({navigation}: any): JSX.Element {
   function navigateToSetting() {
     navigation.navigate('Settings');
   }
+
+  const AllRoute = () => {
+    const renderInvoiceItem = ({item}: any) => (
+      <View style={styles.invoiceItem}>
+        <View>
+          <Text style={styles.clientText}>{`${item.client}`}</Text>
+          <Text
+            style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
+        </View>
+        <View>
+          <Text style={styles.priceText}>{`$${item.price}`}</Text>
+          <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
+        </View>
+      </View>
+    );
+
+    const renderSectionHeader = ({section: {year}}) => (
+      <View style={styles.sectionHeaderContain}>
+        <Text style={styles.sectionHeader}>{year}</Text>
+        <Text style={styles.sectionHeader}>{'$635'}</Text>
+      </View>
+    );
+
+    const renderEmptyComponent = () => (
+      <EmptyViewComponent
+        message={
+          'Your invoices will show up here. Click the plus button below to create your first invoice!'
+        }
+      />
+    );
+    return (
+      <View style={[styles.scene, {backgroundColor: '#fff'}]}>
+        <SectionList
+          sections={invoices}
+          keyExtractor={(item: any, index: any) => item + index}
+          renderItem={renderInvoiceItem}
+          renderSectionHeader={renderSectionHeader}
+          ListEmptyComponent={renderEmptyComponent}
+          contentContainerStyle={{flex: 1}}
+        />
+        {/* <FloatingButton /> */}
+      </View>
+    );
+  };
+
+  const OutStandingRoute = () => {
+    const renderEmptyComponent = () => (
+      <EmptyViewComponent
+        message={'Invoices that are no yet paid show up here.'}
+      />
+    );
+
+    const renderInvoiceItem = ({item}: any) => (
+      <View style={styles.invoiceItem}>
+        <View>
+          <Text style={styles.clientText}>{`${item.client}`}</Text>
+          <Text
+            style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
+        </View>
+        <View>
+          <Text style={styles.priceText}>{`$${item.price}`}</Text>
+          <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
+        </View>
+      </View>
+    );
+
+    const renderSectionHeader = ({section: {year}}) => (
+      <View style={styles.sectionHeaderContain}>
+        <Text style={styles.sectionHeader}>{year}</Text>
+        <Text style={styles.sectionHeader}>{'$635'}</Text>
+      </View>
+    );
+    return (
+      <View style={[styles.scene, {backgroundColor: '#fff'}]}>
+        <SectionList
+          sections={invoices}
+          keyExtractor={(item: any, index: any) => item + index}
+          renderItem={renderInvoiceItem}
+          renderSectionHeader={renderSectionHeader}
+          ListEmptyComponent={renderEmptyComponent}
+          contentContainerStyle={{flex: 1}}
+        />
+      </View>
+    );
+  };
+
+  const PaidRoute = () => {
+    const renderEmptyComponent = () => (
+      <EmptyViewComponent
+        message={'Invoices that you mark paid will show up here.'}
+      />
+    );
+
+    const renderInvoiceItem = ({item}: any) => (
+      <View style={styles.invoiceItem}>
+        <View>
+          <Text style={styles.clientText}>{`${item.client}`}</Text>
+          <Text
+            style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
+        </View>
+        <View>
+          <Text style={styles.priceText}>{`$${item.price}`}</Text>
+          <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
+        </View>
+      </View>
+    );
+
+    const renderSectionHeader = ({section: {year}}) => (
+      <View style={styles.sectionHeaderContain}>
+        <Text style={styles.sectionHeader}>{year}</Text>
+        <Text style={styles.sectionHeader}>{'$635'}</Text>
+      </View>
+    );
+    return (
+      <View style={[styles.scene, {backgroundColor: '#fff'}]}>
+        <SectionList
+          sections={invoices}
+          keyExtractor={(item: any, index: any) => item + index}
+          renderItem={renderInvoiceItem}
+          renderSectionHeader={renderSectionHeader}
+          ListEmptyComponent={renderEmptyComponent}
+          contentContainerStyle={{flex: 1}}
+        />
+      </View>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#3B51C0'} />
@@ -177,7 +203,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
         searchStart={searchStart}
         navigateToSetting={navigateToSetting}
         setSearchStart={setSearchStart}
-        title={"Invoices"}
+        title={'Invoices'}
       />
       <TabView
         navigationState={{index, routes}}
@@ -200,6 +226,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
           );
         }}
       />
+      <FloatingButton />
     </SafeAreaView>
   );
 }
