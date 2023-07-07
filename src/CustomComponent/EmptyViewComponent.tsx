@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     fontSize: 65,
-    color: '#d4d4d4',
+    color: 'grey',
   },
   text: {
     fontSize: 15,

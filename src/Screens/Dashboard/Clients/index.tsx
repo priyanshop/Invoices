@@ -17,6 +17,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import FloatingButton from '../../../CustomComponent/FloatingButton';
 import { Colors } from '../../../Helper/Colors';
 import CustomHeader from '../../../CustomComponent/CustomHeader';
+import EmptyViewComponent from '../../../CustomComponent/EmptyViewComponent';
 
 const data = [
   {
@@ -53,6 +54,11 @@ function ClientScreen({navigation}: any): JSX.Element {
     </View>
   );
 
+  const renderEmptyComponent = () => (
+    <EmptyViewComponent
+      message={'Your client will show up here'}
+    />
+  );
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#3B51C0'} />
@@ -62,7 +68,7 @@ function ClientScreen({navigation}: any): JSX.Element {
         setSearchStart={setSearchStart}
         title={"Clients"}
       />
-      <View style={{flex: 1, backgroundColor: '#fff'}}>
+      <View style={{flex: 1, backgroundColor: '#d2d2d2'}}>
         <View style={styles.titleHeader}>
           <Text style={styles.tileHeaderTxt}>{'Name'}</Text>
           <Text style={styles.tileHeaderTxt}>{'Total Billed'}</Text>
@@ -71,6 +77,8 @@ function ClientScreen({navigation}: any): JSX.Element {
           data={data}
           renderItem={renderItem}
           keyExtractor={(item: any, index: any) => item + index}
+          ListEmptyComponent={renderEmptyComponent}
+          contentContainerStyle={{flex:1}}
         />
         <FloatingButton onPress={navigateToAddClient} />
       </View>
@@ -160,21 +168,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+    backgroundColor:"#fff"
   },
   clientText: {
     color: '#000',
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: '400',
   },
   invoiceNumberText: {
     color: 'grey',
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '400',
   },
   priceText: {
     textAlign: 'right',
     color: '#000',
-    fontSize: 13,
+    fontSize: 16,
     fontWeight: '400',
   },
   dateText: {

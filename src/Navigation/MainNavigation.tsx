@@ -20,6 +20,11 @@ import AddItemScreen from '../Screens/AddItems';
 import AddPhotoScreen from '../Screens/InvoiceCreation/PhotoScreen';
 import PaymentInfo from '../Screens/Payments/PaymentInfo';
 import AdditionalDetails from '../Screens/InvoiceCreation/AdditionalDetails';
+import AddGlobalItemScreen from '../Screens/AddItems/AddGlobalItems';
+import ManualExpense from '../Screens/Settings/ManualExpense';
+import DefaultNotes from '../Screens/Settings/DefaultNotes';
+import GlobalInvoiceNumber from '../Screens/Settings/GlobalInvoiceNumber';
+import DefaultEmailMessage from '../Screens/Settings/DefualtEmailMessage';
 
 const headerStyle = {
   headerStyle: {
@@ -118,7 +123,7 @@ function Dashboard() {
 
 function MainNavigator() {
   return (
-    <Stack.Navigator initialRouteName='InvoiceCreation'>
+    <Stack.Navigator initialRouteName='Dashboard'>
       <Stack.Screen
         name="LandingPage"
         component={LandingScreen}
@@ -170,6 +175,11 @@ function MainNavigator() {
         options={{headerTitle:"Item",...headerStyle}}
       />
       <Stack.Screen
+        name="AddGlobalItemScreen"
+        component={AddGlobalItemScreen}
+        options={{headerTitle:"Item",...headerStyle}}
+      />
+      <Stack.Screen
         name="AddPhotoScreen"
         component={AddPhotoScreen}
         options={{headerTitle:"Photo",...headerStyle}}
@@ -183,6 +193,26 @@ function MainNavigator() {
         name="AdditionalDetails"
         component={AdditionalDetails}
         options={{headerTitle:"Additional Details",...headerStyle}}
+      />
+      <Stack.Screen
+        name="ManualExpense"
+        component={ManualExpense}
+        options={{headerTitle:"Expense",...headerStyle}}
+      />
+      <Stack.Screen
+        name="DefaultNotes"
+        component={DefaultNotes}
+        options={{headerTitle:"Default Notes",...headerStyle}}
+      />
+      <Stack.Screen
+        name="GlobalInvoiceNumber"
+        component={GlobalInvoiceNumber}
+        options={{headerTitle:"Invoice Number",...headerStyle}}
+      />
+       <Stack.Screen
+        name="DefaultEmailMessage"
+        component={DefaultEmailMessage}
+        options={{headerTitle:"Default Email Message",...headerStyle}}
       />
     </Stack.Navigator>
   );

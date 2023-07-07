@@ -104,7 +104,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
       />
     );
     return (
-      <View style={[styles.scene, {backgroundColor: '#fff'}]}>
+      <View style={[styles.scene, {backgroundColor: '#d2d2d2'}]}>
         <SectionList
           sections={invoices}
           keyExtractor={(item: any, index: any) => item + index}
@@ -146,7 +146,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
       </View>
     );
     return (
-      <View style={[styles.scene, {backgroundColor: '#fff'}]}>
+      <View style={[styles.scene, {backgroundColor: '#d2d2d2'}]}>
         <SectionList
           sections={invoices}
           keyExtractor={(item: any, index: any) => item + index}
@@ -187,7 +187,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
       </View>
     );
     return (
-      <View style={[styles.scene, {backgroundColor: '#fff'}]}>
+      <View style={[styles.scene, {backgroundColor: '#d2d2d2'}]}>
         <SectionList
           sections={invoices}
           keyExtractor={(item: any, index: any) => item + index}
@@ -318,6 +318,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+    backgroundColor:"#fff"
   },
   clientText: {
     color: '#000',

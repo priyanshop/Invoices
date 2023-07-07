@@ -15,6 +15,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import FloatingButton from '../../../CustomComponent/FloatingButton';
 import { Colors } from '../../../Helper/Colors';
 import CustomHeader from '../../../CustomComponent/CustomHeader';
+import EmptyViewComponent from '../../../CustomComponent/EmptyViewComponent';
 
 const data = [
   {
@@ -35,6 +36,10 @@ function ItemsScreen({navigation}: any): JSX.Element {
     navigation.navigate('Settings');
   }
 
+  function navigateToAddItem() {
+    navigation.navigate('AddGlobalItemScreen');
+  }
+
   const renderItem = ({item}: any) => (
     <View style={styles.invoiceItem}>
       <View>
@@ -46,7 +51,11 @@ function ItemsScreen({navigation}: any): JSX.Element {
       </View>
     </View>
   );
-
+  const renderEmptyComponent = () => (
+    <EmptyViewComponent
+      message={'Here you can manage a list of products or services that you repeatedly invoice for'}
+    />
+  );
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#3B51C0'} />
@@ -56,13 +65,15 @@ function ItemsScreen({navigation}: any): JSX.Element {
         setSearchStart={setSearchStart}
         title={"Items"}
       />
-      <View style={{flex: 1, backgroundColor: '#fff'}}>
+      <View style={{flex: 1, backgroundColor: '#d2d2d2'}}>
         <FlatList
-          data={data}
+          data={[]}
           renderItem={renderItem}
           keyExtractor={(item: any, index: any) => item + index}
+          ListEmptyComponent={renderEmptyComponent}
+          contentContainerStyle={{flex:1}}
         />
-        <FloatingButton />
+        <FloatingButton onPress={navigateToAddItem}/>
       </View>
     </SafeAreaView>
   );
@@ -150,10 +161,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+    backgroundColor:"#fff"
   },
   clientText: {
     color: '#000',
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '400',
   },
   invoiceNumberText: {
@@ -164,7 +176,7 @@ const styles = StyleSheet.create({
   priceText: {
     textAlign: 'right',
     color: '#000',
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: '400',
   },
   dateText: {
