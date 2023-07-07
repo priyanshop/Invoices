@@ -25,6 +25,7 @@ import ManualExpense from '../Screens/Settings/ManualExpense';
 import DefaultNotes from '../Screens/Settings/DefaultNotes';
 import GlobalInvoiceNumber from '../Screens/Settings/GlobalInvoiceNumber';
 import DefaultEmailMessage from '../Screens/Settings/DefualtEmailMessage';
+import TaxScreen from '../Screens/Settings/TaxScreen';
 
 const headerStyle = {
   headerStyle: {
@@ -213,6 +214,11 @@ function MainNavigator() {
         name="DefaultEmailMessage"
         component={DefaultEmailMessage}
         options={{headerTitle:"Default Email Message",...headerStyle}}
+      />
+      <Stack.Screen
+        name="TaxScreen"
+        component={TaxScreen}
+        options={{headerTitle:"Tax",...headerStyle}}
       />
     </Stack.Navigator>
   );

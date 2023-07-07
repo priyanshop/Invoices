@@ -200,7 +200,6 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     );
   };
 
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#3B51C0'} />
@@ -318,27 +317,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
-    backgroundColor:"#fff"
+    backgroundColor: '#fff',
   },
   clientText: {
     color: '#000',
-    fontSize: 13,
+    fontSize: 16,
     fontWeight: '400',
   },
   invoiceNumberText: {
     color: 'grey',
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '400',
   },
   priceText: {
     textAlign: 'right',
     color: '#000',
-    fontSize: 13,
+    fontSize: 16,
     fontWeight: '400',
   },
   dateText: {
     color: 'grey',
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '400',
   },
   sectionHeaderContain: {
@@ -347,7 +346,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     paddingVertical: 8,
     paddingHorizontal: 16,
-    marginTop: 5,
+    borderColor: 'grey',
+    borderWidth: 0.5,
   },
   onSearch: {
     flexDirection: 'row',

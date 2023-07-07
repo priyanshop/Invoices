@@ -16,7 +16,7 @@ import {Colors} from '../../Helper/Colors';
 import {selectContactPhone} from 'react-native-select-contact';
 
 const AddClientScreen = () => {
-  const [businessName, setBusinessName] = useState('');
+  const [clientName, setClientName] = useState('');
   const [contact, setContact] = useState('');
   const [address1, setAddress1] = useState('');
   const [address2, setAddress2] = useState('');
@@ -57,8 +57,16 @@ const AddClientScreen = () => {
       if (!selection) {
         return null;
       }
+      console.log(JSON.stringify(selection));
 
       let {contact, selectedPhone} = selection;
+      setClientName(contact.name);
+      setMobile(selectedPhone.number);
+      setEmail(contact.emails[0].address);
+      setAddress1(contact.postalAddresses[0].formattedAddress);
+      setAddress2(contact.postalAddresses[0].state)
+      setAddress3(contact.postalAddresses[0].street)
+
       console.log(
         `Selected ${selectedPhone.type} phone number ${selectedPhone.number} from ${contact.name}`,
       );
@@ -77,8 +85,8 @@ const AddClientScreen = () => {
       <View style={styles.mainContain}>
         <View style={styles.rowView}>
           <TextInput
-            value={businessName}
-            onChangeText={setBusinessName}
+            value={clientName}
+            onChangeText={setClientName}
             style={{...styles.titleTxt, textAlign: 'left'}}
             placeholder="Client Name"
             placeholderTextColor={'grey'}

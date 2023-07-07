@@ -10,9 +10,6 @@ import {
   View,
 } from 'react-native';
 import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
-import Icon from 'react-native-vector-icons/Ionicons';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import Entypo from 'react-native-vector-icons/Entypo';
 import FloatingButton from '../../../CustomComponent/FloatingButton';
 import {getScreenDimensions} from '../../../Helper/ScreenDimension';
 import {Colors} from '../../../Helper/Colors';
@@ -79,7 +76,7 @@ const AllRoute = () => {
     </View>
   );
   return (
-    <View style={[styles.scene, {backgroundColor: '#fff'}]}>
+    <View style={styles.scene}>
       <SectionList
         sections={invoices}
         keyExtractor={(item: any, index: any) => item + index}
@@ -112,7 +109,7 @@ const OpenRoute = () => {
     </View>
   );
   return (
-    <View style={[styles.scene, {backgroundColor: '#fff'}]}>
+    <View style={styles.scene}>
       <SectionList
         sections={invoices}
         keyExtractor={(item: any, index: any) => item + index}
@@ -145,7 +142,7 @@ const ClosedRoute = () => {
     </View>
   );
   return (
-    <View style={[styles.scene, {backgroundColor: '#fff'}]}>
+    <View style={styles.scene}>
       <SectionList
         sections={invoices}
         keyExtractor={(item: any, index: any) => item + index}
@@ -260,6 +257,7 @@ const styles = StyleSheet.create({
   },
   scene: {
     flex: 1,
+    backgroundColor: "#d2d2d2"
   },
   headerContainer: {
     flexDirection: 'row',
@@ -286,26 +284,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+    backgroundColor: '#fff',
   },
   clientText: {
     color: '#000',
-    fontSize: 13,
+    fontSize: 16,
     fontWeight: '400',
   },
   invoiceNumberText: {
     color: 'grey',
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '400',
   },
   priceText: {
     textAlign: 'right',
     color: '#000',
-    fontSize: 13,
+    fontSize: 16,
     fontWeight: '400',
   },
   dateText: {
     color: 'grey',
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '400',
   },
   sectionHeaderContain: {
@@ -314,7 +313,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     paddingVertical: 8,
     paddingHorizontal: 16,
-    marginTop: 5,
+    borderColor: 'grey',
+    borderWidth: 0.5,
   },
   onSearch: {
     flexDirection: 'row',
