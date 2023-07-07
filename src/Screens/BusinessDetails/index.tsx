@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   rowView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: Platform.OS === 'ios' ? 8 : 0,
+    // marginVertical: Platform.OS === 'ios' ? 8 : 0,
     alignItems: 'center',
   },
   titleTxt: {fontSize: 17, color: '#000', fontWeight: '400', height: 40},

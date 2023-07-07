@@ -37,7 +37,10 @@ function ClientScreen({navigation}: any): JSX.Element {
   function navigateToSetting() {
     navigation.navigate('Settings');
   }
-
+  function navigateToAddClient() {
+    navigation.navigate('AddClientScreen');
+  }
+  
   const renderItem = ({item}: any) => (
     <View style={styles.invoiceItem}>
       <View>
@@ -69,7 +72,7 @@ function ClientScreen({navigation}: any): JSX.Element {
           renderItem={renderItem}
           keyExtractor={(item: any, index: any) => item + index}
         />
-        <FloatingButton />
+        <FloatingButton onPress={navigateToAddClient} />
       </View>
     </SafeAreaView>
   );

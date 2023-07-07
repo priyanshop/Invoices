@@ -118,7 +118,7 @@ function Dashboard() {
 
 function MainNavigator() {
   return (
-    <Stack.Navigator initialRouteName='AddClientScreen'>
+    <Stack.Navigator initialRouteName='InvoiceCreation'>
       <Stack.Screen
         name="LandingPage"
         component={LandingScreen}

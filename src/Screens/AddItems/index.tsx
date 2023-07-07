@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
   mainView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: Platform.OS === 'ios' ? 5 : 0,
+    // marginVertical: Platform.OS === 'ios' ? 5 : 0,
     alignItems: 'center',
   },
   label: {

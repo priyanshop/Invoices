@@ -79,7 +79,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     // marginVertical: 5,
     alignItems: 'center',
-    padding: 8,
+    padding: 2,
+    paddingHorizontal: 8,
   },
   label: {
     fontSize: 18,
