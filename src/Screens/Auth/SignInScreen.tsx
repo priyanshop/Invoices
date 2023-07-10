@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { Colors } from '../../Helper/Colors';
 
-function SignInScreen(): JSX.Element {
+function SignInScreen({navigation}:any): JSX.Element {
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const [Password, setPassword] = useState('');
@@ -35,6 +35,10 @@ function SignInScreen(): JSX.Element {
     setPassword(text);
   };
 
+  const handleNext = () => {
+      navigation.navigate('Dashboard');  
+  };
+  
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Colors.landingColor} />
@@ -63,7 +67,7 @@ function SignInScreen(): JSX.Element {
           <Text style={styles.errorTxt}>{passwordError}</Text>
         </View>
       )}
-      <TouchableOpacity style={[styles.input, styles.lastAddressInput]}>
+      <TouchableOpacity onPress={handleNext} style={[styles.input, styles.lastAddressInput]}>
         <Text style={styles.loginBtnTxt}>Login</Text>
       </TouchableOpacity>
 

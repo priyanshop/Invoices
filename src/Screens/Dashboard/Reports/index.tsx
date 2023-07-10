@@ -1,24 +1,280 @@
 import React, {useState} from 'react';
 import {
   SafeAreaView,
-  SectionList,
   StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import {ToggleButton} from 'react-native-paper';
 import {Colors} from '../../../Helper/Colors';
+import ModalActivityIndicator from '../../../CustomComponent/Loader';
 
 function ReportScreen({navigation}: any): JSX.Element {
-  const [searchStart, setSearchStart] = useState(false);
+  const [value, setValue] = useState('Paid');
+  const [Year, setYear] = useState('2022');
+  const [loading, setLoading] = useState(false);
 
   function navigateToSetting() {
     navigation.navigate('Setting');
   }
+
+  const PaidTitle = () => {
+    return (
+      <View style={styles.tableTileView}>
+        <Text style={{...styles.tableTitle, textAlign: 'left'}}>{''}</Text>
+        <Text style={{...styles.tableTitle, textAlign: 'center'}}>
+          {'Clients'}
+        </Text>
+        <Text style={{...styles.tableTitle, textAlign: 'center'}}>
+          {'Invoices'}
+        </Text>
+        <Text style={{...styles.tableTitle, textAlign: 'right'}}>{'Paid'}</Text>
+      </View>
+    );
+  };
+
+  const ClientTitle = () => {
+    return (
+      <View style={styles.tableTileView}>
+        <Text style={{...styles.tableTitle, textAlign: 'left'}}>{''}</Text>
+        <Text style={{...styles.tableTitle, textAlign: 'center'}}>
+          {'Invoices'}
+        </Text>
+        <Text style={{...styles.tableTitle, textAlign: 'right'}}>{'Paid'}</Text>
+      </View>
+    );
+  };
+
+  const ItemsTitle = () => {
+    return (
+      <View style={styles.tableTileView}>
+        <Text style={{...styles.tableTitle, textAlign: 'left'}}>{''}</Text>
+        <Text style={{...styles.tableTitle, textAlign: 'center'}}>
+          {'Invoices'}
+        </Text>
+        <Text style={{...styles.tableTitle, textAlign: 'center'}}>
+          {'Quantity'}
+        </Text>
+        <Text style={{...styles.tableTitle, textAlign: 'right'}}>{'Paid'}</Text>
+      </View>
+    );
+  };
+
+  const ClientTotal = () => {
+    return (
+      <View style={styles.totalView}>
+        <Text style={{...styles.tableTitle, textAlign: 'left'}}>
+          {'Tax Year 2023'}
+        </Text>
+        <Text style={{...styles.itemTxt, textAlign: 'center'}}>{'1'}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'right'}}>{'$0.00'}</Text>
+      </View>
+    );
+  };
+
+  const PaidTotal = () => {
+    return (
+      <View style={styles.totalView}>
+        <Text style={{...styles.tableTitle, textAlign: 'left'}}>
+          {'Tax Year 2023'}
+        </Text>
+        <Text style={{...styles.itemTxt, textAlign: 'center'}}>{'1'}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'center'}}>{'0'}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'right'}}>{'$0.00'}</Text>
+      </View>
+    );
+  };
+
+  const ItemTotal = () => {
+    return (
+      <View style={styles.totalView}>
+        <Text style={{...styles.tableTitle, textAlign: 'left'}}>
+          {'Tax Year 2023'}
+        </Text>
+        <Text style={{...styles.itemTxt, textAlign: 'center'}}>{'1'}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'center'}}>{'0'}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'right'}}>{'$0.00'}</Text>
+      </View>
+    );
+  };
+
+  const Clients = () => {
+    return (
+      <View style={styles.itemView}>
+        <Text style={{...styles.itemTxt, textAlign: 'left'}}>{'Dec'}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'center'}}>{'1'}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'right'}}>{'$0.00'}</Text>
+      </View>
+    );
+  };
+
+  const Paid = () => {
+    return (
+      <View style={styles.itemView}>
+        <Text style={{...styles.itemTxt, textAlign: 'left'}}>{'Dec'}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'center'}}>{'1'}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'center'}}>{'0'}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'right'}}>{'$0.00'}</Text>
+      </View>
+    );
+  };
+
+  const Items = () => {
+    return (
+      <View style={styles.itemView}>
+        <Text style={{...styles.itemTxt, textAlign: 'left'}}>{'Dec'}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'center'}}>{'1'}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'center'}}>{'0'}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'right'}}>{'$0.00'}</Text>
+      </View>
+    );
+  };
+
+  const HeaderView = () => (
+    <ToggleButton.Row
+      style={{marginTop: 10}}
+      onValueChange={value => setValue(value)}
+      value={value}>
+      <ToggleButton
+        style={{
+          ...styles.headerTab,
+          backgroundColor: value === 'Paid' ? Colors.appColor : '#fff',
+        }}
+        icon={() => (
+          <View>
+            <Text
+              style={{
+                ...styles.headerTitle,
+                color: value === 'Paid' ? '#fff' : Colors.appColor,
+              }}>
+              Paid
+            </Text>
+          </View>
+        )}
+        value="Paid"
+      />
+      <ToggleButton
+        style={{
+          ...styles.headerTab,
+          backgroundColor: value === 'Clients' ? Colors.appColor : '#fff',
+        }}
+        icon={() => (
+          <View>
+            <Text
+              style={{
+                ...styles.headerTitle,
+                color: value === 'Clients' ? '#fff' : Colors.appColor,
+              }}>
+              Clients
+            </Text>
+          </View>
+        )}
+        value="Clients"
+      />
+      <ToggleButton
+        style={{
+          ...styles.headerTab,
+          backgroundColor: value === 'Items' ? Colors.appColor : '#fff',
+        }}
+        icon={() => (
+          <View>
+            <Text
+              style={{
+                ...styles.headerTitle,
+                color: value === 'Items' ? '#fff' : Colors.appColor,
+              }}>
+              Items
+            </Text>
+          </View>
+        )}
+        value="Items"
+      />
+    </ToggleButton.Row>
+  );
+
+  const YearView = () => (
+    <ToggleButton.Row
+      style={{marginTop: 10}}
+      onValueChange={value => setYear(value)}
+      value={Year}>
+      <ToggleButton
+        style={{
+          ...styles.headerTab,
+          backgroundColor: Year === '2023' ? Colors.appColor : '#fff',
+        }}
+        icon={() => (
+          <View>
+            <Text
+              style={{
+                ...styles.headerTitle,
+                color: Year === '2023' ? '#fff' : Colors.appColor,
+              }}>
+              2023
+            </Text>
+          </View>
+        )}
+        value="2023"
+      />
+      <ToggleButton
+        style={{
+          ...styles.headerTab,
+          backgroundColor: Year === '2022' ? Colors.appColor : '#fff',
+        }}
+        icon={() => (
+          <View>
+            <Text
+              style={{
+                ...styles.headerTitle,
+                color: Year === '2022' ? '#fff' : Colors.appColor,
+              }}>
+              2022
+            </Text>
+          </View>
+        )}
+        value="2022"
+      />
+    </ToggleButton.Row>
+  );
+
+  const GlobalPaid = () => {
+    return (
+      value === 'Paid' && (
+        <>
+          {PaidTitle()}
+          {PaidTotal()}
+          {[0, 0, 0, 0, 0, 0, 0, 0, 0, 0].map(() => Paid())}
+        </>
+      )
+    );
+  };
+
+  const GlobalClients = () => {
+    return (
+      value === 'Clients' && (
+        <>
+          {ClientTitle()}
+          {ClientTotal()}
+          {[0, 0, 0, 0, 0, 0, 0, 0, 0, 0].map(() => Clients())}
+        </>
+      )
+    );
+  };
+
+  const GlobalItems = () => {
+    return (
+      value === 'Items' && (
+        <>
+          {ItemsTitle()}
+          {ItemTotal()}
+          {[0, 0, 0, 0, 0, 0, 0, 0, 0, 0].map(() => Items())}
+        </>
+      )
+    );
+  };
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#3B51C0'} />
@@ -35,7 +291,24 @@ function ReportScreen({navigation}: any): JSX.Element {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={{flex: 1, backgroundColor: '#fff'}}></View>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: '#fff',
+          // paddingHorizontal: 8,
+          alignItems: 'center',
+        }}>
+        <HeaderView />
+        <GlobalPaid />
+        <GlobalClients />
+        <GlobalItems />
+        <YearView />
+        <ModalActivityIndicator
+          visible={loading}
+          size="large"
+          color={Colors.landingColor}
+        />
+      </View>
     </SafeAreaView>
   );
 }
@@ -161,6 +434,50 @@ const styles = StyleSheet.create({
     height: 28,
     alignItems: 'center',
     borderRadius: 5,
+  },
+  headerTitle: {
+    fontSize: 15,
+    fontWeight: '500',
+  },
+  headerTab: {
+    width: 85,
+    borderColor: Colors.appColor,
+    borderWidth: 1,
+  },
+  tableTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    width: '25%',
+  },
+  tableTileView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    backgroundColor: '#fff',
+    padding: 8,
+    borderTopWidth: 0.3,
+    borderBottomWidth: 0.3,
+    marginTop: 10,
+  },
+  itemView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    backgroundColor: '#fff',
+    padding: 8,
+    borderTopWidth: 0.3,
+  },
+  itemTxt: {
+    fontSize: 14,
+    fontWeight: '500',
+    width: '25%',
+  },
+  totalView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    backgroundColor: '#d4d4d4',
+    padding: 8,
   },
 });
 

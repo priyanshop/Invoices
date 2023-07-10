@@ -10,7 +10,7 @@ import { Colors } from '../../Helper/Colors';
 
 function LandingScreen({navigation}: any): JSX.Element {
   function navigateToSignIn() {
-    navigation.navigate('Dashboard');
+    navigation.navigate('SignIn');
   }
 
   function navigateToSignUP() {

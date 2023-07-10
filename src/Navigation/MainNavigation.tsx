@@ -11,7 +11,6 @@ import ItemsScreen from '../Screens/Dashboard/Items';
 import ClientScreen from '../Screens/Dashboard/Clients';
 import ReportScreen from '../Screens/Dashboard/Reports';
 import SettingScreen from '../Screens/Settings';
-import {Colors} from '../Helper/Colors';
 import InvoiceCreationScreen from '../Screens/InvoiceCreation';
 import InvoiceNumber from '../Screens/InvoiceNumber';
 import BusinessDetails from '../Screens/BusinessDetails';
@@ -26,6 +25,7 @@ import DefaultNotes from '../Screens/Settings/DefaultNotes';
 import GlobalInvoiceNumber from '../Screens/Settings/GlobalInvoiceNumber';
 import DefaultEmailMessage from '../Screens/Settings/DefualtEmailMessage';
 import TaxScreen from '../Screens/Settings/TaxScreen';
+import {Colors} from '../Helper/Colors';
 
 const headerStyle = {
   headerStyle: {
@@ -124,7 +124,7 @@ function Dashboard() {
 
 function MainNavigator() {
   return (
-    <Stack.Navigator initialRouteName='Dashboard'>
+    <Stack.Navigator initialRouteName='LandingPage'>
       <Stack.Screen
         name="LandingPage"
         component={LandingScreen}
