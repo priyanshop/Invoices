@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
-    <device id="retina4_7" orientation="portrait" appearance="light"/>
+    <device id="retina6_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
@@ -13,23 +13,31 @@
             <objects>
                 <viewController id="01J-lp-oVM" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="EEF-Hn-qAp"/>
-                        <viewControllerLayoutGuide type="bottom" id="1OO-fd-4Cm"/>
+                        <viewControllerLayoutGuide type="top" id="qLq-EJ-Kpv"/>
+                        <viewControllerLayoutGuide type="bottom" id="mGN-2B-oS2"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="LsB-ck-hD2">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="428" height="926"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="SplashScreen" translatesAutoresizingMaskIntoConstraints="NO" id="4Vu-G7-vZZ">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <rect key="frame" x="0.0" y="44" width="428" height="848"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="1OO-fd-4Cm" firstAttribute="top" secondItem="4Vu-G7-vZZ" secondAttribute="bottom" id="2tX-Yq-Pyb"/>
+                            <constraint firstItem="mGN-2B-oS2" firstAttribute="top" secondItem="4Vu-G7-vZZ" secondAttribute="bottom" id="07F-MR-Rbm"/>
+                            <constraint firstItem="mGN-2B-oS2" firstAttribute="top" secondItem="4Vu-G7-vZZ" secondAttribute="bottom" id="2tX-Yq-Pyb"/>
+                            <constraint firstItem="4Vu-G7-vZZ" firstAttribute="leading" secondItem="LsB-ck-hD2" secondAttribute="leading" id="HPg-08-d82"/>
+                            <constraint firstItem="4Vu-G7-vZZ" firstAttribute="top" secondItem="qLq-EJ-Kpv" secondAttribute="bottom" id="T4f-CZ-K2s"/>
+                            <constraint firstItem="mGN-2B-oS2" firstAttribute="top" secondItem="4Vu-G7-vZZ" secondAttribute="bottom" id="Whv-X1-Ne6"/>
                             <constraint firstAttribute="trailing" secondItem="4Vu-G7-vZZ" secondAttribute="trailing" id="dWM-lx-HfG"/>
+                            <constraint firstAttribute="trailing" secondItem="4Vu-G7-vZZ" secondAttribute="trailing" id="gN1-gd-vKl"/>
+                            <constraint firstItem="4Vu-G7-vZZ" firstAttribute="leading" secondItem="LsB-ck-hD2" secondAttribute="leading" id="lXO-Wl-cKM"/>
                             <constraint firstItem="4Vu-G7-vZZ" firstAttribute="leading" secondItem="LsB-ck-hD2" secondAttribute="leading" id="o2w-1i-0Ad"/>
-                            <constraint firstItem="4Vu-G7-vZZ" firstAttribute="top" secondItem="EEF-Hn-qAp" secondAttribute="bottom" id="pDs-Zc-sJN"/>
+                            <constraint firstItem="4Vu-G7-vZZ" firstAttribute="top" secondItem="qLq-EJ-Kpv" secondAttribute="bottom" id="pDs-Zc-sJN"/>
+                            <constraint firstAttribute="trailing" secondItem="4Vu-G7-vZZ" secondAttribute="trailing" id="pNF-ao-RWZ"/>
+                            <constraint firstItem="4Vu-G7-vZZ" firstAttribute="top" secondItem="qLq-EJ-Kpv" secondAttribute="bottom" id="r4Q-Lf-B1H"/>
                         </constraints>
                     </view>
                     <nil key="simulatedTopBarMetrics"/>
@@ -41,7 +49,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="SplashScreen" width="1080" height="1920"/>
+        <image name="SplashScreen" width="414" height="736"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

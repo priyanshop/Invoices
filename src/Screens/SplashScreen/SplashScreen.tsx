@@ -8,7 +8,10 @@ const SplashScreen: React.FC = ({navigation}: any) => {
   // Return a React element
   useEffect(() => {
     setTimeout(() => {
-      navigation.navigate('Dashboard');
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Dashboard'}],
+      });
     }, 1000);
   }, []);
 
