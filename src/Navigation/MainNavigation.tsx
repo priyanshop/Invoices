@@ -27,6 +27,7 @@ import DefaultNotes from '../Screens/Settings/DefaultNotes';
 import GlobalInvoiceNumber from '../Screens/Settings/GlobalInvoiceNumber';
 import DefaultEmailMessage from '../Screens/Settings/DefualtEmailMessage';
 import TaxScreen from '../Screens/Settings/TaxScreen';
+import SignaturePadScreen from '../Screens/Signature';
 import {Colors} from '../Helper/Colors';
 
 const headerStyle = {
@@ -136,7 +137,7 @@ function Dashboard() {
 
 function MainNavigator() {
   return (
-    <Stack.Navigator initialRouteName="LandingPage">
+    <Stack.Navigator initialRouteName="SignaturePad">
       <Stack.Screen
         name="LandingPage"
         component={LandingScreen}
@@ -231,6 +232,12 @@ function MainNavigator() {
         name="TaxScreen"
         component={TaxScreen}
         options={{headerTitle: 'Tax', ...headerStyle}}
+      />
+      <Stack.Screen
+        name="SignaturePad"
+        component={SignaturePadScreen}
+        // options={{headerTitle: 'Signature', ...headerStyle}}
+        options={{headerShown: false}}
       />
     </Stack.Navigator>
   );
