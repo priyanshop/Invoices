@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
+import { Colors } from '../../Helper/Colors';
 
 function AddPhotoScreen({navigation}: any): JSX.Element {
   const [image, setImage] = useState('');
@@ -27,7 +28,7 @@ function AddPhotoScreen({navigation}: any): JSX.Element {
 
   return (
     <>
-      <StatusBar backgroundColor={'#3B51C0'} />
+      <StatusBar backgroundColor={Colors.appColor} />
       <ScrollView
         style={[styles.scene, {backgroundColor: '#d2d2d2', padding: 8}]}>
         <View style={styles.detailView}>

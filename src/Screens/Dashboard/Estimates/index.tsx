@@ -169,7 +169,7 @@ function EstimatesScreen({navigation}: any): JSX.Element {
   }
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={'#3B51C0'} />
+      <StatusBar backgroundColor={Colors.appColor} />
       <CustomHeader
         searchStart={searchStart}
         navigateToSetting={navigateToSetting}

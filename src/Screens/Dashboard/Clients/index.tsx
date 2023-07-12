@@ -61,14 +61,14 @@ function ClientScreen({navigation}: any): JSX.Element {
   );
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={'#3B51C0'} />
+      <StatusBar backgroundColor={Colors.appColor} />
       <CustomHeader
         searchStart={searchStart}
         navigateToSetting={navigateToSetting}
         setSearchStart={setSearchStart}
         title={"Clients"}
       />
-      <View style={{flex: 1, backgroundColor: '#d2d2d2'}}>
+      <View style={{flex: 1, backgroundColor: Colors.commonBg}}>
         <View style={styles.titleHeader}>
           <Text style={styles.tileHeaderTxt}>{'Name'}</Text>
           <Text style={styles.tileHeaderTxt}>{'Total Billed'}</Text>
@@ -172,19 +172,19 @@ const styles = StyleSheet.create({
   },
   clientText: {
     color: '#000',
-    fontSize: 15,
-    fontWeight: '400',
+    fontSize: 16,
+    fontWeight: '600',
   },
   invoiceNumberText: {
-    color: 'grey',
+    color: '#36454F',
     fontSize: 14,
-    fontWeight: '400',
+    fontWeight: '500',
   },
   priceText: {
     textAlign: 'right',
     color: '#000',
-    fontSize: 16,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
   },
   dateText: {
     color: 'grey',
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
-    backgroundColor: 'grey',
+    backgroundColor: '#A9A9A9',
     paddingVertical: 10,
   },
   tileHeaderTxt: {color: '#fff', fontSize: 15, fontWeight: '500'},

@@ -9,13 +9,14 @@ import {
   View,
 } from 'react-native';
 import {Switch} from 'react-native-paper';
+import { Colors } from '../../Helper/Colors';
 
 function AdditionalDetails({navigation}: any): JSX.Element {
   const [additionalDetails, setAdditionalDetails] = useState('');
 
   return (
     <>
-      <StatusBar backgroundColor={'#3B51C0'} />
+      <StatusBar backgroundColor={Colors.appColor} />
       <ScrollView
         style={[styles.scene, {backgroundColor: '#d2d2d2', padding: 8}]}>
         <View style={styles.detailView}>

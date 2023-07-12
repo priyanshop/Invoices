@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
+import {Colors} from '../../Helper/Colors';
 
 const SettingScreen = ({navigation}: any) => {
   const data = [
@@ -130,9 +131,9 @@ const SettingScreen = ({navigation}: any) => {
           : null,
       ]}>
       <View>
-        <Text style={{fontSize: 16, fontWeight: '500'}}>{item.title}</Text>
+        <Text style={styles.titleTxt}>{item.title}</Text>
         {item.description === '' ? null : (
-          <Text style={{fontSize: 14}}>{item.description}</Text>
+          <Text style={styles.descriptionTxt}>{item.description}</Text>
         )}
       </View>
     </TouchableOpacity>
@@ -159,7 +160,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     paddingHorizontal: 8,
-    backgroundColor: '#d4d4d4',
+    backgroundColor: Colors.commonBg,
   },
   itemView: {
     flexDirection: 'row',
@@ -178,13 +179,15 @@ const styles = StyleSheet.create({
     padding: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: 'grey',
+    backgroundColor: Colors.landingColor,
     paddingVertical: 8,
     paddingHorizontal: 10,
     marginTop: 10,
     borderTopRightRadius: 8,
     borderTopLeftRadius: 8,
   },
+  titleTxt: {fontSize: 16, fontWeight: '500', color: '#36454F'},
+  descriptionTxt: {fontSize: 14, fontWeight: '400', color: '#A9A9A9'},
 });
 
 export default SettingScreen;

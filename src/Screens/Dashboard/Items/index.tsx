@@ -13,7 +13,7 @@ import {
 import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FloatingButton from '../../../CustomComponent/FloatingButton';
-import { Colors } from '../../../Helper/Colors';
+import {Colors} from '../../../Helper/Colors';
 import CustomHeader from '../../../CustomComponent/CustomHeader';
 import EmptyViewComponent from '../../../CustomComponent/EmptyViewComponent';
 
@@ -53,27 +53,29 @@ function ItemsScreen({navigation}: any): JSX.Element {
   );
   const renderEmptyComponent = () => (
     <EmptyViewComponent
-      message={'Here you can manage a list of products or services that you repeatedly invoice for'}
+      message={
+        'Here you can manage a list of products or services that you repeatedly invoice for'
+      }
     />
   );
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={'#3B51C0'} />
+      <StatusBar backgroundColor={Colors.appColor} />
       <CustomHeader
         searchStart={searchStart}
         navigateToSetting={navigateToSetting}
         setSearchStart={setSearchStart}
-        title={"Items"}
+        title={'Items'}
       />
       <View style={{flex: 1, backgroundColor: '#d2d2d2'}}>
         <FlatList
-          data={[]}
+          data={data}
           renderItem={renderItem}
           keyExtractor={(item: any, index: any) => item + index}
           ListEmptyComponent={renderEmptyComponent}
-          contentContainerStyle={{flex:1}}
+          contentContainerStyle={{flex: 1}}
         />
-        <FloatingButton onPress={navigateToAddItem}/>
+        <FloatingButton onPress={navigateToAddItem} />
       </View>
     </SafeAreaView>
   );
@@ -98,7 +100,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor:Colors.appColor,
+    backgroundColor: Colors.appColor,
   },
   container2: {
     flex: 1,
@@ -141,7 +143,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 10,
     alignItems: 'center',
-    backgroundColor:Colors.appColor,
+    backgroundColor: Colors.appColor,
     paddingVertical: 8,
   },
   headerText: {
@@ -161,23 +163,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
-    backgroundColor:"#fff"
+    backgroundColor: '#fff',
   },
   clientText: {
     color: '#000',
-    fontSize: 14,
-    fontWeight: '400',
+    fontSize: 16,
+    fontWeight: '600',
   },
   invoiceNumberText: {
-    color: 'grey',
-    fontSize: 13,
-    fontWeight: '400',
+    color: '#36454F',
+    fontSize: 14,
+    fontWeight: '500',
   },
   priceText: {
     textAlign: 'right',
     color: '#000',
     fontSize: 15,
-    fontWeight: '400',
+    fontWeight: '500',
   },
   dateText: {
     color: 'grey',

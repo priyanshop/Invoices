@@ -14,7 +14,7 @@ import {Colors} from '../../Helper/Colors';
 function GlobalInvoiceNumber({navigation}: any): JSX.Element {
   return (
     <>
-      <StatusBar backgroundColor={'#3B51C0'} />
+      <StatusBar backgroundColor={Colors.appColor} />
       <ScrollView
         style={[styles.scene, {backgroundColor: '#d2d2d2', padding: 8}]}>
         <View style={styles.itemView}>

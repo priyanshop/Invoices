@@ -277,7 +277,7 @@ function ReportScreen({navigation}: any): JSX.Element {
   };
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={'#3B51C0'} />
+      <StatusBar backgroundColor={Colors.appColor} />
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={navigateToSetting}>
           <SimpleLineIcons name="settings" size={20} color="#fff" />

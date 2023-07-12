@@ -1,6 +1,9 @@
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
 
 import SignInScreen from '../Screens/Auth/SignInScreen';
 import SignUpScreen from '../Screens/Auth/SignUpScreen';
@@ -35,11 +38,11 @@ const headerStyle = {
   headerTitleStyle: {
     fontSize: 18,
     fontWeight: '600',
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   headerBackTitleVisible: false,
   headerShadowVisible: false,
-  headerTitleAlign: 'center'
+  headerTitleAlign: 'center',
 };
 
 const Tab = createBottomTabNavigator();
@@ -54,12 +57,13 @@ function Dashboard() {
         options={{
           headerShown: false,
           tabBarIcon: ({focused, tintColor}: any) => (
-            <Icon
-              name="ios-home"
+            <FontAwesome5
+              name="file-invoice"
               color={focused ? Colors.appColor : tintColor}
               size={25}
             />
           ),
+          tabBarActiveTintColor: Colors.appColor,
         }}
       />
       <Tab.Screen
@@ -68,12 +72,13 @@ function Dashboard() {
         options={{
           headerShown: false,
           tabBarIcon: ({focused, tintColor}: any) => (
-            <Icon
-              name="ios-home"
+            <FontAwesome5
+              name="calculator"
               color={focused ? Colors.appColor : tintColor}
               size={25}
             />
           ),
+          tabBarActiveTintColor: Colors.appColor,
         }}
       />
       <Tab.Screen
@@ -83,11 +88,12 @@ function Dashboard() {
           headerShown: false,
           tabBarIcon: ({focused, tintColor}: any) => (
             <Icon
-              name="ios-home"
+              name="people-sharp"
               color={focused ? Colors.appColor : tintColor}
               size={25}
             />
           ),
+          tabBarActiveTintColor: Colors.appColor,
         }}
       />
       <Tab.Screen
@@ -96,12 +102,13 @@ function Dashboard() {
         options={{
           headerShown: false,
           tabBarIcon: ({focused, tintColor}: any) => (
-            <Icon
-              name="ios-home"
+            <AntDesign
+              name="barcode"
               color={focused ? Colors.appColor : tintColor}
               size={25}
             />
           ),
+          tabBarActiveTintColor: Colors.appColor,
         }}
       />
       <Tab.Screen
@@ -110,12 +117,13 @@ function Dashboard() {
         options={{
           headerShown: false,
           tabBarIcon: ({focused, tintColor}: any) => (
-            <Icon
-              name="ios-home"
+            <AntDesign
+              name="barschart"
               color={focused ? Colors.appColor : tintColor}
               size={25}
             />
           ),
+          tabBarActiveTintColor: Colors.appColor,
         }}
       />
     </Tab.Navigator>
@@ -124,7 +132,7 @@ function Dashboard() {
 
 function MainNavigator() {
   return (
-    <Stack.Navigator initialRouteName='LandingPage'>
+    <Stack.Navigator initialRouteName="LandingPage">
       <Stack.Screen
         name="LandingPage"
         component={LandingScreen}
@@ -153,72 +161,72 @@ function MainNavigator() {
       <Stack.Screen
         name="InvoiceCreation"
         component={InvoiceCreationScreen}
-        options={{headerTitle:"Invoice",...headerStyle}}
+        options={{headerTitle: 'Invoice', ...headerStyle}}
       />
       <Stack.Screen
         name="InvoiceNumber"
         component={InvoiceNumber}
-        options={{headerTitle:"Invoice Number",...headerStyle}}
+        options={{headerTitle: 'Invoice Number', ...headerStyle}}
       />
       <Stack.Screen
         name="BusinessDetails"
         component={BusinessDetails}
-        options={{headerTitle:"Business Details",...headerStyle}}
+        options={{headerTitle: 'Business Details', ...headerStyle}}
       />
       <Stack.Screen
         name="AddClientScreen"
         component={AddClientScreen}
-        options={{headerTitle:"Client",...headerStyle}}
+        options={{headerTitle: 'Client', ...headerStyle}}
       />
       <Stack.Screen
         name="AddItemScreen"
         component={AddItemScreen}
-        options={{headerTitle:"Item",...headerStyle}}
+        options={{headerTitle: 'Item', ...headerStyle}}
       />
       <Stack.Screen
         name="AddGlobalItemScreen"
         component={AddGlobalItemScreen}
-        options={{headerTitle:"Item",...headerStyle}}
+        options={{headerTitle: 'Item', ...headerStyle}}
       />
       <Stack.Screen
         name="AddPhotoScreen"
         component={AddPhotoScreen}
-        options={{headerTitle:"Photo",...headerStyle}}
+        options={{headerTitle: 'Photo', ...headerStyle}}
       />
-       <Stack.Screen
+      <Stack.Screen
         name="PaymentInfo"
         component={PaymentInfo}
-        options={{headerTitle:"Payment Info",...headerStyle}}
+        options={{headerTitle: 'Payment Info', ...headerStyle}}
       />
       <Stack.Screen
         name="AdditionalDetails"
         component={AdditionalDetails}
-        options={{headerTitle:"Additional Details",...headerStyle}}
+        options={{headerTitle: 'Additional Details', ...headerStyle}}
       />
       <Stack.Screen
         name="ManualExpense"
         component={ManualExpense}
-        options={{headerTitle:"Expense",...headerStyle}}
+        options={{headerTitle: 'Expense', ...headerStyle}}
       />
       <Stack.Screen
         name="DefaultNotes"
         component={DefaultNotes}
-        options={{headerTitle:"Default Notes",...headerStyle}}
+        options={{headerTitle: 'Default Notes', ...headerStyle}}
       />
       <Stack.Screen
         name="GlobalInvoiceNumber"
         component={GlobalInvoiceNumber}
-        options={{headerTitle:"Invoice Number",...headerStyle}}
+        options={{headerTitle: 'Invoice Number', ...headerStyle}}
       />
-       <Stack.Screen
+      <Stack.Screen
         name="DefaultEmailMessage"
         component={DefaultEmailMessage}
-        options={{headerTitle:"Default Email Message",...headerStyle}}
+        options={{headerTitle: 'Default Email Message', ...headerStyle}}
       />
       <Stack.Screen
         name="TaxScreen"
         component={TaxScreen}
-        options={{headerTitle:"Tax",...headerStyle}}
+        options={{headerTitle: 'Tax', ...headerStyle}}
       />
     </Stack.Navigator>
   );

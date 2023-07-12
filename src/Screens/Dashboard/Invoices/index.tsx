@@ -104,7 +104,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
       />
     );
     return (
-      <View style={[styles.scene, {backgroundColor: '#d2d2d2'}]}>
+      <View style={[styles.scene]}>
         <SectionList
           sections={invoices}
           keyExtractor={(item: any, index: any) => item + index}
@@ -113,7 +113,6 @@ function InvoicesScreen({navigation}: any): JSX.Element {
           ListEmptyComponent={renderEmptyComponent}
           contentContainerStyle={{flex: 1}}
         />
-        {/* <FloatingButton /> */}
       </View>
     );
   };
@@ -146,7 +145,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
       </View>
     );
     return (
-      <View style={[styles.scene, {backgroundColor: '#d2d2d2'}]}>
+      <View style={[styles.scene]}>
         <SectionList
           sections={invoices}
           keyExtractor={(item: any, index: any) => item + index}
@@ -187,7 +186,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
       </View>
     );
     return (
-      <View style={[styles.scene, {backgroundColor: '#d2d2d2'}]}>
+      <View style={[styles.scene]}>
         <SectionList
           sections={invoices}
           keyExtractor={(item: any, index: any) => item + index}
@@ -202,7 +201,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={'#3B51C0'} />
+      <StatusBar backgroundColor={Colors.appColor} />
       <CustomHeader
         searchStart={searchStart}
         navigateToSetting={navigateToSetting}
@@ -291,6 +290,7 @@ const styles = StyleSheet.create({
   },
   scene: {
     flex: 1,
+    backgroundColor: Colors.commonBg,
   },
   headerContainer: {
     flexDirection: 'row',
@@ -322,21 +322,21 @@ const styles = StyleSheet.create({
   clientText: {
     color: '#000',
     fontSize: 16,
-    fontWeight: '400',
+    fontWeight: '600',
   },
   invoiceNumberText: {
-    color: 'grey',
+    color: '#36454F',
     fontSize: 14,
-    fontWeight: '400',
+    fontWeight: '500',
   },
   priceText: {
     textAlign: 'right',
     color: '#000',
-    fontSize: 16,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
   },
   dateText: {
-    color: 'grey',
+    color: '#A9A9A9',
     fontSize: 14,
     fontWeight: '400',
   },
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderColor: 'grey',
-    borderWidth: 0.5,
+    borderBottomWidth: 0.3,
   },
   onSearch: {
     flexDirection: 'row',

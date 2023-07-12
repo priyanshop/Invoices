@@ -526,7 +526,7 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor={'#3B51C0'} />
+      <StatusBar backgroundColor={Colors.appColor} />
       <TabView
         navigationState={{index, routes}}
         renderScene={SceneMap({
