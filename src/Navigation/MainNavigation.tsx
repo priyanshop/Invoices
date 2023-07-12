@@ -57,8 +57,8 @@ function Dashboard() {
         options={{
           headerShown: false,
           tabBarIcon: ({focused, tintColor}: any) => (
-            <FontAwesome5
-              name="file-invoice"
+            <Icon
+              name="ios-receipt-outline"
               color={focused ? Colors.appColor : tintColor}
               size={25}
             />
@@ -72,8 +72,8 @@ function Dashboard() {
         options={{
           headerShown: false,
           tabBarIcon: ({focused, tintColor}: any) => (
-            <FontAwesome5
-              name="calculator"
+            <Icon
+              name="ios-calculator-sharp"
               color={focused ? Colors.appColor : tintColor}
               size={25}
             />

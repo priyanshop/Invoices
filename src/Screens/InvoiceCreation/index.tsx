@@ -15,18 +15,17 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Switch, FAB, Portal, Provider} from 'react-native-paper';
+import {Switch, FAB, Portal, Provider, Menu} from 'react-native-paper';
 
 import FloatingButton from '../../CustomComponent/FloatingButton';
 import {getScreenDimensions} from '../../Helper/ScreenDimension';
 import {Colors} from '../../Helper/Colors';
 import CustomHeader from '../../CustomComponent/CustomHeader';
 import EmptyViewComponent from '../../CustomComponent/EmptyViewComponent';
+import {actionStyle, fabStyle} from '../../Helper/CommonStyle';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
-const invoices = [];
-// const invoices = [
 //   {
 //     year: 2021,
 //     data: [
@@ -69,12 +68,45 @@ const data = [
   {key: 'third', title: 'History'},
 ];
 function InvoiceCreationScreen({navigation}: any): JSX.Element {
+  const actions = [
+    {
+      icon: () => (
+        <MaterialCommunityIcons
+          name="message-bulleted"
+          size={22}
+          color="#000"
+        />
+      ),
+      label: 'Text',
+      onPress: () => console.log('Pressed notifications'),
+    },
+    {
+      icon: () => <Fontisto name="email" size={22} color="#000" />,
+      label: 'Email',
+      onPress: () => console.log('Pressed email'),
+    },
+  ];
+
   const [index, setIndex] = useState(0);
   const [searchStart, setSearchStart] = useState(false);
   const [routes] = useState(data);
   const [state, setState] = React.useState({open: false});
 
   const onStateChange = ({open}) => setState({open});
+  const [visible, setVisible] = React.useState(false);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity style={{marginRight: 10}} onPress={openMenu}>
+          <Entypo name="dots-three-vertical" size={20} color="#fff" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
 
   const {open} = state;
 
@@ -82,359 +114,150 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
     navigation.navigate('Settings');
   }
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity style={{marginRight: 10}} onPress={() => {}}>
-          <Entypo name="dots-three-vertical" size={20} color="#fff" />
-        </TouchableOpacity>
-      ),
-    });
-  }, [navigation]);
+  function navigateToBusinessDetails() {
+    navigation.navigate('BusinessDetails');
+  }
+
+  function navigateToAddClientScreen() {
+    navigation.navigate('AddClientScreen');
+  }
+
+  function navigateToAddItemScreen() {
+    navigation.navigate('AddItemScreen');
+  }
+
+  function navigateToAddPhotoScreen() {
+    navigation.navigate('AddPhotoScreen');
+  }
+
+  function navigateToPaymentInfo() {
+    navigation.navigate('PaymentInfo');
+  }
+
+  function navigateToAdditionalDetails() {
+    navigation.navigate('AdditionalDetails');
+  }
 
   const AllRoute = () => {
- 
     return (
       <Provider>
         <Portal>
           <ScrollView
-            style={[styles.scene, {backgroundColor: '#d2d2d2', padding: 8}]}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                backgroundColor: '#fff',
-                borderRadius: 8,
-                padding: 12,
-                marginVertical: 5,
-              }}>
+            style={[
+              styles.scene,
+              {backgroundColor: Colors.commonBg, padding: 8},
+            ]}>
+            <View style={styles.invoiceTopView}>
               <View style={{justifyContent: 'space-between'}}>
-                <Text style={{fontSize: 18, fontWeight: '600', color: '#000'}}>
-                  INV0001
-                </Text>
+                <Text style={styles.invoiceTitle}>INV0001</Text>
                 <Text
-                  style={{fontSize: 18, fontWeight: '400', color: '#d1d1d1'}}>
+                  onPress={navigateToBusinessDetails}
+                  style={styles.businessInfo}>
                   Business Info
                 </Text>
               </View>
               <View style={{justifyContent: 'space-between'}}>
-                <View
-                  style={{
-                    borderWidth: 1,
-                    borderRadius: 5,
-                    padding: 4,
-                    borderColor: 'grey',
-                    marginBottom: 10,
-                  }}>
-                  <Text
-                    style={{fontSize: 14, fontWeight: '400', color: 'grey'}}>
-                    Due on Receipt
-                  </Text>
+                <View style={styles.dueBox}>
+                  <Text style={styles.dueTxt}>Due on Receipt</Text>
                 </View>
-                <Text
-                  style={{
-                    fontSize: 18,
-                    fontWeight: '400',
-                    color: '#000',
-                    textAlign: 'right',
-                  }}>
-                  06/07/2023
-                </Text>
+                <Text style={styles.dueDate}>06/07/2023</Text>
               </View>
             </View>
 
-            <View
-              style={{
-                flexDirection: 'row',
-                backgroundColor: '#fff',
-                borderRadius: 8,
-                padding: 12,
-                marginVertical: 5,
-              }}>
-              <Text style={{fontSize: 18, fontWeight: '400', color: '#000'}}>
-                To :{' '}
-              </Text>
-              <Text style={{fontSize: 18, fontWeight: '400', color: '#d1d1d1'}}>
+            <View style={styles.clientView}>
+              <Text style={styles.toTxt}>To : </Text>
+              <Text
+                onPress={navigateToAddClientScreen}
+                style={styles.clientTxt}>
                 Client
               </Text>
             </View>
 
-            <View
-              style={{
-                backgroundColor: '#fff',
-                borderRadius: 8,
-                marginVertical: 5,
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  padding: 12,
-                }}>
+            <View style={styles.ItemView}>
+              <TouchableOpacity
+                onPress={navigateToAddItemScreen}
+                style={styles.ItemColumn}>
                 <View>
-                  <Text
-                    style={{fontSize: 18, fontWeight: '500', color: '#d1d1d1'}}>
-                    {'Add Item '}
-                  </Text>
+                  <Text style={styles.addItemTxt}>{'Add Item '}</Text>
                 </View>
                 <View>
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      fontWeight: '400',
-                      color: '#d1d1d1',
-                      textAlign: 'right',
-                    }}>
-                    {'0 * $0.00'}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      fontWeight: '400',
-                      color: '#d1d1d1',
-                      textAlign: 'right',
-                    }}>
-                    {'$0.00'}
-                  </Text>
+                  <Text style={styles.itemPriceTxt}>{'0 * $0.00'}</Text>
+                  <Text style={styles.itemPriceTxt}>{'$0.00'}</Text>
                 </View>
-              </View>
-              <View
-                style={{
-                  backgroundColor: 'grey',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  borderBottomLeftRadius: 8,
-                  borderBottomRightRadius: 8,
-                  padding: 8,
-                }}>
-                <Text style={{fontSize: 18, fontWeight: '500', color: '#fff'}}>
-                  Subtotal
-                </Text>
-                <Text style={{fontSize: 18, fontWeight: '500', color: '#fff'}}>
-                  195
-                </Text>
+              </TouchableOpacity>
+              <View style={styles.itemTotal}>
+                <Text style={styles.itemTotalTxt}>Subtotal</Text>
+                <Text style={styles.itemTotalTxt}>195</Text>
               </View>
             </View>
 
-            <View
-              style={{
-                backgroundColor: '#fff',
-                borderRadius: 8,
-                marginVertical: 5,
-              }}>
-              <View
-                style={{
-                  padding: 12,
-                }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      fontWeight: '400',
-                      color: '#000',
-                    }}>
-                    {'Discount'}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      fontWeight: '400',
-                      color: '#000',
-                    }}>
-                    {'$0.00'}
-                  </Text>
+            <View style={styles.dueBalContainer}>
+              {[0, 0, 0, 0, 0].map(() => (
+                <View style={styles.dueBalContent}>
+                  <View style={styles.dueBalRow}>
+                    <Text style={styles.dueBalText}>Discount</Text>
+                    <Text style={styles.dueBalText}>$0.00</Text>
+                  </View>
                 </View>
-              </View>
-              <View
-                style={{
-                  backgroundColor: 'grey',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  borderBottomLeftRadius: 8,
-                  borderBottomRightRadius: 8,
-                  padding: 8,
-                }}>
-                <Text style={{fontSize: 18, fontWeight: '500', color: '#fff'}}>
-                  Balance Due
-                </Text>
-                <Text style={{fontSize: 18, fontWeight: '500', color: '#fff'}}>
-                  195
-                </Text>
+              ))}
+              <View style={styles.dueBalFooter}>
+                <Text style={styles.dueBalFooterText}>Balance Due</Text>
+                <Text style={styles.dueBalFooterText}>195</Text>
               </View>
             </View>
 
-            <View
-              style={{
-                flexDirection: 'row',
-                backgroundColor: '#fff',
-                borderRadius: 8,
-                padding: 12,
-                marginVertical: 5,
-                justifyContent: 'space-between',
-              }}>
-              <Text style={{fontSize: 18, fontWeight: '500', color: '#d1d1d1'}}>
-                Add photo
-              </Text>
-              <TouchableOpacity>
-                <Icon name="attach" size={18} color="#d2d2d2" />
+            <View style={styles.photoContainer}>
+              <Text style={styles.photoText}>Add photo</Text>
+              <TouchableOpacity onPress={navigateToAddPhotoScreen}>
+                <Icon name="attach" size={18} style={styles.photoIcon} />
               </TouchableOpacity>
             </View>
 
-            <View
-              style={{
-                backgroundColor: '#fff',
-                borderRadius: 8,
-
-                marginVertical: 5,
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingHorizontal: 12,
-                  paddingVertical: 8,
-                  borderBottomColor: 'grey',
-                  borderBottomWidth: 0.3,
-                }}>
-                <Text
-                  style={{fontSize: 18, fontWeight: '500', color: '#d1d1d1'}}>
-                  Payment Info
-                </Text>
+            <View style={styles.notesContainer}>
+              <TouchableOpacity
+                onPress={navigateToPaymentInfo}
+                style={styles.notesRow}>
+                <Text style={styles.notesText}>Payment Info</Text>
+              </TouchableOpacity>
+              <View style={styles.notesRow}>
+                <Text style={styles.notesText}>Signature</Text>
               </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingHorizontal: 12,
-                  paddingVertical: 8,
-                  borderBottomColor: 'grey',
-                  borderBottomWidth: 0.3,
-                }}>
-                <Text
-                  style={{fontSize: 18, fontWeight: '500', color: '#d1d1d1'}}>
-                  Signature
-                </Text>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingHorizontal: 12,
-                  paddingVertical: 8,
-                  height: 70,
-                }}>
-                <Text
-                  style={{fontSize: 18, fontWeight: '500', color: '#d1d1d1'}}>
-                  Notes
-                </Text>
-              </View>
+              <TouchableOpacity
+                onPress={navigateToAdditionalDetails}
+                style={styles.notesLastRow}>
+                <Text style={styles.notesText}>Notes</Text>
+              </TouchableOpacity>
             </View>
 
-            <View
-              style={{
-                backgroundColor: '#fff',
-                borderRadius: 8,
-                marginVertical: 5,
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingHorizontal: 12,
-                  paddingVertical: 8,
-                  borderBottomColor: 'grey',
-                  borderBottomWidth: 0.3,
-                  alignItems: 'center',
-                }}>
-                <Text style={{fontSize: 18, fontWeight: '400', color: '#000'}}>
-                  Request Review
-                </Text>
+            <View style={styles.requestContainer}>
+              <View style={styles.requestSwitchRow}>
+                <Text style={styles.requestText}>Request Review</Text>
                 <Switch value={true} />
               </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingHorizontal: 12,
-                  paddingVertical: 8,
-                }}>
-                <Text
-                  style={{fontSize: 18, fontWeight: '500', color: '#d1d1d1'}}>
-                  Review Link
-                </Text>
+              <View style={styles.requestLinkRow}>
+                <TextInput
+                  placeholder="Review Link"
+                  style={styles.requestLinkText}
+                />
               </View>
             </View>
 
-            <View
-              style={{
-                flexDirection: 'row',
-                backgroundColor: '#fff',
-                borderRadius: 8,
-                padding: 12,
-                marginVertical: 5,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text style={{fontSize: 18, fontWeight: '400', color: '#000'}}>
-                Mark Paid
-              </Text>
+            <View style={styles.paidContainer}>
+              <Text style={styles.paidText}>Mark Paid</Text>
             </View>
           </ScrollView>
+
           <FAB.Group
             open={open}
             icon={() => <Entypo name="paper-plane" size={22} color="#fff" />}
-            actions={[
-              {
-                icon: () => (
-                  <MaterialCommunityIcons
-                    name="message-bulleted"
-                    size={22}
-                    color="#000"
-                  />
-                ),
-                label: 'Text',
-                onPress: () => console.log('Pressed notifications'),
-                style: {backgroundColor: '#fff', borderRadius: 50},
-                color: '#000',
-                labelTextColor: '#000',
-                containerStyle: {
-                  backgroundColor: '#fff',
-                  borderRadius: 5,
-                },
-              },
-              {
-                icon: () => <Fontisto name="email" size={22} color="#000" />,
-                label: 'Email',
-                onPress: () => console.log('Pressed email'),
-                style: {backgroundColor: '#fff', borderRadius: 50},
-                color: '#000',
-                labelTextColor: '#000',
-                containerStyle: {
-                  backgroundColor: '#fff',
-                  borderRadius: 5,
-                },
-              },
-            ]}
+            actions={actions.map(action => ({...action, ...actionStyle}))}
             onStateChange={onStateChange}
             onPress={() => {
               if (open) {
                 // do something if the speed dial is open
               }
             }}
-            fabStyle={{
-              backgroundColor: Colors.appColor,
-              borderRadius: 50,
-              justifyContent: 'center',
-              alignItems: 'center',
-              shadowColor: '#171717',
-              shadowOffset: {width: -2, height: 4},
-              shadowOpacity: 0.2,
-              shadowRadius: 3,
-            }}
+            fabStyle={fabStyle}
             backdropColor="rgba(0,0,0,0.5)"
           />
         </Portal>
@@ -470,9 +293,9 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
       </View>
     );
     return (
-      <View style={[styles.scene, {backgroundColor: '#fff'}]}>
+      <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}>
         <SectionList
-          sections={invoices}
+          sections={[]}
           keyExtractor={(item: any, index: any) => item + index}
           renderItem={renderInvoiceItem}
           renderSectionHeader={renderSectionHeader}
@@ -511,9 +334,9 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
       </View>
     );
     return (
-      <View style={[styles.scene, {backgroundColor: '#fff'}]}>
+      <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}>
         <SectionList
-          sections={invoices}
+          sections={[]}
           keyExtractor={(item: any, index: any) => item + index}
           renderItem={renderInvoiceItem}
           renderSectionHeader={renderSectionHeader}
@@ -527,6 +350,18 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={Colors.appColor} />
+      <Menu
+        visible={visible}
+        onDismiss={closeMenu}
+        anchor={{x: screenWidth, y: 85}}>
+        <Menu.Item onPress={() => {}} title="Delete" />
+        <Menu.Item onPress={() => {}} title="Open In .." />
+        <Menu.Item onPress={() => {}} title="Share" />
+        <Menu.Item onPress={() => {}} title="Print" />
+        <Menu.Item onPress={() => {}} title="Get Link" />
+        <Menu.Item onPress={() => {}} title="Mark paid" />
+        <Menu.Item onPress={() => {}} title="Duplicate" />
+      </Menu>
       <TabView
         navigationState={{index, routes}}
         renderScene={SceneMap({
@@ -754,6 +589,182 @@ const styles = StyleSheet.create({
   centeredBox: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  invoiceTopView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 12,
+    marginVertical: 5,
+  },
+  invoiceTitle: {fontSize: 18, fontWeight: '600', color: '#000'},
+  businessInfo: {fontSize: 18, fontWeight: '400', color: '#d1d1d1'},
+  dueBox: {
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 4,
+    borderColor: 'grey',
+    marginBottom: 10,
+  },
+  dueTxt: {fontSize: 14, fontWeight: '400', color: 'grey'},
+  dueDate: {
+    fontSize: 18,
+    fontWeight: '400',
+    color: '#000',
+    textAlign: 'right',
+  },
+  clientView: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 12,
+    marginVertical: 5,
+  },
+  toTxt: {fontSize: 18, fontWeight: '400', color: '#000'},
+  clientTxt: {fontSize: 18, fontWeight: '400', color: '#d1d1d1', width: '100%'},
+  ItemView: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    marginVertical: 5,
+  },
+  ItemColumn: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 12,
+  },
+  addItemTxt: {fontSize: 18, fontWeight: '500', color: '#d1d1d1'},
+  itemPriceTxt: {
+    fontSize: 18,
+    fontWeight: '400',
+    color: '#d1d1d1',
+    textAlign: 'right',
+  },
+  itemTotal: {
+    backgroundColor: 'grey',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+    padding: 8,
+  },
+  itemTotalTxt: {fontSize: 18, fontWeight: '500', color: '#fff'},
+  dueBalContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    marginVertical: 2,
+  },
+  dueBalContent: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  dueBalRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  dueBalText: {
+    fontSize: 18,
+    fontWeight: '400',
+    color: '#000',
+  },
+  dueBalFooter: {
+    backgroundColor: 'grey',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+    padding: 8,
+  },
+  dueBalFooterText: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#fff',
+  },
+  photoContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 12,
+    marginVertical: 5,
+    justifyContent: 'space-between',
+  },
+  photoText: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#d1d1d1',
+  },
+  photoIcon: {
+    color: '#d2d2d2',
+  },
+  notesContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    marginVertical: 5,
+  },
+  notesRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderBottomColor: 'grey',
+    borderBottomWidth: 0.3,
+  },
+  notesLastRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    height: 70,
+  },
+  notesText: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#d1d1d1',
+  },
+  requestContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    marginVertical: 5,
+  },
+  requestSwitchRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderBottomColor: 'grey',
+    borderBottomWidth: 0.3,
+    alignItems: 'center',
+  },
+  requestLinkRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  requestText: {
+    fontSize: 18,
+    fontWeight: '400',
+    color: '#000',
+  },
+  requestLinkText: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#d1d1d1',
+  },
+  paidContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 12,
+    marginVertical: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  paidText: {
+    fontSize: 18,
+    fontWeight: '400',
+    color: '#000',
   },
 });
 

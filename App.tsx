@@ -30,11 +30,14 @@ import SignUpScreen from './src/Screens/Auth/SignUpScreen';
 import InvoicesScreen from './src/Screens/Dashboard/Invoices';
 import MainNavigator from './src/Navigation/MainNavigation';
 import {NavigationContainer} from '@react-navigation/native';
+import {Provider} from 'react-native-paper';
 
 function App(): JSX.Element {
   return (
     <NavigationContainer>
-      <MainNavigator />
+      <Provider>
+        <MainNavigator />
+      </Provider>
     </NavigationContainer>
   );
 }
