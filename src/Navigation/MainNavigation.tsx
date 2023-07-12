@@ -28,6 +28,7 @@ import GlobalInvoiceNumber from '../Screens/Settings/GlobalInvoiceNumber';
 import DefaultEmailMessage from '../Screens/Settings/DefualtEmailMessage';
 import TaxScreen from '../Screens/Settings/TaxScreen';
 import {Colors} from '../Helper/Colors';
+import SplashScreen from '../Screens/SplashScreen/SplashScreen';
 
 const headerStyle = {
   headerStyle: {
@@ -136,7 +137,12 @@ function Dashboard() {
 
 function MainNavigator() {
   return (
-    <Stack.Navigator initialRouteName="LandingPage">
+    <Stack.Navigator initialRouteName="SplashScreen">
+      <Stack.Screen
+        name="SplashScreen"
+        component={SplashScreen}
+        options={{headerShown: false}}
+      />
       <Stack.Screen
         name="LandingPage"
         component={LandingScreen}
