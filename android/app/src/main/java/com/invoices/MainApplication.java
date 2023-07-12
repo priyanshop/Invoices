@@ -11,6 +11,8 @@ import com.facebook.soloader.SoLoader;
 import java.util.List;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.rt2zz.reactnativecontacts.ReactNativeContacts;
+import com.christopherdro.htmltopdf.RNHTMLtoPDFPackage;
+
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -27,6 +29,8 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // new VectorIconsPackage();
           new ReactNativeContacts();
+          new MainReactPackage();
+          new RNHTMLtoPDFPackage();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
           return packages;

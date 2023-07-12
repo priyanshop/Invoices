@@ -29,7 +29,8 @@ target 'Invoices' do
   config = use_native_modules!
 
   pod 'react-native-contacts', :path => '../node_modules/react-native-contacts'
-
+  pod 'react-native-webview', :path => PROJECT_PATH + 'react-native-webview'
+  
   # Flags change depending on the env values.
   flags = get_default_flags()
 

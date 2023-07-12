@@ -378,6 +378,8 @@ PODS:
     - React-Core
   - react-native-date-picker (4.2.13):
     - React-Core
+  - react-native-html-to-pdf (0.12.0):
+    - React-Core
   - react-native-image-picker (5.6.0):
     - React-Core
   - react-native-pager-view (6.2.0):
@@ -389,6 +391,8 @@ PODS:
     - React-Core
     - ReactCommon/turbomodule/core
   - react-native-select-contact (1.6.3):
+    - React-Core
+  - react-native-webview (11.23.1):
     - React-Core
   - React-NativeModulesApple (0.72.1):
     - hermes-engine
@@ -562,10 +566,12 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-contacts (from `../node_modules/react-native-contacts`)
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
+  - react-native-html-to-pdf (from `../node_modules/react-native-html-to-pdf`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-select-contact (from `../node_modules/react-native-select-contact`)
+  - react-native-webview (from `../node_modules/react-native-webview`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -654,6 +660,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-contacts"
   react-native-date-picker:
     :path: "../node_modules/react-native-date-picker"
+  react-native-html-to-pdf:
+    :path: "../node_modules/react-native-html-to-pdf"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
   react-native-pager-view:
@@ -662,6 +670,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-select-contact:
     :path: "../node_modules/react-native-select-contact"
+  react-native-webview:
+    :path: "../node_modules/react-native-webview"
   React-NativeModulesApple:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios"
   React-perflogger:
@@ -743,10 +753,12 @@ SPEC CHECKSUMS:
   React-logger: b8103c9b04e707b50cdd2b1aeb382483900cbb37
   react-native-contacts: 0aa99963d8f29099d4725cd0d2f8b6ef5f0d9a2d
   react-native-date-picker: 04e866ba4e7857f83abd504ad42e787f0f02ae00
+  react-native-html-to-pdf: 4c5c6e26819fe202971061594058877aa9b25265
   react-native-image-picker: db60857e03d63721f19b6f4027de20429ddd9cba
   react-native-pager-view: 0ccb8bf60e2ebd38b1f3669fa3650ecce81db2df
   react-native-safe-area-context: 68b07eabfb0d14547d36f6929c0e98d818064f02
   react-native-select-contact: f88ccd9dbee6c4d1c32507291b431cf558a2ed42
+  react-native-webview: d33e2db8925d090871ffeb232dfa50cb3a727581
   React-NativeModulesApple: 4f31a812364443cee6ef768d256c594ad3b20f53
   React-perflogger: 3d501f34c8d4b10cb75f348e43591765788525ad
   React-RCTActionSheet: f5335572c979198c0c3daff67b07bd1ad8370c1d

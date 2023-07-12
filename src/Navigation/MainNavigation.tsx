@@ -26,6 +26,7 @@ import GlobalInvoiceNumber from '../Screens/Settings/GlobalInvoiceNumber';
 import DefaultEmailMessage from '../Screens/Settings/DefualtEmailMessage';
 import TaxScreen from '../Screens/Settings/TaxScreen';
 import {Colors} from '../Helper/Colors';
+import TestPDF from '../Screens/PDF/test';
 
 const headerStyle = {
   headerStyle: {
@@ -124,7 +125,7 @@ function Dashboard() {
 
 function MainNavigator() {
   return (
-    <Stack.Navigator initialRouteName='LandingPage'>
+    <Stack.Navigator initialRouteName='PDF'>
       <Stack.Screen
         name="LandingPage"
         component={LandingScreen}
@@ -219,6 +220,11 @@ function MainNavigator() {
         name="TaxScreen"
         component={TaxScreen}
         options={{headerTitle:"Tax",...headerStyle}}
+      />
+       <Stack.Screen
+        name="PDF"
+        component={TestPDF}
+        options={{headerTitle:"PDF",...headerStyle}}
       />
     </Stack.Navigator>
   );
