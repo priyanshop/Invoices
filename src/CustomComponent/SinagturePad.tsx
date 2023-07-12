@@ -1,6 +1,5 @@
 import { useRef } from "react";
-import SignatureScreen from "react-native-signature-canvas";
-
+styles.btnText
 const Sign = ({ text, onOK }:any) => {
   const ref = useRef();
 
@@ -43,5 +42,6 @@ const Sign = ({ text, onOK }:any) => {
     />
   );
 };
+
 
 export default Sign;
