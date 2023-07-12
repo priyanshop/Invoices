@@ -28,7 +28,9 @@ const AddClientScreen = () => {
   const [hasPermission, setHasPermission] = useState(false);
 
   useEffect(() => {
-    checkContactPermission();
+    if (Platform.OS === 'android') {
+      checkContactPermission();
+    }
   }, []);
 
   const checkContactPermission = async () => {
@@ -64,8 +66,8 @@ const AddClientScreen = () => {
       setMobile(selectedPhone.number);
       setEmail(contact.emails[0].address);
       setAddress1(contact.postalAddresses[0].formattedAddress);
-      setAddress2(contact.postalAddresses[0].state)
-      setAddress3(contact.postalAddresses[0].street)
+      setAddress2(contact.postalAddresses[0].state);
+      setAddress3(contact.postalAddresses[0].street);
 
       console.log(
         `Selected ${selectedPhone.type} phone number ${selectedPhone.number} from ${contact.name}`,
@@ -76,6 +78,9 @@ const AddClientScreen = () => {
   const selectContact = () => {
     //    get().then(()=>{})
     if (hasPermission) {
+      getPhoneNumber();
+    }
+    if (Platform.OS === 'ios') {
       getPhoneNumber();
     }
   };
@@ -200,8 +205,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     // marginVertical: Platform.OS === 'ios' ? 8 : 0,
     alignItems: 'center',
+    height: 40,
   },
-  titleTxt: {fontSize: 17, color: '#000', fontWeight: '400', height: 40},
+  titleTxt: {
+    fontSize: 17,
+    color: '#000',
+    fontWeight: '400',
+    // height: 40,
+    textAlignVertical: 'center',
+  },
   titleTxt2: {fontSize: 17, color: '#000', fontWeight: '400'},
   mainContain: {
     borderRadius: 8,

@@ -4,7 +4,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-
 import SignInScreen from '../Screens/Auth/SignInScreen';
 import SignUpScreen from '../Screens/Auth/SignUpScreen';
 import LandingScreen from '../Screens/LandingScreen';
@@ -64,6 +63,7 @@ function Dashboard() {
             />
           ),
           tabBarActiveTintColor: Colors.appColor,
+          tabBarLabelStyle: {fontSize: 13, fontWeight: '500'},
         }}
       />
       <Tab.Screen
@@ -79,6 +79,7 @@ function Dashboard() {
             />
           ),
           tabBarActiveTintColor: Colors.appColor,
+          tabBarLabelStyle: {fontSize: 13, fontWeight: '500'},
         }}
       />
       <Tab.Screen
@@ -94,6 +95,7 @@ function Dashboard() {
             />
           ),
           tabBarActiveTintColor: Colors.appColor,
+          tabBarLabelStyle: {fontSize: 13, fontWeight: '500'},
         }}
       />
       <Tab.Screen
@@ -109,6 +111,7 @@ function Dashboard() {
             />
           ),
           tabBarActiveTintColor: Colors.appColor,
+          tabBarLabelStyle: {fontSize: 13, fontWeight: '500'},
         }}
       />
       <Tab.Screen
@@ -124,6 +127,7 @@ function Dashboard() {
             />
           ),
           tabBarActiveTintColor: Colors.appColor,
+          tabBarLabelStyle: {fontSize: 13, fontWeight: '500'},
         }}
       />
     </Tab.Navigator>

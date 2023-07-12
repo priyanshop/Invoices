@@ -39,11 +39,11 @@ function SignUpScreen({navigation}: any): JSX.Element {
 
   const handleNext = () => {
     if (activeSlide === 2) {
-      navigation.navigate('Dashboard');
-      //     navigation.reset({
-      //       index: 0,
-      //       routes: [{ name: 'Dashboard' }]
-      //  });
+      // navigation.navigate('Dashboard');
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Dashboard'}],
+      });
     } else {
       carouselRef.current.snapToNext();
     }

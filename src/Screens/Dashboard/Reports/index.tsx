@@ -19,7 +19,7 @@ function ReportScreen({navigation}: any): JSX.Element {
   const [loading, setLoading] = useState(false);
 
   function navigateToSetting() {
-    navigation.navigate('Setting');
+    navigation.navigate('Settings');
   }
 
   const PaidTitle = () => {
@@ -294,8 +294,7 @@ function ReportScreen({navigation}: any): JSX.Element {
       <View
         style={{
           flex: 1,
-          backgroundColor: '#fff',
-          // paddingHorizontal: 8,
+          backgroundColor: Colors.commonBg,
           alignItems: 'center',
         }}>
         <HeaderView />
@@ -466,6 +465,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 8,
     borderTopWidth: 0.3,
+    borderTopColor:Colors.commonBg,
   },
   itemTxt: {
     fontSize: 14,

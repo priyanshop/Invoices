@@ -79,11 +79,25 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
       ),
       label: 'Text',
       onPress: () => console.log('Pressed notifications'),
+      style: {backgroundColor: '#fff', borderRadius: 50},
+      color: '#000',
+      labelTextColor: '#000',
+      containerStyle: {
+        backgroundColor: '#fff',
+        borderRadius: 5,
+      },
     },
     {
       icon: () => <Fontisto name="email" size={22} color="#000" />,
       label: 'Email',
       onPress: () => console.log('Pressed email'),
+      style: {backgroundColor: '#fff', borderRadius: 50},
+      color: '#000',
+      labelTextColor: '#000',
+      containerStyle: {
+        backgroundColor: '#fff',
+        borderRadius: 5,
+      },
     },
   ];
 
@@ -138,30 +152,40 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
     navigation.navigate('AdditionalDetails');
   }
 
+  function navigateToInvoiceNumber() {
+    navigation.navigate('InvoiceNumber');
+  }
   const AllRoute = () => {
     return (
       <Provider>
         <Portal>
           <ScrollView
+            showsVerticalScrollIndicator={false}
             style={[
               styles.scene,
               {backgroundColor: Colors.commonBg, padding: 8},
             ]}>
             <View style={styles.invoiceTopView}>
               <View style={{justifyContent: 'space-between'}}>
-                <Text style={styles.invoiceTitle}>INV0001</Text>
+                <Text
+                  onPress={navigateToInvoiceNumber}
+                  style={styles.invoiceTitle}>
+                  INV0001
+                </Text>
                 <Text
                   onPress={navigateToBusinessDetails}
                   style={styles.businessInfo}>
                   Business Info
                 </Text>
               </View>
-              <View style={{justifyContent: 'space-between'}}>
+              <TouchableOpacity
+                onPress={navigateToInvoiceNumber}
+                style={{justifyContent: 'space-between'}}>
                 <View style={styles.dueBox}>
                   <Text style={styles.dueTxt}>Due on Receipt</Text>
                 </View>
                 <Text style={styles.dueDate}>06/07/2023</Text>
-              </View>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.clientView}>
@@ -238,6 +262,7 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
                 <TextInput
                   placeholder="Review Link"
                   style={styles.requestLinkText}
+                  placeholderTextColor={'#d1d1d1'}
                 />
               </View>
             </View>
@@ -750,7 +775,7 @@ const styles = StyleSheet.create({
   requestLinkText: {
     fontSize: 18,
     fontWeight: '500',
-    color: '#d1d1d1',
+    color: '#000',
   },
   paidContainer: {
     flexDirection: 'row',
@@ -760,6 +785,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 30,
   },
   paidText: {
     fontSize: 18,
