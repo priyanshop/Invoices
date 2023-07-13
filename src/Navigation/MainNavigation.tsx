@@ -137,7 +137,7 @@ function Dashboard() {
 
 function MainNavigator() {
   return (
-    <Stack.Navigator initialRouteName="SignaturePad">
+    <Stack.Navigator initialRouteName="LandingPage">
       <Stack.Screen
         name="LandingPage"
         component={LandingScreen}

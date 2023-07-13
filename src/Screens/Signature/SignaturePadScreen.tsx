@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   SafeAreaView,
   View,
@@ -8,16 +8,21 @@ import {
 } from 'react-native';
 import {Colors} from '../../Helper/Colors';
 import SignaturePad from '../../SignaturePad';
+import Orientation from 'react-native-orientation-locker';
 
 const SignaturePadScreen = ({navigation}: any) => {
   const [content, setContent] = useState('');
   const ref = useRef();
+
+  useEffect(() => {
+    Orientation.lockToLandscape();
+  }, []);
+
   const handleClear = () => {
     ref.current.Clear();
   };
 
   const onChange = (text: any) => {
-    console.log(text);
     setContent(text);
   };
 
