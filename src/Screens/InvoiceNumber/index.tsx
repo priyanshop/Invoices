@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {View, SectionList, Text, StyleSheet, TextInput} from 'react-native';
 import TermsComponent from '../../CustomComponent/TermsComponent';
 import DatePicker from 'react-native-date-picker';
-import { Colors } from '../../Helper/Colors';
 
 const InvoiceNumber = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -15,7 +14,7 @@ const InvoiceNumber = () => {
 
   return (
     <View style={styles.mainContainer}>
-      <View style={{borderRadius: 8, backgroundColor: Colors.commonBg, padding: 8}}>
+      <View style={{borderRadius: 8, backgroundColor: '#fff', padding: 8}}>
         <View style={styles.rowView}>
           <Text style={styles.titleTxt}>Invoice Number : </Text>
           <View style={{width: '50%'}}>

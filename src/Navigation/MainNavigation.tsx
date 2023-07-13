@@ -30,6 +30,7 @@ import TaxScreen from '../Screens/Settings/TaxScreen';
 import {Colors} from '../Helper/Colors';
 import SplashScreen from '../Screens/SplashScreen/SplashScreen';
 import PaymentScreen from '../Screens/Payments/PaymentScreen';
+import RegionScreen from '../Screens/Regions';
 
 const headerStyle = {
   headerStyle: {
@@ -138,7 +139,7 @@ function Dashboard() {
 
 function MainNavigator() {
   return (
-    <Stack.Navigator initialRouteName="LandingPage">
+    <Stack.Navigator initialRouteName="SplashScreen">
       <Stack.Screen
         name="SplashScreen"
         component={SplashScreen}
@@ -243,6 +244,11 @@ function MainNavigator() {
         name="PaymentScreen"
         component={PaymentScreen}
         options={{headerTitle: 'Payment', ...headerStyle}}
+      />
+       <Stack.Screen
+        name="RegionScreen"
+        component={RegionScreen}
+        options={{headerTitle: 'Region', ...headerStyle}}
       />
     </Stack.Navigator>
   );

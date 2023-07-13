@@ -10,7 +10,7 @@ const SplashScreen: React.FC = ({navigation}: any) => {
     setTimeout(() => {
       navigation.reset({
         index: 0,
-        routes: [{name: 'Dashboard'}],
+        routes: [{name: 'LandingPage'}],
       });
     }, 1000);
   }, []);

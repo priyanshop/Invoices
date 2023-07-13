@@ -38,11 +38,11 @@ const SettingScreen = ({navigation}: any) => {
           description: 'Do not enter sensitive information',
           onPress: () => navigation.navigate('PaymentInfo'),
         },
-        {
-          title: 'Tax',
-          description: '',
-          onPress: () => navigation.navigate('TaxScreen'),
-        },
+        // {
+        //   title: 'Tax',
+        //   description: '',
+        //   onPress: () => navigation.navigate('TaxScreen'),
+        // },
         {
           title: 'Default Notes',
           description: '',
@@ -72,7 +72,7 @@ const SettingScreen = ({navigation}: any) => {
         {
           title: 'Region',
           description: 'Language, Currency, Tax year and Date Format',
-          onPress: () => navigation.navigate('DefaultEmailMessage'),
+          onPress: () => navigation.navigate('RegionScreen'),
         },
         {title: 'Upgrade', description: ''},
         {title: 'Backup', description: ''},
