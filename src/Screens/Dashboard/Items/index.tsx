@@ -67,7 +67,7 @@ function ItemsScreen({navigation}: any): JSX.Element {
         setSearchStart={setSearchStart}
         title={'Items'}
       />
-      <View style={{flex: 1, backgroundColor: '#d2d2d2'}}>
+      <View style={{flex: 1, backgroundColor: Colors.commonBg}}>
         <FlatList
           data={data}
           renderItem={renderItem}

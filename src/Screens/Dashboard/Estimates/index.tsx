@@ -83,7 +83,6 @@ const AllRoute = () => {
         renderItem={renderInvoiceItem}
         renderSectionHeader={renderSectionHeader}
       />
-      <FloatingButton />
     </View>
   );
 };
@@ -116,7 +115,6 @@ const OpenRoute = () => {
         renderItem={renderInvoiceItem}
         renderSectionHeader={renderSectionHeader}
       />
-      <FloatingButton />
     </View>
   );
 };
@@ -149,7 +147,6 @@ const ClosedRoute = () => {
         renderItem={renderInvoiceItem}
         renderSectionHeader={renderSectionHeader}
       />
-      <FloatingButton />
     </View>
   );
 };
@@ -197,6 +194,7 @@ function EstimatesScreen({navigation}: any): JSX.Element {
           );
         }}
       />
+      <FloatingButton />
     </SafeAreaView>
   );
 }
