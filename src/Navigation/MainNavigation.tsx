@@ -27,8 +27,8 @@ import DefaultNotes from '../Screens/Settings/DefaultNotes';
 import GlobalInvoiceNumber from '../Screens/Settings/GlobalInvoiceNumber';
 import DefaultEmailMessage from '../Screens/Settings/DefualtEmailMessage';
 import TaxScreen from '../Screens/Settings/TaxScreen';
-import SignaturePadScreen from '../Screens/Signature';
 import {Colors} from '../Helper/Colors';
+import SignaturePadScreen from '../Screens/Signature/SignaturePadScreen';
 
 const headerStyle = {
   headerStyle: {
