@@ -16,7 +16,7 @@ function ManualExpense({navigation}: any): JSX.Element {
     <>
       <StatusBar backgroundColor={Colors.appColor} />
       <ScrollView
-        style={[styles.scene, {backgroundColor: '#d2d2d2', padding: 8}]}>
+        style={[styles.scene, {backgroundColor: Colors.commonBg, padding: 8}]}>
         <View style={styles.photoView}>
           <Text style={styles.photoText}>Add photo</Text>
           <TouchableOpacity>

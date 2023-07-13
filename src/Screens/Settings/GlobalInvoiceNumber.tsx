@@ -16,12 +16,12 @@ function GlobalInvoiceNumber({navigation}: any): JSX.Element {
     <>
       <StatusBar backgroundColor={Colors.appColor} />
       <ScrollView
-        style={[styles.scene, {backgroundColor: '#d2d2d2', padding: 8}]}>
+        style={[styles.scene, {backgroundColor: Colors.commonBg, padding: 8}]}>
         <View style={styles.itemView}>
           <View
             style={{
               padding: 3,
-              paddingHorizontal:8
+              paddingHorizontal: 8,
             }}>
             <View style={styles.mainView}>
               <Text style={styles.label}>Invoice Number: </Text>

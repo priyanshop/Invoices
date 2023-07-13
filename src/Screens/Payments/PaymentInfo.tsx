@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, TextInput} from 'react-native';
+import { Colors } from '../../Helper/Colors';
 
 const PaymentInfo = () => {
   const [businessName, setBusinessName] = useState('');
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     padding: 8,
-    backgroundColor: '#d4d4d4',
+    backgroundColor: Colors.commonBg,
   },
   rowView: {
     flexDirection: 'row',
@@ -141,7 +142,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     padding: 8,
-    backgroundColor: 'grey',
+    backgroundColor: Colors.landingColor,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
   },

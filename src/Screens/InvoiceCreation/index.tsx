@@ -157,136 +157,111 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
   }
   const AllRoute = () => {
     return (
-      <Provider>
-        <Portal>
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            style={[
-              styles.scene,
-              {backgroundColor: Colors.commonBg, padding: 8},
-            ]}>
-            <View style={styles.invoiceTopView}>
-              <View style={{justifyContent: 'space-between'}}>
-                <Text
-                  onPress={navigateToInvoiceNumber}
-                  style={styles.invoiceTitle}>
-                  INV0001
-                </Text>
-                <Text
-                  onPress={navigateToBusinessDetails}
-                  style={styles.businessInfo}>
-                  Business Info
-                </Text>
-              </View>
-              <TouchableOpacity
-                onPress={navigateToInvoiceNumber}
-                style={{justifyContent: 'space-between'}}>
-                <View style={styles.dueBox}>
-                  <Text style={styles.dueTxt}>Due on Receipt</Text>
-                </View>
-                <Text style={styles.dueDate}>06/07/2023</Text>
-              </TouchableOpacity>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={[styles.scene, {backgroundColor: Colors.commonBg, padding: 8}]}>
+        <View style={styles.invoiceTopView}>
+          <View style={{justifyContent: 'space-between'}}>
+            <Text onPress={navigateToInvoiceNumber} style={styles.invoiceTitle}>
+              INV0001
+            </Text>
+            <Text
+              onPress={navigateToBusinessDetails}
+              style={styles.businessInfo}>
+              Business Info
+            </Text>
+          </View>
+          <TouchableOpacity
+            onPress={navigateToInvoiceNumber}
+            style={{justifyContent: 'space-between'}}>
+            <View style={styles.dueBox}>
+              <Text style={styles.dueTxt}>Due on Receipt</Text>
             </View>
+            <Text style={styles.dueDate}>06/07/2023</Text>
+          </TouchableOpacity>
+        </View>
 
-            <View style={styles.clientView}>
-              <Text style={styles.toTxt}>To : </Text>
-              <Text
-                onPress={navigateToAddClientScreen}
-                style={styles.clientTxt}>
-                Client
-              </Text>
+        <View style={styles.clientView}>
+          <Text style={styles.toTxt}>To : </Text>
+          <Text onPress={navigateToAddClientScreen} style={styles.clientTxt}>
+            Client
+          </Text>
+        </View>
+
+        <View style={styles.ItemView}>
+          <TouchableOpacity
+            onPress={navigateToAddItemScreen}
+            style={styles.ItemColumn}>
+            <View>
+              <Text style={styles.addItemTxt}>{'Add Item '}</Text>
             </View>
-
-            <View style={styles.ItemView}>
-              <TouchableOpacity
-                onPress={navigateToAddItemScreen}
-                style={styles.ItemColumn}>
-                <View>
-                  <Text style={styles.addItemTxt}>{'Add Item '}</Text>
-                </View>
-                <View>
-                  <Text style={styles.itemPriceTxt}>{'0 * $0.00'}</Text>
-                  <Text style={styles.itemPriceTxt}>{'$0.00'}</Text>
-                </View>
-              </TouchableOpacity>
-              <View style={styles.itemTotal}>
-                <Text style={styles.itemTotalTxt}>Subtotal</Text>
-                <Text style={styles.itemTotalTxt}>195</Text>
-              </View>
+            <View>
+              <Text style={styles.itemPriceTxt}>{'0 * $0.00'}</Text>
+              <Text style={styles.itemPriceTxt}>{'$0.00'}</Text>
             </View>
+          </TouchableOpacity>
+          <View style={styles.itemTotal}>
+            <Text style={styles.itemTotalTxt}>Subtotal</Text>
+            <Text style={styles.itemTotalTxt}>195</Text>
+          </View>
+        </View>
 
-            <View style={styles.dueBalContainer}>
-              {[0, 0, 0, 0, 0].map(() => (
-                <View style={styles.dueBalContent}>
-                  <View style={styles.dueBalRow}>
-                    <Text style={styles.dueBalText}>Discount</Text>
-                    <Text style={styles.dueBalText}>$0.00</Text>
-                  </View>
-                </View>
-              ))}
-              <View style={styles.dueBalFooter}>
-                <Text style={styles.dueBalFooterText}>Balance Due</Text>
-                <Text style={styles.dueBalFooterText}>195</Text>
+        <View style={styles.dueBalContainer}>
+          {[0, 0, 0, 0, 0].map(() => (
+            <View style={styles.dueBalContent}>
+              <View style={styles.dueBalRow}>
+                <Text style={styles.dueBalText}>Discount</Text>
+                <Text style={styles.dueBalText}>$0.00</Text>
               </View>
             </View>
+          ))}
+          <View style={styles.dueBalFooter}>
+            <Text style={styles.dueBalFooterText}>Balance Due</Text>
+            <Text style={styles.dueBalFooterText}>195</Text>
+          </View>
+        </View>
 
-            <View style={styles.photoContainer}>
-              <Text style={styles.photoText}>Add photo</Text>
-              <TouchableOpacity onPress={navigateToAddPhotoScreen}>
-                <Icon name="attach" size={18} style={styles.photoIcon} />
-              </TouchableOpacity>
-            </View>
+        <View style={styles.photoContainer}>
+          <Text style={styles.photoText}>Add photo</Text>
+          <TouchableOpacity onPress={navigateToAddPhotoScreen}>
+            <Icon name="attach" size={18} style={styles.photoIcon} />
+          </TouchableOpacity>
+        </View>
 
-            <View style={styles.notesContainer}>
-              <TouchableOpacity
-                onPress={navigateToPaymentInfo}
-                style={styles.notesRow}>
-                <Text style={styles.notesText}>Payment Info</Text>
-              </TouchableOpacity>
-              <View style={styles.notesRow}>
-                <Text style={styles.notesText}>Signature</Text>
-              </View>
-              <TouchableOpacity
-                onPress={navigateToAdditionalDetails}
-                style={styles.notesLastRow}>
-                <Text style={styles.notesText}>Notes</Text>
-              </TouchableOpacity>
-            </View>
+        <View style={styles.notesContainer}>
+          <TouchableOpacity
+            onPress={navigateToPaymentInfo}
+            style={styles.notesRow}>
+            <Text style={styles.notesText}>Payment Info</Text>
+          </TouchableOpacity>
+          <View style={styles.notesRow}>
+            <Text style={styles.notesText}>Signature</Text>
+          </View>
+          <TouchableOpacity
+            onPress={navigateToAdditionalDetails}
+            style={styles.notesLastRow}>
+            <Text style={styles.notesText}>Notes</Text>
+          </TouchableOpacity>
+        </View>
 
-            <View style={styles.requestContainer}>
-              <View style={styles.requestSwitchRow}>
-                <Text style={styles.requestText}>Request Review</Text>
-                <Switch value={true} />
-              </View>
-              <View style={styles.requestLinkRow}>
-                <TextInput
-                  placeholder="Review Link"
-                  style={styles.requestLinkText}
-                  placeholderTextColor={'#d1d1d1'}
-                />
-              </View>
-            </View>
+        <View style={styles.requestContainer}>
+          <View style={styles.requestSwitchRow}>
+            <Text style={styles.requestText}>Request Review</Text>
+            <Switch value={true} />
+          </View>
+          <View style={styles.requestLinkRow}>
+            <TextInput
+              placeholder="Review Link"
+              style={styles.requestLinkText}
+              placeholderTextColor={'#d1d1d1'}
+            />
+          </View>
+        </View>
 
-            <View style={styles.paidContainer}>
-              <Text style={styles.paidText}>Mark Paid</Text>
-            </View>
-          </ScrollView>
-
-          <FAB.Group
-            open={open}
-            icon={() => <Entypo name="paper-plane" size={22} color="#fff" />}
-            actions={actions.map(action => ({...action, ...actionStyle}))}
-            onStateChange={onStateChange}
-            onPress={() => {
-              if (open) {
-                // do something if the speed dial is open
-              }
-            }}
-            fabStyle={fabStyle}
-            backdropColor="rgba(0,0,0,0.5)"
-          />
-        </Portal>
-      </Provider>
+        <View style={styles.paidContainer}>
+          <Text style={styles.paidText}>Mark Paid</Text>
+        </View>
+      </ScrollView>
     );
   };
 
@@ -373,43 +348,60 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
   };
 
   return (
-    <View style={styles.container}>
-      <StatusBar backgroundColor={Colors.appColor} />
-      <Menu
-        visible={visible}
-        onDismiss={closeMenu}
-        anchor={{x: screenWidth, y: 85}}>
-        <Menu.Item onPress={() => {}} title="Delete" />
-        <Menu.Item onPress={() => {}} title="Open In .." />
-        <Menu.Item onPress={() => {}} title="Share" />
-        <Menu.Item onPress={() => {}} title="Print" />
-        <Menu.Item onPress={() => {}} title="Get Link" />
-        <Menu.Item onPress={() => {}} title="Mark paid" />
-        <Menu.Item onPress={() => {}} title="Duplicate" />
-      </Menu>
-      <TabView
-        navigationState={{index, routes}}
-        renderScene={SceneMap({
-          first: AllRoute,
-          second: OutStandingRoute,
-          third: PaidRoute,
-        })}
-        onIndexChange={setIndex}
-        initialLayout={{width: screenWidth}}
-        style={styles.container2}
-        sceneContainerStyle={styles.container2}
-        renderTabBar={props => {
-          return (
-            <TabBar
-              {...props}
-              indicatorStyle={{backgroundColor: '#fff', height: 2}}
-              style={{backgroundColor: Colors.appColor}}
-              labelStyle={{fontSize: 15, fontWeight: '500'}}
-            />
-          );
-        }}
-      />
-    </View>
+    <Provider>
+      <Portal>
+        <View style={styles.container}>
+          <StatusBar backgroundColor={Colors.appColor} />
+          <Menu
+            visible={visible}
+            onDismiss={closeMenu}
+            anchor={{x: screenWidth, y: 85}}>
+            <Menu.Item onPress={() => {}} title="Delete" />
+            <Menu.Item onPress={() => {}} title="Open In .." />
+            <Menu.Item onPress={() => {}} title="Share" />
+            <Menu.Item onPress={() => {}} title="Print" />
+            <Menu.Item onPress={() => {}} title="Get Link" />
+            <Menu.Item onPress={() => {}} title="Mark paid" />
+            <Menu.Item onPress={() => {}} title="Duplicate" />
+          </Menu>
+          <TabView
+            navigationState={{index, routes}}
+            renderScene={SceneMap({
+              first: AllRoute,
+              second: OutStandingRoute,
+              third: PaidRoute,
+            })}
+            onIndexChange={setIndex}
+            initialLayout={{width: screenWidth}}
+            style={styles.container2}
+            sceneContainerStyle={styles.container2}
+            renderTabBar={props => {
+              return (
+                <TabBar
+                  {...props}
+                  indicatorStyle={{backgroundColor: '#fff', height: 2}}
+                  style={{backgroundColor: Colors.appColor}}
+                  labelStyle={{fontSize: 15, fontWeight: '500'}}
+                />
+              );
+            }}
+          />
+        </View>
+        <FAB.Group
+          open={open}
+          icon={() => <Entypo name="paper-plane" size={22} color="#fff" />}
+          actions={actions.map(action => ({...action, ...actionStyle}))}
+          onStateChange={onStateChange}
+          onPress={() => {
+            if (open) {
+              // do something if the speed dial is open
+            }
+          }}
+          fabStyle={fabStyle}
+          backdropColor="rgba(0,0,0,0.5)"
+        />
+      </Portal>
+    </Provider>
   );
 }
 
@@ -667,7 +659,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   itemTotal: {
-    backgroundColor: 'grey',
+    backgroundColor: Colors.landingColor,
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderBottomLeftRadius: 8,
@@ -694,7 +686,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   dueBalFooter: {
-    backgroundColor: 'grey',
+    backgroundColor: Colors.landingColor,
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderBottomLeftRadius: 8,

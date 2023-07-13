@@ -147,6 +147,7 @@ const SettingScreen = ({navigation}: any) => {
         renderSectionHeader={renderSectionHeader}
         showsVerticalScrollIndicator={false}
         stickySectionHeadersEnabled={false}
+        contentContainerStyle={{paddingBottom:40}}
       />
     </View>
   );

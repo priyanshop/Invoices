@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   totalView: {
-    backgroundColor: 'grey',
+    backgroundColor: Colors.landingColor,
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderBottomLeftRadius: 8,

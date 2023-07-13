@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import ImagePickerComponent from '../../CustomComponent/ImagePickerComponent';
+import {Colors} from '../../Helper/Colors';
 
 const BusinessDetails = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -162,7 +163,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     padding: 8,
-    backgroundColor: '#d4d4d4',
+    backgroundColor: Colors.commonBg,
   },
   rowView: {
     flexDirection: 'row',
@@ -192,11 +193,12 @@ const styles = StyleSheet.create({
   businessContainer: {
     borderRadius: 8,
     backgroundColor: '#fff',
+    marginVertical: 5,
   },
   header: {
     flexDirection: 'row',
     padding: 8,
-    backgroundColor: 'grey',
+    backgroundColor: Colors.landingColor,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
   },

@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, TextInput} from 'react-native';
+import { Colors } from '../../Helper/Colors';
 
 const DefaultEmailMessage = () => {
   const [businessName, setBusinessName] = useState('');
@@ -81,7 +82,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     padding: 8,
-    backgroundColor: 'grey',
+    backgroundColor: Colors.landingColor,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
   },
