@@ -29,10 +29,8 @@ const SignaturePadScreen = ({text, onOK}: any) => {
     onOK(signature); // Callback from Component props
   };
 
-  const handleClear = () => {
-    console.log("ref.current",JSON.stringify('ref.current',ref.current));
-    
-    ref.current.readSignature();
+  const handleClear = () => {    
+    // ref.current.clearSignature();
   };
 
   const handleColorChange = () => {
@@ -67,10 +65,9 @@ const SignaturePadScreen = ({text, onOK}: any) => {
         onEmpty={handleEmpty}
         onClear={handleClear}
         penColor={colorText}
-        descriptionText={'Please Sign Here'}
-        rotated
+        // rotated
       />
-      <View
+      {/* <View
         style={{
           //   backgroundColor: 'red',
           flexDirection: 'row',
@@ -90,7 +87,7 @@ const SignaturePadScreen = ({text, onOK}: any) => {
         <TouchableOpacity style={styles.btn} onPress={handleClear}>
           <Text style={styles.btnText}>Resign</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </SafeAreaView>
   );
 };
@@ -100,8 +97,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    height: 250,
+    // height: 250,
     padding: 10,
+    backgroundColor:Colors.commonBg
   },
   row: {
     flexDirection: 'row',
@@ -109,6 +107,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#f2f2f2',
     paddingBottom: 5,
+    justifyContent:'space-between',
+    width:"100%",
+    paddingHorizontal:18
   },
   textSign: {
     color: 'deepskyblue',
@@ -117,7 +118,8 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#fff',
-    fontWeight: '900',
+    fontWeight: '700',
+    fontSize:16
   },
   textInput: {
     paddingVertical: 10,
@@ -140,12 +142,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#c0c0c0',
     padding: 10,
     borderRadius: 5,
-    flex: 1,
-    marginHorizontal: 5,
+    // flex: 1,
+    paddingHorizontal: 25,
   },
   btnText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
     color: '#fff',
   },
 });

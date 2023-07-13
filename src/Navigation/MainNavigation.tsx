@@ -236,8 +236,8 @@ function MainNavigator() {
       <Stack.Screen
         name="SignaturePad"
         component={SignaturePadScreen}
-        // options={{headerTitle: 'Signature', ...headerStyle}}
-        options={{headerShown: false}}
+        options={{headerTitle: 'Signature', ...headerStyle}}
+        // options={{headerShown: false}}
       />
     </Stack.Navigator>
   );
