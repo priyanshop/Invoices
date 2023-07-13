@@ -2,7 +2,15 @@ import React, {useState} from 'react';
 import {TouchableOpacity, StyleSheet, Text, View} from 'react-native';
 import {Overlay} from 'react-native-elements';
 
-const TaxOption = ({
+const methods = [
+  {title: 'Cash'},
+  {title: 'Check'},
+  {title: 'Bank'},
+  {title: 'Credit Card'},
+  {title: 'PayPal'},
+  {title: 'Other'},
+];
+const PaymentMode = ({
   closeBottomSheet,
   openModal = false,
   selectedOption,
@@ -14,30 +22,14 @@ const TaxOption = ({
       onBackdropPress={closeBottomSheet}
       overlayStyle={styles.bottomSheetContainer}>
       <View style={styles.innerView}>
-        <TouchableOpacity
+        {methods.map((item)=><TouchableOpacity
           onPress={() => {
-            selectedOption('On The Total');
+            selectedOption(item.title);
             closeBottomSheet();
           }}
           style={styles.rowView}>
-          <Text style={styles.titleTxt}>On The Total</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            selectedOption('Deducted');
-            closeBottomSheet();
-          }}
-          style={styles.rowView}>
-          <Text style={styles.titleTxt}>Deducted</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            selectedOption('Per Item');
-            closeBottomSheet();
-          }}
-          style={styles.rowView}>
-          <Text style={styles.titleTxt}>Per Item</Text>
-        </TouchableOpacity>
+          <Text style={styles.titleTxt}>{item.title}</Text>
+        </TouchableOpacity>)}
         <TouchableOpacity onPress={closeBottomSheet} style={styles.rowView}>
           <Text style={styles.titleTxt}>Cancel</Text>
         </TouchableOpacity>
@@ -59,7 +51,7 @@ const styles = StyleSheet.create({
   rowView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 8,
+    marginVertical: 10,
   },
   titleTxt: {fontSize: 17, color: '#000', fontWeight: '400'},
   mainContain: {
@@ -73,7 +65,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: '18%',
+    height: '35%',
     backgroundColor: '#F8FAFE',
     width: '100%',
     paddingBottom: 0,
@@ -82,4 +74,4 @@ const styles = StyleSheet.create({
   innerView: {flex: 1, paddingHorizontal: 8},
 });
 
-export default TaxOption;
+export default PaymentMode;

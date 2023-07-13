@@ -20,13 +20,12 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="SplashScreen" translatesAutoresizingMaskIntoConstraints="NO" id="aOb-AJ-fdn">
-                                <rect key="frame" x="-6" y="-16" width="440" height="880"/>
+                                <rect key="frame" x="-21" y="0.0" width="471" height="926"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="aOb-AJ-fdn" secondAttribute="bottom" id="7sc-HF-6lY"/>
-                            <constraint firstItem="aOb-AJ-fdn" firstAttribute="top" secondItem="yqL-jq-ISY" secondAttribute="bottom" id="91W-R4-i37"/>
                             <constraint firstAttribute="bottom" secondItem="aOb-AJ-fdn" secondAttribute="bottom" id="D4F-J3-Jr4"/>
                             <constraint firstItem="aOb-AJ-fdn" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="Dl4-7U-rI4"/>
                             <constraint firstItem="aOb-AJ-fdn" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" id="OaG-aj-Pc6"/>
@@ -34,13 +33,17 @@
                             <constraint firstItem="aOb-AJ-fdn" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="RZ6-rb-dPf"/>
                             <constraint firstItem="aOb-AJ-fdn" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" id="TFH-aU-a6X"/>
                             <constraint firstItem="aOb-AJ-fdn" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="YIV-um-6kA"/>
+                            <constraint firstAttribute="bottom" secondItem="aOb-AJ-fdn" secondAttribute="bottom" id="bKj-1f-6bM"/>
+                            <constraint firstItem="aOb-AJ-fdn" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="cIG-Al-mEa"/>
                             <constraint firstItem="aOb-AJ-fdn" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="ehv-2W-65I"/>
                             <constraint firstItem="aOb-AJ-fdn" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="h4c-7h-9gS"/>
+                            <constraint firstAttribute="trailing" secondItem="aOb-AJ-fdn" secondAttribute="trailing" id="h64-Ml-YJx"/>
                             <constraint firstItem="aOb-AJ-fdn" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" id="hbo-7M-1ix"/>
                             <constraint firstItem="aOb-AJ-fdn" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="jDY-R4-BhQ"/>
                             <constraint firstItem="aOb-AJ-fdn" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" constant="-52" id="nGg-HQ-FZO"/>
                             <constraint firstAttribute="bottom" secondItem="aOb-AJ-fdn" secondAttribute="bottom" id="nnX-av-L5g"/>
                             <constraint firstItem="aOb-AJ-fdn" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="s6b-hq-UJq"/>
+                            <constraint firstItem="aOb-AJ-fdn" firstAttribute="top" secondItem="yqL-jq-ISY" secondAttribute="bottom" id="yPr-UP-ZAT"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -50,6 +53,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="SplashScreen" width="414" height="736"/>
+        <image name="SplashScreen" width="621" height="1104"/>
     </resources>
 </document>

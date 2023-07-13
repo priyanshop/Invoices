@@ -29,6 +29,7 @@ import DefaultEmailMessage from '../Screens/Settings/DefualtEmailMessage';
 import TaxScreen from '../Screens/Settings/TaxScreen';
 import {Colors} from '../Helper/Colors';
 import SplashScreen from '../Screens/SplashScreen/SplashScreen';
+import PaymentScreen from '../Screens/Payments/PaymentScreen';
 
 const headerStyle = {
   headerStyle: {
@@ -166,7 +167,7 @@ function MainNavigator() {
       <Stack.Screen
         name="Settings"
         component={SettingScreen}
-        options={headerStyle}
+        options={{headerTitle: 'Menu', ...headerStyle}}
       />
       <Stack.Screen
         name="InvoiceCreation"
@@ -237,6 +238,11 @@ function MainNavigator() {
         name="TaxScreen"
         component={TaxScreen}
         options={{headerTitle: 'Tax', ...headerStyle}}
+      />
+       <Stack.Screen
+        name="PaymentScreen"
+        component={PaymentScreen}
+        options={{headerTitle: 'Payment', ...headerStyle}}
       />
     </Stack.Navigator>
   );
