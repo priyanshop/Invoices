@@ -155,6 +155,11 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
   function navigateToInvoiceNumber() {
     navigation.navigate('InvoiceNumber');
   }
+
+  function navigateToSignaturePad() {
+    navigation.navigate('SignaturePad');
+  }
+
   const AllRoute = () => {
     return (
       <ScrollView
@@ -235,7 +240,7 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
             <Text style={styles.notesText}>Payment Info</Text>
           </TouchableOpacity>
           <View style={styles.notesRow}>
-            <Text style={styles.notesText}>Signature</Text>
+            <Text onPress={navigateToSignaturePad} style={styles.notesText}>Signature</Text>
           </View>
           <TouchableOpacity
             onPress={navigateToAdditionalDetails}
@@ -355,7 +360,7 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
           <Menu
             visible={visible}
             onDismiss={closeMenu}
-            anchor={{x: screenWidth, y: 85}}>
+            anchor={{x: screenWidth, y: -10}}>
             <Menu.Item onPress={() => {}} title="Delete" />
             <Menu.Item onPress={() => {}} title="Open In .." />
             <Menu.Item onPress={() => {}} title="Share" />

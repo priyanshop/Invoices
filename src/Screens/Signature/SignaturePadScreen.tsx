@@ -6,9 +6,9 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
+import Orientation from 'react-native-orientation-locker';
 import {Colors} from '../../Helper/Colors';
 import SignaturePad from '../../SignaturePad';
-import Orientation from 'react-native-orientation-locker';
 
 const SignaturePadScreen = ({navigation}: any) => {
   const [content, setContent] = useState('');
@@ -16,6 +16,9 @@ const SignaturePadScreen = ({navigation}: any) => {
 
   useEffect(() => {
     Orientation.lockToLandscape();
+    return () => {
+      Orientation.unlockAllOrientations();
+    };
   }, []);
 
   const handleClear = () => {
