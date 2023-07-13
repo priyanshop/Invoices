@@ -1,11 +1,5 @@
 import React, {useState} from 'react';
-import {
-  Alert,
-  PermissionsAndroid,
-  Platform,
-  TouchableOpacity,
-} from 'react-native';
-import {StyleSheet, Text, View, Button} from 'react-native';
+import {TouchableOpacity, StyleSheet, Text, View} from 'react-native';
 import {Overlay} from 'react-native-elements';
 
 const TaxOption = ({

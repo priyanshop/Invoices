@@ -29,6 +29,9 @@ import DefaultEmailMessage from '../Screens/Settings/DefualtEmailMessage';
 import TaxScreen from '../Screens/Settings/TaxScreen';
 import {Colors} from '../Helper/Colors';
 import SignaturePadScreen from '../Screens/Signature/SignaturePadScreen';
+import SplashScreen from '../Screens/SplashScreen/SplashScreen';
+import PaymentScreen from '../Screens/Payments/PaymentScreen';
+import RegionScreen from '../Screens/Regions';
 
 const headerStyle = {
   headerStyle: {
@@ -137,7 +140,12 @@ function Dashboard() {
 
 function MainNavigator() {
   return (
-    <Stack.Navigator initialRouteName="LandingPage">
+    <Stack.Navigator initialRouteName="SplashScreen">
+      <Stack.Screen
+        name="SplashScreen"
+        component={SplashScreen}
+        options={{headerShown: false}}
+      />
       <Stack.Screen
         name="LandingPage"
         component={LandingScreen}
@@ -161,7 +169,7 @@ function MainNavigator() {
       <Stack.Screen
         name="Settings"
         component={SettingScreen}
-        options={headerStyle}
+        options={{headerTitle: 'Menu', ...headerStyle}}
       />
       <Stack.Screen
         name="InvoiceCreation"
@@ -237,7 +245,16 @@ function MainNavigator() {
         name="SignaturePad"
         component={SignaturePadScreen}
         options={{headerTitle: 'Signature', ...headerStyle}}
-        // options={{headerShown: false}}
+       />
+       <Stack.Screen
+        name="PaymentScreen"
+        component={PaymentScreen}
+        options={{headerTitle: 'Payment', ...headerStyle}}
+      />
+       <Stack.Screen
+        name="RegionScreen"
+        component={RegionScreen}
+        options={{headerTitle: 'Region', ...headerStyle}}
       />
     </Stack.Navigator>
   );

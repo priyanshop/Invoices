@@ -8,6 +8,8 @@ import {
   View,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import {ToggleButton} from 'react-native-paper';
 import {Colors} from '../../../Helper/Colors';
@@ -280,7 +282,7 @@ function ReportScreen({navigation}: any): JSX.Element {
       <StatusBar backgroundColor={Colors.appColor} />
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={navigateToSetting}>
-          <SimpleLineIcons name="settings" size={20} color="#fff" />
+          <Ionicons name="menu" size={25} color="#fff" />
         </TouchableOpacity>
         <View>
           <Text style={styles.headerText}>Reports</Text>

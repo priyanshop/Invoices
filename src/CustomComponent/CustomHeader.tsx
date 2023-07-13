@@ -22,7 +22,7 @@ const CustomHeader = ({
       return (
         <View style={styles.headerContainer}>
           <TouchableOpacity onPress={navigateToSetting}>
-            <SimpleLineIcons name="settings" size={20} color="#fff" />
+            <Icon name="menu" size={25} color="#fff" />
           </TouchableOpacity>
           <View>
             <Text style={styles.headerText}>{title}</Text>

@@ -1,12 +1,14 @@
 import React from 'react';
 import {
+  Image,
   SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
 } from 'react-native';
-import { Colors } from '../../Helper/Colors';
+import {Colors} from '../../Helper/Colors';
+import {Images} from '../../assets';
 
 function LandingScreen({navigation}: any): JSX.Element {
   function navigateToSignIn() {
@@ -20,7 +22,12 @@ function LandingScreen({navigation}: any): JSX.Element {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Colors.landingColor} />
-      <Text style={styles.title}>Invoice Simple</Text>
+      <Image
+        source={Images.appLogo}
+        resizeMode="contain"
+        style={{height: 100, width: 100, alignSelf: 'center'}}
+      />
+      <Text style={styles.title}>Invoices Simple</Text>
       <Text style={styles.paragraph}>
         Create professional invoices in secounds!
       </Text>
@@ -68,7 +75,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   title: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#fff',
