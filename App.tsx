@@ -10,6 +10,8 @@ import MainNavigator from './src/Navigation/MainNavigation';
 import {NavigationContainer} from '@react-navigation/native';
 import {Provider} from 'react-native-paper';
 import SplashScreen from 'react-native-splash-screen';
+import {Provider as ReduxProvider} from 'react-redux';
+import { store } from './src/redux/store';
 
 function App(): JSX.Element {
   useEffect(() => {
@@ -18,9 +20,11 @@ function App(): JSX.Element {
 
   return (
     <NavigationContainer>
-      <Provider>
-        <MainNavigator />
-      </Provider>
+      <ReduxProvider store={store}>
+        <Provider>
+          <MainNavigator />
+        </Provider>
+      </ReduxProvider>
     </NavigationContainer>
   );
 }

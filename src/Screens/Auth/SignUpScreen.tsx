@@ -11,15 +11,21 @@ import {
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useDispatch, useSelector} from 'react-redux';
+
 import {getScreenDimensions} from '../../Helper/ScreenDimension';
 import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
+import {saveUserData, setToken} from '../../redux/reducers/user/UserReducer';
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
 
 function SignUpScreen({navigation}: any): JSX.Element {
   const carouselRef = useRef(null);
+  const dispatch = useDispatch();
+  const selector = useSelector((state) => state.user);
+
   const [activeSlide, setActiveSlide] = useState(0);
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -42,7 +48,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
   const handleNext = () => {
     if (activeSlide === 2) {
       // navigation.navigate('Dashboard');
-      apiCall()
+      apiCall();
       // navigation.reset({
       //   index: 0,
       //   routes: [{name: 'Dashboard'}],
@@ -51,6 +57,10 @@ function SignUpScreen({navigation}: any): JSX.Element {
       carouselRef.current.snapToNext();
     }
   };
+useEffect(() => {
+  console.log(selector.userData);
+  
+}, [selector.userData])
 
   const validateEmail = (text: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -65,11 +75,14 @@ function SignUpScreen({navigation}: any): JSX.Element {
   const apiCall = async () => {
     try {
       const payload = {
-        email: 'nitissh@yopmail.com',
+        email: email,
         password: 'nitish@123',
       };
       const data = await FetchAPI('post', endpoint.register, payload);
-      console.log('GET response:', data);
+      if (data.status === 'success') {
+        dispatch(saveUserData(data.data));
+        dispatch(setToken(data.token));
+      }
     } catch (error) {}
   };
 
