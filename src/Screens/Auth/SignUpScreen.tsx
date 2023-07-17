@@ -13,6 +13,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getScreenDimensions} from '../../Helper/ScreenDimension';
 import {Colors} from '../../Helper/Colors';
+import FetchAPI from '../../Networking';
+import {endpoint} from '../../Networking/endpoint';
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
 
@@ -40,10 +42,11 @@ function SignUpScreen({navigation}: any): JSX.Element {
   const handleNext = () => {
     if (activeSlide === 2) {
       // navigation.navigate('Dashboard');
-      navigation.reset({
-        index: 0,
-        routes: [{name: 'Dashboard'}],
-      });
+      apiCall()
+      // navigation.reset({
+      //   index: 0,
+      //   routes: [{name: 'Dashboard'}],
+      // });
     } else {
       carouselRef.current.snapToNext();
     }
@@ -57,6 +60,17 @@ function SignUpScreen({navigation}: any): JSX.Element {
       setEmailError('');
     }
     setEmail(text);
+  };
+
+  const apiCall = async () => {
+    try {
+      const payload = {
+        email: 'nitissh@yopmail.com',
+        password: 'nitish@123',
+      };
+      const data = await FetchAPI('post', endpoint.register, payload);
+      console.log('GET response:', data);
+    } catch (error) {}
   };
 
   const renderItem = ({item}) => {
