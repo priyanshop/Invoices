@@ -7,4 +7,9 @@ export const endpoint = {
   getClient: (id: any) => '/api/clients/' + id,
   getAllClient: (id: any) => '/api/clients/' + id + '/clientlist',
   deleteClient: (id: any) => '/api/clients/' + id,
+  addItems: '/api/items',
+  updateItems: (id: any) => '/api/items/' + id,
+  getItems: (id: any) => '/api/items/' + id,
+  deleteItems: (id: any) => '/api/items/' + id,
+  getAllItems: (id: any) => '/api/items/' + id + '/itemlist',
 };

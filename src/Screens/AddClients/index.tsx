@@ -115,10 +115,6 @@ const AddClientScreen = ({navigation, route}: any) => {
     }
   };
 
-  // useEffect(() => {
-  //   create()
-  // }, [clientName,contact,address1,address2,address3,email,fax])
-
   const create = async () => {
     try {
       const payload = {
@@ -136,6 +132,7 @@ const AddClientScreen = ({navigation, route}: any) => {
         Authorization: 'Bearer ' + selector.token,
       });
       if (data.status === 'success') {
+        navigation.goBack();
       }
     } catch (error) {}
   };
@@ -162,6 +159,7 @@ const AddClientScreen = ({navigation, route}: any) => {
         },
       );
       if (data.status === 'success') {
+        navigation.goBack();
       }
     } catch (error) {}
   };
@@ -212,7 +210,11 @@ const AddClientScreen = ({navigation, route}: any) => {
         visible={visible}
         onDismiss={closeMenu}
         anchor={{x: screenWidth, y: 50}}>
-        <Menu.Item disabled={!alreadyExist} onPress={deleteClient} title="Delete" />
+        <Menu.Item
+          disabled={!alreadyExist}
+          onPress={deleteClient}
+          title="Delete"
+        />
       </Menu>
       <View style={styles.mainContainer}>
         <View style={styles.mainContain}>

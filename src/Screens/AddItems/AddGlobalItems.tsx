@@ -1,6 +1,6 @@
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
-  Platform,
+  BackHandler,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -9,14 +9,134 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import {Switch} from 'react-native-paper';
+import Entypo from 'react-native-vector-icons/Entypo';
+import {useSelector, useDispatch} from 'react-redux';
+import {Menu, Switch} from 'react-native-paper';
 import {Colors} from '../../Helper/Colors';
+import FetchAPI from '../../Networking';
+import {endpoint} from '../../Networking/endpoint';
+import {getScreenDimensions} from '../../Helper/ScreenDimension';
 
-function AddGlobalItemScreen({navigation}: any): JSX.Element {
+const screenDimensions = getScreenDimensions();
+const screenWidth = screenDimensions.width;
+
+function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
+  const dispatch = useDispatch();
+  const selector = useSelector(state => state.user);
+  const [Description, setDescription] = useState('');
+  const [Taxable, setTaxable] = useState(false);
+  const [Notes, setNotes] = useState('');
+  const [unitCost, setUnitCost] = useState('');
+  const [unit, setUnit] = useState('');
+  const [visible, setVisible] = React.useState(false);
+  const [alreadyExist, setAlreadyExist] = useState(false);
+  const [Id, setId] = useState('');
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity style={{marginRight: 10}} onPress={openMenu}>
+          <Entypo name="dots-three-vertical" size={20} color="#fff" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
+  useEffect(() => {
+    console.log('route.params', JSON.stringify(route.params));
+    if (route?.params?.ItemId) {
+      setId(route.params?.ItemId);
+      getItem(route.params?.ItemId);
+    }
+  }, [route.params]);
+
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
+
+  const handleTextInputChange = (value: any, setter: any) => {
+    setter(value);
+  };
+
+  const getItem = async (id: any) => {
+    try {
+      const data = await FetchAPI('get', endpoint.getItems(id), null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        const element = data.data[0];
+        setNotes(element.notes);
+        setUnitCost(element.rate.toString());
+        setUnit(element.unit);
+        setTaxable(element.is_taxable);
+        setDescription(element.description);
+        setAlreadyExist(true);
+      }
+    } catch (error) {}
+  };
+
+  const create = async () => {
+    try {
+      const payload = {
+        description: Description,
+        rate: unitCost,
+        unit: unit,
+        is_taxable: Taxable.toString(),
+        notes: Notes,
+      };
+      const data = await FetchAPI('post', endpoint.addItems, payload, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        navigation.goBack();
+      }
+    } catch (error) {}
+  };
+
+  const update = async () => {
+    try {
+      const payload = {
+        description: Description,
+        rate: unitCost,
+        unit: unit,
+        is_taxable: Taxable.toString(),
+        notes: Notes,
+      };
+      const data = await FetchAPI('patch', endpoint.updateItems(Id), payload, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        navigation.goBack();
+      }
+    } catch (error) {}
+  };
+
+  const deleteItem = async () => {
+    try {
+      const data = await FetchAPI(
+        'delete',
+        endpoint.deleteItems(Id),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        navigation.goBack();
+      }
+    } catch (error) {}
+  };
 
   return (
     <>
+      <Menu
+        visible={visible}
+        onDismiss={closeMenu}
+        anchor={{x: screenWidth, y: 50}}>
+        <Menu.Item
+          disabled={!alreadyExist}
+          onPress={deleteItem}
+          title="Delete"
+        />
+      </Menu>
       <StatusBar backgroundColor={Colors.appColor} />
       <ScrollView
         style={[styles.scene, {backgroundColor: '#d2d2d2', padding: 8}]}>
@@ -28,9 +148,13 @@ function AddGlobalItemScreen({navigation}: any): JSX.Element {
             <View style={styles.mainView}>
               <View style={styles.inputContainer}>
                 <TextInput
+                  value={Description}
                   style={[styles.input, {textAlign: 'left'}]}
                   placeholder={'Description'}
                   placeholderTextColor={'grey'}
+                  onChangeText={value =>
+                    handleTextInputChange(value, setDescription)
+                  }
                 />
               </View>
             </View>
@@ -38,9 +162,13 @@ function AddGlobalItemScreen({navigation}: any): JSX.Element {
               <Text style={styles.label}>Unit Cost: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
+                  value={unitCost}
                   style={styles.input}
                   placeholder={'$0.00'}
                   placeholderTextColor={'grey'}
+                  onChangeText={value =>
+                    handleTextInputChange(value, setUnitCost)
+                  }
                 />
               </View>
             </View>
@@ -48,31 +176,46 @@ function AddGlobalItemScreen({navigation}: any): JSX.Element {
               <Text style={styles.label}>Unit: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
+                  value={unit}
                   style={styles.input}
                   placeholder={'hours,days'}
                   placeholderTextColor={'grey'}
+                  onChangeText={value => handleTextInputChange(value, setUnit)}
                 />
               </View>
             </View>
             <View style={styles.mainView}>
               <Text style={styles.label}>Taxable: </Text>
-              <Switch value={true} />
+              <Switch
+                value={Taxable}
+                color={Colors.landingColor}
+                onValueChange={(value: any) => setTaxable(value)}
+              />
             </View>
           </View>
-          <View style={styles.totalView}>
+          {/* <View style={styles.totalView}>
             <Text style={styles.totalTxt}>Total:</Text>
             <Text style={styles.totalTxt}>195</Text>
-          </View>
+          </View> */}
         </View>
 
         <View style={styles.detailView}>
           <TextInput
+            value={Notes}
             placeholder="Additional Details"
             style={styles.detailText}
             numberOfLines={4}
             multiline
+            onChangeText={value => handleTextInputChange(value, setNotes)}
           />
         </View>
+        <TouchableOpacity
+          onPress={alreadyExist ? update : create}
+          style={styles.statementBtn}>
+          <Text style={[styles.titleTxt2, {color: '#fff', fontWeight: '600'}]}>
+            {alreadyExist ? 'Update' : 'Create'}
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </>
   );
@@ -139,6 +282,15 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   saveText: {fontSize: 18, fontWeight: '400', color: '#000'},
+  statementBtn: {
+    backgroundColor: Colors.appColor,
+    alignItems: 'center',
+    padding: 15,
+    borderRadius: 8,
+    justifyContent: 'center',
+    marginVertical: 5,
+  },
+  titleTxt2: {fontSize: 17, color: '#000', fontWeight: '400'},
 });
 
 export default AddGlobalItemScreen;

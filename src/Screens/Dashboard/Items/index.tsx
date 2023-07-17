@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   FlatList,
   SafeAreaView,
@@ -10,12 +10,15 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
+import { useSelector, useDispatch } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FloatingButton from '../../../CustomComponent/FloatingButton';
-import {Colors} from '../../../Helper/Colors';
+import { Colors } from '../../../Helper/Colors';
 import CustomHeader from '../../../CustomComponent/CustomHeader';
 import EmptyViewComponent from '../../../CustomComponent/EmptyViewComponent';
+import FetchAPI from '../../../Networking';
+import { endpoint } from '../../../Networking/endpoint';
+import { useIsFocused } from '@react-navigation/native';
 
 const data = [
   {
@@ -29,8 +32,51 @@ const data = [
     price: 150.0,
   },
 ];
-function ItemsScreen({navigation}: any): JSX.Element {
+function ItemsScreen({ navigation }: any): JSX.Element {
+  const dispatch = useDispatch();
+  const isFocused = useIsFocused();
+  const selector = useSelector(state => state.user);
   const [searchStart, setSearchStart] = useState(false);
+  const [itemList, setItemList] = useState([]);
+  const [searchItemList, setSearchItemList] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    apiCall();
+  }, [selector.token, isFocused]);
+
+  const apiCall = async () => {
+    try {
+      const data = await FetchAPI(
+        'get',
+        endpoint.getAllItems(selector.userData._id),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        setSearchItemList(data.data);
+        setItemList(data.data);
+      }
+    } catch (error) { }
+  };
+
+  const handleSearch = (query): any => {
+    setSearchQuery(query);
+    const filtered = itemList.filter(item =>
+      item.description.toLowerCase().includes(query.toLowerCase()),
+    );
+    setSearchItemList(filtered);
+  };
+
+  const removeSearch = (item: any) => {
+    setSearchStart(item);
+    if (!item) {
+      setSearchQuery('');
+      setSearchItemList(itemList);
+    }
+  };
 
   function navigateToSetting() {
     navigation.navigate('Settings');
@@ -40,16 +86,22 @@ function ItemsScreen({navigation}: any): JSX.Element {
     navigation.navigate('AddGlobalItemScreen');
   }
 
-  const renderItem = ({item}: any) => (
-    <View style={styles.invoiceItem}>
+  function navigateToItem(id: any) {
+    navigation.navigate('AddGlobalItemScreen', { ItemId: id });
+  }
+
+  const renderItem = ({ item }: any) => (
+    <TouchableOpacity onPress={() => navigateToItem(item._id)} style={styles.invoiceItem}>
       <View>
-        <Text style={styles.clientText}>{`${item.item}`}</Text>
-        <Text style={styles.invoiceNumberText}>{`${item.description}`}</Text>
+        <Text style={styles.clientText}>{`${item.description}`}</Text>
+        {item.notes ? (
+          <Text style={styles.invoiceNumberText}>{`${item.notes}`}</Text>
+        ) : null}
       </View>
       <View style={styles.priceView}>
-        <Text style={styles.priceText}>{`$${item.price}`}</Text>
+        <Text style={styles.priceText}>{`$${item.rate}`}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
   const renderEmptyComponent = () => (
     <EmptyViewComponent
@@ -64,16 +116,18 @@ function ItemsScreen({navigation}: any): JSX.Element {
       <CustomHeader
         searchStart={searchStart}
         navigateToSetting={navigateToSetting}
-        setSearchStart={setSearchStart}
+        setSearchStart={removeSearch}
         title={'Items'}
+        searchText={searchQuery}
+        handleSearch={handleSearch}
       />
-      <View style={{flex: 1, backgroundColor: Colors.commonBg}}>
+      <View style={{ flex: 1, backgroundColor: Colors.commonBg }}>
         <FlatList
-          data={data}
+          data={searchItemList}
           renderItem={renderItem}
           keyExtractor={(item: any, index: any) => item + index}
           ListEmptyComponent={renderEmptyComponent}
-          contentContainerStyle={{flex: 1}}
+          contentContainerStyle={{ flex: 1 }}
         />
         <FloatingButton onPress={navigateToAddItem} />
       </View>
@@ -164,6 +218,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
     backgroundColor: '#fff',
+    height: 45,
+    alignItems: 'center',
   },
   clientText: {
     color: '#000',
@@ -204,7 +260,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
   },
-  priceView: {justifyContent: 'center'},
+  priceView: { justifyContent: 'center' },
 });
 
 export default ItemsScreen;

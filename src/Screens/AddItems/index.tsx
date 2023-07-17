@@ -14,6 +14,12 @@ import {Switch} from 'react-native-paper';
 import {Colors} from '../../Helper/Colors';
 
 function AddItemScreen({navigation}: any): JSX.Element {
+  const [Description, setDescription] = useState('');
+  const [Taxable, setTaxable] = useState(false);
+  const [Notes, setNotes] = useState('');
+  const [unitCost, setUnitCost] = useState('');
+  const [unit, setUnit] = useState('');
+  
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
