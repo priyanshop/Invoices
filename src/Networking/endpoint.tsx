@@ -12,4 +12,6 @@ export const endpoint = {
   getItems: (id: any) => '/api/items/' + id,
   deleteItems: (id: any) => '/api/items/' + id,
   getAllItems: (id: any) => '/api/items/' + id + '/itemlist',
+  addPaymentInfo: '/api/settings/payment-info',
+  getPaymentInfo: '/api/settings/payment-info',
 };

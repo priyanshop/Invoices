@@ -1,12 +1,56 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TextInput} from 'react-native';
-import { Colors } from '../../Helper/Colors';
+import {useSelector, useDispatch} from 'react-redux';
+import {Colors} from '../../Helper/Colors';
+import FetchAPI from '../../Networking';
+import {endpoint} from '../../Networking/endpoint';
 
-const PaymentInfo = () => {
-  const [businessName, setBusinessName] = useState('');
+const PaymentInfo = ({navigation}: any) => {
+  const dispatch = useDispatch();
+  const selector = useSelector(state => state.user);
+  const [payable, setPayable] = useState('');
   const [email, setEmail] = useState('');
   const [paymentInstructions, setPaymentInstructions] = useState('');
   const [additionalDetails, setAdditionalDetails] = useState('');
+
+  useEffect(() => {
+    getInfo();
+  }, [selector.token]);
+
+  const getInfo = async () => {
+    try {
+      const data = await FetchAPI('get', endpoint.getPaymentInfo, null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        const element = data.data.payment_info;
+        setPayable(element.make_checks_payable);
+        setAdditionalDetails(element.additional_payment_instructions);
+        setEmail(element.paypal_email);
+        setPaymentInstructions(element.payment_instructions);
+      }
+    } catch (error) {}
+  };
+
+  const addInfo = async () => {
+    try {
+      const payload = {
+        paypal_email: email,
+        make_checks_payable: payable,
+        payment_instructions: paymentInstructions,
+        additional_payment_instructions: additionalDetails,
+      };
+      const data = await FetchAPI('post', endpoint.addPaymentInfo, payload, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+      }
+    } catch (error) {}
+  };
+
+  const handleTextInputChange = (value: any, setter: any) => {
+    setter(value);
+  };
 
   return (
     <View style={styles.mainContainer}>
@@ -20,7 +64,8 @@ const PaymentInfo = () => {
         <View style={styles.rowView}>
           <TextInput
             value={email}
-            onChangeText={setEmail}
+            onChangeText={value => handleTextInputChange(value, setEmail)}
+            onBlur={addInfo}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
             placeholder="Enter your paypal email address"
             placeholderTextColor={'grey'}
@@ -34,8 +79,9 @@ const PaymentInfo = () => {
         </View>
         <View style={styles.rowView}>
           <TextInput
-            value={businessName}
-            onChangeText={setBusinessName}
+            value={payable}
+            onChangeText={value => handleTextInputChange(value, setPayable)}
+            onBlur={addInfo}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
             placeholder="Your or your business's name"
             placeholderTextColor={'grey'}
@@ -50,7 +96,10 @@ const PaymentInfo = () => {
         <View style={styles.rowView}>
           <TextInput
             value={paymentInstructions}
-            onChangeText={setPaymentInstructions}
+            onChangeText={value =>
+              handleTextInputChange(value, setPaymentInstructions)
+            }
+            onBlur={addInfo}
             style={{
               ...styles.titleTxt,
               flex: 1,
@@ -73,7 +122,10 @@ const PaymentInfo = () => {
         <View style={styles.rowView}>
           <TextInput
             value={additionalDetails}
-            onChangeText={setAdditionalDetails}
+            onChangeText={value =>
+              handleTextInputChange(value, setAdditionalDetails)
+            }
+            onBlur={addInfo}
             style={{
               ...styles.titleTxt,
               flex: 1,
@@ -107,7 +159,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     // marginVertical: 8,
     padding: 2,
-    paddingHorizontal:8
+    paddingHorizontal: 8,
   },
   titleTxt: {
     fontSize: 17,
