@@ -1,17 +1,56 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import {useSelector, useDispatch} from 'react-redux';
+import {useIsFocused} from '@react-navigation/native';
 import {Colors} from '../../Helper/Colors';
+import FetchAPI from '../../Networking';
+import {endpoint} from '../../Networking/endpoint';
 
 function GlobalInvoiceNumber({navigation}: any): JSX.Element {
+  const dispatch = useDispatch();
+  const selector = useSelector(state => state.user);
+  const isFocused = useIsFocused();
+  const [invoices, setInvoices] = useState('');
+  const [estimate, setEstimate] = useState('');
+
+  useEffect(() => {
+    getInfo();
+  }, [selector.token]);
+
+  const getInfo = async () => {
+    try {
+      const data = await FetchAPI('get', endpoint.invoiceNumber, null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        const element = data.data.invoice_numbering;
+        setEstimate(element.estimate_number_prefix);
+        setInvoices(element.invoice_number_prefix);
+      }
+    } catch (error) {}
+  };
+
+  const addInfo = async () => {
+    try {
+      const payload = {
+        invoice_number_prefix: invoices,
+        estimate_number_prefix: estimate,
+      };
+      const data = await FetchAPI('post', endpoint.invoiceNumber, payload, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+      }
+    } catch (error) {}
+  };
+
   return (
     <>
       <StatusBar backgroundColor={Colors.appColor} />
@@ -27,9 +66,12 @@ function GlobalInvoiceNumber({navigation}: any): JSX.Element {
               <Text style={styles.label}>Invoice Number: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
+                  value={invoices}
                   style={styles.input}
                   placeholder={'INV0000'}
                   placeholderTextColor={'grey'}
+                  onChangeText={setInvoices}
+                  onBlur={addInfo}
                 />
               </View>
             </View>
@@ -37,9 +79,12 @@ function GlobalInvoiceNumber({navigation}: any): JSX.Element {
               <Text style={styles.label}>Estimate Number: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
+                  value={estimate}
                   style={styles.input}
                   placeholder={'EST0000'}
                   placeholderTextColor={'grey'}
+                  onChangeText={setEstimate}
+                  onBlur={addInfo}
                 />
               </View>
             </View>

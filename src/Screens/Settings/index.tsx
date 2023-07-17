@@ -74,7 +74,7 @@ const SettingScreen = ({navigation}: any) => {
         {
           title: 'Invoice Number',
           description: '',
-          onPress: () => navigation.navigate('InvoiceNumber'),
+          onPress: () => navigation.navigate('GlobalInvoiceNumber'),
         },
         {title: 'Export Expense Summary', description: ''},
         {title: 'Export as Spreadsheet', description: ''},

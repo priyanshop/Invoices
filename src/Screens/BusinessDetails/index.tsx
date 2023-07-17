@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -10,10 +10,17 @@ import {
   ScrollView,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
+import {useSelector, useDispatch} from 'react-redux';
+import {useIsFocused} from '@react-navigation/native';
 import ImagePickerComponent from '../../CustomComponent/ImagePickerComponent';
 import {Colors} from '../../Helper/Colors';
+import FetchAPI from '../../Networking';
+import {endpoint} from '../../Networking/endpoint';
 
 const BusinessDetails = () => {
+  const dispatch = useDispatch();
+  const selector = useSelector(state => state.user);
+  const isFocused = useIsFocused();
   const [openModal, setOpenModal] = useState(false);
   const [BusinessImage, setBusinessImage] = useState(null);
   const [businessName, setBusinessName] = useState('');
@@ -26,10 +33,88 @@ const BusinessDetails = () => {
   const [Phone, setPhone] = useState('');
   const [Mobile, setMobile] = useState('');
   const [Website, setWebsite] = useState('');
+  const [alreadyExist, setAlreadyExist] = useState(false);
+  const [businessId, setBusinessId] = useState('');
+
+  useEffect(() => {
+    getInfo();
+  }, [selector.token]);
+
+  const getInfo = async () => {
+    try {
+      const data = await FetchAPI('get', endpoint.businessInfo, null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        const element = data.data.business_details;
+        if (element.email) {
+          setAlreadyExist(true);
+          setBusinessId(data.data._id);
+        }
+        setPhone(element.phone_number);
+        setAddress1(element.address1);
+        setAddress2(element.address2);
+        setAddress3(element.address3);
+        setBusinessName(element.name);
+        setEmail(element.email);
+      }
+    } catch (error) {}
+  };
+
+  const checkUpdate = () => {
+    if (alreadyExist) {
+      updateInfo();
+    } else {
+      addInfo();
+    }
+  };
+  const addInfo = async () => {
+    try {
+      const payload = {
+        name: businessName,
+        email: email,
+        phone_number: Phone,
+        address1: address1,
+        address2: address2,
+        address3: address3,
+        business_logo: 'xyz.png',
+      };
+      const data = await FetchAPI('post', endpoint.businessInfo, payload, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+      }
+    } catch (error) {}
+  };
+
+  const updateInfo = async () => {
+    try {
+      const payload = {
+        name: businessName,
+        email: email,
+        phone_number: Phone,
+        address1: address1,
+        address2: address2,
+        address3: address3,
+        business_logo: 'xyz.png',
+      };
+      const data = await FetchAPI(
+        'patch',
+        endpoint.updateBusinessInfo(businessId),
+        payload,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+      }
+    } catch (error) {}
+  };
 
   const closeBottomSheet = () => {
     setOpenModal(!openModal);
   };
+
   return (
     <ScrollView style={styles.mainContainer}>
       <View style={styles.businessContainer}>
@@ -58,6 +143,7 @@ const BusinessDetails = () => {
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
             placeholder="Business Name"
             placeholderTextColor={'grey'}
+            onBlur={checkUpdate}
           />
         </View>
         <View style={styles.rowView}>
@@ -67,6 +153,7 @@ const BusinessDetails = () => {
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
             placeholder="Business Owner Name"
             placeholderTextColor={'grey'}
+            onBlur={checkUpdate}
           />
         </View>
         <View style={styles.rowView}>
@@ -76,6 +163,7 @@ const BusinessDetails = () => {
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
             placeholder="Business Number"
             placeholderTextColor={'grey'}
+            onBlur={checkUpdate}
           />
         </View>
       </View>
@@ -87,6 +175,7 @@ const BusinessDetails = () => {
             style={{...styles.titleTxt, textAlign: 'left'}}
             placeholder="Address Line 1"
             placeholderTextColor={'grey'}
+            onBlur={checkUpdate}
           />
         </View>
         <View style={styles.rowView}>
@@ -105,6 +194,7 @@ const BusinessDetails = () => {
             style={{...styles.titleTxt, textAlign: 'left'}}
             placeholder="Address Line 3"
             placeholderTextColor={'grey'}
+            onBlur={checkUpdate}
           />
         </View>
       </View>
@@ -116,6 +206,7 @@ const BusinessDetails = () => {
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
             placeholder="Email"
             placeholderTextColor={'grey'}
+            onBlur={checkUpdate}
           />
         </View>
         <View style={styles.rowView}>
@@ -125,6 +216,7 @@ const BusinessDetails = () => {
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
             placeholder="Phone"
             placeholderTextColor={'grey'}
+            onBlur={checkUpdate}
           />
         </View>
         <View style={styles.rowView}>
@@ -134,6 +226,7 @@ const BusinessDetails = () => {
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
             placeholder="Mobile"
             placeholderTextColor={'grey'}
+            onBlur={checkUpdate}
           />
         </View>
         <View style={styles.rowView}>
@@ -143,6 +236,7 @@ const BusinessDetails = () => {
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
             placeholder="Website"
             placeholderTextColor={'grey'}
+            onBlur={checkUpdate}
           />
         </View>
       </View>

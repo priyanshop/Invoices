@@ -1,12 +1,46 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TextInput} from 'react-native';
-import { Colors } from '../../Helper/Colors';
+import {useSelector, useDispatch} from 'react-redux';
+import {Colors} from '../../Helper/Colors';
+import FetchAPI from '../../Networking';
+import {endpoint} from '../../Networking/endpoint';
 
 const DefaultNotes = () => {
-  const [businessName, setBusinessName] = useState('');
-  const [email, setEmail] = useState('');
-  const [paymentInstructions, setPaymentInstructions] = useState('');
-  const [additionalDetails, setAdditionalDetails] = useState('');
+  const dispatch = useDispatch();
+  const selector = useSelector(state => state.user);
+  const [invoices, setInvoices] = useState('');
+  const [estimate, setEstimate] = useState('');
+
+  useEffect(() => {
+    getInfo();
+  }, [selector.token]);
+
+  const getInfo = async () => {
+    try {
+      const data = await FetchAPI('get', endpoint.defaultNotes, null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        const element = data.data.default_notes;
+        setEstimate(element.estimates);
+        setInvoices(element.invoices);
+      }
+    } catch (error) {}
+  };
+
+  const addInfo = async () => {
+    try {
+      const payload = {
+        invoices: invoices,
+        estimates: estimate,
+      };
+      const data = await FetchAPI('post', endpoint.defaultNotes, payload, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+      }
+    } catch (error) {}
+  };
 
   return (
     <View style={styles.mainContainer}>
@@ -16,13 +50,14 @@ const DefaultNotes = () => {
         </View>
         <View style={styles.rowView}>
           <TextInput
-            value={paymentInstructions}
-            onChangeText={setPaymentInstructions}
+            value={invoices}
+            onChangeText={setInvoices}
             style={styles.titleTxt}
-            placeholder="Default note"
+            placeholder="Default Invoices"
             placeholderTextColor={'grey'}
             multiline
             numberOfLines={4}
+            onBlur={addInfo}
           />
         </View>
       </View>
@@ -33,13 +68,14 @@ const DefaultNotes = () => {
         </View>
         <View style={styles.rowView}>
           <TextInput
-            value={additionalDetails}
-            onChangeText={setAdditionalDetails}
+            value={estimate}
+            onChangeText={setEstimate}
             style={styles.titleTxt}
-            placeholder="Default note"
+            placeholder="Default Estimates"
             placeholderTextColor={'grey'}
             multiline
             numberOfLines={4}
+            onBlur={addInfo}
           />
         </View>
       </View>

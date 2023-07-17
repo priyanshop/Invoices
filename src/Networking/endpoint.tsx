@@ -14,4 +14,8 @@ export const endpoint = {
   getAllItems: (id: any) => '/api/items/' + id + '/itemlist',
   addPaymentInfo: '/api/settings/payment-info',
   getPaymentInfo: '/api/settings/payment-info',
+  defaultNotes: '/api/settings/default-note',
+  businessInfo :'/api/settings/business-info',
+  updateBusinessInfo: (id: any) => '/api/settings/business-info/' + id,
+  invoiceNumber:'/api/settings/invoice-number'
 };
