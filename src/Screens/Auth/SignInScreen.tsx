@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {
+  Alert,
   SafeAreaView,
   StatusBar,
   StyleSheet,
@@ -60,7 +61,9 @@ function SignInScreen({navigation}: any): JSX.Element {
           routes: [{name: 'Dashboard'}],
         });
       }
-    } catch (error) {}
+    } catch (error) {
+      Alert.alert('', error.message);
+    }
   };
   return (
     <SafeAreaView style={styles.container}>

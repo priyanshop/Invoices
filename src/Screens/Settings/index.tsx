@@ -32,6 +32,14 @@ const SettingScreen = ({navigation}: any) => {
     } catch (error) {}
   };
 
+  const accountAction = (screen:any) => {
+    dispatch(removeUserData());
+    navigation.reset({
+      index: 0,
+      routes: [{name: screen}],
+    });
+  };
+
   const data = [
     {
       sectionName: 'Support',
@@ -101,7 +109,11 @@ const SettingScreen = ({navigation}: any) => {
         {title: 'Backup', description: ''},
         {title: 'Restore Purchases', description: ''},
         {title: 'Check Subscriptions', description: ''},
-        {title: 'Switch Account', description: ''},
+        {
+          title: 'Switch Account',
+          description: '',
+          onPress: () => accountAction('SignIn'),
+        },
         {
           title: 'Sign Up',
           description: '',
@@ -111,13 +123,7 @@ const SettingScreen = ({navigation}: any) => {
         {
           title: 'Logout',
           description: '',
-          onPress: () => {
-            dispatch(removeUserData());
-            navigation.reset({
-              index: 0,
-              routes: [{name: 'LandingPage'}],
-            });
-          },
+          onPress: () => accountAction('LandingPage'),
         },
       ],
     },
@@ -143,26 +149,27 @@ const SettingScreen = ({navigation}: any) => {
     </View>
   );
 
-  const renderItem = ({item, index}: any) => (
-    <TouchableOpacity
-      onPress={item.onPress}
-      style={[
-        styles.itemView,
-        item.title === 'Contact us' ||
-        item.title === 'Send me a copy of emails' ||
-        item.title === 'Logout' ||
-        item.title === 'Privacy Policy'
-          ? styles.itemBorder
-          : null,
-      ]}>
-      <View>
-        <Text style={styles.titleTxt}>{item.title}</Text>
-        {item.description === '' ? null : (
-          <Text style={styles.descriptionTxt}>{item.description}</Text>
-        )}
-      </View>
-    </TouchableOpacity>
-  );
+  const renderItem = ({item, index}: any) =>
+    item.title === 'Sign Up' && selector.token ? null : (
+      <TouchableOpacity
+        onPress={item.onPress}
+        style={[
+          styles.itemView,
+          item.title === 'Contact us' ||
+          item.title === 'Send me a copy of emails' ||
+          item.title === 'Logout' ||
+          item.title === 'Privacy Policy'
+            ? styles.itemBorder
+            : null,
+        ]}>
+        <View>
+          <Text style={styles.titleTxt}>{item.title}</Text>
+          {item.description === '' ? null : (
+            <Text style={styles.descriptionTxt}>{item.description}</Text>
+          )}
+        </View>
+      </TouchableOpacity>
+    );
   return (
     <View style={styles.mainContainer}>
       <SectionList

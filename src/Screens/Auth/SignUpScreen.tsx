@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
+  Alert,
   SafeAreaView,
   StatusBar,
   StyleSheet,
@@ -34,6 +35,11 @@ function SignUpScreen({navigation}: any): JSX.Element {
   const [address2, setAddress2] = useState('');
   const [address3, setAddress3] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errorPassword, setErrorPassword] = useState('');
+  const [errorConfirmPassword, setErrorConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const pages = [{index: 1}, {index: 2}, {index: 3}];
 
@@ -48,7 +54,9 @@ function SignUpScreen({navigation}: any): JSX.Element {
   const handleNext = () => {
     if (activeSlide === 2) {
       // navigation.navigate('Dashboard');
-      apiCall();
+      if (email.trim() !== '') {
+        validation();
+      }
       // navigation.reset({
       //   index: 0,
       //   routes: [{name: 'Dashboard'}],
@@ -57,6 +65,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
       carouselRef.current.snapToNext();
     }
   };
+
   useEffect(() => {
     console.log(selector.userData);
   }, [selector.userData]);
@@ -71,11 +80,61 @@ function SignUpScreen({navigation}: any): JSX.Element {
     setEmail(text);
   };
 
+  const isPasswordValid = (password: any) => {
+    const passwordRegex =
+      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^\w\s]).{8,}$/;
+    return passwordRegex.test(password);
+  };
+
+  const validation = () => {
+    if (emailError.trim() !== '') {
+      Alert.alert('', 'Please Enter Email');
+      return;
+    }
+    if (password !== confirmPassword) {
+      Alert.alert('', 'Passwords do not match');
+
+      setErrorConfirmPassword('Passwords do not match');
+      return;
+    }
+
+    if (!isPasswordValid(password)) {
+      Alert.alert('', 'Please verify confirm Passwords');
+
+      setErrorPassword(
+        'Password must be at least 8 characters long, contain one uppercase letter, and one special character',
+      );
+      return;
+    }
+    apiCall();
+  };
+
+  const validatePassword = (password: any) => {
+    setPassword(password);
+    if (!isPasswordValid(password)) {
+      setErrorPassword(
+        'Password must be at least 8 characters long, contain one uppercase letter, and one special character',
+      );
+    } else {
+      setErrorPassword('');
+    }
+  };
+
+  const validateConfirmPassword = (confirmPassword: any) => {
+    setConfirmPassword(confirmPassword);
+    if (password !== confirmPassword) {
+      setErrorConfirmPassword('Passwords do not match');
+    } else {
+      setErrorConfirmPassword('');
+    }
+  };
+
   const apiCall = async () => {
+    setLoading(true);
     try {
       const payload = {
         email: email,
-        password: 'nitish@123',
+        password: password,
       };
       const data = await FetchAPI('post', endpoint.register, payload);
       if (data.status === 'success') {
@@ -85,8 +144,12 @@ function SignUpScreen({navigation}: any): JSX.Element {
           index: 0,
           routes: [{name: 'Dashboard'}],
         });
+        setLoading(false);
       }
-    } catch (error) {}
+    } catch (error) {
+      Alert.alert('', error.message);
+      setLoading(false);
+    }
   };
 
   const renderItem = ({item}) => {
@@ -100,13 +163,13 @@ function SignUpScreen({navigation}: any): JSX.Element {
           />
           <Text style={styles.title}>Business Info</Text>
           <Text style={styles.paragraph}>(All fields are optional)</Text>
-          <TextInput
+          {/* <TextInput
             value={businessName}
             onChangeText={setBusinessName}
             style={[styles.input, styles.businessName]}
             placeholder={'Business Name'}
             placeholderTextColor={'grey'}
-          />
+          /> */}
 
           <TextInput
             value={email}
@@ -122,6 +185,42 @@ function SignUpScreen({navigation}: any): JSX.Element {
             </View>
           )}
           <TextInput
+            value={password}
+            onChangeText={validatePassword}
+            style={[styles.input]}
+            placeholder={'Password'}
+            placeholderTextColor={'grey'}
+          />
+          {errorPassword.trim() !== '' && (
+            <View style={styles.errorView}>
+              <Text style={styles.errorTxt}>{errorPassword}</Text>
+            </View>
+          )}
+          <TextInput
+            value={confirmPassword}
+            onChangeText={validateConfirmPassword}
+            style={[
+              styles.input,
+              styles.phoneInput,
+              errorConfirmPassword
+                ? {borderBottomRightRadius: 0, borderBottomLeftRadius: 0}
+                : null,
+              {borderTopWidth: 0, marginBottom: 0},
+            ]}
+            placeholder={'Confirm Password'}
+            placeholderTextColor={'grey'}
+          />
+          {errorConfirmPassword.trim() !== '' && (
+            <View
+              style={[
+                styles.errorView,
+                styles.phoneInput,
+                {borderTopWidth: 0, marginBottom: 0},
+              ]}>
+              <Text style={styles.errorTxt}>{errorConfirmPassword}</Text>
+            </View>
+          )}
+          {/* <TextInput
             value={phoneNumber}
             onChangeText={setPhoneNumber}
             style={[styles.input, styles.phoneInput]}
@@ -149,7 +248,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
             style={[styles.input, styles.lastAddressInput]}
             placeholder={'Address Line 3'}
             placeholderTextColor={'grey'}
-          />
+          /> */}
         </View>
       );
     } else if (item.index === 2) {
@@ -186,41 +285,49 @@ function SignUpScreen({navigation}: any): JSX.Element {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={Colors.landingColor} />
-      <View style={styles.header}>
-        <View style={{width: '20%'}}>
-          <TouchableOpacity onPress={handlePrevious}>
-            <Ionicons name="arrow-back" color={'#fff'} size={20} />
-          </TouchableOpacity>
-        </View>
-        <View style={{width: '60%'}}>
-          <Pagination
-            dotsLength={3}
-            activeDotIndex={activeSlide}
-            containerStyle={styles.paginationContainer}
-            dotStyle={styles.paginationDot}
-            inactiveDotOpacity={0.4}
-            inactiveDotScale={0.6}
-          />
-        </View>
-        <View style={{width: '20%'}}>
-          <Text onPress={handleNext} style={styles.finishTxt}>
-            {activeSlide !== 2 ? 'Next' : 'Finish'}
-          </Text>
-        </View>
-      </View>
-      <Carousel
-        ref={carouselRef}
-        data={pages}
-        renderItem={renderItem}
-        sliderWidth={screenWidth}
-        itemWidth={screenWidth}
-        onSnapToItem={(index: number) => setActiveSlide(index)}
-        inactiveSlideOpacity={1}
-        inactiveSlideScale={1}
+    <>
+      <ModalActivityIndicator
+        visible={loading}
+        size="large"
+        color={Colors.landingColor}
       />
-    </SafeAreaView>
+      <SafeAreaView style={styles.container}>
+        <StatusBar backgroundColor={Colors.landingColor} />
+
+        <View style={styles.header}>
+          <View style={{width: '20%'}}>
+            <TouchableOpacity onPress={handlePrevious}>
+              <Ionicons name="arrow-back" color={'#fff'} size={20} />
+            </TouchableOpacity>
+          </View>
+          <View style={{width: '60%'}}>
+            <Pagination
+              dotsLength={3}
+              activeDotIndex={activeSlide}
+              containerStyle={styles.paginationContainer}
+              dotStyle={styles.paginationDot}
+              inactiveDotOpacity={0.4}
+              inactiveDotScale={0.6}
+            />
+          </View>
+          <View style={{width: '20%'}}>
+            <Text onPress={handleNext} style={styles.finishTxt}>
+              {activeSlide !== 2 ? 'Next' : 'Finish'}
+            </Text>
+          </View>
+        </View>
+        <Carousel
+          ref={carouselRef}
+          data={pages}
+          renderItem={renderItem}
+          sliderWidth={screenWidth}
+          itemWidth={screenWidth}
+          onSnapToItem={(index: number) => setActiveSlide(index)}
+          inactiveSlideOpacity={1}
+          inactiveSlideScale={1}
+        />
+      </SafeAreaView>
+    </>
   );
 }
 
