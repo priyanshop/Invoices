@@ -1,21 +1,29 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
   View,
-  SectionList,
   Text,
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  Image,
   Platform,
   PermissionsAndroid,
   Alert,
 } from 'react-native';
-import Feather from 'react-native-vector-icons/Feather';
-import {Colors} from '../../Helper/Colors';
+import {useSelector, useDispatch} from 'react-redux';
 import {selectContactPhone} from 'react-native-select-contact';
+import {Menu} from 'react-native-paper';
+import Entypo from 'react-native-vector-icons/Entypo';
+import FetchAPI from '../../Networking';
+import {endpoint} from '../../Networking/endpoint';
+import {Colors} from '../../Helper/Colors';
+import {getScreenDimensions} from '../../Helper/ScreenDimension';
 
-const AddClientScreen = () => {
+const screenDimensions = getScreenDimensions();
+const screenWidth = screenDimensions.width;
+
+const AddClientScreen = ({navigation, route}: any) => {
+  const dispatch = useDispatch();
+  const selector = useSelector(state => state.user);
   const [clientName, setClientName] = useState('');
   const [contact, setContact] = useState('');
   const [address1, setAddress1] = useState('');
@@ -26,12 +34,33 @@ const AddClientScreen = () => {
   const [Mobile, setMobile] = useState('');
   const [fax, setFax] = useState('');
   const [hasPermission, setHasPermission] = useState(false);
+  const [alreadyExist, setAlreadyExist] = useState(false);
+  const [visible, setVisible] = React.useState(false);
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity style={{marginRight: 10}} onPress={openMenu}>
+          <Entypo name="dots-three-vertical" size={20} color="#fff" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
   useEffect(() => {
     if (Platform.OS === 'android') {
       checkContactPermission();
     }
   }, []);
+
+  useEffect(() => {
+    console.log('route.params', JSON.stringify(route.params));
+    if (route?.params?.clientId) {
+      getClient(route.params.clientId);
+    }
+  }, [route.params]);
 
   const checkContactPermission = async () => {
     try {
@@ -75,6 +104,7 @@ const AddClientScreen = () => {
       return selectedPhone.number;
     });
   };
+
   const selectContact = () => {
     //    get().then(()=>{})
     if (hasPermission) {
@@ -85,108 +115,217 @@ const AddClientScreen = () => {
     }
   };
 
+  // useEffect(() => {
+  //   create()
+  // }, [clientName,contact,address1,address2,address3,email,fax])
+
+  const create = async () => {
+    try {
+      const payload = {
+        name: clientName,
+        phone_number: Phone,
+        email: email,
+        mobile_number: Mobile,
+        fax: fax,
+        contact: contact,
+        address1: address1,
+        address2: address2,
+        address3: address3,
+      };
+      const data = await FetchAPI('post', endpoint.addClient, payload, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+      }
+    } catch (error) {}
+  };
+
+  const update = async () => {
+    try {
+      const payload = {
+        name: clientName,
+        phone_number: Phone,
+        email: email,
+        mobile_number: Mobile,
+        fax: fax,
+        contact: contact,
+        address1: address1,
+        address2: address2,
+        address3: address3,
+      };
+      const data = await FetchAPI(
+        'patch',
+        endpoint.updateClient(route.params.clientId),
+        payload,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+      }
+    } catch (error) {}
+  };
+
+  const getClient = async (clientId: any) => {
+    try {
+      const data = await FetchAPI('get', endpoint.getClient(clientId), null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        const element = data.data[0];
+        setClientName(element.name);
+        setEmail(element.email);
+        setContact(element.contact);
+        setAddress1(element.address1);
+        setAddress2(element.address2);
+        setAddress3(element.address3);
+        setPhone(element.phone_number);
+        setMobile(element.mobile_number);
+        setFax(element.fax);
+        setAlreadyExist(true);
+      }
+    } catch (error) {}
+  };
+
+  const handleTextInputChange = (value: any, setter: any) => {
+    setter(value);
+  };
+
+  const deleteClient = async () => {
+    try {
+      const data = await FetchAPI(
+        'delete',
+        endpoint.deleteClient(route.params.clientId),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        navigation.goBack();
+      }
+    } catch (error) {}
+  };
   return (
-    <View style={styles.mainContainer}>
-      <View style={styles.mainContain}>
-        <View style={styles.rowView}>
-          <TextInput
-            value={clientName}
-            onChangeText={setClientName}
-            style={{...styles.titleTxt, textAlign: 'left'}}
-            placeholder="Client Name"
-            placeholderTextColor={'grey'}
-          />
+    <>
+      <Menu
+        visible={visible}
+        onDismiss={closeMenu}
+        anchor={{x: screenWidth, y: 50}}>
+        <Menu.Item disabled={!alreadyExist} onPress={deleteClient} title="Delete" />
+      </Menu>
+      <View style={styles.mainContainer}>
+        <View style={styles.mainContain}>
+          <View style={styles.rowView}>
+            <TextInput
+              value={clientName}
+              onChangeText={value =>
+                handleTextInputChange(value, setClientName)
+              }
+              style={{...styles.titleTxt, textAlign: 'left'}}
+              placeholder="Client Name"
+              placeholderTextColor={'grey'}
+            />
+          </View>
+          <View style={styles.rowView}>
+            <TextInput
+              value={email}
+              onChangeText={value => handleTextInputChange(value, setEmail)}
+              style={{...styles.titleTxt, textAlign: 'left'}}
+              placeholder="Email"
+              placeholderTextColor={'grey'}
+            />
+          </View>
+          <View style={styles.rowView}>
+            <Text style={styles.titleTxt}>Mobile</Text>
+            <TextInput
+              value={Mobile}
+              onChangeText={value => handleTextInputChange(value, setMobile)}
+              style={{...styles.titleTxt, textAlign: 'right'}}
+              placeholder="Mobile Number"
+              placeholderTextColor={'grey'}
+            />
+          </View>
+          <View style={styles.rowView}>
+            <Text style={styles.titleTxt}>Phone</Text>
+            <TextInput
+              value={Phone}
+              onChangeText={value => handleTextInputChange(value, setPhone)}
+              style={{...styles.titleTxt, textAlign: 'right'}}
+              placeholder="Phone Number"
+              placeholderTextColor={'grey'}
+            />
+          </View>
+          <View style={styles.rowView}>
+            <Text style={styles.titleTxt}>Fax</Text>
+            <TextInput
+              value={fax}
+              onChangeText={value => handleTextInputChange(value, setFax)}
+              style={{...styles.titleTxt, textAlign: 'right'}}
+              placeholder="Fax Number"
+              placeholderTextColor={'grey'}
+            />
+          </View>
         </View>
-        <View style={styles.rowView}>
-          <TextInput
-            value={email}
-            onChangeText={setEmail}
-            style={{...styles.titleTxt, textAlign: 'left'}}
-            placeholder="Email"
-            placeholderTextColor={'grey'}
-          />
-        </View>
-        <View style={styles.rowView}>
-          <Text style={styles.titleTxt}>Mobile</Text>
-          <TextInput
-            value={Mobile}
-            onChangeText={setMobile}
-            style={{...styles.titleTxt, textAlign: 'right'}}
-            placeholder="Mobile Number"
-            placeholderTextColor={'grey'}
-          />
-        </View>
-        <View style={styles.rowView}>
-          <Text style={styles.titleTxt}>Phone</Text>
-          <TextInput
-            value={Phone}
-            onChangeText={setPhone}
-            style={{...styles.titleTxt, textAlign: 'right'}}
-            placeholder="Phone Number"
-            placeholderTextColor={'grey'}
-          />
-        </View>
-        <View style={styles.rowView}>
-          <Text style={styles.titleTxt}>Fax</Text>
-          <TextInput
-            value={fax}
-            onChangeText={setFax}
-            style={{...styles.titleTxt, textAlign: 'right'}}
-            placeholder="Fax Number"
-            placeholderTextColor={'grey'}
-          />
-        </View>
-      </View>
 
-      <View style={styles.mainContain}>
-        <View style={styles.rowView}>
-          <TextInput
-            value={contact}
-            onChangeText={setContact}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder="Contact"
-            placeholderTextColor={'grey'}
-          />
+        <View style={styles.mainContain}>
+          <View style={styles.rowView}>
+            <TextInput
+              value={contact}
+              onChangeText={value => handleTextInputChange(value, setContact)}
+              style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+              placeholder="Contact"
+              placeholderTextColor={'grey'}
+            />
+          </View>
+          <View style={styles.rowView}>
+            <TextInput
+              value={address1}
+              onChangeText={value => handleTextInputChange(value, setAddress1)}
+              style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+              placeholder="Address Line 1"
+              placeholderTextColor={'grey'}
+            />
+          </View>
+          <View style={styles.rowView}>
+            <TextInput
+              value={address2}
+              onChangeText={value => handleTextInputChange(value, setAddress2)}
+              style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+              placeholder="Address Line 2"
+              placeholderTextColor={'grey'}
+            />
+          </View>
+          <View style={styles.rowView}>
+            <TextInput
+              value={address3}
+              onChangeText={value => handleTextInputChange(value, setAddress3)}
+              style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+              placeholder="Address Line 3"
+              placeholderTextColor={'grey'}
+            />
+          </View>
         </View>
-        <View style={styles.rowView}>
-          <TextInput
-            value={address1}
-            onChangeText={setAddress1}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder="Address Line 1"
-            placeholderTextColor={'grey'}
-          />
-        </View>
-        <View style={styles.rowView}>
-          <TextInput
-            value={address2}
-            onChangeText={setAddress2}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder="Address Line 2"
-            placeholderTextColor={'grey'}
-          />
-        </View>
-        <View style={styles.rowView}>
-          <TextInput
-            value={address3}
-            onChangeText={setAddress3}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder="Address Line 3"
-            placeholderTextColor={'grey'}
-          />
-        </View>
-      </View>
 
-      <TouchableOpacity onPress={selectContact} style={styles.contactBtn}>
-        <Text style={styles.titleTxt2}>{'Import from contacts'}</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.statementBtn}>
+        <TouchableOpacity onPress={selectContact} style={styles.contactBtn}>
+          <Text style={styles.titleTxt2}>{'Import from contacts'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={alreadyExist ? update : create}
+          style={styles.statementBtn}>
+          <Text style={[styles.titleTxt2, {color: '#fff', fontWeight: '600'}]}>
+            {alreadyExist ? 'Update' : 'Create'}
+          </Text>
+        </TouchableOpacity>
+        {/* <TouchableOpacity
+        onPress={alreadyExist ? update : create}
+        style={styles.statementBtn}>
         <Text style={[styles.titleTxt2, {color: '#fff', fontWeight: '600'}]}>
           {'Create Statement'}
         </Text>
-      </TouchableOpacity>
-    </View>
+      </TouchableOpacity> */}
+      </View>
+    </>
   );
 };
 

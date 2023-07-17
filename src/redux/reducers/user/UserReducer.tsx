@@ -1,16 +1,17 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { IUserState } from "./UserInterface";
+import {createSlice} from '@reduxjs/toolkit';
+import {IUserState} from './UserInterface';
 
 // user redusre store user data and all types of token
 const initialState: IUserState = {
   userData: null,
   token: null,
+  clientList: [],
   // localChats: [],
   // localChatsPub: [],
 };
 
 const UserReducer = createSlice({
-  name: "user",
+  name: 'user',
   initialState,
   reducers: {
     saveUserData: (state, action) => {
@@ -19,8 +20,12 @@ const UserReducer = createSlice({
     setToken: (state, action) => {
       state.token = action.payload;
     },
-    removeUserData: (state) => {
+    removeUserData: state => {
       state.userData = null;
+      state.token = null;
+    },
+    addClientInList: (state, action) => {
+      state.clientList = [...state.clientList, action.payload];
     },
     // setChat: (state, action) => {
     //   state.localChats = action.payload;
@@ -38,6 +43,7 @@ export const {
   saveUserData,
   removeUserData,
   setToken,
+  addClientInList
   // setChat,
   // setPubChat,
   // removePubChat,

@@ -12,10 +12,12 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import {Colors} from '../Helper/Colors';
 
 const CustomHeader = ({
-  searchStart=false,
+  searchStart = false,
   navigateToSetting,
   setSearchStart,
-  title=""
+  title = '',
+  searchText = '',
+  handleSearch,
 }: any) => {
   const renderHeader = () => {
     if (!searchStart) {
@@ -38,11 +40,17 @@ const CustomHeader = ({
       return (
         <View style={styles.headerContainer}>
           <TouchableOpacity onPress={navigateToSetting}>
-            <SimpleLineIcons name="settings" size={20} color="#fff" />
+            <Icon name="menu" size={25} color="#fff" />
           </TouchableOpacity>
           <View style={styles.onSearch}>
             <Icon name="search" size={18} color="#d2d2d2" />
-            <TextInput placeholder='Search' placeholderTextColor={"#d2d2d2"} style={{width: '80%'}} />
+            <TextInput
+              value={searchText}
+              placeholder="Search"
+              placeholderTextColor={'#d2d2d2'}
+              style={{width: '80%'}}
+              onChangeText={handleSearch}
+            />
             <TouchableOpacity onPress={() => setSearchStart(false)}>
               <Entypo name="circle-with-cross" size={18} color="#d2d2d2" />
             </TouchableOpacity>

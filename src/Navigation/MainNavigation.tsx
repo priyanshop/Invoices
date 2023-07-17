@@ -29,9 +29,9 @@ import DefaultEmailMessage from '../Screens/Settings/DefualtEmailMessage';
 import TaxScreen from '../Screens/Settings/TaxScreen';
 import {Colors} from '../Helper/Colors';
 import SignaturePadScreen from '../Screens/Signature/SignaturePadScreen';
-import SplashScreen from '../Screens/SplashScreen/SplashScreen';
 import PaymentScreen from '../Screens/Payments/PaymentScreen';
 import RegionScreen from '../Screens/Regions';
+import SplashScreenLoading from '../Screens/SplashScreen/SplashScreen';
 
 const headerStyle = {
   headerStyle: {
@@ -143,7 +143,7 @@ function MainNavigator() {
     <Stack.Navigator initialRouteName="SplashScreen">
       <Stack.Screen
         name="SplashScreen"
-        component={SplashScreen}
+        component={SplashScreenLoading}
         options={{headerShown: false}}
       />
       <Stack.Screen

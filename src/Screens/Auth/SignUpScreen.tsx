@@ -24,7 +24,7 @@ const screenWidth = screenDimensions.width;
 function SignUpScreen({navigation}: any): JSX.Element {
   const carouselRef = useRef(null);
   const dispatch = useDispatch();
-  const selector = useSelector((state) => state.user);
+  const selector = useSelector(state => state.user);
 
   const [activeSlide, setActiveSlide] = useState(0);
   const [email, setEmail] = useState('');
@@ -57,10 +57,9 @@ function SignUpScreen({navigation}: any): JSX.Element {
       carouselRef.current.snapToNext();
     }
   };
-useEffect(() => {
-  console.log(selector.userData);
-  
-}, [selector.userData])
+  useEffect(() => {
+    console.log(selector.userData);
+  }, [selector.userData]);
 
   const validateEmail = (text: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -82,6 +81,10 @@ useEffect(() => {
       if (data.status === 'success') {
         dispatch(saveUserData(data.data));
         dispatch(setToken(data.token));
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Dashboard'}],
+        });
       }
     } catch (error) {}
   };

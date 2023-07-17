@@ -1,23 +1,21 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   SafeAreaView,
-  SectionList,
   StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
-import Icon from 'react-native-vector-icons/Ionicons';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import Entypo from 'react-native-vector-icons/Entypo';
+import {useSelector, useDispatch} from 'react-redux';
+import {useIsFocused} from '@react-navigation/native';
 import FloatingButton from '../../../CustomComponent/FloatingButton';
-import { Colors } from '../../../Helper/Colors';
+import {Colors} from '../../../Helper/Colors';
 import CustomHeader from '../../../CustomComponent/CustomHeader';
 import EmptyViewComponent from '../../../CustomComponent/EmptyViewComponent';
+import FetchAPI from '../../../Networking';
+import {endpoint} from '../../../Networking/endpoint';
 
 const data = [
   {
@@ -33,7 +31,50 @@ const data = [
 ];
 
 function ClientScreen({navigation}: any): JSX.Element {
+  const dispatch = useDispatch();
+  const selector = useSelector(state => state.user);
+  const isFocused = useIsFocused();
   const [searchStart, setSearchStart] = useState(false);
+  const [clientList, setClientList] = useState([]);
+  const [searchClientList, setSearchClientList] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    apiCall();
+  }, [selector.token, isFocused]);
+
+  const apiCall = async () => {
+    try {
+      const data = await FetchAPI(
+        'get',
+        endpoint.getAllClient(selector.userData._id),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        setClientList(data.data);
+        setSearchClientList(data.data);
+      }
+    } catch (error) {}
+  };
+
+  const handleSearch = (query): any => {
+    setSearchQuery(query);
+    const filtered = clientList.filter(item =>
+      item.name.toLowerCase().includes(query.toLowerCase()),
+    );
+    setSearchClientList(filtered);
+  };
+
+  const removeSearch = (item: any) => {
+    setSearchStart(item);
+    if (!item) {
+      setSearchQuery('');
+      setSearchClientList(clientList);
+    }
+  };
 
   function navigateToSetting() {
     navigation.navigate('Settings');
@@ -41,32 +82,44 @@ function ClientScreen({navigation}: any): JSX.Element {
   function navigateToAddClient() {
     navigation.navigate('AddClientScreen');
   }
-  
+
+  function navigateToClient(id: any) {
+    navigation.navigate('AddClientScreen', {clientId: id});
+  }
+
   const renderItem = ({item}: any) => (
-    <View style={styles.invoiceItem}>
+    <TouchableOpacity
+      onPress={() => navigateToClient(item._id)}
+      style={styles.invoiceItem}>
       <View>
-        <Text style={styles.clientText}>{`${item.client}`}</Text>
-        <Text style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
+        <Text style={styles.clientText}>{`${item.name}`}</Text>
+        {item.invoiceNumber ? (
+          <Text
+            style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
+        ) : null}
       </View>
       <View style={styles.priceView}>
-        <Text style={styles.priceText}>{`$${item.price}`}</Text>
+        <Text style={styles.priceText}>{`$${
+          item.price ? item.price : '0'
+        }`}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   const renderEmptyComponent = () => (
-    <EmptyViewComponent
-      message={'Your client will show up here'}
-    />
+    <EmptyViewComponent message={'Your client will show up here'} />
   );
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Colors.appColor} />
       <CustomHeader
         searchStart={searchStart}
         navigateToSetting={navigateToSetting}
-        setSearchStart={setSearchStart}
-        title={"Clients"}
+        setSearchStart={removeSearch}
+        title={'Clients'}
+        searchText={searchQuery}
+        handleSearch={handleSearch}
       />
       <View style={{flex: 1, backgroundColor: Colors.commonBg}}>
         <View style={styles.titleHeader}>
@@ -74,11 +127,11 @@ function ClientScreen({navigation}: any): JSX.Element {
           <Text style={styles.tileHeaderTxt}>{'Total Billed'}</Text>
         </View>
         <FlatList
-          data={data}
+          data={searchClientList}
           renderItem={renderItem}
           keyExtractor={(item: any, index: any) => item + index}
           ListEmptyComponent={renderEmptyComponent}
-          contentContainerStyle={{flex:1}}
+          contentContainerStyle={{flex: 1}}
         />
         <FloatingButton onPress={navigateToAddClient} />
       </View>
@@ -148,7 +201,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 10,
     alignItems: 'center',
-    backgroundColor:Colors.appColor,
+    backgroundColor: Colors.appColor,
     paddingVertical: 8,
   },
   headerText: {
@@ -168,7 +221,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
-    backgroundColor:"#fff"
+    backgroundColor: '#fff',
+    height: 40,
+    alignItems: 'center',
   },
   clientText: {
     color: '#000',
@@ -217,7 +272,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#A9A9A9',
     paddingVertical: 10,
   },
-  tileHeaderTxt: {color: '#fff', fontSize: 15, fontWeight: '500'},
+  tileHeaderTxt: {color: '#fff', fontSize: 16, fontWeight: '500'},
 });
 
 export default ClientScreen;

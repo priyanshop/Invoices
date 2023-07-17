@@ -6,9 +6,32 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
+import {useSelector, useDispatch} from 'react-redux';
+
 import {Colors} from '../../Helper/Colors';
+import {removeUserData} from '../../redux/reducers/user/UserReducer';
+import FetchAPI from '../../Networking';
+import {endpoint} from '../../Networking/endpoint';
 
 const SettingScreen = ({navigation}: any) => {
+  const dispatch = useDispatch();
+  const selector = useSelector(state => state.user);
+
+  const apiCall = async () => {
+    try {
+      const data = await FetchAPI('delete', endpoint.deleteUser, null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        dispatch(removeUserData());
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'LandingPage'}],
+        });
+      }
+    } catch (error) {}
+  };
+
   const data = [
     {
       sectionName: 'Support',
@@ -84,15 +107,17 @@ const SettingScreen = ({navigation}: any) => {
           description: '',
           onPress: () => navigation.navigate('SignIn'),
         },
-        {title: 'Delete Account', description: ''},
+        {title: 'Delete Account', description: '', onPress: () => apiCall()},
         {
           title: 'Logout',
           description: '',
-          onPress: () =>
+          onPress: () => {
+            dispatch(removeUserData());
             navigation.reset({
               index: 0,
               routes: [{name: 'LandingPage'}],
-            }),
+            });
+          },
         },
       ],
     },
@@ -147,7 +172,7 @@ const SettingScreen = ({navigation}: any) => {
         renderSectionHeader={renderSectionHeader}
         showsVerticalScrollIndicator={false}
         stickySectionHeadersEnabled={false}
-        contentContainerStyle={{paddingBottom:40}}
+        contentContainerStyle={{paddingBottom: 40}}
       />
     </View>
   );

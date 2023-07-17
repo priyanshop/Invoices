@@ -14,9 +14,7 @@ import {Provider as ReduxProvider} from 'react-redux';
 import { store } from './src/redux/store';
 
 function App(): JSX.Element {
-  useEffect(() => {
-    SplashScreen.hide(); //hides the splash screen on app load.
-  }, []);
+  
 
   return (
     <NavigationContainer>

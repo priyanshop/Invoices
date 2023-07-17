@@ -8,9 +8,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Colors } from '../../Helper/Colors';
+import {useDispatch, useSelector} from 'react-redux';
+import {Colors} from '../../Helper/Colors';
+import {saveUserData, setToken} from '../../redux/reducers/user/UserReducer';
+import FetchAPI from '../../Networking';
+import {endpoint} from '../../Networking/endpoint';
 
-function SignInScreen({navigation}:any): JSX.Element {
+function SignInScreen({navigation}: any): JSX.Element {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const [Password, setPassword] = useState('');
@@ -36,9 +41,27 @@ function SignInScreen({navigation}:any): JSX.Element {
   };
 
   const handleNext = () => {
-      navigation.navigate('Dashboard');  
+    // navigation.navigate('Dashboard');
+    apiCall();
   };
-  
+
+  const apiCall = async () => {
+    try {
+      const payload = {
+        email: email,
+        password: Password,
+      };
+      const data = await FetchAPI('post', endpoint.login, payload);
+      if (data.status === 'success') {
+        dispatch(saveUserData(data.data));
+        dispatch(setToken(data.token));
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Dashboard'}],
+        });
+      }
+    } catch (error) {}
+  };
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Colors.landingColor} />
@@ -67,7 +90,9 @@ function SignInScreen({navigation}:any): JSX.Element {
           <Text style={styles.errorTxt}>{passwordError}</Text>
         </View>
       )}
-      <TouchableOpacity onPress={handleNext} style={[styles.input, styles.lastAddressInput]}>
+      <TouchableOpacity
+        onPress={handleNext}
+        style={[styles.input, styles.lastAddressInput]}>
         <Text style={styles.loginBtnTxt}>Login</Text>
       </TouchableOpacity>
 

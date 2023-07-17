@@ -1,19 +1,34 @@
 import React, {useEffect} from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
+import {useSelector} from 'react-redux';
 import {Images} from '../../assets';
 import {Colors} from '../../Helper/Colors';
+import SplashScreen from 'react-native-splash-screen';
 
 // Define a functional component named Greeting
-const SplashScreen: React.FC = ({navigation}: any) => {
+const SplashScreenLoading: React.FC = ({navigation}: any) => {
   // Return a React element
+  const selector = useSelector(state => state.user);
   useEffect(() => {
-    setTimeout(() => {
+    // SplashScreen.hide(); //hides the splash screen on app load.
+  }, []);
+  useEffect(() => {
+    console.log('USER');
+
+    if (selector.token) {
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Dashboard'}],
+      });
+      SplashScreen.hide();
+    } else {
       navigation.reset({
         index: 0,
         routes: [{name: 'LandingPage'}],
       });
-    }, 1000);
-  }, []);
+      SplashScreen.hide();
+    }
+  }, [selector.token]);
 
   return (
     <View style={styles.container}>
@@ -41,4 +56,4 @@ const styles = StyleSheet.create({
   },
 });
 // Export the component
-export default SplashScreen;
+export default SplashScreenLoading;
