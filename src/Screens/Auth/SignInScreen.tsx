@@ -75,6 +75,7 @@ function SignInScreen({navigation}: any): JSX.Element {
         placeholder={'Email'}
         onChangeText={validateEmail}
         placeholderTextColor={'grey'}
+        keyboardType={'email-address'}
       />
       {emailError.trim() !== '' && (
         <View style={styles.errorView}>
