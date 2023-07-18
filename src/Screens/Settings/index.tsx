@@ -32,7 +32,7 @@ const SettingScreen = ({navigation}: any) => {
     } catch (error) {}
   };
 
-  const accountAction = (screen:any) => {
+  const accountAction = (screen: any) => {
     dispatch(removeUserData());
     navigation.reset({
       index: 0,
@@ -144,7 +144,9 @@ const SettingScreen = ({navigation}: any) => {
         {section.sectionName}
       </Text>
       <Text style={{fontSize: 16, color: '#fff', fontWeight: '500'}}>
-        {section.sectionType}
+        {section.sectionName === 'Account' && selector.token
+          ? selector.userData.email
+          : section.sectionType}
       </Text>
     </View>
   );
