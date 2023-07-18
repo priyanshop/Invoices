@@ -16,6 +16,7 @@ import ImagePickerComponent from '../../CustomComponent/ImagePickerComponent';
 import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
+import {setBusinessDetail} from '../../redux/reducers/user/UserReducer';
 
 const BusinessDetails = () => {
   const dispatch = useDispatch();
@@ -37,7 +38,18 @@ const BusinessDetails = () => {
   const [businessId, setBusinessId] = useState('');
 
   useEffect(() => {
-    getInfo();
+    if (selector.token === 'Guest') {
+      const businessDetails = selector.businessDetails;
+      setAlreadyExist(true);
+      setPhone(businessDetails.phone_number);
+      setAddress1(businessDetails.address1);
+      setAddress2(businessDetails.address2);
+      setAddress3(businessDetails.address3);
+      setBusinessName(businessDetails.name);
+      setEmail(businessDetails.email);
+    } else {
+      getInfo();
+    }
   }, [selector.token]);
 
   const getInfo = async () => {
@@ -68,6 +80,7 @@ const BusinessDetails = () => {
       addInfo();
     }
   };
+
   const addInfo = async () => {
     try {
       const payload = {
@@ -79,10 +92,14 @@ const BusinessDetails = () => {
         address3: address3,
         business_logo: 'xyz.png',
       };
-      const data = await FetchAPI('post', endpoint.businessInfo, payload, {
-        Authorization: 'Bearer ' + selector.token,
-      });
-      if (data.status === 'success') {
+      if (selector.token === 'Guest') {
+        dispatch(setBusinessDetail(payload));
+      } else {
+        const data = await FetchAPI('post', endpoint.businessInfo, payload, {
+          Authorization: 'Bearer ' + selector.token,
+        });
+        if (data.status === 'success') {
+        }
       }
     } catch (error) {}
   };
@@ -98,15 +115,19 @@ const BusinessDetails = () => {
         address3: address3,
         business_logo: 'xyz.png',
       };
-      const data = await FetchAPI(
-        'patch',
-        endpoint.updateBusinessInfo(businessId),
-        payload,
-        {
-          Authorization: 'Bearer ' + selector.token,
-        },
-      );
-      if (data.status === 'success') {
+      if (selector.token === 'Guest') {
+        dispatch(setBusinessDetail(payload));
+      } else {
+        const data = await FetchAPI(
+          'patch',
+          endpoint.updateBusinessInfo(businessId),
+          payload,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+        }
       }
     } catch (error) {}
   };

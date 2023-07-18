@@ -17,7 +17,8 @@ export interface IUserState {
   userData: any | null;
   token: any | null;
   clientList: any | null;
-  itemsList:any|null;
+  itemsList: any | null;
+  businessDetails: any | null;
   // localChats: IChats[] | [];
   // localChatsPub: IChats2[] | [];
 }
