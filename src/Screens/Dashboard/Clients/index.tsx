@@ -40,7 +40,12 @@ function ClientScreen({navigation}: any): JSX.Element {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    apiCall();
+    if (selector.token === 'Guest') {
+      setSearchClientList(selector.clientList);
+      setClientList(selector.clientList);
+    } else {
+      apiCall();
+    }
   }, [selector.token, isFocused]);
 
   const apiCall = async () => {
@@ -83,13 +88,23 @@ function ClientScreen({navigation}: any): JSX.Element {
     navigation.navigate('AddClientScreen');
   }
 
-  function navigateToClient(id: any) {
-    navigation.navigate('AddClientScreen', {clientId: id});
+  function navigateToClient(id: any, item: any, index: any) {
+    console.log({
+      clientId: id,
+      selectedItem: item,
+      index: index,
+    });
+    
+    navigation.navigate('AddClientScreen', {
+      clientId: id,
+      selectedItem: item,
+      index: index,
+    });
   }
 
-  const renderItem = ({item}: any) => (
+  const renderItem = ({item, index}: any) => (
     <TouchableOpacity
-      onPress={() => navigateToClient(item._id)}
+      onPress={() => navigateToClient(item._id, item, index)}
       style={styles.invoiceItem}>
       <View>
         <Text style={styles.clientText}>{`${item.name}`}</Text>

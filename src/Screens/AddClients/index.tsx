@@ -17,6 +17,10 @@ import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {Colors} from '../../Helper/Colors';
 import {getScreenDimensions} from '../../Helper/ScreenDimension';
+import {
+  addClientInList,
+  setClientList,
+} from '../../redux/reducers/user/UserReducer';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -57,10 +61,28 @@ const AddClientScreen = ({navigation, route}: any) => {
 
   useEffect(() => {
     console.log('route.params', JSON.stringify(route.params));
-    if (route?.params?.clientId) {
+    if (route?.params?.clientId && selector.token !== 'Guest') {
       getClient(route.params.clientId);
+    } else {
+      if (route.params?.selectedItem) {
+        fetchClient(route.params?.selectedItem);
+      }
     }
   }, [route.params]);
+
+  const fetchClient = (data: any) => {
+    const element = data;
+    setClientName(element.name);
+    setEmail(element.email);
+    setContact(element.contact);
+    setAddress1(element.address1);
+    setAddress2(element.address2);
+    setAddress3(element.address3);
+    setPhone(element.phone_number);
+    setMobile(element.mobile_number);
+    setFax(element.fax);
+    setAlreadyExist(true);
+  };
 
   const checkContactPermission = async () => {
     try {
@@ -128,11 +150,16 @@ const AddClientScreen = ({navigation, route}: any) => {
         address2: address2,
         address3: address3,
       };
-      const data = await FetchAPI('post', endpoint.addClient, payload, {
-        Authorization: 'Bearer ' + selector.token,
-      });
-      if (data.status === 'success') {
+      if (selector.token === 'Guest') {
+        dispatch(addClientInList(payload));
         navigation.goBack();
+      } else {
+        const data = await FetchAPI('post', endpoint.addClient, payload, {
+          Authorization: 'Bearer ' + selector.token,
+        });
+        if (data.status === 'success') {
+          navigation.goBack();
+        }
       }
     } catch (error) {}
   };
@@ -150,16 +177,24 @@ const AddClientScreen = ({navigation, route}: any) => {
         address2: address2,
         address3: address3,
       };
-      const data = await FetchAPI(
-        'patch',
-        endpoint.updateClient(route.params.clientId),
-        payload,
-        {
-          Authorization: 'Bearer ' + selector.token,
-        },
-      );
-      if (data.status === 'success') {
+      if (selector.token === 'Guest') {
+        const updatedArray = [...selector.clientList];
+        const objectToUpdate = updatedArray[route.params.index];
+        updatedArray[route.params.index] = payload;
+        dispatch(setClientList(updatedArray));
         navigation.goBack();
+      } else {
+        const data = await FetchAPI(
+          'patch',
+          endpoint.updateClient(route.params.clientId),
+          payload,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+          navigation.goBack();
+        }
       }
     } catch (error) {}
   };
@@ -204,6 +239,7 @@ const AddClientScreen = ({navigation, route}: any) => {
       }
     } catch (error) {}
   };
+
   return (
     <>
       <Menu

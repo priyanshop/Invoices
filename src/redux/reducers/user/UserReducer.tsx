@@ -27,6 +27,9 @@ const UserReducer = createSlice({
     addClientInList: (state, action) => {
       state.clientList = [...state.clientList, action.payload];
     },
+    setClientList:(state, action)=>{
+      state.clientList =  action.payload;
+    }
     // setChat: (state, action) => {
     //   state.localChats = action.payload;
     // },
@@ -43,7 +46,8 @@ export const {
   saveUserData,
   removeUserData,
   setToken,
-  addClientInList
+  addClientInList,
+  setClientList
   // setChat,
   // setPubChat,
   // removePubChat,

@@ -56,6 +56,14 @@ function SignUpScreen({navigation}: any): JSX.Element {
       // navigation.navigate('Dashboard');
       if (email.trim() !== '') {
         validation();
+      } else {
+        dispatch(setToken('Guest'));
+        dispatch(saveUserData({email: 'Guest'}));
+
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Dashboard'}],
+        });
       }
       // navigation.reset({
       //   index: 0,
