@@ -21,6 +21,7 @@ import {
   addClientInList,
   setClientList,
 } from '../../redux/reducers/user/UserReducer';
+import {removeObjectByIndex} from '../../Helper/CommonFunctions';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -226,16 +227,25 @@ const AddClientScreen = ({navigation, route}: any) => {
 
   const deleteClient = async () => {
     try {
-      const data = await FetchAPI(
-        'delete',
-        endpoint.deleteClient(route.params.clientId),
-        null,
-        {
-          Authorization: 'Bearer ' + selector.token,
-        },
-      );
-      if (data.status === 'success') {
+      if (selector.token === 'Guest') {
+        const updatedArray = removeObjectByIndex(
+          selector.clientList,
+          route.params.index,
+        );
+        dispatch(setClientList(updatedArray));
         navigation.goBack();
+      } else {
+        const data = await FetchAPI(
+          'delete',
+          endpoint.deleteClient(route.params.clientId),
+          null,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+          navigation.goBack();
+        }
       }
     } catch (error) {}
   };

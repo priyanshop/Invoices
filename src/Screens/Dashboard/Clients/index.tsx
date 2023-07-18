@@ -89,12 +89,6 @@ function ClientScreen({navigation}: any): JSX.Element {
   }
 
   function navigateToClient(id: any, item: any, index: any) {
-    console.log({
-      clientId: id,
-      selectedItem: item,
-      index: index,
-    });
-    
     navigation.navigate('AddClientScreen', {
       clientId: id,
       selectedItem: item,

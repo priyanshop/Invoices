@@ -6,6 +6,7 @@ const initialState: IUserState = {
   userData: null,
   token: null,
   clientList: [],
+  itemsList:[]
   // localChats: [],
   // localChatsPub: [],
 };
@@ -29,6 +30,12 @@ const UserReducer = createSlice({
     },
     setClientList:(state, action)=>{
       state.clientList =  action.payload;
+    },
+    addItemInList: (state, action) => {
+      state.itemsList = [...state.itemsList, action.payload];
+    },
+    setItemList:(state, action)=>{
+      state.itemsList =  action.payload;
     }
     // setChat: (state, action) => {
     //   state.localChats = action.payload;
@@ -47,7 +54,9 @@ export const {
   removeUserData,
   setToken,
   addClientInList,
-  setClientList
+  setClientList,
+  addItemInList,
+  setItemList
   // setChat,
   // setPubChat,
   // removePubChat,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   SafeAreaView,
@@ -10,15 +10,15 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FloatingButton from '../../../CustomComponent/FloatingButton';
-import { Colors } from '../../../Helper/Colors';
+import {Colors} from '../../../Helper/Colors';
 import CustomHeader from '../../../CustomComponent/CustomHeader';
 import EmptyViewComponent from '../../../CustomComponent/EmptyViewComponent';
 import FetchAPI from '../../../Networking';
-import { endpoint } from '../../../Networking/endpoint';
-import { useIsFocused } from '@react-navigation/native';
+import {endpoint} from '../../../Networking/endpoint';
+import {useIsFocused} from '@react-navigation/native';
 
 const data = [
   {
@@ -32,7 +32,7 @@ const data = [
     price: 150.0,
   },
 ];
-function ItemsScreen({ navigation }: any): JSX.Element {
+function ItemsScreen({navigation}: any): JSX.Element {
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const selector = useSelector(state => state.user);
@@ -42,7 +42,13 @@ function ItemsScreen({ navigation }: any): JSX.Element {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    apiCall();
+    if (selector.token === 'Guest') {
+      console.log(selector.itemsList);
+      setSearchItemList(selector.itemsList);
+      setItemList(selector.itemsList);
+    } else {
+      apiCall();
+    }
   }, [selector.token, isFocused]);
 
   const apiCall = async () => {
@@ -59,7 +65,7 @@ function ItemsScreen({ navigation }: any): JSX.Element {
         setSearchItemList(data.data);
         setItemList(data.data);
       }
-    } catch (error) { }
+    } catch (error) {}
   };
 
   const handleSearch = (query): any => {
@@ -86,12 +92,18 @@ function ItemsScreen({ navigation }: any): JSX.Element {
     navigation.navigate('AddGlobalItemScreen');
   }
 
-  function navigateToItem(id: any) {
-    navigation.navigate('AddGlobalItemScreen', { ItemId: id });
+  function navigateToItem(id: any, item: any, index: any) {
+    navigation.navigate('AddGlobalItemScreen', {
+      ItemId: id,
+      selectedItem: item,
+      index: index,
+    });
   }
 
-  const renderItem = ({ item }: any) => (
-    <TouchableOpacity onPress={() => navigateToItem(item._id)} style={styles.invoiceItem}>
+  const renderItem = ({item, index}: any) => (
+    <TouchableOpacity
+      onPress={() => navigateToItem(item._id, item, index)}
+      style={styles.invoiceItem}>
       <View>
         <Text style={styles.clientText}>{`${item.description}`}</Text>
         {item.notes ? (
@@ -121,13 +133,13 @@ function ItemsScreen({ navigation }: any): JSX.Element {
         searchText={searchQuery}
         handleSearch={handleSearch}
       />
-      <View style={{ flex: 1, backgroundColor: Colors.commonBg }}>
+      <View style={{flex: 1, backgroundColor: Colors.commonBg}}>
         <FlatList
           data={searchItemList}
           renderItem={renderItem}
           keyExtractor={(item: any, index: any) => item + index}
           ListEmptyComponent={renderEmptyComponent}
-          contentContainerStyle={{ flex: 1 }}
+          contentContainerStyle={{flex: 1}}
         />
         <FloatingButton onPress={navigateToAddItem} />
       </View>
@@ -260,7 +272,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
   },
-  priceView: { justifyContent: 'center' },
+  priceView: {justifyContent: 'center'},
 });
 
 export default ItemsScreen;

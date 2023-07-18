@@ -1,6 +1,5 @@
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
-  BackHandler,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -16,6 +15,11 @@ import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {getScreenDimensions} from '../../Helper/ScreenDimension';
+import {
+  addItemInList,
+  setItemList,
+} from '../../redux/reducers/user/UserReducer';
+import {removeObjectByIndex} from '../../Helper/CommonFunctions';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -43,11 +47,25 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
 
   useEffect(() => {
     console.log('route.params', JSON.stringify(route.params));
-    if (route?.params?.ItemId) {
+    if (route?.params?.ItemId && selector.token !== 'Guest') {
       setId(route.params?.ItemId);
       getItem(route.params?.ItemId);
+    } else {
+      if (route.params?.selectedItem) {
+        fetchClient(route.params?.selectedItem);
+      }
     }
   }, [route.params]);
+
+  const fetchClient = (data: any) => {
+    const element = data;
+    setNotes(element.notes);
+    setUnitCost(element.rate.toString());
+    setUnit(element.unit);
+    setTaxable(element.is_taxable === 'true' ? true : false);
+    setDescription(element.description);
+    setAlreadyExist(true);
+  };
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -82,11 +100,16 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
         is_taxable: Taxable.toString(),
         notes: Notes,
       };
-      const data = await FetchAPI('post', endpoint.addItems, payload, {
-        Authorization: 'Bearer ' + selector.token,
-      });
-      if (data.status === 'success') {
+      if (selector.token === 'Guest') {
+        dispatch(addItemInList(payload));
         navigation.goBack();
+      } else {
+        const data = await FetchAPI('post', endpoint.addItems, payload, {
+          Authorization: 'Bearer ' + selector.token,
+        });
+        if (data.status === 'success') {
+          navigation.goBack();
+        }
       }
     } catch (error) {}
   };
@@ -100,27 +123,44 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
         is_taxable: Taxable.toString(),
         notes: Notes,
       };
-      const data = await FetchAPI('patch', endpoint.updateItems(Id), payload, {
-        Authorization: 'Bearer ' + selector.token,
-      });
-      if (data.status === 'success') {
+      if (selector.token === 'Guest') {
+        const updatedArray = [...selector.itemsList];
+        const objectToUpdate = updatedArray[route.params.index];
+        updatedArray[route.params.index] = payload;
+        dispatch(setItemList(updatedArray));
         navigation.goBack();
+      } else {
+        const data = await FetchAPI(
+          'patch',
+          endpoint.updateItems(Id),
+          payload,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+          navigation.goBack();
+        }
       }
     } catch (error) {}
   };
 
   const deleteItem = async () => {
     try {
-      const data = await FetchAPI(
-        'delete',
-        endpoint.deleteItems(Id),
-        null,
-        {
-          Authorization: 'Bearer ' + selector.token,
-        },
-      );
-      if (data.status === 'success') {
+      if (selector.token === 'Guest') {
+        const updatedArray = removeObjectByIndex(
+          selector.itemsList,
+          route.params.index,
+        );
+        dispatch(setItemList(updatedArray));
         navigation.goBack();
+      } else {
+        const data = await FetchAPI('delete', endpoint.deleteItems(Id), null, {
+          Authorization: 'Bearer ' + selector.token,
+        });
+        if (data.status === 'success') {
+          navigation.goBack();
+        }
       }
     } catch (error) {}
   };
