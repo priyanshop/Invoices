@@ -32,6 +32,7 @@ import SignaturePadScreen from '../Screens/Signature/SignaturePadScreen';
 import PaymentScreen from '../Screens/Payments/PaymentScreen';
 import RegionScreen from '../Screens/Regions';
 import SplashScreenLoading from '../Screens/SplashScreen/SplashScreen';
+import pdf from '../Screens/PDF/pdf';
 
 const headerStyle = {
   headerStyle: {
@@ -140,7 +141,12 @@ function Dashboard() {
 
 function MainNavigator() {
   return (
-    <Stack.Navigator initialRouteName="SplashScreen">
+    <Stack.Navigator initialRouteName="PDF">
+       <Stack.Screen
+        name="PDF"
+        component={pdf}
+        options={{headerShown: false}}
+      />
       <Stack.Screen
         name="SplashScreen"
         component={SplashScreenLoading}
