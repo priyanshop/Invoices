@@ -62,7 +62,7 @@ function Dashboard() {
           tabBarIcon: ({focused, tintColor}: any) => (
             <Icon
               name="ios-receipt-outline"
-              color={focused ? Colors.appColor : tintColor}
+              color={focused ? Colors.appColor : '#000'}
               size={25}
             />
           ),
@@ -78,7 +78,7 @@ function Dashboard() {
           tabBarIcon: ({focused, tintColor}: any) => (
             <Icon
               name="ios-calculator-sharp"
-              color={focused ? Colors.appColor : tintColor}
+              color={focused ? Colors.appColor : '#000'}
               size={25}
             />
           ),
@@ -94,7 +94,7 @@ function Dashboard() {
           tabBarIcon: ({focused, tintColor}: any) => (
             <Icon
               name="people-sharp"
-              color={focused ? Colors.appColor : tintColor}
+              color={focused ? Colors.appColor : '#000'}
               size={25}
             />
           ),
@@ -110,7 +110,7 @@ function Dashboard() {
           tabBarIcon: ({focused, tintColor}: any) => (
             <AntDesign
               name="barcode"
-              color={focused ? Colors.appColor : tintColor}
+              color={focused ? Colors.appColor : '#000'}
               size={25}
             />
           ),
@@ -126,7 +126,7 @@ function Dashboard() {
           tabBarIcon: ({focused, tintColor}: any) => (
             <AntDesign
               name="barschart"
-              color={focused ? Colors.appColor : tintColor}
+              color={focused ? Colors.appColor : '#000'}
               size={25}
             />
           ),
@@ -245,13 +245,13 @@ function MainNavigator() {
         name="SignaturePad"
         component={SignaturePadScreen}
         options={{headerTitle: 'Signature', ...headerStyle}}
-       />
-       <Stack.Screen
+      />
+      <Stack.Screen
         name="PaymentScreen"
         component={PaymentScreen}
         options={{headerTitle: 'Payment', ...headerStyle}}
       />
-       <Stack.Screen
+      <Stack.Screen
         name="RegionScreen"
         component={RegionScreen}
         options={{headerTitle: 'Region', ...headerStyle}}

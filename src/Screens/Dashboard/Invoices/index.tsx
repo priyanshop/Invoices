@@ -308,7 +308,8 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     fontSize: 15,
-    fontWeight: '400',
+    fontWeight: '500',
+    color:"grey"
   },
   invoiceItem: {
     flexDirection: 'row',
