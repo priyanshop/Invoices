@@ -19,6 +19,9 @@ export interface IUserState {
   clientList: any | null;
   itemsList: any | null;
   businessDetails: any | null;
+  paymentInfo: any | null;
+  defaultNotes: any | null;
+  defaultInvoiceFormat: any | null;
   // localChats: IChats[] | [];
   // localChatsPub: IChats2[] | [];
 }

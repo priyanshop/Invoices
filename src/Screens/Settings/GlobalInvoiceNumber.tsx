@@ -12,6 +12,7 @@ import {useIsFocused} from '@react-navigation/native';
 import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
+import {setDefaultInvoiceFormat} from '../../redux/reducers/user/UserReducer';
 
 function GlobalInvoiceNumber({navigation}: any): JSX.Element {
   const dispatch = useDispatch();
@@ -21,8 +22,18 @@ function GlobalInvoiceNumber({navigation}: any): JSX.Element {
   const [estimate, setEstimate] = useState('');
 
   useEffect(() => {
-    getInfo();
+    if (selector.token === 'Guest') {
+      fetchData(selector.defaultInvoiceFormat);
+    } else {
+      getInfo();
+    }
   }, [selector.token]);
+
+  const fetchData = (data: any) => {
+    const element = data;
+    setEstimate(element.estimate_number_prefix);
+    setInvoices(element.invoice_number_prefix);
+  };
 
   const getInfo = async () => {
     try {
@@ -43,10 +54,14 @@ function GlobalInvoiceNumber({navigation}: any): JSX.Element {
         invoice_number_prefix: invoices,
         estimate_number_prefix: estimate,
       };
-      const data = await FetchAPI('post', endpoint.invoiceNumber, payload, {
-        Authorization: 'Bearer ' + selector.token,
-      });
-      if (data.status === 'success') {
+      if (selector.token === 'Guest') {
+        dispatch(setDefaultInvoiceFormat(payload));
+      } else {
+        const data = await FetchAPI('post', endpoint.invoiceNumber, payload, {
+          Authorization: 'Bearer ' + selector.token,
+        });
+        if (data.status === 'success') {
+        }
       }
     } catch (error) {}
   };

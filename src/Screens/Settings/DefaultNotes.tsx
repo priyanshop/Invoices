@@ -4,6 +4,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
+import {setDefaultNotes} from '../../redux/reducers/user/UserReducer';
 
 const DefaultNotes = () => {
   const dispatch = useDispatch();
@@ -12,8 +13,18 @@ const DefaultNotes = () => {
   const [estimate, setEstimate] = useState('');
 
   useEffect(() => {
-    getInfo();
+    if (selector.token === 'Guest') {
+      fetchData(selector.defaultNotes);
+    } else {
+      getInfo();
+    }
   }, [selector.token]);
+
+  const fetchData = (data: any) => {
+    const element = data;
+    setEstimate(element.estimates);
+    setInvoices(element.invoices);
+  };
 
   const getInfo = async () => {
     try {
@@ -34,10 +45,14 @@ const DefaultNotes = () => {
         invoices: invoices,
         estimates: estimate,
       };
-      const data = await FetchAPI('post', endpoint.defaultNotes, payload, {
-        Authorization: 'Bearer ' + selector.token,
-      });
-      if (data.status === 'success') {
+      if (selector.token === 'Guest') {
+        dispatch(setDefaultNotes(payload));
+      } else {
+        const data = await FetchAPI('post', endpoint.defaultNotes, payload, {
+          Authorization: 'Bearer ' + selector.token,
+        });
+        if (data.status === 'success') {
+        }
       }
     } catch (error) {}
   };

@@ -16,6 +16,20 @@ const initialState: IUserState = {
     address3: '',
     business_logo: '',
   },
+  paymentInfo: {
+    paypal_email: '',
+    make_checks_payable: '',
+    payment_instructions: '',
+    additional_payment_instructions: '',
+  },
+  defaultNotes: {
+    invoices: '',
+    estimates: '',
+  },
+  defaultInvoiceFormat:{
+    invoice_number_prefix: '',
+    estimate_number_prefix: '',
+  }
   // localChats: [],
   // localChatsPub: [],
 };
@@ -49,6 +63,15 @@ const UserReducer = createSlice({
     setBusinessDetail: (state, action) => {
       state.businessDetails = action.payload;
     },
+    setPaymentInfo: (state, action) => {
+      state.paymentInfo = action.payload;
+    },
+    setDefaultNotes: (state, action) => {
+      state.defaultNotes = action.payload;
+    },
+    setDefaultInvoiceFormat: (state, action) => {
+      state.defaultInvoiceFormat = action.payload;
+    },
     // setChat: (state, action) => {
     //   state.localChats = action.payload;
     // },
@@ -69,7 +92,10 @@ export const {
   setClientList,
   addItemInList,
   setItemList,
-  setBusinessDetail
+  setBusinessDetail,
+  setPaymentInfo,
+  setDefaultNotes,
+  setDefaultInvoiceFormat
   // setChat,
   // setPubChat,
   // removePubChat,

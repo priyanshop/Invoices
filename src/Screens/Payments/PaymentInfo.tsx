@@ -4,6 +4,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
+import {setPaymentInfo} from '../../redux/reducers/user/UserReducer';
 
 const PaymentInfo = ({navigation}: any) => {
   const dispatch = useDispatch();
@@ -14,9 +15,21 @@ const PaymentInfo = ({navigation}: any) => {
   const [additionalDetails, setAdditionalDetails] = useState('');
 
   useEffect(() => {
-    getInfo();
+    if (selector.token === 'Guest') {
+      fetchData(selector.paymentInfo);
+    } else {
+      getInfo();
+    }
   }, [selector.token]);
 
+  const fetchData = (data: any) => {
+    const element = data;
+    setPayable(element.make_checks_payable);
+    setAdditionalDetails(element.additional_payment_instructions);
+    setEmail(element.paypal_email);
+    setPaymentInstructions(element.payment_instructions);
+  };
+  
   const getInfo = async () => {
     try {
       const data = await FetchAPI('get', endpoint.getPaymentInfo, null, {
@@ -40,10 +53,14 @@ const PaymentInfo = ({navigation}: any) => {
         payment_instructions: paymentInstructions,
         additional_payment_instructions: additionalDetails,
       };
-      const data = await FetchAPI('post', endpoint.addPaymentInfo, payload, {
-        Authorization: 'Bearer ' + selector.token,
-      });
-      if (data.status === 'success') {
+      if (selector.token === 'Guest') {
+        dispatch(setPaymentInfo(payload));
+      } else {
+        const data = await FetchAPI('post', endpoint.addPaymentInfo, payload, {
+          Authorization: 'Bearer ' + selector.token,
+        });
+        if (data.status === 'success') {
+        }
       }
     } catch (error) {}
   };
