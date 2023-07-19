@@ -5,10 +5,8 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
-import {Switch} from 'react-native-paper';
 import { Colors } from '../../Helper/Colors';
 import DiscountOption from '../../CustomComponent/DiscountOption';
 
