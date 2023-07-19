@@ -32,6 +32,8 @@ import SignaturePadScreen from '../Screens/Signature/SignaturePadScreen';
 import PaymentScreen from '../Screens/Payments/PaymentScreen';
 import RegionScreen from '../Screens/Regions';
 import SplashScreenLoading from '../Screens/SplashScreen/SplashScreen';
+import YourComponent from '../Language/sample';
+import Home from '../Language/Home';
 
 const headerStyle = {
   headerStyle: {
@@ -140,7 +142,12 @@ function Dashboard() {
 
 function MainNavigator() {
   return (
-    <Stack.Navigator initialRouteName="SplashScreen">
+    <Stack.Navigator initialRouteName="YourComponent">
+      <Stack.Screen
+        name="YourComponent"
+        component={Home}
+        options={{headerShown: false}}
+      />
       <Stack.Screen
         name="SplashScreen"
         component={SplashScreenLoading}
