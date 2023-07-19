@@ -14,8 +14,10 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import {ToggleButton} from 'react-native-paper';
 import {Colors} from '../../../Helper/Colors';
 import ModalActivityIndicator from '../../../CustomComponent/Loader';
+import {useTranslation} from 'react-i18next';
 
 function ReportScreen({navigation}: any): JSX.Element {
+  const {t, i18n} = useTranslation();
   const [value, setValue] = useState('Paid');
   const [Year, setYear] = useState('2022');
   const [loading, setLoading] = useState(false);
@@ -29,12 +31,14 @@ function ReportScreen({navigation}: any): JSX.Element {
       <View style={styles.tableTileView}>
         <Text style={{...styles.tableTitle, textAlign: 'left'}}>{''}</Text>
         <Text style={{...styles.tableTitle, textAlign: 'center'}}>
-          {'Clients'}
+          {t('clients')}
         </Text>
         <Text style={{...styles.tableTitle, textAlign: 'center'}}>
-          {'Invoices'}
+          {t('Invoices')}
         </Text>
-        <Text style={{...styles.tableTitle, textAlign: 'right'}}>{'Paid'}</Text>
+        <Text style={{...styles.tableTitle, textAlign: 'right'}}>
+          {t('Paid')}
+        </Text>
       </View>
     );
   };
@@ -44,7 +48,7 @@ function ReportScreen({navigation}: any): JSX.Element {
       <View style={styles.tableTileView}>
         <Text style={{...styles.tableTitle, textAlign: 'left'}}>{''}</Text>
         <Text style={{...styles.tableTitle, textAlign: 'center'}}>
-          {'Invoices'}
+          {t('Invoices')}
         </Text>
         <Text style={{...styles.tableTitle, textAlign: 'right'}}>{'Paid'}</Text>
       </View>
@@ -56,10 +60,10 @@ function ReportScreen({navigation}: any): JSX.Element {
       <View style={styles.tableTileView}>
         <Text style={{...styles.tableTitle, textAlign: 'left'}}>{''}</Text>
         <Text style={{...styles.tableTitle, textAlign: 'center'}}>
-          {'Invoices'}
+          {t('Invoices')}
         </Text>
         <Text style={{...styles.tableTitle, textAlign: 'center'}}>
-          {'Quantity'}
+          {t('Quantity')}
         </Text>
         <Text style={{...styles.tableTitle, textAlign: 'right'}}>{'Paid'}</Text>
       </View>
@@ -153,7 +157,7 @@ function ReportScreen({navigation}: any): JSX.Element {
                 ...styles.headerTitle,
                 color: value === 'Paid' ? '#fff' : Colors.appColor,
               }}>
-              Paid
+              {t('Paid')}
             </Text>
           </View>
         )}
@@ -171,7 +175,7 @@ function ReportScreen({navigation}: any): JSX.Element {
                 ...styles.headerTitle,
                 color: value === 'Clients' ? '#fff' : Colors.appColor,
               }}>
-              Clients
+              {t('clients')}
             </Text>
           </View>
         )}
@@ -189,7 +193,7 @@ function ReportScreen({navigation}: any): JSX.Element {
                 ...styles.headerTitle,
                 color: value === 'Items' ? '#fff' : Colors.appColor,
               }}>
-              Items
+              {t('items')}
             </Text>
           </View>
         )}
@@ -467,7 +471,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 8,
     borderTopWidth: 0.3,
-    borderTopColor:Colors.commonBg,
+    borderTopColor: Colors.commonBg,
   },
   itemTxt: {
     fontSize: 14,

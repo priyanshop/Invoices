@@ -34,6 +34,7 @@ import Customize from '../Screens/Settings/Customizes';
 import EstimationCreationScreen from '../Screens/AddEstimate';
 import EstimationNumber from '../Screens/InvoiceNumber/EstimateNumber';
 import DiscountScreen from '../Screens/Settings/DiscountScreen';
+import {useTranslation} from 'react-i18next';
 
 const headerStyle = {
   headerStyle: {
@@ -59,40 +60,42 @@ const tabBarOptions = {
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-const bottomTab = [
-  {
-    name: 'Invoices',
-    screen: InvoicesScreen,
-    icon: 'ios-receipt-outline',
-    iconType: Icon,
-  },
-  {
-    name: 'Estimates',
-    screen: EstimatesScreen,
-    icon: 'ios-calculator-sharp',
-    iconType: Icon,
-  },
-  {
-    name: 'Clients',
-    screen: ClientScreen,
-    icon: 'people-sharp',
-    iconType: Icon,
-  },
-  {
-    name: 'Items',
-    screen: ItemsScreen,
-    icon: 'barcode',
-    iconType: AntDesign,
-  },
-  {
-    name: 'Reports',
-    screen: ReportScreen,
-    icon: 'barschart',
-    iconType: AntDesign,
-  },
-];
-
 function Dashboard() {
+  const {t, i18n} = useTranslation();
+
+  const bottomTab = [
+    {
+      name: t('bottomNav.Invoices'),
+      screen: InvoicesScreen,
+      icon: 'ios-receipt-outline',
+      iconType: Icon,
+    },
+    {
+      name: t('bottomNav.Estimates'),
+      screen: EstimatesScreen,
+      icon: 'ios-calculator-sharp',
+      iconType: Icon,
+    },
+    {
+      name: t('bottomNav.Clients'),
+      screen: ClientScreen,
+      icon: 'people-sharp',
+      iconType: Icon,
+    },
+    {
+      name: t('bottomNav.Items'),
+      screen: ItemsScreen,
+      icon: 'barcode',
+      iconType: AntDesign,
+    },
+    {
+      name: t('bottomNav.Reports'),
+      screen: ReportScreen,
+      icon: 'barschart',
+      iconType: AntDesign,
+    },
+  ];
+
   return (
     <Tab.Navigator>
       {bottomTab.map(Screen => (
@@ -115,133 +118,180 @@ function Dashboard() {
   );
 }
 
-const screenConfigurations = [
-  {
-    name: 'SplashScreen',
-    component: SplashScreenLoading,
-    options: {headerShown: false},
-  },
-  {
-    name: 'LandingPage',
-    component: LandingScreen,
-    options: {headerShown: false},
-  },
-  {name: 'SignIn', component: SignInScreen, options: {headerShown: false}},
-  {name: 'SignUp', component: SignUpScreen, options: {headerShown: false}},
-  {name: 'Dashboard', component: Dashboard, options: {headerShown: false}},
-  {
-    name: 'Settings',
-    component: SettingScreen,
-    options: {headerTitle: 'Menu', ...headerStyle},
-  },
-  {
-    name: 'InvoiceCreation',
-    component: InvoiceCreationScreen,
-    options: {headerTitle: 'Invoice', ...headerStyle},
-  },
-  {
-    name: 'InvoiceNumber',
-    component: InvoiceNumber,
-    options: {headerTitle: 'Invoice Number', ...headerStyle},
-  },
-  {
-    name: 'BusinessDetails',
-    component: BusinessDetails,
-    options: {headerTitle: 'Business Details', ...headerStyle},
-  },
-  {
-    name: 'AddClientScreen',
-    component: AddClientScreen,
-    options: {headerTitle: 'Client', ...headerStyle},
-  },
-  {
-    name: 'AddItemScreen',
-    component: AddItemScreen,
-    options: {headerTitle: 'Item', ...headerStyle},
-  },
-  {
-    name: 'AddGlobalItemScreen',
-    component: AddGlobalItemScreen,
-    options: {headerTitle: 'Item', ...headerStyle},
-  },
-  {
-    name: 'AddPhotoScreen',
-    component: AddPhotoScreen,
-    options: {headerTitle: 'Photo', ...headerStyle},
-  },
-  {
-    name: 'PaymentInfo',
-    component: PaymentInfo,
-    options: {headerTitle: 'Payment Info', ...headerStyle},
-  },
-  {
-    name: 'AdditionalDetails',
-    component: AdditionalDetails,
-    options: {headerTitle: 'Additional Details', ...headerStyle},
-  },
-  {
-    name: 'ManualExpense',
-    component: ManualExpense,
-    options: {headerTitle: 'Expense', ...headerStyle},
-  },
-  {
-    name: 'DefaultNotes',
-    component: DefaultNotes,
-    options: {headerTitle: 'Default Notes', ...headerStyle},
-  },
-  {
-    name: 'GlobalInvoiceNumber',
-    component: GlobalInvoiceNumber,
-    options: {headerTitle: 'Invoice Number', ...headerStyle},
-  },
-  {
-    name: 'DefaultEmailMessage',
-    component: DefaultEmailMessage,
-    options: {headerTitle: 'Default Email Message', ...headerStyle},
-  },
-  {
-    name: 'TaxScreen',
-    component: TaxScreen,
-    options: {headerTitle: 'Tax', ...headerStyle},
-  },
-  {
-    name: 'SignaturePad',
-    component: SignaturePadScreen,
-    options: {headerTitle: 'Signature', ...headerStyle},
-  },
-  {
-    name: 'PaymentScreen',
-    component: PaymentScreen,
-    options: {headerTitle: 'Payment', ...headerStyle},
-  },
-  {
-    name: 'RegionScreen',
-    component: RegionScreen,
-    options: {headerTitle: 'Region', ...headerStyle},
-  },
-  {
-    name: 'Customize',
-    component: Customize,
-    options: {headerTitle: 'Customize', ...headerStyle},
-  },
-  {
-    name: 'EstimationCreation',
-    component: EstimationCreationScreen,
-    options: {headerTitle: 'Estimate', ...headerStyle},
-  },
-  {
-    name: 'EstimationNumber',
-    component: EstimationNumber,
-    options: {headerTitle: 'Invoice Number', ...headerStyle},
-  },
-  {
-    name: 'DiscountScreen',
-    component: DiscountScreen,
-    options: {headerTitle: 'Discount', ...headerStyle},
-  },
-];
-
 function MainNavigator() {
+  const {t, i18n} = useTranslation();
+
+  const screenConfigurations = [
+    {
+      name: 'SplashScreen',
+      component: SplashScreenLoading,
+      options: {headerShown: false},
+    },
+    {
+      name: 'LandingPage',
+      component: LandingScreen,
+      options: {headerShown: false},
+    },
+    {name: 'SignIn', component: SignInScreen, options: {headerShown: false}},
+    {name: 'SignUp', component: SignUpScreen, options: {headerShown: false}},
+    {name: 'Dashboard', component: Dashboard, options: {headerShown: false}},
+    {
+      name: 'Settings',
+      component: SettingScreen,
+      options: {headerTitle: t('navigationTitle.Settings'), ...headerStyle},
+    },
+    {
+      name: 'InvoiceCreation',
+      component: InvoiceCreationScreen,
+      options: {
+        headerTitle: t('navigationTitle.InvoiceCreation'),
+        ...headerStyle,
+      },
+    },
+    {
+      name: 'InvoiceNumber',
+      component: InvoiceNumber,
+      options: {
+        headerTitle: t('navigationTitle.InvoiceNumber'),
+        ...headerStyle,
+      },
+    },
+    {
+      name: 'BusinessDetails',
+      component: BusinessDetails,
+      options: {
+        headerTitle: t('navigationTitle.BusinessDetails'),
+        ...headerStyle,
+      },
+    },
+    {
+      name: 'AddClientScreen',
+      component: AddClientScreen,
+      options: {
+        headerTitle: t('navigationTitle.AddClientScreen'),
+        ...headerStyle,
+      },
+    },
+    {
+      name: 'AddItemScreen',
+      component: AddItemScreen,
+      options: {
+        headerTitle: t('navigationTitle.AddItemScreen'),
+        ...headerStyle,
+      },
+    },
+    {
+      name: 'AddGlobalItemScreen',
+      component: AddGlobalItemScreen,
+      options: {
+        headerTitle: t('navigationTitle.AddGlobalItemScreen'),
+        ...headerStyle,
+      },
+    },
+    {
+      name: 'AddPhotoScreen',
+      component: AddPhotoScreen,
+      options: {
+        headerTitle: t('navigationTitle.AddPhotoScreen'),
+        ...headerStyle,
+      },
+    },
+    {
+      name: 'PaymentInfo',
+      component: PaymentInfo,
+      options: {headerTitle: t('navigationTitle.PaymentInfo'), ...headerStyle},
+    },
+    {
+      name: 'AdditionalDetails',
+      component: AdditionalDetails,
+      options: {
+        headerTitle: t('navigationTitle.AdditionalDetails'),
+        ...headerStyle,
+      },
+    },
+    {
+      name: 'ManualExpense',
+      component: ManualExpense,
+      options: {
+        headerTitle: t('navigationTitle.ManualExpense'),
+        ...headerStyle,
+      },
+    },
+    {
+      name: 'DefaultNotes',
+      component: DefaultNotes,
+      options: {headerTitle: t('navigationTitle.DefaultNotes'), ...headerStyle},
+    },
+    {
+      name: 'GlobalInvoiceNumber',
+      component: GlobalInvoiceNumber,
+      options: {
+        headerTitle: t('navigationTitle.GlobalInvoiceNumber'),
+        ...headerStyle,
+      },
+    },
+    {
+      name: 'DefaultEmailMessage',
+      component: DefaultEmailMessage,
+      options: {
+        headerTitle: t('navigationTitle.DefaultEmailMessage'),
+        ...headerStyle,
+      },
+    },
+    {
+      name: 'TaxScreen',
+      component: TaxScreen,
+      options: {headerTitle: t('navigationTitle.TaxScreen'), ...headerStyle},
+    },
+    {
+      name: 'SignaturePad',
+      component: SignaturePadScreen,
+      options: {headerTitle: t('navigationTitle.SignaturePad'), ...headerStyle},
+    },
+    {
+      name: 'PaymentScreen',
+      component: PaymentScreen,
+      options: {
+        headerTitle: t('navigationTitle.PaymentScreen'),
+        ...headerStyle,
+      },
+    },
+    {
+      name: 'RegionScreen',
+      component: RegionScreen,
+      options: {headerTitle: t('navigationTitle.RegionScreen'), ...headerStyle},
+    },
+    {
+      name: 'Customize',
+      component: Customize,
+      options: {headerTitle: t('navigationTitle.Customize'), ...headerStyle},
+    },
+    {
+      name: 'EstimationCreation',
+      component: EstimationCreationScreen,
+      options: {
+        headerTitle: t('navigationTitle.EstimationCreation'),
+        ...headerStyle,
+      },
+    },
+    {
+      name: 'EstimationNumber',
+      component: EstimationNumber,
+      options: {
+        headerTitle: t('navigationTitle.EstimationNumber'),
+        ...headerStyle,
+      },
+    },
+    {
+      name: 'DiscountScreen',
+      component: DiscountScreen,
+      options: {
+        headerTitle: t('navigationTitle.DiscountScreen'),
+        ...headerStyle,
+      },
+    },
+  ];
+
   return (
     <Stack.Navigator initialRouteName={screenConfigurations[0].name}>
       {screenConfigurations.map(screen => (

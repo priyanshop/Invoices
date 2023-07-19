@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   FlatList,
   SafeAreaView,
@@ -8,29 +8,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
-import {useIsFocused} from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux';
+import { useIsFocused } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import FloatingButton from '../../../CustomComponent/FloatingButton';
-import {Colors} from '../../../Helper/Colors';
+import { Colors } from '../../../Helper/Colors';
 import CustomHeader from '../../../CustomComponent/CustomHeader';
 import EmptyViewComponent from '../../../CustomComponent/EmptyViewComponent';
 import FetchAPI from '../../../Networking';
-import {endpoint} from '../../../Networking/endpoint';
+import { endpoint } from '../../../Networking/endpoint';
 
-const data = [
-  {
-    client: 'Client A',
-    invoiceNumber: 'INV-001',
-    price: 100.0,
-  },
-  {
-    client: 'Client B',
-    invoiceNumber: 'INV-002',
-    price: 200.0,
-  },
-];
-
-function ClientScreen({navigation}: any): JSX.Element {
+function ClientScreen({ navigation }: any): JSX.Element {
+  const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const selector = useSelector(state => state.user);
   const isFocused = useIsFocused();
@@ -62,7 +51,7 @@ function ClientScreen({navigation}: any): JSX.Element {
         setClientList(data.data);
         setSearchClientList(data.data);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleSearch = (query): any => {
@@ -96,7 +85,7 @@ function ClientScreen({navigation}: any): JSX.Element {
     });
   }
 
-  const renderItem = ({item, index}: any) => (
+  const renderItem = ({ item, index }: any) => (
     <TouchableOpacity
       onPress={() => navigateToClient(item._id, item, index)}
       style={styles.invoiceItem}>
@@ -108,15 +97,14 @@ function ClientScreen({navigation}: any): JSX.Element {
         ) : null}
       </View>
       <View style={styles.priceView}>
-        <Text style={styles.priceText}>{`$${
-          item.price ? item.price : '0'
-        }`}</Text>
+        <Text style={styles.priceText}>{`$${item.price ? item.price : '0'
+          }`}</Text>
       </View>
     </TouchableOpacity>
   );
 
   const renderEmptyComponent = () => (
-    <EmptyViewComponent message={'Your client will show up here'} />
+    <EmptyViewComponent message={t('emptyClient')} />
   );
 
   return (
@@ -126,21 +114,21 @@ function ClientScreen({navigation}: any): JSX.Element {
         searchStart={searchStart}
         navigateToSetting={navigateToSetting}
         setSearchStart={removeSearch}
-        title={'Clients'}
+        title={t('clients')}
         searchText={searchQuery}
         handleSearch={handleSearch}
       />
-      <View style={{flex: 1, backgroundColor: Colors.commonBg}}>
+      <View style={{ flex: 1, backgroundColor: Colors.commonBg }}>
         <View style={styles.titleHeader}>
-          <Text style={styles.tileHeaderTxt}>{'Name'}</Text>
-          <Text style={styles.tileHeaderTxt}>{'Total Billed'}</Text>
+          <Text style={styles.tileHeaderTxt}>{t('name')}</Text>
+          <Text style={styles.tileHeaderTxt}>{t('totalBill')}</Text>
         </View>
         <FlatList
           data={searchClientList}
           renderItem={renderItem}
           keyExtractor={(item: any, index: any) => item + index}
           ListEmptyComponent={renderEmptyComponent}
-          contentContainerStyle={{flex: 1}}
+          contentContainerStyle={{ flex: 1 }}
         />
         <FloatingButton onPress={navigateToAddClient} />
       </View>
@@ -273,7 +261,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
   },
-  priceView: {justifyContent: 'center'},
+  priceView: { justifyContent: 'center' },
   titleHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -281,7 +269,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#A9A9A9',
     paddingVertical: 10,
   },
-  tileHeaderTxt: {color: '#fff', fontSize: 16, fontWeight: '500'},
+  tileHeaderTxt: { color: '#fff', fontSize: 16, fontWeight: '500' },
 });
 
 export default ClientScreen;

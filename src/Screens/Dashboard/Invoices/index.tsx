@@ -15,6 +15,7 @@ import {getScreenDimensions} from '../../../Helper/ScreenDimension';
 import {Colors} from '../../../Helper/Colors';
 import CustomHeader from '../../../CustomComponent/CustomHeader';
 import EmptyViewComponent from '../../../CustomComponent/EmptyViewComponent';
+import {useTranslation} from 'react-i18next';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -56,12 +57,13 @@ const invoices = [
   },
 ];
 
-const data = [
-  {key: 'first', title: 'All'},
-  {key: 'second', title: 'OutStanding'},
-  {key: 'third', title: 'Paid'},
-];
 function InvoicesScreen({navigation}: any): JSX.Element {
+  const {t, i18n} = useTranslation();
+  const data = [
+    {key: 'first', title: t('All')},
+    {key: 'second', title: t('OutStanding')},
+    {key: 'third', title: t('Paid')},
+  ];
   const [index, setIndex] = useState(0);
   const [searchStart, setSearchStart] = useState(false);
   const [routes] = useState(data);
@@ -97,11 +99,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     );
 
     const renderEmptyComponent = () => (
-      <EmptyViewComponent
-        message={
-          'Your invoices will show up here. Click the plus button below to create your first invoice!'
-        }
-      />
+      <EmptyViewComponent message={t('emptyInvoiceAll')} />
     );
     return (
       <View style={[styles.scene]}>
@@ -119,9 +117,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
 
   const OutStandingRoute = () => {
     const renderEmptyComponent = () => (
-      <EmptyViewComponent
-        message={'Invoices that are no yet paid show up here.'}
-      />
+      <EmptyViewComponent message={t('emptyInvoiceOutStanding')} />
     );
 
     const renderInvoiceItem = ({item}: any) => (
@@ -160,9 +156,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
 
   const PaidRoute = () => {
     const renderEmptyComponent = () => (
-      <EmptyViewComponent
-        message={'Invoices that you mark paid will show up here.'}
-      />
+      <EmptyViewComponent message={t('emptyInvoicePaid')} />
     );
 
     const renderInvoiceItem = ({item}: any) => (
@@ -206,7 +200,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
         searchStart={searchStart}
         navigateToSetting={navigateToSetting}
         setSearchStart={setSearchStart}
-        title={'Invoices'}
+        title={t('Invoices')}
       />
       <TabView
         navigationState={{index, routes}}
@@ -309,7 +303,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     fontSize: 15,
     fontWeight: '500',
-    color:"grey"
+    color: 'grey',
   },
   invoiceItem: {
     flexDirection: 'row',

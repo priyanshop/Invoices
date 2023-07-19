@@ -11,7 +11,7 @@ import {
   View,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-import Icon from 'react-native-vector-icons/Ionicons';
+import {useTranslation} from 'react-i18next';
 import FloatingButton from '../../../CustomComponent/FloatingButton';
 import {Colors} from '../../../Helper/Colors';
 import CustomHeader from '../../../CustomComponent/CustomHeader';
@@ -20,19 +20,8 @@ import FetchAPI from '../../../Networking';
 import {endpoint} from '../../../Networking/endpoint';
 import {useIsFocused} from '@react-navigation/native';
 
-const data = [
-  {
-    item: 'Item1',
-    description: 'sssss',
-    price: 150.0,
-  },
-  {
-    item: 'Item1',
-    description: 'sssss',
-    price: 150.0,
-  },
-];
 function ItemsScreen({navigation}: any): JSX.Element {
+  const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const selector = useSelector(state => state.user);
@@ -116,11 +105,7 @@ function ItemsScreen({navigation}: any): JSX.Element {
     </TouchableOpacity>
   );
   const renderEmptyComponent = () => (
-    <EmptyViewComponent
-      message={
-        'Here you can manage a list of products or services that you repeatedly invoice for'
-      }
-    />
+    <EmptyViewComponent message={t('emptyItems')} />
   );
   return (
     <SafeAreaView style={styles.container}>
@@ -129,7 +114,7 @@ function ItemsScreen({navigation}: any): JSX.Element {
         searchStart={searchStart}
         navigateToSetting={navigateToSetting}
         setSearchStart={removeSearch}
-        title={'Items'}
+        title={t('items')}
         searchText={searchQuery}
         handleSearch={handleSearch}
       />

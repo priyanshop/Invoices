@@ -15,10 +15,12 @@ import {
 } from '../../redux/reducers/user/UserReducer';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
+import {useTranslation} from 'react-i18next';
 
 const SettingScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
   const selector = useSelector(state => state.user);
+  const {t, i18n} = useTranslation();
 
   const apiCall = async () => {
     try {
@@ -46,30 +48,46 @@ const SettingScreen = ({navigation}: any) => {
   const data = [
     {
       sectionName: 'Support',
+      sectionName2: t('Settings.Support'),
       sectionType: '',
-      data: [{title: 'Contact us', description: ''}],
+      data: [
+        {
+          title: 'Contact us',
+          titleTxt: t('Settings.ContactUs'),
+          description: '',
+        },
+      ],
     },
     {
       sectionName: 'Invoice',
+      sectionName2: t('Settings.Invoice'),
       sectionType: '',
       data: [
         {
           title: 'Expenses Beta',
+          titleTxt: t('Settings.ExpensesBeta'),
           description: 'Scan and organize receipts',
+          descriptionTxt: t('Settings.ScanReceipts'),
           onPress: () => navigation.navigate('ManualExpense'),
         },
         {
           title: 'Business Details',
+          titleTxt: t('Settings.BusinessDetails'),
           description: 'Logo, Name and Contact Information',
+          descriptionTxt: t('Settings.LogoInformation'),
           onPress: () => navigation.navigate('BusinessDetails'),
         },
         {
           title: 'Template',
+          titleTxt: t('Settings.Template'),
           description: 'Select your invoice design and color',
+          descriptionTxt: t('Settings.SelectColor'),
         },
         {
           title: 'Payment Info',
+          titleTxt: t('Settings.PaymentInfo'),
           description: 'Do not enter sensitive information',
+          descriptionTxt: t('Settings.SensitiveInformation'),
           onPress: () => navigation.navigate('PaymentInfo'),
         },
         // {
@@ -79,56 +97,104 @@ const SettingScreen = ({navigation}: any) => {
         // },
         {
           title: 'Default Notes',
+          titleTxt: t('Settings.DefaultNotes'),
           description: '',
           onPress: () => navigation.navigate('DefaultNotes'),
         },
         {
           title: 'Invoice Number',
+          titleTxt: t('Settings.InvoiceNumber'),
           description: '',
           onPress: () => navigation.navigate('GlobalInvoiceNumber'),
         },
-        {title: 'Export Expense Summary', description: ''},
-        {title: 'Export as Spreadsheet', description: ''},
+        {
+          title: 'Export Expense Summary',
+          titleTxt: t('Settings.ExportExpenseSummary'),
+          description: '',
+        },
+        {
+          title: 'Export as Spreadsheet',
+          titleTxt: t('Settings.ExportAsSpreadsheet'),
+          description: '',
+        },
         {
           title: 'Customize',
+          titleTxt: t('Settings.Customize'),
           description: '',
           onPress: () => navigation.navigate('Customize'),
         },
         {
           title: 'Default Email Message',
+          titleTxt: t('Settings.DefaultEmailMessage'),
           description: '',
           onPress: () => navigation.navigate('DefaultEmailMessage'),
         },
-        {title: 'Send me a copy of emails', description: ''},
+        {
+          title: 'Send me a copy of emails',
+          titleTxt: t('Settings.SendCopyEmail'),
+          description: '',
+        },
       ],
     },
     {
       sectionName: 'Account',
+      sectionName2: t('Settings.Account'),
       sectionType: 'Guest',
       data: [
-        {title: 'Sync', description: 'last synced 0 seconds ago'},
+        {
+          title: 'Sync',
+          titleTxt: t('Settings.Sync'),
+          descriptionTxt: 'last synced 0 seconds ago',
+          description: 'last synced 0 seconds ago',
+        },
         {
           title: 'Region',
+          titleTxt: t('Settings.Region'),
           description: 'Language, Currency, Tax year and Date Format',
+          descriptionTxt: t('Settings.Language'),
           onPress: () => navigation.navigate('RegionScreen'),
         },
-        {title: 'Upgrade', description: ''},
-        {title: 'Backup', description: ''},
-        {title: 'Restore Purchases', description: ''},
-        {title: 'Check Subscriptions', description: ''},
+        {
+          title: 'Upgrade',
+          titleTxt: t('Settings.Upgrade'),
+          description: '',
+        },
+        {
+          title: 'Backup',
+          titleTxt: t('Settings.Backup'),
+          description: '',
+        },
+        {
+          title: 'Restore Purchases',
+          titleTxt: t('Settings.RestorePurchases'),
+          description: '',
+        },
+        {
+          title: 'Check Subscriptions',
+          titleTxt: t('Settings.CheckSubscriptions'),
+          description: '',
+        },
         {
           title: 'Switch Account',
+          titleTxt: t('Settings.SwitchAccount'),
           description: '',
           onPress: () => accountAction('SignIn'),
         },
         {
           title: 'Sign Up',
+          titleTxt: t('Settings.SignUp'),
           description: '',
           onPress: () => navigation.navigate('SignIn'),
         },
-        {title: 'Delete Account', description: '', onPress: () => apiCall()},
+        {
+          title: 'Delete Account',
+          titleTxt: t('Settings.DeleteAccount'),
+          description: '',
+          onPress: () => apiCall(),
+        },
         {
           title: 'Logout',
+          titleTxt: t('Settings.Logout'),
           description: '',
           onPress: () => accountAction('LandingPage'),
         },
@@ -136,11 +202,25 @@ const SettingScreen = ({navigation}: any) => {
     },
     {
       sectionName: 'Information',
+      sectionName2: t('Settings.Information'),
       sectionType: '',
       data: [
-        {title: 'About', description: 'v3.4.47'},
-        {title: 'Terms of Use', description: ''},
-        {title: 'Privacy Policy', description: ''},
+        {
+          title: 'About',
+          titleTxt: t('Settings.About'),
+          description: 'v3.4.47',
+          descriptionTxt: 'v3.4.47',
+        },
+        {
+          title: 'Terms of Use',
+          titleTxt: t('Settings.TermsUse'),
+          description: '',
+        },
+        {
+          title: 'Privacy Policy',
+          titleTxt: t('Settings.PrivacyPolicy'),
+          description: '',
+        },
       ],
     },
   ];
@@ -175,9 +255,9 @@ const SettingScreen = ({navigation}: any) => {
           style={
             item.title === 'Send me a copy of emails' ? styles.switchView : null
           }>
-          <Text style={styles.titleTxt}>{item.title}</Text>
+          <Text style={styles.titleTxt}>{item.titleTxt}</Text>
           {item.description === '' ? null : (
-            <Text style={styles.descriptionTxt}>{item.description}</Text>
+            <Text style={styles.descriptionTxt}>{item.descriptionTxt}</Text>
           )}
           {'Send me a copy of emails' === item.title && (
             <Switch

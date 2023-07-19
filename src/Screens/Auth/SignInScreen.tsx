@@ -14,9 +14,11 @@ import {Colors} from '../../Helper/Colors';
 import {saveUserData, setToken} from '../../redux/reducers/user/UserReducer';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
+import {useTranslation} from 'react-i18next';
 
 function SignInScreen({navigation}: any): JSX.Element {
   const dispatch = useDispatch();
+  const {t, i18n} = useTranslation();
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const [Password, setPassword] = useState('');
@@ -25,7 +27,7 @@ function SignInScreen({navigation}: any): JSX.Element {
   const validateEmail = (text: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(text)) {
-      setEmailError('Invalid email format');
+      setEmailError(t('businessInfo.emailError'));
     } else {
       setEmailError('');
     }
@@ -34,7 +36,7 @@ function SignInScreen({navigation}: any): JSX.Element {
 
   const validatePassword = (text: string) => {
     if (!(text.length >= 8)) {
-      setPasswordError('Invalid Password');
+      setPasswordError(t('businessInfo.passwordError'));
     } else {
       setPasswordError('');
     }
@@ -72,7 +74,7 @@ function SignInScreen({navigation}: any): JSX.Element {
       <TextInput
         value={email}
         style={[styles.input, styles.addressInput1]}
-        placeholder={'Email'}
+        placeholder={t('businessInfo.email')}
         onChangeText={validateEmail}
         placeholderTextColor={'grey'}
         keyboardType={'email-address'}
@@ -85,7 +87,7 @@ function SignInScreen({navigation}: any): JSX.Element {
       <TextInput
         value={Password}
         style={styles.input}
-        placeholder={'Password'}
+        placeholder={t('businessInfo.password')}
         onChangeText={validatePassword}
         placeholderTextColor={'grey'}
       />
@@ -97,12 +99,12 @@ function SignInScreen({navigation}: any): JSX.Element {
       <TouchableOpacity
         onPress={handleNext}
         style={[styles.input, styles.lastAddressInput]}>
-        <Text style={styles.loginBtnTxt}>Login</Text>
+        <Text style={styles.loginBtnTxt}>{t('login')}</Text>
       </TouchableOpacity>
 
       <View style={styles.hyperlinkView}>
-        <Text style={styles.hyperlink}>Forgot Password?</Text>
-        <Text style={styles.hyperlink}>Contact Support</Text>
+        <Text style={styles.hyperlink}>{t('ForgotPassword')}</Text>
+        <Text style={styles.hyperlink}>{t('ContactSupport')}</Text>
       </View>
     </SafeAreaView>
   );

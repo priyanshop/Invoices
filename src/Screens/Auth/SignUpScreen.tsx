@@ -56,22 +56,16 @@ function SignUpScreen({navigation}: any): JSX.Element {
 
   const handleNext = () => {
     if (activeSlide === 2) {
-      // navigation.navigate('Dashboard');
       if (email.trim() !== '') {
         validation();
       } else {
         dispatch(setToken('Guest'));
         dispatch(saveUserData({email: 'Guest'}));
-
         navigation.reset({
           index: 0,
           routes: [{name: 'Dashboard'}],
         });
       }
-      // navigation.reset({
-      //   index: 0,
-      //   routes: [{name: 'Dashboard'}],
-      // });
     } else {
       carouselRef.current.snapToNext();
     }
@@ -84,7 +78,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
   const validateEmail = (text: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(text)) {
-      setEmailError('Invalid email format');
+      setEmailError(t('businessInfo.emailError'));
     } else {
       setEmailError('');
     }
@@ -99,22 +93,20 @@ function SignUpScreen({navigation}: any): JSX.Element {
 
   const validation = () => {
     if (emailError.trim() !== '') {
-      Alert.alert('', 'Please Enter Email');
+      Alert.alert('', t('businessInfo.enterEmail'));
       return;
     }
     if (password !== confirmPassword) {
-      Alert.alert('', 'Passwords do not match');
+      Alert.alert('', t('businessInfo.confirmPasswordError'));
 
-      setErrorConfirmPassword('Passwords do not match');
+      setErrorConfirmPassword(t('businessInfo.confirmPasswordError'));
       return;
     }
 
     if (!isPasswordValid(password)) {
-      Alert.alert('', 'Please verify confirm Passwords');
+      Alert.alert('', t('businessInfo.verifyPassword'));
 
-      setErrorPassword(
-        'Password must be at least 8 characters long, contain one uppercase letter, and one special character',
-      );
+      setErrorPassword(t('businessInfo.passwordFormat'));
       return;
     }
     apiCall();
@@ -123,9 +115,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
   const validatePassword = (password: any) => {
     setPassword(password);
     if (!isPasswordValid(password)) {
-      setErrorPassword(
-        'Password must be at least 8 characters long, contain one uppercase letter, and one special character',
-      );
+      setErrorPassword(t('businessInfo.passwordFormat'));
     } else {
       setErrorPassword('');
     }
@@ -134,7 +124,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
   const validateConfirmPassword = (confirmPassword: any) => {
     setConfirmPassword(confirmPassword);
     if (password !== confirmPassword) {
-      setErrorConfirmPassword('Passwords do not match');
+      setErrorConfirmPassword(t('businessInfo.confirmPasswordError'));
     } else {
       setErrorConfirmPassword('');
     }

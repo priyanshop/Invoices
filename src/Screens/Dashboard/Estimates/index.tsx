@@ -13,6 +13,7 @@ import FloatingButton from '../../../CustomComponent/FloatingButton';
 import {getScreenDimensions} from '../../../Helper/ScreenDimension';
 import {Colors} from '../../../Helper/Colors';
 import CustomHeader from '../../../CustomComponent/CustomHeader';
+import {useTranslation} from 'react-i18next';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -150,12 +151,13 @@ const ClosedRoute = () => {
   );
 };
 
-const data = [
-  {key: 'first', title: 'All'},
-  {key: 'second', title: 'Open'},
-  {key: 'third', title: 'Closed'},
-];
 function EstimatesScreen({navigation}: any): JSX.Element {
+  const {t, i18n} = useTranslation();
+  const data = [
+    {key: 'first', title: t('All')},
+    {key: 'second', title: t('Open')},
+    {key: 'third', title: t('Closed')},
+  ];
   const [index, setIndex] = useState(0);
   const [searchStart, setSearchStart] = useState(false);
   const [routes] = useState(data);
@@ -175,7 +177,7 @@ function EstimatesScreen({navigation}: any): JSX.Element {
         searchStart={searchStart}
         navigateToSetting={navigateToSetting}
         setSearchStart={setSearchStart}
-        title={'Estimates'}
+        title={t('Estimates')}
       />
       <TabView
         navigationState={{index, routes}}
@@ -278,7 +280,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     fontSize: 15,
     fontWeight: '500',
-    color:"grey"
+    color: 'grey',
   },
   invoiceItem: {
     flexDirection: 'row',
