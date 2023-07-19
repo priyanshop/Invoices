@@ -1,9 +1,8 @@
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-
+import {Colors} from '../Helper/Colors';
 import SignInScreen from '../Screens/Auth/SignInScreen';
 import SignUpScreen from '../Screens/Auth/SignUpScreen';
 import LandingScreen from '../Screens/LandingScreen';
@@ -27,12 +26,14 @@ import DefaultNotes from '../Screens/Settings/DefaultNotes';
 import GlobalInvoiceNumber from '../Screens/Settings/GlobalInvoiceNumber';
 import DefaultEmailMessage from '../Screens/Settings/DefualtEmailMessage';
 import TaxScreen from '../Screens/Settings/TaxScreen';
-import {Colors} from '../Helper/Colors';
 import SignaturePadScreen from '../Screens/Signature/SignaturePadScreen';
 import PaymentScreen from '../Screens/Payments/PaymentScreen';
 import RegionScreen from '../Screens/Regions';
 import SplashScreenLoading from '../Screens/SplashScreen/SplashScreen';
 import Customize from '../Screens/Settings/Customizes';
+import EstimationCreationScreen from '../Screens/AddEstimate';
+import EstimationNumber from '../Screens/InvoiceNumber/EstimateNumber';
+import DiscountScreen from '../Screens/Settings/DiscountScreen';
 
 const headerStyle = {
   headerStyle: {
@@ -261,6 +262,21 @@ function MainNavigator() {
         name="Customize"
         component={Customize}
         options={{headerTitle: 'Customize', ...headerStyle}}
+      />
+      <Stack.Screen
+        name="EstimationCreation"
+        component={EstimationCreationScreen}
+        options={{headerTitle: 'Estimate', ...headerStyle}}
+      />
+       <Stack.Screen
+        name="EstimationNumber"
+        component={EstimationNumber}
+        options={{headerTitle: 'Invoice Number', ...headerStyle}}
+      />
+      <Stack.Screen
+        name="DiscountScreen"
+        component={DiscountScreen}
+        options={{headerTitle: 'Discount', ...headerStyle}}
       />
     </Stack.Navigator>
   );

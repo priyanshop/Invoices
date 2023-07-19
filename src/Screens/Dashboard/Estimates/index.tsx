@@ -164,6 +164,11 @@ function EstimatesScreen({navigation}: any): JSX.Element {
   function navigateToSetting() {
     navigation.navigate('Settings');
   }
+
+  function navigateToAddEstimate() {
+    navigation.navigate('EstimationCreation');
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Colors.appColor} />
@@ -171,7 +176,7 @@ function EstimatesScreen({navigation}: any): JSX.Element {
         searchStart={searchStart}
         navigateToSetting={navigateToSetting}
         setSearchStart={setSearchStart}
-        title={"Estimates"}
+        title={'Estimates'}
       />
       <TabView
         navigationState={{index, routes}}
@@ -194,7 +199,7 @@ function EstimatesScreen({navigation}: any): JSX.Element {
           );
         }}
       />
-      <FloatingButton />
+      <FloatingButton onPress={navigateToAddEstimate} />
     </SafeAreaView>
   );
 }
@@ -273,7 +278,8 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     fontSize: 15,
-    fontWeight: '400',
+    fontWeight: '500',
+    color:"grey"
   },
   invoiceItem: {
     flexDirection: 'row',

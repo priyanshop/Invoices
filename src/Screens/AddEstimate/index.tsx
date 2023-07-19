@@ -26,7 +26,8 @@ const data = [
   {key: 'second', title: 'Preview'},
   {key: 'third', title: 'History'},
 ];
-function InvoiceCreationScreen({navigation}: any): JSX.Element {
+
+function EstimationCreationScreen({navigation}: any): JSX.Element {
   const actions = [
     {
       icon: () => (
@@ -61,7 +62,6 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
   ];
 
   const [index, setIndex] = useState(0);
-  const [searchStart, setSearchStart] = useState(false);
   const [routes] = useState(data);
   const [state, setState] = React.useState({open: false});
 
@@ -112,12 +112,36 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
   }
 
   function navigateToInvoiceNumber() {
-    navigation.navigate('InvoiceNumber');
+    navigation.navigate('EstimationNumber');
   }
 
   function navigateToSignaturePad() {
     navigation.navigate('SignaturePad');
   }
+
+  function navigateToDiscountScreen() {
+    navigation.navigate('DiscountScreen');
+  }
+
+  function navigateToTaxScreen() {
+    navigation.navigate('TaxScreen');
+  }
+
+  const itemsData = [
+    {
+      key: 'first',
+      title: 'Discount',
+      value: '$0.00',
+      onPress: () => navigateToDiscountScreen(),
+    },
+    {
+      key: 'second',
+      title: 'Tax',
+      value: '$0.00',
+      onPress: () => navigateToTaxScreen(),
+    },
+    {key: 'third', title: 'Total', value: '$0.00'},
+  ];
 
   const AllRoute = () => {
     return (
@@ -128,17 +152,14 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
           onPress={navigateToInvoiceNumber}
           style={styles.invoiceTopView}>
           <View style={{justifyContent: 'space-between'}}>
-            <Text style={styles.invoiceTitle}>INV0001</Text>
+            <Text style={styles.invoiceTitle}>EST0001</Text>
             <Text
               onPress={navigateToBusinessDetails}
               style={styles.businessInfo}>
               Business Info
             </Text>
           </View>
-          <View style={{justifyContent: 'space-between'}}>
-            <View style={styles.dueBox}>
-              <Text style={styles.dueTxt}>Due on Receipt</Text>
-            </View>
+          <View style={{justifyContent: 'flex-end'}}>
             <Text style={styles.dueDate}>06/07/2023</Text>
           </View>
         </TouchableOpacity>
@@ -169,12 +190,14 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
         </View>
 
         <View style={styles.dueBalContainer}>
-          {[0, 0, 0, 0, 0].map(() => (
+          {itemsData.map((selectedItem: any) => (
             <View style={styles.dueBalContent}>
-              <View style={styles.dueBalRow}>
-                <Text style={styles.dueBalText}>Discount</Text>
-                <Text style={styles.dueBalText}>$0.00</Text>
-              </View>
+              <TouchableOpacity
+                onPress={selectedItem.onPress}
+                style={styles.dueBalRow}>
+                <Text style={styles.dueBalText}>{selectedItem.title}</Text>
+                <Text style={styles.dueBalText}>{selectedItem.value}</Text>
+              </TouchableOpacity>
             </View>
           ))}
           <View style={styles.dueBalFooter}>
@@ -191,11 +214,6 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
         </View>
 
         <View style={styles.notesContainer}>
-          <TouchableOpacity
-            onPress={navigateToPaymentInfo}
-            style={styles.notesRow}>
-            <Text style={styles.notesText}>Payment Info</Text>
-          </TouchableOpacity>
           <View style={styles.notesRow}>
             <Text onPress={navigateToSignaturePad} style={styles.notesText}>
               Signature
@@ -510,7 +528,12 @@ const styles = StyleSheet.create({
     padding: 12,
     marginVertical: 5,
   },
-  invoiceTitle: {fontSize: 18, fontWeight: '600', color: '#000'},
+  invoiceTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#000',
+    marginBottom: 5,
+  },
   businessInfo: {fontSize: 18, fontWeight: '400', color: '#d1d1d1'},
   dueBox: {
     borderWidth: 1,
@@ -680,4 +703,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default InvoiceCreationScreen;
+export default EstimationCreationScreen;
