@@ -32,6 +32,7 @@ import SignaturePadScreen from '../Screens/Signature/SignaturePadScreen';
 import PaymentScreen from '../Screens/Payments/PaymentScreen';
 import RegionScreen from '../Screens/Regions';
 import SplashScreenLoading from '../Screens/SplashScreen/SplashScreen';
+import Customize from '../Screens/Settings/Customizes';
 
 const headerStyle = {
   headerStyle: {
@@ -255,6 +256,11 @@ function MainNavigator() {
         name="RegionScreen"
         component={RegionScreen}
         options={{headerTitle: 'Region', ...headerStyle}}
+      />
+      <Stack.Screen
+        name="Customize"
+        component={Customize}
+        options={{headerTitle: 'Customize', ...headerStyle}}
       />
     </Stack.Navigator>
   );

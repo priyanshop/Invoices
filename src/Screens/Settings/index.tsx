@@ -7,9 +7,12 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-
+import {Switch} from 'react-native-paper';
 import {Colors} from '../../Helper/Colors';
-import {removeUserData} from '../../redux/reducers/user/UserReducer';
+import {
+  changeSendToEmail,
+  removeUserData,
+} from '../../redux/reducers/user/UserReducer';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 
@@ -86,7 +89,11 @@ const SettingScreen = ({navigation}: any) => {
         },
         {title: 'Export Expense Summary', description: ''},
         {title: 'Export as Spreadsheet', description: ''},
-        {title: 'Customize', description: ''},
+        {
+          title: 'Customize',
+          description: '',
+          onPress: () => navigation.navigate('Customize'),
+        },
         {
           title: 'Default Email Message',
           description: '',
@@ -164,10 +171,22 @@ const SettingScreen = ({navigation}: any) => {
             ? styles.itemBorder
             : null,
         ]}>
-        <View>
+        <View
+          style={
+            item.title === 'Send me a copy of emails' ? styles.switchView : null
+          }>
           <Text style={styles.titleTxt}>{item.title}</Text>
           {item.description === '' ? null : (
             <Text style={styles.descriptionTxt}>{item.description}</Text>
+          )}
+          {'Send me a copy of emails' === item.title && (
+            <Switch
+              value={selector.sendToEmail}
+              color={Colors.landingColor}
+              onValueChange={(value: any) => {
+                dispatch(changeSendToEmail(value));
+              }}
+            />
           )}
         </View>
       </TouchableOpacity>
@@ -223,6 +242,12 @@ const styles = StyleSheet.create({
   },
   titleTxt: {fontSize: 16, fontWeight: '500', color: '#36454F'},
   descriptionTxt: {fontSize: 14, fontWeight: '400', color: '#A9A9A9'},
+  switchView: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    width: '100%',
+    alignItems: 'center',
+  },
 });
 
 export default SettingScreen;

@@ -31,6 +31,16 @@ const initialState: IUserState = {
     estimate_number_prefix: '',
   },
   language: 'en',
+  defaultEmailMessage: '',
+  customizeLabels: {
+    invoices: '',
+    estimate: '',
+    businessNumber: '',
+    quantityLabel: '',
+    unitCostLabel: '',
+    quantityAndUnitCost: true,
+  },
+  sendToEmail: false,
   // localChats: [],
   // localChatsPub: [],
 };
@@ -76,6 +86,15 @@ const UserReducer = createSlice({
     changeLanguage: (state, action) => {
       state.language = action.payload;
     },
+    changeDefaultEmailMsg: (state, action) => {
+      state.defaultEmailMessage = action.payload;
+    },
+    changeCustomize: (state, action) => {
+      state.customizeLabels = action.payload;
+    },
+    changeSendToEmail: (state, action) => {
+      state.sendToEmail = action.payload;
+    },
     // setChat: (state, action) => {
     //   state.localChats = action.payload;
     // },
@@ -100,7 +119,10 @@ export const {
   setPaymentInfo,
   setDefaultNotes,
   setDefaultInvoiceFormat,
-  changeLanguage
+  changeLanguage,
+  changeDefaultEmailMsg,
+  changeCustomize,
+  changeSendToEmail,
   // setChat,
   // setPubChat,
   // removePubChat,

@@ -1,12 +1,29 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TextInput} from 'react-native';
-import { Colors } from '../../Helper/Colors';
+import {Colors} from '../../Helper/Colors';
+import {useSelector, useDispatch} from 'react-redux';
+import {changeDefaultEmailMsg} from '../../redux/reducers/user/UserReducer';
 
 const DefaultEmailMessage = () => {
-  const [businessName, setBusinessName] = useState('');
-  const [email, setEmail] = useState('');
-  const [paymentInstructions, setPaymentInstructions] = useState('');
   const [additionalDetails, setAdditionalDetails] = useState('');
+
+  const dispatch = useDispatch();
+  const selector = useSelector(state => state.user);
+
+  useEffect(() => {
+    if (selector.token === 'Guest') {
+      fetchData(selector.defaultEmailMessage);
+    }
+  }, [selector.token]);
+
+  const fetchData = (data: any) => {
+    setAdditionalDetails(data);
+  };
+
+  const changeMessage = (msg: string) => {
+    setAdditionalDetails(msg);
+    if (selector.token === 'Guest') dispatch(changeDefaultEmailMsg(msg));
+  };
 
   return (
     <View style={styles.mainContainer}>
@@ -17,7 +34,7 @@ const DefaultEmailMessage = () => {
         <View style={styles.rowView}>
           <TextInput
             value={additionalDetails}
-            onChangeText={setAdditionalDetails}
+            onChangeText={changeMessage}
             style={styles.titleTxt}
             placeholder="Default Email Message"
             placeholderTextColor={'grey'}
