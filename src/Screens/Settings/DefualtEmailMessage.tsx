@@ -3,8 +3,10 @@ import {View, Text, StyleSheet, TextInput} from 'react-native';
 import {Colors} from '../../Helper/Colors';
 import {useSelector, useDispatch} from 'react-redux';
 import {changeDefaultEmailMsg} from '../../redux/reducers/user/UserReducer';
+import {useTranslation} from 'react-i18next';
 
 const DefaultEmailMessage = () => {
+  const {t, i18n} = useTranslation();
   const [additionalDetails, setAdditionalDetails] = useState('');
 
   const dispatch = useDispatch();
@@ -29,14 +31,14 @@ const DefaultEmailMessage = () => {
     <View style={styles.mainContainer}>
       <View style={styles.businessContainer}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>Message to customer</Text>
+          <Text style={styles.headerText}>{t('Message to customer')}</Text>
         </View>
         <View style={styles.rowView}>
           <TextInput
             value={additionalDetails}
             onChangeText={changeMessage}
             style={styles.titleTxt}
-            placeholder="Default Email Message"
+            placeholder={t('Default Email Message')}
             placeholderTextColor={'grey'}
             multiline
             numberOfLines={4}

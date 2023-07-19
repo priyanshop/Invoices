@@ -37,7 +37,7 @@ const SplashScreenLoading: React.FC = ({navigation}: any) => {
   return (
     <View style={styles.container}>
       <Image source={Images.appLogo} style={[styles.image]} />
-      <Text style={styles.text}>Loading...</Text>
+      <Text style={styles.text}>{t('Loading')}...</Text>
     </View>
   );
 };

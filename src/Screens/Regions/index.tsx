@@ -44,7 +44,7 @@ const RegionScreen = () => {
     <View style={styles.mainContainer}>
       <View style={{borderRadius: 8, backgroundColor: '#fff', padding: 8}}>
         <View style={styles.rowView}>
-          <Text style={styles.titleTxt}>Locale : </Text>
+          <Text style={styles.titleTxt}>{t('Locale')} : </Text>
           <Text
             onPress={() => setLangModal(!langModal)}
             style={styles.titleTxt}>
@@ -52,7 +52,7 @@ const RegionScreen = () => {
           </Text>
         </View>
         <View style={styles.rowView}>
-          <Text style={styles.titleTxt}>Tax Year begins : </Text>
+          <Text style={styles.titleTxt}>{t('Tax Year begins')} : </Text>
           <Text
             onPress={() => setMonthsModal(!monthsModal)}
             style={styles.titleTxt}>
@@ -60,7 +60,7 @@ const RegionScreen = () => {
           </Text>
         </View>
         <View style={styles.rowView}>
-          <Text style={styles.titleTxt}>Currency : </Text>
+          <Text style={styles.titleTxt}>{t('Currency')} : </Text>
           <Text
             onPress={() => setCurrenciesModal(!currenciesModal)}
             style={styles.titleTxt}>
@@ -68,7 +68,7 @@ const RegionScreen = () => {
           </Text>
         </View>
         <View style={styles.rowView}>
-          <Text style={styles.titleTxt}>Date Format : </Text>
+          <Text style={styles.titleTxt}>{t('Date Format')} : </Text>
           <Text
             onPress={() => setDateModal(!dateModal)}
             style={styles.titleTxt}>
@@ -85,7 +85,7 @@ const RegionScreen = () => {
         }}>
         <View style={[styles.rowView, styles.header]}>
           <Text style={[styles.titleTxt, {color: '#fff', fontSize: 18}]}>
-            Preview{' '}
+            {t('Preview')}{' '}
           </Text>
         </View>
         <View
@@ -94,14 +94,14 @@ const RegionScreen = () => {
           }}>
           <View style={styles.rowView}>
             <Text style={styles.titleTxt}>{t('Text')} : </Text>
-            <Text style={styles.titleTxt}>Invoice</Text>
+            <Text style={styles.titleTxt}>{t('Invoice')}</Text>
           </View>
           <View style={styles.rowView}>
-            <Text style={styles.titleTxt}>Date : </Text>
+            <Text style={styles.titleTxt}>{t('Date')} : </Text>
             <Text style={styles.titleTxt}>13-07-2023</Text>
           </View>
           <View style={styles.rowView}>
-            <Text style={styles.titleTxt}>Currency : </Text>
+            <Text style={styles.titleTxt}>{t('Currency')} : </Text>
             <Text style={styles.titleTxt}>$ 123.02</Text>
           </View>
         </View>

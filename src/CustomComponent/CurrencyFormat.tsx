@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   TouchableOpacity,
   StyleSheet,
@@ -26,6 +27,8 @@ const CurrencyFormat = ({
   openModal = false,
   selectedOption,
 }: any) => {
+  const {t, i18n} = useTranslation();
+
   return (
     <Overlay
       animationType={'slide'}
@@ -48,7 +51,7 @@ const CurrencyFormat = ({
           </TouchableOpacity>
         ))}
         <TouchableOpacity onPress={closeBottomSheet} style={styles.rowView}>
-          <Text style={styles.titleTxt}>Cancel</Text>
+          <Text style={styles.titleTxt}>{t('Cancel')}</Text>
         </TouchableOpacity>
       </ScrollView>
     </Overlay>

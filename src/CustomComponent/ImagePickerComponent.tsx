@@ -1,19 +1,20 @@
 import React, {useState} from 'react';
-import {
-  Alert,
-  PermissionsAndroid,
-  Platform,
-  TouchableOpacity,
-} from 'react-native';
-import {StyleSheet, Text, View, Button} from 'react-native';
-import {BottomSheet, ListItem, Overlay} from 'react-native-elements';
+import {TouchableOpacity, StyleSheet, Text, View} from 'react-native';
+import {Overlay} from 'react-native-elements';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {
   requestCameraPermission,
   requestExternalWritePermission,
 } from '../Helper/Permissions';
+import {useTranslation} from 'react-i18next';
 
-const ImagePickerComponent = ({closeBottomSheet, openModal = false,setImage}: any) => {
+const ImagePickerComponent = ({
+  closeBottomSheet,
+  openModal = false,
+  setImage,
+}: any) => {
+  const {t, i18n} = useTranslation();
+
   const captureImage = async () => {
     let options = {
       mediaType: 'photo',
@@ -97,13 +98,13 @@ const ImagePickerComponent = ({closeBottomSheet, openModal = false,setImage}: an
       overlayStyle={styles.bottomSheetContainer}>
       <View style={styles.innerView}>
         <TouchableOpacity onPress={captureImage} style={styles.rowView}>
-          <Text style={styles.titleTxt}>Take photo</Text>
+          <Text style={styles.titleTxt}>{t('Take photo')}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={chooseFile} style={styles.rowView}>
-          <Text style={styles.titleTxt}>Select a photo</Text>
+          <Text style={styles.titleTxt}>{t('Select a photo')}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={closeBottomSheet} style={styles.rowView}>
-          <Text style={styles.titleTxt}>Cancel</Text>
+          <Text style={styles.titleTxt}>{t('Cancel')}</Text>
         </TouchableOpacity>
       </View>
     </Overlay>

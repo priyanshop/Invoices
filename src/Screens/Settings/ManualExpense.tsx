@@ -10,15 +10,18 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Colors} from '../../Helper/Colors';
+import {useTranslation} from 'react-i18next';
 
 function ManualExpense({navigation}: any): JSX.Element {
+  const {t, i18n} = useTranslation();
+
   return (
     <>
       <StatusBar backgroundColor={Colors.appColor} />
       <ScrollView
         style={[styles.scene, {backgroundColor: Colors.commonBg, padding: 8}]}>
         <View style={styles.photoView}>
-          <Text style={styles.photoText}>Add photo</Text>
+          <Text style={styles.photoText}>{t('Add photo')}</Text>
           <TouchableOpacity>
             <Icon name="attach" size={18} color="#d2d2d2" />
           </TouchableOpacity>
@@ -29,27 +32,27 @@ function ManualExpense({navigation}: any): JSX.Element {
               padding: 12,
             }}>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Merchant: </Text>
+              <Text style={styles.label}>{t('Merchant')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input}
-                  placeholder={'Merchant Name'}
+                  placeholder={t('Merchant Name')}
                   placeholderTextColor={'grey'}
                 />
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Category: </Text>
+              <Text style={styles.label}>{t('Category')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input}
-                  placeholder={'Set Category'}
+                  placeholder={t('Set Category')}
                   placeholderTextColor={'grey'}
                 />
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Date: </Text>
+              <Text style={styles.label}>{t('Date')}: </Text>
               <View
                 style={[
                   styles.inputContainer,
@@ -59,7 +62,7 @@ function ManualExpense({navigation}: any): JSX.Element {
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Total: </Text>
+              <Text style={styles.label}>{t('Total')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input}
@@ -69,7 +72,7 @@ function ManualExpense({navigation}: any): JSX.Element {
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Tax: </Text>
+              <Text style={styles.label}>{t('Tax')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input}

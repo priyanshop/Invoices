@@ -9,8 +9,10 @@ import {
 import Orientation from 'react-native-orientation-locker';
 import {Colors} from '../../Helper/Colors';
 import SignaturePad from '../../SignaturePad';
+import { useTranslation } from 'react-i18next';
 
 const SignaturePadScreen = ({navigation}: any) => {
+  const {t, i18n} = useTranslation();
   const [content, setContent] = useState('');
   const ref = useRef();
 
@@ -41,13 +43,13 @@ const SignaturePadScreen = ({navigation}: any) => {
       />
       <View style={styles.btnView}>
         <TouchableOpacity style={styles.btn} onPress={() => {}}>
-          <Text style={styles.btnText}>Cancel</Text>
+          <Text style={styles.btnText}>{t('Cancel')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.btn} onPress={() => {}}>
-          <Text style={styles.btnText}>Save</Text>
+          <Text style={styles.btnText}>{t('Save')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.btn} onPress={handleClear}>
-          <Text style={styles.btnText}>Clear</Text>
+          <Text style={styles.btnText}>{t('Clear')}</Text>
         </TouchableOpacity>
         {/* <TouchableOpacity style={styles.btn} onPress={handleClear}>
           <Text style={styles.btnText}>Resign</Text>

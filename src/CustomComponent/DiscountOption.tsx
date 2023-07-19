@@ -1,17 +1,21 @@
 import React, {useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {TouchableOpacity, StyleSheet, Text, View} from 'react-native';
 import {Overlay} from 'react-native-elements';
 
-const option = [
-  {name: 'No Discount', key: 'No Discount'},
-  {name: 'Percentage', key: 'Percentage'},
-  {name: 'Flat Amount', key: 'Flat Amount'},
-];
 const DiscountOption = ({
   closeBottomSheet,
   openModal = false,
   selectedOption,
 }: any) => {
+  const {t, i18n} = useTranslation();
+
+  const option = [
+    {name: t('No Discount'), key: 'No Discount'},
+    {name: t('Percentage'), key: 'Percentage'},
+    {name: t('Flat Amount'), key: 'Flat Amount'},
+  ];
+
   return (
     <Overlay
       animationType={'slide'}
@@ -26,11 +30,11 @@ const DiscountOption = ({
               closeBottomSheet();
             }}
             style={styles.rowView}>
-            <Text style={styles.titleTxt}>{item.key}</Text>
+            <Text style={styles.titleTxt}>{item.name}</Text>
           </TouchableOpacity>
         ))}
         <TouchableOpacity onPress={closeBottomSheet} style={styles.rowView}>
-          <Text style={styles.titleTxt}>Cancel</Text>
+          <Text style={styles.titleTxt}>{t('Cancel')}</Text>
         </TouchableOpacity>
       </View>
     </Overlay>

@@ -14,8 +14,10 @@ import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {changeCustomize} from '../../redux/reducers/user/UserReducer';
 import {Switch} from 'react-native-paper';
+import {useTranslation} from 'react-i18next';
 
 function Customize({navigation}: any): JSX.Element {
+  const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
   const selector = useSelector(state => state.user);
   const isFocused = useIsFocused();
@@ -91,12 +93,12 @@ function Customize({navigation}: any): JSX.Element {
               paddingHorizontal: 8,
             }}>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Invoice Title: </Text>
+              <Text style={styles.label}>{t('Invoice Title')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   value={invoices}
                   style={styles.input}
-                  placeholder={'Invoice'}
+                  placeholder={t('Invoice')}
                   placeholderTextColor={'grey'}
                   onChangeText={setInvoices}
                   onBlur={addInfo}
@@ -104,12 +106,12 @@ function Customize({navigation}: any): JSX.Element {
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Estimate Title: </Text>
+              <Text style={styles.label}>{t('Estimate Title')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   value={estimate}
                   style={styles.input}
-                  placeholder={'Estimate'}
+                  placeholder={t('Estimate')}
                   placeholderTextColor={'grey'}
                   onChangeText={setEstimate}
                   onBlur={addInfo}
@@ -117,12 +119,12 @@ function Customize({navigation}: any): JSX.Element {
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Business Number: </Text>
+              <Text style={styles.label}>{t('Business Number')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   value={businessNumber}
                   style={styles.input}
-                  placeholder={'Business #'}
+                  placeholder={t('Business #')}
                   placeholderTextColor={'grey'}
                   onChangeText={setBusinessNumber}
                   onBlur={addInfo}
@@ -130,12 +132,12 @@ function Customize({navigation}: any): JSX.Element {
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Quantity Label: </Text>
+              <Text style={styles.label}>{t('Quantity Label')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   value={quantityLabel}
                   style={styles.input}
-                  placeholder={'QTY'}
+                  placeholder={t('QTY')}
                   placeholderTextColor={'grey'}
                   onChangeText={setQuantityLabel}
                   onBlur={addInfo}
@@ -143,12 +145,12 @@ function Customize({navigation}: any): JSX.Element {
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Unit Cost Label: </Text>
+              <Text style={styles.label}>{t('Unit Cost Label')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   value={unitCostLabel}
                   style={styles.input}
-                  placeholder={'RATE'}
+                  placeholder={t('RATE')}
                   placeholderTextColor={'grey'}
                   onChangeText={setUnitCostLabel}
                   onBlur={addInfo}
@@ -156,7 +158,7 @@ function Customize({navigation}: any): JSX.Element {
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Quantity and Unit Cost</Text>
+              <Text style={styles.label}>{t('Quantity and Unit Cost')}</Text>
               <Switch
                 value={quantityAndUnitCost}
                 color={Colors.landingColor}
@@ -166,7 +168,7 @@ function Customize({navigation}: any): JSX.Element {
               />
             </View>
             <Text style={styles.photoText}>
-              {'Display these columns on invoices'}
+              {t('Display these columns on invoices')}
             </Text>
           </View>
         </View>

@@ -7,17 +7,19 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { Colors } from '../../Helper/Colors';
+import {Colors} from '../../Helper/Colors';
 import DiscountOption from '../../CustomComponent/DiscountOption';
+import {useTranslation} from 'react-i18next';
 
 function DiscountScreen({navigation}: any): JSX.Element {
+  const {t, i18n} = useTranslation();
   const [openModal, setOpenModal] = useState(false);
-  const [selectedTax, setSelectedTax] = useState('On The Total');
+  const [selectedTax, setSelectedTax] = useState('No Discount');
 
   const closeBottomSheet = () => {
     setOpenModal(!openModal);
   };
-  
+
   return (
     <>
       <StatusBar backgroundColor={Colors.appColor} />
@@ -30,31 +32,33 @@ function DiscountScreen({navigation}: any): JSX.Element {
               paddingHorizontal: 10,
             }}>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Discount: </Text>
+              <Text style={styles.label}>{t('Discount')}: </Text>
               <View
                 style={[
                   styles.inputContainer,
                   {height: 40, justifyContent: 'center'},
                 ]}>
                 <Text onPress={closeBottomSheet} style={styles.dateText}>
-                  {selectedTax}
+                  {t(selectedTax)}
                 </Text>
               </View>
             </View>
-            {selectedTax === 'Flat Amount' && <View style={styles.mainView}>
-              <Text style={styles.label}>Amount: </Text>
-              <View style={styles.inputContainer}>
-                <TextInput
-                  value="0"
-                  style={styles.input}
-                  placeholder={''}
-                  placeholderTextColor={'grey'}
-                />
+            {selectedTax === 'Flat Amount' && (
+              <View style={styles.mainView}>
+                <Text style={styles.label}>{t('Amount')}: </Text>
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    value="0"
+                    style={styles.input}
+                    placeholder={''}
+                    placeholderTextColor={'grey'}
+                  />
+                </View>
               </View>
-            </View>}
+            )}
             {selectedTax === 'Percentage' && (
               <View style={styles.mainView}>
-                <Text style={styles.label}>Percentage: </Text>
+                <Text style={styles.label}>{t('Percentage')}: </Text>
                 <View style={styles.inputContainer}>
                   <TextInput
                     value="0"

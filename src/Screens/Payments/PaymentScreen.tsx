@@ -2,8 +2,10 @@ import React, {useState} from 'react';
 import {View, Text, StyleSheet, TextInput} from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import PaymentMode from '../../CustomComponent/PaymentMode';
+import { useTranslation } from 'react-i18next';
 
 const PaymentScreen = () => {
+  const {t, i18n} = useTranslation();
   const [openModal, setOpenModal] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState('Cash');
 
@@ -21,11 +23,11 @@ const PaymentScreen = () => {
           </View>
         </View>
         <View style={styles.rowView}>
-          <Text style={styles.titleTxt}>Date : </Text>
+          <Text style={styles.titleTxt}>{t('Date')} : </Text>
           <Text style={styles.titleTxt}>06/05/2023</Text>
         </View>
         <View style={styles.rowView}>
-          <Text style={styles.titleTxt}>Payment Method : </Text>
+          <Text style={styles.titleTxt}>{t('Payment Method')} : </Text>
           <Text onPress={() => setOpenModal(true)} style={styles.titleTxt}>
             {selectedPayment}
           </Text>

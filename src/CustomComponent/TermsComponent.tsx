@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Modal,
   Text,
@@ -37,6 +38,7 @@ const TermsComponent = ({
   setModalVisible,
   setSelectedTerm,
 }: any) => {
+  const {t, i18n} = useTranslation();
   const [data, setData] = useState(array);
 
   const renderItem = ({item}) => (
@@ -50,7 +52,7 @@ const TermsComponent = ({
         }
       }}
       style={styles.item}>
-      <Text style={styles.itemText}>{item.value}</Text>
+      <Text style={styles.itemText}>{t(item.value)}</Text>
     </TouchableOpacity>
   );
 

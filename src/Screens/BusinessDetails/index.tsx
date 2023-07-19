@@ -17,8 +17,10 @@ import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {setBusinessDetail} from '../../redux/reducers/user/UserReducer';
+import { useTranslation } from 'react-i18next';
 
 const BusinessDetails = () => {
+  const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
   const selector = useSelector(state => state.user);
   const isFocused = useIsFocused();
@@ -140,7 +142,7 @@ const BusinessDetails = () => {
     <ScrollView style={styles.mainContainer}>
       <View style={styles.businessContainer}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>Business Logo</Text>
+          <Text style={styles.headerText}>{t('Business Logo')}</Text>
         </View>
         <View style={styles.content}>
           <TouchableOpacity onPress={closeBottomSheet}>
@@ -162,7 +164,7 @@ const BusinessDetails = () => {
             value={businessName}
             onChangeText={setBusinessName}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder="Business Name"
+            placeholder={t("Business Name")}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -172,7 +174,7 @@ const BusinessDetails = () => {
             value={ownerName}
             onChangeText={setOwnerName}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder="Business Owner Name"
+            placeholder={t("Business Owner Name")}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -182,7 +184,7 @@ const BusinessDetails = () => {
             value={businessNumber}
             onChangeText={setBusinessNumber}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder="Business Number"
+            placeholder={t("Business Number")}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -194,7 +196,7 @@ const BusinessDetails = () => {
             value={address1}
             onChangeText={setAddress1}
             style={{...styles.titleTxt, textAlign: 'left'}}
-            placeholder="Address Line 1"
+            placeholder={t("Address Line 1")}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -204,7 +206,7 @@ const BusinessDetails = () => {
             value={address2}
             onChangeText={setAddress2}
             style={{...styles.titleTxt, textAlign: 'left'}}
-            placeholder="Address Line 2"
+            placeholder={t("Address Line 2")}
             placeholderTextColor={'grey'}
           />
         </View>
@@ -213,7 +215,7 @@ const BusinessDetails = () => {
             value={address3}
             onChangeText={setAddress3}
             style={{...styles.titleTxt, textAlign: 'left'}}
-            placeholder="Address Line 3"
+            placeholder={t("Address Line 3")}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -225,7 +227,7 @@ const BusinessDetails = () => {
             value={email}
             onChangeText={setEmail}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder="Email"
+            placeholder={t("Email")}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -235,7 +237,7 @@ const BusinessDetails = () => {
             value={Phone}
             onChangeText={setPhone}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder="Phone"
+            placeholder={t("Phone")}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -245,7 +247,7 @@ const BusinessDetails = () => {
             value={Mobile}
             onChangeText={setMobile}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder="Mobile"
+            placeholder={t("Mobile")}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -255,7 +257,7 @@ const BusinessDetails = () => {
             value={Website}
             onChangeText={setWebsite}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder="Website"
+            placeholder={t("Website")}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />

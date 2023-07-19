@@ -5,9 +5,12 @@ import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {setPaymentInfo} from '../../redux/reducers/user/UserReducer';
+import { useTranslation } from 'react-i18next';
 
 const PaymentInfo = ({navigation}: any) => {
   const dispatch = useDispatch();
+  const {t, i18n} = useTranslation();
+
   const selector = useSelector(state => state.user);
   const [payable, setPayable] = useState('');
   const [email, setEmail] = useState('');
@@ -72,11 +75,11 @@ const PaymentInfo = ({navigation}: any) => {
   return (
     <View style={styles.mainContainer}>
       <View>
-        <Text style={styles.titleTxt}>Do not enter sensitive information</Text>
+        <Text style={styles.titleTxt}>{t('Settings.SensitiveInformation')}</Text>
       </View>
       <View style={styles.businessContainer}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>PayPal Email</Text>
+          <Text style={styles.headerText}>{t('PayPal Email')}</Text>
         </View>
         <View style={styles.rowView}>
           <TextInput
@@ -84,7 +87,7 @@ const PaymentInfo = ({navigation}: any) => {
             onChangeText={value => handleTextInputChange(value, setEmail)}
             onBlur={addInfo}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder="Enter your paypal email address"
+            placeholder={t("Enter your paypal email address")}
             placeholderTextColor={'grey'}
           />
         </View>
@@ -92,7 +95,7 @@ const PaymentInfo = ({navigation}: any) => {
 
       <View style={styles.businessContainer}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>Make cheques payable to</Text>
+          <Text style={styles.headerText}>{t('Make cheques payable to')}</Text>
         </View>
         <View style={styles.rowView}>
           <TextInput
@@ -100,7 +103,7 @@ const PaymentInfo = ({navigation}: any) => {
             onChangeText={value => handleTextInputChange(value, setPayable)}
             onBlur={addInfo}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder="Your or your business's name"
+            placeholder={t("Your or your business's name")}
             placeholderTextColor={'grey'}
           />
         </View>
@@ -108,7 +111,7 @@ const PaymentInfo = ({navigation}: any) => {
 
       <View style={styles.businessContainer}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>Payment Instruction</Text>
+          <Text style={styles.headerText}>{t('Payment Instruction')}</Text>
         </View>
         <View style={styles.rowView}>
           <TextInput
@@ -124,7 +127,7 @@ const PaymentInfo = ({navigation}: any) => {
               height: 60,
               textAlignVertical: 'top',
             }}
-            placeholder="Specify instructions for the payments of deposits"
+            placeholder={t("Specify instructions for the payments of deposits")}
             placeholderTextColor={'grey'}
             multiline
             numberOfLines={4}
@@ -134,7 +137,7 @@ const PaymentInfo = ({navigation}: any) => {
 
       <View style={styles.businessContainer}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>Others</Text>
+          <Text style={styles.headerText}>{t('Others')}</Text>
         </View>
         <View style={styles.rowView}>
           <TextInput
@@ -150,7 +153,7 @@ const PaymentInfo = ({navigation}: any) => {
               height: 60,
               textAlignVertical: 'top',
             }}
-            placeholder="Additional payment instructions"
+            placeholder={t("Additional payment instructions")}
             placeholderTextColor={'grey'}
             multiline
             numberOfLines={4}

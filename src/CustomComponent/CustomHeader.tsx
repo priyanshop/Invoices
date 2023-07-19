@@ -9,6 +9,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {Colors} from '../Helper/Colors';
+import { useTranslation } from 'react-i18next';
 
 const CustomHeader = ({
   searchStart = false,
@@ -18,6 +19,7 @@ const CustomHeader = ({
   searchText = '',
   handleSearch,
 }: any) => {
+  const {t, i18n} = useTranslation();
   const renderHeader = () => {
     if (!searchStart) {
       return (
@@ -45,7 +47,7 @@ const CustomHeader = ({
             <Icon name="search" size={18} color="#d2d2d2" />
             <TextInput
               value={searchText}
-              placeholder="Search"
+              placeholder={t("Search")}
               placeholderTextColor={'#d2d2d2'}
               style={{width: '80%'}}
               onChangeText={handleSearch}

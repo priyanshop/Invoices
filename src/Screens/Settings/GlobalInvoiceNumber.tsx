@@ -13,9 +13,11 @@ import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {setDefaultInvoiceFormat} from '../../redux/reducers/user/UserReducer';
+import { useTranslation } from 'react-i18next';
 
 function GlobalInvoiceNumber({navigation}: any): JSX.Element {
   const dispatch = useDispatch();
+  const {t, i18n} = useTranslation();
   const selector = useSelector(state => state.user);
   const isFocused = useIsFocused();
   const [invoices, setInvoices] = useState('');
@@ -78,7 +80,7 @@ function GlobalInvoiceNumber({navigation}: any): JSX.Element {
               paddingHorizontal: 8,
             }}>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Invoice Number: </Text>
+              <Text style={styles.label}>{t('Invoice Number')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   value={invoices}
@@ -91,7 +93,7 @@ function GlobalInvoiceNumber({navigation}: any): JSX.Element {
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Estimate Number: </Text>
+              <Text style={styles.label}>{t('Estimate Number')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   value={estimate}

@@ -10,16 +10,18 @@ import {
 } from 'react-native';
 import {Switch} from 'react-native-paper';
 import TaxOption from '../../CustomComponent/TaxOption';
-import { Colors } from '../../Helper/Colors';
+import {Colors} from '../../Helper/Colors';
+import {useTranslation} from 'react-i18next';
 
 function TaxScreen({navigation}: any): JSX.Element {
+  const {t, i18n} = useTranslation();
   const [openModal, setOpenModal] = useState(false);
   const [selectedTax, setSelectedTax] = useState('On The Total');
 
   const closeBottomSheet = () => {
     setOpenModal(!openModal);
   };
-  
+
   return (
     <>
       <StatusBar backgroundColor={Colors.appColor} />
@@ -32,22 +34,22 @@ function TaxScreen({navigation}: any): JSX.Element {
               paddingHorizontal: 8,
             }}>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Tax: </Text>
+              <Text style={styles.label}>{t('Tax')}: </Text>
               <View
                 style={[
                   styles.inputContainer,
                   {height: 40, justifyContent: 'center'},
                 ]}>
                 <Text onPress={closeBottomSheet} style={styles.dateText}>
-                  {selectedTax}
+                  {t(selectedTax)}
                 </Text>
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Label: </Text>
+              <Text style={styles.label}>{t('Label')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
-                  value="GST"
+                  value={t('GST')}
                   style={styles.input}
                   placeholder={''}
                   placeholderTextColor={'grey'}
@@ -56,7 +58,7 @@ function TaxScreen({navigation}: any): JSX.Element {
             </View>
             {selectedTax !== 'Per Item' && (
               <View style={styles.mainView}>
-                <Text style={styles.label}>Rate: </Text>
+                <Text style={styles.label}>{t('Rate')}: </Text>
                 <View style={styles.inputContainer}>
                   <TextInput
                     value="18"
@@ -73,13 +75,13 @@ function TaxScreen({navigation}: any): JSX.Element {
         {selectedTax !== 'Deducted' && (
           <View style={styles.detailView}>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Taxable: </Text>
+              <Text style={styles.label}>{t('Taxable')}: </Text>
               <Switch value={true} />
             </View>
             <TextInput
               editable={false}
-              value="Turn on if the prices already include Tax"
-              placeholder="Description"
+              value={t('Turn on if the prices already include Tax')}
+              placeholder={t('Description')}
               style={styles.detailText}
             />
           </View>

@@ -5,9 +5,11 @@ import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {setDefaultNotes} from '../../redux/reducers/user/UserReducer';
+import {useTranslation} from 'react-i18next';
 
 const DefaultNotes = () => {
   const dispatch = useDispatch();
+  const {t, i18n} = useTranslation();
   const selector = useSelector(state => state.user);
   const [invoices, setInvoices] = useState('');
   const [estimate, setEstimate] = useState('');
@@ -61,14 +63,14 @@ const DefaultNotes = () => {
     <View style={styles.mainContainer}>
       <View style={styles.businessContainer}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>Invoices</Text>
+          <Text style={styles.headerText}>{t('Invoices')}</Text>
         </View>
         <View style={styles.rowView}>
           <TextInput
             value={invoices}
             onChangeText={setInvoices}
             style={styles.titleTxt}
-            placeholder="Default Invoices"
+            placeholder={t('Default Invoices')}
             placeholderTextColor={'grey'}
             multiline
             numberOfLines={4}
@@ -79,14 +81,14 @@ const DefaultNotes = () => {
 
       <View style={styles.businessContainer}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>Estimates</Text>
+          <Text style={styles.headerText}>{t('Estimates')}</Text>
         </View>
         <View style={styles.rowView}>
           <TextInput
             value={estimate}
             onChangeText={setEstimate}
             style={styles.titleTxt}
-            placeholder="Default Estimates"
+            placeholder={t('Default Estimates')}
             placeholderTextColor={'grey'}
             multiline
             numberOfLines={4}

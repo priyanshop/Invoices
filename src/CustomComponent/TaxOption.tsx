@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { useTranslation } from 'react-i18next';
 import {TouchableOpacity, StyleSheet, Text, View} from 'react-native';
 import {Overlay} from 'react-native-elements';
 
@@ -7,6 +8,8 @@ const TaxOption = ({
   openModal = false,
   selectedOption,
 }: any) => {
+  const {t, i18n} = useTranslation();
+
   return (
     <Overlay
       animationType={'slide'}
@@ -20,7 +23,7 @@ const TaxOption = ({
             closeBottomSheet();
           }}
           style={styles.rowView}>
-          <Text style={styles.titleTxt}>On The Total</Text>
+          <Text style={styles.titleTxt}>{t('On The Total')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
@@ -28,7 +31,7 @@ const TaxOption = ({
             closeBottomSheet();
           }}
           style={styles.rowView}>
-          <Text style={styles.titleTxt}>Deducted</Text>
+          <Text style={styles.titleTxt}>{t('Deducted')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
@@ -36,10 +39,10 @@ const TaxOption = ({
             closeBottomSheet();
           }}
           style={styles.rowView}>
-          <Text style={styles.titleTxt}>Per Item</Text>
+          <Text style={styles.titleTxt}>{t('Per Item')}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={closeBottomSheet} style={styles.rowView}>
-          <Text style={styles.titleTxt}>Cancel</Text>
+          <Text style={styles.titleTxt}>{t('Cancel')}</Text>
         </TouchableOpacity>
       </View>
     </Overlay>
