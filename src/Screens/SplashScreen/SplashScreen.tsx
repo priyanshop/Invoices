@@ -4,14 +4,18 @@ import {useSelector} from 'react-redux';
 import {Images} from '../../assets';
 import {Colors} from '../../Helper/Colors';
 import SplashScreen from 'react-native-splash-screen';
+import {useTranslation} from 'react-i18next';
 
 // Define a functional component named Greeting
 const SplashScreenLoading: React.FC = ({navigation}: any) => {
-  // Return a React element
+  const {t, i18n} = useTranslation();
   const selector = useSelector(state => state.user);
+  
   useEffect(() => {
     // SplashScreen.hide(); //hides the splash screen on app load.
-  }, []);
+    i18n.changeLanguage(selector.language);
+  }, [selector.language]);
+
   useEffect(() => {
     console.log('USER');
 

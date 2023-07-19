@@ -9,8 +9,13 @@ import {
 } from 'react-native';
 import {Colors} from '../../Helper/Colors';
 import {Images} from '../../assets';
+import {useTranslation} from 'react-i18next';
 
 function LandingScreen({navigation}: any): JSX.Element {
+  const {t, i18n} = useTranslation();
+  function changeLang() {
+    i18n.changeLanguage('sv');
+  }
   function navigateToSignIn() {
     navigation.navigate('SignIn');
   }
@@ -27,17 +32,15 @@ function LandingScreen({navigation}: any): JSX.Element {
         resizeMode="contain"
         style={{height: 100, width: 100, alignSelf: 'center'}}
       />
-      <Text style={styles.title}>Invoices Simple</Text>
-      <Text style={styles.paragraph}>
-        Create professional invoices in secounds!
-      </Text>
+      <Text style={styles.title}>{t('appName')}</Text>
+      <Text style={styles.paragraph}>{t('appDescription')}</Text>
       <TouchableOpacity onPress={navigateToSignUP} style={styles.btn}>
-        <Text style={styles.btnTxt}>GET STARTED</Text>
+        <Text style={styles.btnTxt}>{t('getStarted')}</Text>
       </TouchableOpacity>
       <Text style={styles.paragraph}>
-        Already have an account?{' '}
+        {t('accountExist')}{' '}
         <Text onPress={navigateToSignIn} style={styles.underLine}>
-          Login
+          {t('login')}
         </Text>
       </Text>
     </SafeAreaView>

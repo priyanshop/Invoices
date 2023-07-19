@@ -26,10 +26,11 @@ const initialState: IUserState = {
     invoices: '',
     estimates: '',
   },
-  defaultInvoiceFormat:{
+  defaultInvoiceFormat: {
     invoice_number_prefix: '',
     estimate_number_prefix: '',
-  }
+  },
+  language: 'en',
   // localChats: [],
   // localChatsPub: [],
 };
@@ -72,6 +73,9 @@ const UserReducer = createSlice({
     setDefaultInvoiceFormat: (state, action) => {
       state.defaultInvoiceFormat = action.payload;
     },
+    changeLanguage: (state, action) => {
+      state.language = action.payload;
+    },
     // setChat: (state, action) => {
     //   state.localChats = action.payload;
     // },
@@ -95,7 +99,8 @@ export const {
   setBusinessDetail,
   setPaymentInfo,
   setDefaultNotes,
-  setDefaultInvoiceFormat
+  setDefaultInvoiceFormat,
+  changeLanguage
   // setChat,
   // setPubChat,
   // removePubChat,

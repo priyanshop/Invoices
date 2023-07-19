@@ -7,7 +7,6 @@ import {
   StyleSheet,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {Colors} from '../Helper/Colors';
 
@@ -183,7 +182,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginHorizontal: 4,
     padding: 3,
-    height: 28,
+    height: 35,
     alignItems: 'center',
     borderRadius: 5,
   },

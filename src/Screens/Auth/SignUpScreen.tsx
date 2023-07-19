@@ -19,6 +19,8 @@ import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {saveUserData, setToken} from '../../redux/reducers/user/UserReducer';
+import {useTranslation} from 'react-i18next';
+
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
 
@@ -26,6 +28,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
   const carouselRef = useRef(null);
   const dispatch = useDispatch();
   const selector = useSelector(state => state.user);
+  const {t, i18n} = useTranslation();
 
   const [activeSlide, setActiveSlide] = useState(0);
   const [email, setEmail] = useState('');
@@ -169,8 +172,10 @@ function SignUpScreen({navigation}: any): JSX.Element {
             color={'#fff'}
             size={45}
           />
-          <Text style={styles.title}>Business Info</Text>
-          <Text style={styles.paragraph}>(All fields are optional)</Text>
+          <Text style={styles.title}>{t('businessInfo.title')}</Text>
+          <Text style={styles.paragraph}>
+            {t('businessInfo.optionalFields')}
+          </Text>
           {/* <TextInput
             value={businessName}
             onChangeText={setBusinessName}
@@ -182,7 +187,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
           <TextInput
             value={email}
             style={[styles.input, styles.emailInput]}
-            placeholder={'Email'}
+            placeholder={t('businessInfo.email')}
             keyboardType={'email-address'}
             onChangeText={validateEmail}
             placeholderTextColor={'grey'}
@@ -196,7 +201,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
             value={password}
             onChangeText={validatePassword}
             style={[styles.input]}
-            placeholder={'Password'}
+            placeholder={t('businessInfo.password')}
             placeholderTextColor={'grey'}
           />
           {errorPassword.trim() !== '' && (
@@ -215,7 +220,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
                 : null,
               {borderTopWidth: 0, marginBottom: 0},
             ]}
-            placeholder={'Confirm Password'}
+            placeholder={t('businessInfo.confirmPassword')}
             placeholderTextColor={'grey'}
           />
           {errorConfirmPassword.trim() !== '' && (
@@ -263,12 +268,12 @@ function SignUpScreen({navigation}: any): JSX.Element {
       return (
         <View style={{alignItems: 'center'}}>
           <Ionicons name="ios-images-outline" color={'#fff'} size={45} />
-          <Text style={styles.title}>Business Logo</Text>
-          <Text style={styles.paragraph}>
-            Appears on all invoices. Can be edited ny time
-          </Text>
+          <Text style={styles.title}>{t('businessLogo.title')}</Text>
+          <Text style={styles.paragraph}>{t('businessLogo.description')}</Text>
           <TouchableOpacity style={styles.btn}>
-            <Text style={styles.btnTxt}>CHOOSE IMAGE</Text>
+            <Text style={styles.btnTxt}>
+              {t('businessLogo.chooseImageBtn')}
+            </Text>
           </TouchableOpacity>
         </View>
       );
@@ -280,12 +285,10 @@ function SignUpScreen({navigation}: any): JSX.Element {
             color={'#fff'}
             size={45}
           />
-          <Text style={styles.title}>All Set!</Text>
-          <Text style={styles.paragraph}>
-            You're ready to create your first Invoice
-          </Text>
+          <Text style={styles.title}>{t('allSet.title')}</Text>
+          <Text style={styles.paragraph}>{t('allSet.description')}</Text>
           <TouchableOpacity style={styles.btn}>
-            <Text style={styles.btnTxt}>CREATE INVOICE</Text>
+            <Text style={styles.btnTxt}>{t('allSet.createInvoiceBtn')}</Text>
           </TouchableOpacity>
         </View>
       );

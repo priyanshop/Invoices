@@ -22,6 +22,7 @@ export interface IUserState {
   paymentInfo: any | null;
   defaultNotes: any | null;
   defaultInvoiceFormat: any | null;
+  language:string;
   // localChats: IChats[] | [];
   // localChatsPub: IChats2[] | [];
 }

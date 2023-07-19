@@ -1,18 +1,44 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TextInput} from 'react-native';
 import DatePicker from 'react-native-date-picker';
+import {useSelector, useDispatch} from 'react-redux';
 import {Colors} from '../../Helper/Colors';
 import CurrencyFormat from '../../CustomComponent/CurrencyFormat';
 import DateFormat from '../../CustomComponent/DateFormat';
 import MonthFormat from '../../CustomComponent/MonthFormat';
+import LangFormat from '../../CustomComponent/LangFormat';
+import {useTranslation} from 'react-i18next';
+import { changeLanguage } from '../../redux/reducers/user/UserReducer';
 
 const RegionScreen = () => {
+  const {t, i18n} = useTranslation();
+  const dispatch = useDispatch();
+  const selector = useSelector(state => state.user);
   const [openModal, setOpenModal] = useState(false);
   const [monthsModal, setMonthsModal] = useState(false);
   const [currenciesModal, setCurrenciesModal] = useState(false);
   const [dateModal, setDateModal] = useState(false);
-
+  const [langModal, setLangModal] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('');
   const [selectedPayment, setSelectedPayment] = useState('dd-MM-yyyy');
+
+  useEffect(() => {
+    if (selector.language === 'en') {
+      setSelectedLanguage('English (U.S.)');
+    } else {
+      setSelectedLanguage('Portuguese');
+    }
+  }, [selector.language]);
+
+  const changeLang = (selectedLanguage: any) => {
+    i18n.changeLanguage(selectedLanguage.common);
+    dispatch(changeLanguage(selectedLanguage.common))
+    if (selectedLanguage.common === 'en') {
+      setSelectedLanguage('English (U.S.)');
+    } else {
+      setSelectedLanguage('Portuguese');
+    }
+  };
 
   return (
     <View style={styles.mainContainer}>
@@ -20,9 +46,9 @@ const RegionScreen = () => {
         <View style={styles.rowView}>
           <Text style={styles.titleTxt}>Locale : </Text>
           <Text
-            onPress={() => setDateModal(!dateModal)}
+            onPress={() => setLangModal(!langModal)}
             style={styles.titleTxt}>
-            English (US)
+            {selectedLanguage}
           </Text>
         </View>
         <View style={styles.rowView}>
@@ -67,7 +93,7 @@ const RegionScreen = () => {
             padding: 8,
           }}>
           <View style={styles.rowView}>
-            <Text style={styles.titleTxt}>Text : </Text>
+            <Text style={styles.titleTxt}>{t('Text')} : </Text>
             <Text style={styles.titleTxt}>Invoice</Text>
           </View>
           <View style={styles.rowView}>
@@ -107,6 +133,11 @@ const RegionScreen = () => {
         openModal={monthsModal}
         closeBottomSheet={() => setMonthsModal(!monthsModal)}
         selectedOption={setSelectedPayment}
+      />
+      <LangFormat
+        openModal={langModal}
+        closeBottomSheet={() => setLangModal(!langModal)}
+        selectedOption={changeLang}
       />
     </View>
   );

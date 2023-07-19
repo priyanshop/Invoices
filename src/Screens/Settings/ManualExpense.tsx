@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     // marginVertical: Platform.OS === 'ios' ? 5 : 0,
     alignItems: 'center',
+    marginVertical: 1,
   },
   label: {
     fontSize: 18,
@@ -108,11 +109,11 @@ const styles = StyleSheet.create({
     width: '50%',
   },
   input: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '400',
     color: '#000',
     textAlign: 'right',
-    height: 35,
+    height: 40,
   },
   itemView: {
     backgroundColor: '#fff',

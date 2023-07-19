@@ -224,7 +224,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
               {...props}
               indicatorStyle={{backgroundColor: '#fff', height: 2}}
               style={{backgroundColor: Colors.appColor}}
-              labelStyle={{fontSize: 15, fontWeight: '500'}}
+              labelStyle={{fontSize: 14, fontWeight: '500'}}
             />
           );
         }}

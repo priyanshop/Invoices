@@ -35,6 +35,7 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
   const [visible, setVisible] = React.useState(false);
   const [alreadyExist, setAlreadyExist] = useState(false);
   const [Id, setId] = useState('');
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -270,6 +271,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     // marginVertical: Platform.OS === 'ios' ? 5 : 0,
     alignItems: 'center',
+    marginVertical: 2,
   },
   label: {
     fontSize: 18,
@@ -304,7 +306,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 12,
     marginVertical: 5,
-    paddingVertical: 5,
+    paddingVertical: 10,
   },
   saveView: {
     flexDirection: 'row',

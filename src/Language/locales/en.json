@@ -1,0 +1,30 @@
+{
+  "change-language": "Change language",
+  "welcome": "Welcome to my app",
+  "appName": "Invoices Simple",
+  "appDescription": "Create professional invoices in seconds!",
+  "getStarted": "GET STARTED",
+  "accountExist": "Already have an account?",
+  "login": "Login",
+  "Text": "Text",
+  "businessInfo": {
+    "title": "Business Info",
+    "optionalFields": "(All fields are optional)",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "emailError": "Invalid email address",
+    "passwordError": "Invalid password",
+    "confirmPasswordError": "Passwords do not match"
+  },
+  "businessLogo": {
+    "title": "Business Logo",
+    "description": "Appears on all invoices. Can be edited any time",
+    "chooseImageBtn": "CHOOSE IMAGE"
+  },
+  "allSet": {
+    "title": "All Set!",
+    "description": "You're ready to create your first Invoice",
+    "createInvoiceBtn": "CREATE INVOICE"
+  }
+}
