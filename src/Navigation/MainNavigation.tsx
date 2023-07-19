@@ -50,234 +50,208 @@ const headerStyle = {
   headerTitleAlign: 'center',
 };
 
+const tabBarOptions = {
+  tabBarActiveTintColor: Colors.appColor,
+  tabBarLabelStyle: {fontSize: 13, fontWeight: '500'},
+  headerShown: false,
+};
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+
+const bottomTab = [
+  {
+    name: 'Invoices',
+    screen: InvoicesScreen,
+    icon: 'ios-receipt-outline',
+    iconType: Icon,
+  },
+  {
+    name: 'Estimates',
+    screen: EstimatesScreen,
+    icon: 'ios-calculator-sharp',
+    iconType: Icon,
+  },
+  {
+    name: 'Clients',
+    screen: ClientScreen,
+    icon: 'people-sharp',
+    iconType: Icon,
+  },
+  {
+    name: 'Items',
+    screen: ItemsScreen,
+    icon: 'barcode',
+    iconType: AntDesign,
+  },
+  {
+    name: 'Reports',
+    screen: ReportScreen,
+    icon: 'barschart',
+    iconType: AntDesign,
+  },
+];
 
 function Dashboard() {
   return (
     <Tab.Navigator>
-      <Tab.Screen
-        name="Invoices"
-        component={InvoicesScreen}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({focused, tintColor}: any) => (
-            <Icon
-              name="ios-receipt-outline"
-              color={focused ? Colors.appColor : '#000'}
-              size={25}
-            />
-          ),
-          tabBarActiveTintColor: Colors.appColor,
-          tabBarLabelStyle: {fontSize: 13, fontWeight: '500'},
-        }}
-      />
-      <Tab.Screen
-        name="Estimates"
-        component={EstimatesScreen}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({focused, tintColor}: any) => (
-            <Icon
-              name="ios-calculator-sharp"
-              color={focused ? Colors.appColor : '#000'}
-              size={25}
-            />
-          ),
-          tabBarActiveTintColor: Colors.appColor,
-          tabBarLabelStyle: {fontSize: 13, fontWeight: '500'},
-        }}
-      />
-      <Tab.Screen
-        name="Clients"
-        component={ClientScreen}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({focused, tintColor}: any) => (
-            <Icon
-              name="people-sharp"
-              color={focused ? Colors.appColor : '#000'}
-              size={25}
-            />
-          ),
-          tabBarActiveTintColor: Colors.appColor,
-          tabBarLabelStyle: {fontSize: 13, fontWeight: '500'},
-        }}
-      />
-      <Tab.Screen
-        name="Items"
-        component={ItemsScreen}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({focused, tintColor}: any) => (
-            <AntDesign
-              name="barcode"
-              color={focused ? Colors.appColor : '#000'}
-              size={25}
-            />
-          ),
-          tabBarActiveTintColor: Colors.appColor,
-          tabBarLabelStyle: {fontSize: 13, fontWeight: '500'},
-        }}
-      />
-      <Tab.Screen
-        name="Reports"
-        component={ReportScreen}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({focused, tintColor}: any) => (
-            <AntDesign
-              name="barschart"
-              color={focused ? Colors.appColor : '#000'}
-              size={25}
-            />
-          ),
-          tabBarActiveTintColor: Colors.appColor,
-          tabBarLabelStyle: {fontSize: 13, fontWeight: '500'},
-        }}
-      />
+      {bottomTab.map(Screen => (
+        <Tab.Screen
+          name={Screen.name}
+          component={Screen.screen}
+          options={{
+            tabBarIcon: ({focused, tintColor}: any) => (
+              <Screen.iconType
+                name={Screen.icon}
+                color={focused ? Colors.appColor : '#000'}
+                size={25}
+              />
+            ),
+            ...tabBarOptions,
+          }}
+        />
+      ))}
     </Tab.Navigator>
   );
 }
 
+const screenConfigurations = [
+  {
+    name: 'SplashScreen',
+    component: SplashScreenLoading,
+    options: {headerShown: false},
+  },
+  {
+    name: 'LandingPage',
+    component: LandingScreen,
+    options: {headerShown: false},
+  },
+  {name: 'SignIn', component: SignInScreen, options: {headerShown: false}},
+  {name: 'SignUp', component: SignUpScreen, options: {headerShown: false}},
+  {name: 'Dashboard', component: Dashboard, options: {headerShown: false}},
+  {
+    name: 'Settings',
+    component: SettingScreen,
+    options: {headerTitle: 'Menu', ...headerStyle},
+  },
+  {
+    name: 'InvoiceCreation',
+    component: InvoiceCreationScreen,
+    options: {headerTitle: 'Invoice', ...headerStyle},
+  },
+  {
+    name: 'InvoiceNumber',
+    component: InvoiceNumber,
+    options: {headerTitle: 'Invoice Number', ...headerStyle},
+  },
+  {
+    name: 'BusinessDetails',
+    component: BusinessDetails,
+    options: {headerTitle: 'Business Details', ...headerStyle},
+  },
+  {
+    name: 'AddClientScreen',
+    component: AddClientScreen,
+    options: {headerTitle: 'Client', ...headerStyle},
+  },
+  {
+    name: 'AddItemScreen',
+    component: AddItemScreen,
+    options: {headerTitle: 'Item', ...headerStyle},
+  },
+  {
+    name: 'AddGlobalItemScreen',
+    component: AddGlobalItemScreen,
+    options: {headerTitle: 'Item', ...headerStyle},
+  },
+  {
+    name: 'AddPhotoScreen',
+    component: AddPhotoScreen,
+    options: {headerTitle: 'Photo', ...headerStyle},
+  },
+  {
+    name: 'PaymentInfo',
+    component: PaymentInfo,
+    options: {headerTitle: 'Payment Info', ...headerStyle},
+  },
+  {
+    name: 'AdditionalDetails',
+    component: AdditionalDetails,
+    options: {headerTitle: 'Additional Details', ...headerStyle},
+  },
+  {
+    name: 'ManualExpense',
+    component: ManualExpense,
+    options: {headerTitle: 'Expense', ...headerStyle},
+  },
+  {
+    name: 'DefaultNotes',
+    component: DefaultNotes,
+    options: {headerTitle: 'Default Notes', ...headerStyle},
+  },
+  {
+    name: 'GlobalInvoiceNumber',
+    component: GlobalInvoiceNumber,
+    options: {headerTitle: 'Invoice Number', ...headerStyle},
+  },
+  {
+    name: 'DefaultEmailMessage',
+    component: DefaultEmailMessage,
+    options: {headerTitle: 'Default Email Message', ...headerStyle},
+  },
+  {
+    name: 'TaxScreen',
+    component: TaxScreen,
+    options: {headerTitle: 'Tax', ...headerStyle},
+  },
+  {
+    name: 'SignaturePad',
+    component: SignaturePadScreen,
+    options: {headerTitle: 'Signature', ...headerStyle},
+  },
+  {
+    name: 'PaymentScreen',
+    component: PaymentScreen,
+    options: {headerTitle: 'Payment', ...headerStyle},
+  },
+  {
+    name: 'RegionScreen',
+    component: RegionScreen,
+    options: {headerTitle: 'Region', ...headerStyle},
+  },
+  {
+    name: 'Customize',
+    component: Customize,
+    options: {headerTitle: 'Customize', ...headerStyle},
+  },
+  {
+    name: 'EstimationCreation',
+    component: EstimationCreationScreen,
+    options: {headerTitle: 'Estimate', ...headerStyle},
+  },
+  {
+    name: 'EstimationNumber',
+    component: EstimationNumber,
+    options: {headerTitle: 'Invoice Number', ...headerStyle},
+  },
+  {
+    name: 'DiscountScreen',
+    component: DiscountScreen,
+    options: {headerTitle: 'Discount', ...headerStyle},
+  },
+];
+
 function MainNavigator() {
   return (
-    <Stack.Navigator initialRouteName="SplashScreen">
-      <Stack.Screen
-        name="SplashScreen"
-        component={SplashScreenLoading}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="LandingPage"
-        component={LandingScreen}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="SignIn"
-        component={SignInScreen}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="SignUp"
-        component={SignUpScreen}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="Dashboard"
-        component={Dashboard}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="Settings"
-        component={SettingScreen}
-        options={{headerTitle: 'Menu', ...headerStyle}}
-      />
-      <Stack.Screen
-        name="InvoiceCreation"
-        component={InvoiceCreationScreen}
-        options={{headerTitle: 'Invoice', ...headerStyle}}
-      />
-      <Stack.Screen
-        name="InvoiceNumber"
-        component={InvoiceNumber}
-        options={{headerTitle: 'Invoice Number', ...headerStyle}}
-      />
-      <Stack.Screen
-        name="BusinessDetails"
-        component={BusinessDetails}
-        options={{headerTitle: 'Business Details', ...headerStyle}}
-      />
-      <Stack.Screen
-        name="AddClientScreen"
-        component={AddClientScreen}
-        options={{headerTitle: 'Client', ...headerStyle}}
-      />
-      <Stack.Screen
-        name="AddItemScreen"
-        component={AddItemScreen}
-        options={{headerTitle: 'Item', ...headerStyle}}
-      />
-      <Stack.Screen
-        name="AddGlobalItemScreen"
-        component={AddGlobalItemScreen}
-        options={{headerTitle: 'Item', ...headerStyle}}
-      />
-      <Stack.Screen
-        name="AddPhotoScreen"
-        component={AddPhotoScreen}
-        options={{headerTitle: 'Photo', ...headerStyle}}
-      />
-      <Stack.Screen
-        name="PaymentInfo"
-        component={PaymentInfo}
-        options={{headerTitle: 'Payment Info', ...headerStyle}}
-      />
-      <Stack.Screen
-        name="AdditionalDetails"
-        component={AdditionalDetails}
-        options={{headerTitle: 'Additional Details', ...headerStyle}}
-      />
-      <Stack.Screen
-        name="ManualExpense"
-        component={ManualExpense}
-        options={{headerTitle: 'Expense', ...headerStyle}}
-      />
-      <Stack.Screen
-        name="DefaultNotes"
-        component={DefaultNotes}
-        options={{headerTitle: 'Default Notes', ...headerStyle}}
-      />
-      <Stack.Screen
-        name="GlobalInvoiceNumber"
-        component={GlobalInvoiceNumber}
-        options={{headerTitle: 'Invoice Number', ...headerStyle}}
-      />
-      <Stack.Screen
-        name="DefaultEmailMessage"
-        component={DefaultEmailMessage}
-        options={{headerTitle: 'Default Email Message', ...headerStyle}}
-      />
-      <Stack.Screen
-        name="TaxScreen"
-        component={TaxScreen}
-        options={{headerTitle: 'Tax', ...headerStyle}}
-      />
-      <Stack.Screen
-        name="SignaturePad"
-        component={SignaturePadScreen}
-        options={{headerTitle: 'Signature', ...headerStyle}}
-      />
-      <Stack.Screen
-        name="PaymentScreen"
-        component={PaymentScreen}
-        options={{headerTitle: 'Payment', ...headerStyle}}
-      />
-      <Stack.Screen
-        name="RegionScreen"
-        component={RegionScreen}
-        options={{headerTitle: 'Region', ...headerStyle}}
-      />
-      <Stack.Screen
-        name="Customize"
-        component={Customize}
-        options={{headerTitle: 'Customize', ...headerStyle}}
-      />
-      <Stack.Screen
-        name="EstimationCreation"
-        component={EstimationCreationScreen}
-        options={{headerTitle: 'Estimate', ...headerStyle}}
-      />
-       <Stack.Screen
-        name="EstimationNumber"
-        component={EstimationNumber}
-        options={{headerTitle: 'Invoice Number', ...headerStyle}}
-      />
-      <Stack.Screen
-        name="DiscountScreen"
-        component={DiscountScreen}
-        options={{headerTitle: 'Discount', ...headerStyle}}
-      />
+    <Stack.Navigator initialRouteName={screenConfigurations[0].name}>
+      {screenConfigurations.map(screen => (
+        <Stack.Screen
+          key={screen.name}
+          name={screen.name}
+          component={screen.component}
+          options={screen.options}
+        />
+      ))}
     </Stack.Navigator>
   );
 }
