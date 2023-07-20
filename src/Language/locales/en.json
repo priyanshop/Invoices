@@ -60,7 +60,7 @@
     "EstimationCreation": "Estimate",
     "EstimationNumber": "Invoice Number",
     "DiscountScreen": "Discount",
-    "ContactUs": "Contact us"
+    "ContactUs": "Contact Us"
   },
   "bottomNav": {
     "Invoices": "Invoices",
@@ -88,7 +88,7 @@
   "Quantity": "Quantity",
   "Settings": {
     "Support": "Support",
-    "ContactUs": "Contact us",
+    "ContactUs": "Contact Us",
     "Invoice": "Invoice",
     "ExpensesBeta": "Expenses Beta",
     "ScanReceipts": "Scan and organize receipts",
