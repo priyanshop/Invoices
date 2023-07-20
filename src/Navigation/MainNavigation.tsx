@@ -35,6 +35,7 @@ import EstimationCreationScreen from '../Screens/AddEstimate';
 import EstimationNumber from '../Screens/InvoiceNumber/EstimateNumber';
 import DiscountScreen from '../Screens/Settings/DiscountScreen';
 import {useTranslation} from 'react-i18next';
+import ContactUs from '../Screens/ContactUS';
 
 const headerStyle = {
   headerStyle: {
@@ -287,6 +288,14 @@ function MainNavigator() {
       component: DiscountScreen,
       options: {
         headerTitle: t('navigationTitle.DiscountScreen'),
+        ...headerStyle,
+      },
+    },
+    {
+      name: 'ContactUs',
+      component: ContactUs,
+      options: {
+        headerTitle: t('navigationTitle.ContactUs'),
         ...headerStyle,
       },
     },

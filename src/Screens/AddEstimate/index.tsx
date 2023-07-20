@@ -17,17 +17,18 @@ import {Switch, FAB, Portal, Provider, Menu} from 'react-native-paper';
 import {getScreenDimensions} from '../../Helper/ScreenDimension';
 import {Colors} from '../../Helper/Colors';
 import {actionStyle, fabStyle} from '../../Helper/CommonStyle';
+import {useTranslation} from 'react-i18next';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
 
-const data = [
-  {key: 'first', title: 'Edit'},
-  {key: 'second', title: 'Preview'},
-  {key: 'third', title: 'History'},
-];
-
 function EstimationCreationScreen({navigation}: any): JSX.Element {
+  const {t, i18n} = useTranslation();
+  const data = [
+    {key: 'first', title: t('Edit')},
+    {key: 'second', title: t('Preview')},
+    {key: 'third', title: t('History')},
+  ];
   const actions = [
     {
       icon: () => (
@@ -37,7 +38,7 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
           color="#000"
         />
       ),
-      label: 'Text',
+      label: t('Text'),
       onPress: () => console.log('Pressed notifications'),
       style: {backgroundColor: '#fff', borderRadius: 50},
       color: '#000',
@@ -49,7 +50,7 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
     },
     {
       icon: () => <Fontisto name="email" size={22} color="#000" />,
-      label: 'Email',
+      label: t('Email'),
       onPress: () => console.log('Pressed email'),
       style: {backgroundColor: '#fff', borderRadius: 50},
       color: '#000',
@@ -156,7 +157,7 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
             <Text
               onPress={navigateToBusinessDetails}
               style={styles.businessInfo}>
-              Business Info
+              {t('Business Info')}
             </Text>
           </View>
           <View style={{justifyContent: 'flex-end'}}>
@@ -165,9 +166,9 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
         </TouchableOpacity>
 
         <View style={styles.clientView}>
-          <Text style={styles.toTxt}>To : </Text>
+          <Text style={styles.toTxt}>{t('To')} : </Text>
           <Text onPress={navigateToAddClientScreen} style={styles.clientTxt}>
-            Client
+            {t('Client')}
           </Text>
         </View>
 
@@ -176,7 +177,7 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
             onPress={navigateToAddItemScreen}
             style={styles.ItemColumn}>
             <View>
-              <Text style={styles.addItemTxt}>{'Add Item '}</Text>
+              <Text style={styles.addItemTxt}>{t('Add Item')} </Text>
             </View>
             <View>
               <Text style={styles.itemPriceTxt}>{'0 * $0.00'}</Text>
@@ -184,7 +185,7 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
             </View>
           </TouchableOpacity>
           <View style={styles.itemTotal}>
-            <Text style={styles.itemTotalTxt}>Subtotal</Text>
+            <Text style={styles.itemTotalTxt}>{t('Subtotal')}</Text>
             <Text style={styles.itemTotalTxt}>195</Text>
           </View>
         </View>
@@ -201,13 +202,13 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
             </View>
           ))}
           <View style={styles.dueBalFooter}>
-            <Text style={styles.dueBalFooterText}>Balance Due</Text>
+            <Text style={styles.dueBalFooterText}>{t('Balance Due')}</Text>
             <Text style={styles.dueBalFooterText}>195</Text>
           </View>
         </View>
 
         <View style={styles.photoContainer}>
-          <Text style={styles.photoText}>Add photo</Text>
+          <Text style={styles.photoText}>{t('Add photo')}</Text>
           <TouchableOpacity onPress={navigateToAddPhotoScreen}>
             <Icon name="attach" size={18} style={styles.photoIcon} />
           </TouchableOpacity>
@@ -216,24 +217,24 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
         <View style={styles.notesContainer}>
           <View style={styles.notesRow}>
             <Text onPress={navigateToSignaturePad} style={styles.notesText}>
-              Signature
+              {t('Signature')}
             </Text>
           </View>
           <TouchableOpacity
             onPress={navigateToAdditionalDetails}
             style={styles.notesLastRow}>
-            <Text style={styles.notesText}>Notes</Text>
+            <Text style={styles.notesText}>{t('Notes')}</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.requestContainer}>
           <View style={styles.requestSwitchRow}>
-            <Text style={styles.requestText}>Request Review</Text>
+            <Text style={styles.requestText}>{t('Request Review')}</Text>
             <Switch value={true} />
           </View>
           <View style={styles.requestLinkRow}>
             <TextInput
-              placeholder="Review Link"
+              placeholder={t('Review Link')}
               style={styles.requestLinkText}
               placeholderTextColor={'#d1d1d1'}
             />
@@ -241,7 +242,7 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
         </View>
 
         <View style={styles.paidContainer}>
-          <Text style={styles.paidText}>Mark Paid</Text>
+          <Text style={styles.paidText}>{t('Mark Paid')}</Text>
         </View>
       </ScrollView>
     );
@@ -268,13 +269,13 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
             visible={visible}
             onDismiss={closeMenu}
             anchor={{x: screenWidth, y: -10}}>
-            <Menu.Item onPress={() => {}} title="Delete" />
-            <Menu.Item onPress={() => {}} title="Open In .." />
-            <Menu.Item onPress={() => {}} title="Share" />
-            <Menu.Item onPress={() => {}} title="Print" />
-            <Menu.Item onPress={() => {}} title="Get Link" />
-            <Menu.Item onPress={() => {}} title="Mark paid" />
-            <Menu.Item onPress={() => {}} title="Duplicate" />
+            <Menu.Item onPress={() => {}} title={t('Delete')} />
+            <Menu.Item onPress={() => {}} title={t('Open In ..')} />
+            <Menu.Item onPress={() => {}} title={t('Share')} />
+            <Menu.Item onPress={() => {}} title={t('Print')} />
+            <Menu.Item onPress={() => {}} title={t('Get Link')} />
+            <Menu.Item onPress={() => {}} title={t('Mark paid')} />
+            <Menu.Item onPress={() => {}} title={t('Duplicate')} />
           </Menu>
           <TabView
             navigationState={{index, routes}}

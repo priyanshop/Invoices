@@ -12,14 +12,16 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Switch} from 'react-native-paper';
 import {Colors} from '../../Helper/Colors';
+import {useTranslation} from 'react-i18next';
 
 function AddItemScreen({navigation}: any): JSX.Element {
+  const {t, i18n} = useTranslation();
   const [Description, setDescription] = useState('');
   const [Taxable, setTaxable] = useState(false);
   const [Notes, setNotes] = useState('');
   const [unitCost, setUnitCost] = useState('');
   const [unit, setUnit] = useState('');
-  
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -44,13 +46,13 @@ function AddItemScreen({navigation}: any): JSX.Element {
               <View style={styles.inputContainer}>
                 <TextInput
                   style={[styles.input, {textAlign: 'left'}]}
-                  placeholder={'Description'}
+                  placeholder={t('Description')}
                   placeholderTextColor={'grey'}
                 />
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Unit Cost: </Text>
+              <Text style={styles.label}>{t('Unit Cost')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input}
@@ -60,17 +62,17 @@ function AddItemScreen({navigation}: any): JSX.Element {
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Unit: </Text>
+              <Text style={styles.label}>{t('Unit')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input}
-                  placeholder={'hours,days'}
+                  placeholder={t('hours,days')}
                   placeholderTextColor={'grey'}
                 />
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Quantity: </Text>
+              <Text style={styles.label}>{t('Quantity')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input}
@@ -80,7 +82,7 @@ function AddItemScreen({navigation}: any): JSX.Element {
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Discount: </Text>
+              <Text style={styles.label}>{t('Discount')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input}
@@ -90,7 +92,7 @@ function AddItemScreen({navigation}: any): JSX.Element {
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Discount Amount: </Text>
+              <Text style={styles.label}>{t('Discount Amount')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input}
@@ -100,19 +102,19 @@ function AddItemScreen({navigation}: any): JSX.Element {
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Taxable: </Text>
+              <Text style={styles.label}>{t('Taxable')}: </Text>
               <Switch value={true} />
             </View>
           </View>
           <View style={styles.totalView}>
-            <Text style={styles.totalTxt}>Total:</Text>
+            <Text style={styles.totalTxt}>{t('Total')}:</Text>
             <Text style={styles.totalTxt}>195</Text>
           </View>
         </View>
 
         <View style={styles.detailView}>
           <TextInput
-            placeholder="Additional Details"
+            placeholder={t('Additional Details')}
             style={styles.detailText}
             numberOfLines={4}
             multiline
@@ -121,7 +123,7 @@ function AddItemScreen({navigation}: any): JSX.Element {
 
         <View style={styles.itemView}>
           <View style={styles.saveView}>
-            <Text style={styles.saveText}>Save to "My Items"</Text>
+            <Text style={styles.saveText}>{t('Save to "My Items"')}</Text>
             <Switch value={false} />
           </View>
         </View>

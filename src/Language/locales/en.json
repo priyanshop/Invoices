@@ -59,7 +59,8 @@
     "Customize": "Customize",
     "EstimationCreation": "Estimate",
     "EstimationNumber": "Invoice Number",
-    "DiscountScreen": "Discount"
+    "DiscountScreen": "Discount",
+    "ContactUs": "Contact us"
   },
   "bottomNav": {
     "Invoices": "Invoices",
@@ -68,14 +69,12 @@
     "Items": "Items",
     "Reports": "Reports"
   },
-
   "name": "Name",
   "totalBill": "Total Billed",
   "clients": "Clients",
   "emptyClient": "Your client will show up here",
   "emptyItems": "Here you can manage a list of products or services that you repeatedly invoice for",
   "items": "Items",
-
   "emptyInvoiceAll": "Your invoices will show up here. Click the plus button below to create your first invoice!",
   "emptyInvoiceOutStanding": "Invoices that are no yet paid show up here.",
   "emptyInvoicePaid": "Invoices that you mark paid will show up here.",
@@ -87,7 +86,6 @@
   "Open": "Open",
   "Closed": "Closed",
   "Quantity": "Quantity",
-
   "Settings": {
     "Support": "Support",
     "ContactUs": "Contact us",
@@ -127,7 +125,6 @@
     "TermsUse": "Terms of Use",
     "PrivacyPolicy": "Privacy Policy"
   },
-
   "Invoice Title": "Invoice Title",
   "Invoice": "Invoice",
   "Estimate Title": "Estimate Title",
@@ -238,5 +235,50 @@
   "Search": "Search",
   "Loading": "Loading",
   "Save": "Save",
-  "Clear": "Clear"
+  "Clear": "Clear",
+  "Enter Name": "Enter Name",
+  "Enter Email": "Enter Email",
+  "Contact No": "Contact No",
+  "Enter Contact No.": "Enter Contact No.",
+  "Message": "Message",
+  "Enter Message": "Enter Message",
+  "Send": "Send",
+  "Delete": "Delete",
+  "Client Name": "Client Name",
+  "Mobile Number": "Mobile Number",
+  "Phone Number": "Phone Number",
+  "Fax": "Fax",
+  "Fax Number": "Fax Number",
+  "Contact": "Contact",
+  "Import from contacts": "Import from contacts",
+  "Update": "Update",
+  "Create": "Create",
+  "Create Statement": "Create Statement",
+  "Unit Cost": "Unit Cost",
+  "Unit": "Unit",
+  "hours,days": "hours,days",
+  "Additional Details": "Additional Details",
+  "Discount Amount": "Discount Amount",
+  "Save to 'My Items'": "Save to 'My Items'",
+  "Business Info": "Business Info",
+  "To": "To",
+  "Client": "Client",
+  "Add Item": "Add Item",
+  "Subtotal": "Subtotal",
+  "Balance Due": "Balance Due",
+  "Signature": "Signature",
+  "Notes": "Notes",
+  "Request Review": "Request Review",
+  "Review Link": "Review Link",
+  "Mark Paid": "Mark Paid",
+  "Share": "Share",
+  "Print": "Print",
+  "Get Link": "Get Link",
+  "Duplicate": "Duplicate",
+  "Open In ..": "Open In ..",
+  "Edit": "Edit",
+  "History": "History",
+  "Payment Info": "Payment Info",
+  "Due on Receipt": "Due on Receipt",
+  "Save as default": "Save as default"
 }

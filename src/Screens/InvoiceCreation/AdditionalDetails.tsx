@@ -10,8 +10,10 @@ import {
 } from 'react-native';
 import {Switch} from 'react-native-paper';
 import { Colors } from '../../Helper/Colors';
+import { useTranslation } from 'react-i18next';
 
 function AdditionalDetails({navigation}: any): JSX.Element {
+  const {t, i18n} = useTranslation();
   const [additionalDetails, setAdditionalDetails] = useState('');
 
   return (
@@ -23,7 +25,7 @@ function AdditionalDetails({navigation}: any): JSX.Element {
           <TextInput
             value={additionalDetails}
             onChangeText={setAdditionalDetails}
-            placeholder="Additional Details"
+            placeholder={t("Additional Details")}
             style={styles.detailText}
             numberOfLines={4}
             multiline
@@ -32,7 +34,7 @@ function AdditionalDetails({navigation}: any): JSX.Element {
 
         <View style={styles.itemView}>
           <View style={styles.saveView}>
-            <Text style={styles.saveText}>Save as default</Text>
+            <Text style={styles.saveText}>{t('Save as default')}</Text>
             <Switch value={false} />
           </View>
         </View>

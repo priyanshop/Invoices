@@ -55,6 +55,7 @@ const SettingScreen = ({navigation}: any) => {
           title: 'Contact us',
           titleTxt: t('Settings.ContactUs'),
           description: '',
+          onPress: () => navigation.navigate('ContactUs'),
         },
       ],
     },

@@ -20,12 +20,14 @@ import {
   setItemList,
 } from '../../redux/reducers/user/UserReducer';
 import {removeObjectByIndex} from '../../Helper/CommonFunctions';
+import { useTranslation } from 'react-i18next';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
 
 function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
   const dispatch = useDispatch();
+  const {t, i18n} = useTranslation();
   const selector = useSelector(state => state.user);
   const [Description, setDescription] = useState('');
   const [Taxable, setTaxable] = useState(false);
@@ -175,7 +177,7 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
         <Menu.Item
           disabled={!alreadyExist}
           onPress={deleteItem}
-          title="Delete"
+          title={t("Delete")}
         />
       </Menu>
       <StatusBar backgroundColor={Colors.appColor} />
@@ -191,7 +193,7 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
                 <TextInput
                   value={Description}
                   style={[styles.input, {textAlign: 'left'}]}
-                  placeholder={'Description'}
+                  placeholder={t('Description')}
                   placeholderTextColor={'grey'}
                   onChangeText={value =>
                     handleTextInputChange(value, setDescription)
@@ -200,7 +202,7 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Unit Cost: </Text>
+              <Text style={styles.label}>{t('Unit Cost')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   value={unitCost}
@@ -214,19 +216,19 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Unit: </Text>
+              <Text style={styles.label}>{t('Unit')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   value={unit}
                   style={styles.input}
-                  placeholder={'hours,days'}
+                  placeholder={t('hours,days')}
                   placeholderTextColor={'grey'}
                   onChangeText={value => handleTextInputChange(value, setUnit)}
                 />
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>Taxable: </Text>
+              <Text style={styles.label}>{t('Taxable')}: </Text>
               <Switch
                 value={Taxable}
                 color={Colors.landingColor}
@@ -243,7 +245,7 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
         <View style={styles.detailView}>
           <TextInput
             value={Notes}
-            placeholder="Additional Details"
+            placeholder={t("Additional Details")}
             style={styles.detailText}
             numberOfLines={4}
             multiline
@@ -254,7 +256,7 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
           onPress={alreadyExist ? update : create}
           style={styles.statementBtn}>
           <Text style={[styles.titleTxt2, {color: '#fff', fontWeight: '600'}]}>
-            {alreadyExist ? 'Update' : 'Create'}
+            {alreadyExist ? t('Update') : t('Create')}
           </Text>
         </TouchableOpacity>
       </ScrollView>

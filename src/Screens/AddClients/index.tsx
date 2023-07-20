@@ -22,12 +22,14 @@ import {
   setClientList,
 } from '../../redux/reducers/user/UserReducer';
 import {removeObjectByIndex} from '../../Helper/CommonFunctions';
+import { useTranslation } from 'react-i18next';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
 
 const AddClientScreen = ({navigation, route}: any) => {
   const dispatch = useDispatch();
+  const {t, i18n} = useTranslation();
   const selector = useSelector(state => state.user);
   const [clientName, setClientName] = useState('');
   const [contact, setContact] = useState('');
@@ -259,7 +261,7 @@ const AddClientScreen = ({navigation, route}: any) => {
         <Menu.Item
           disabled={!alreadyExist}
           onPress={deleteClient}
-          title="Delete"
+          title={t("Delete")}
         />
       </Menu>
       <View style={styles.mainContainer}>
@@ -271,7 +273,7 @@ const AddClientScreen = ({navigation, route}: any) => {
                 handleTextInputChange(value, setClientName)
               }
               style={{...styles.titleTxt, textAlign: 'left'}}
-              placeholder="Client Name"
+              placeholder={t("Client Name")}
               placeholderTextColor={'grey'}
             />
           </View>
@@ -280,7 +282,7 @@ const AddClientScreen = ({navigation, route}: any) => {
               value={email}
               onChangeText={value => handleTextInputChange(value, setEmail)}
               style={{...styles.titleTxt, textAlign: 'left'}}
-              placeholder="Email"
+              placeholder={t("Email")}
               placeholderTextColor={'grey'}
             />
           </View>
@@ -290,27 +292,27 @@ const AddClientScreen = ({navigation, route}: any) => {
               value={Mobile}
               onChangeText={value => handleTextInputChange(value, setMobile)}
               style={{...styles.titleTxt, textAlign: 'right'}}
-              placeholder="Mobile Number"
+              placeholder={t("Mobile Number")}
               placeholderTextColor={'grey'}
             />
           </View>
           <View style={styles.rowView}>
-            <Text style={styles.titleTxt}>Phone</Text>
+            <Text style={styles.titleTxt}>{t('Phone')}</Text>
             <TextInput
               value={Phone}
               onChangeText={value => handleTextInputChange(value, setPhone)}
               style={{...styles.titleTxt, textAlign: 'right'}}
-              placeholder="Phone Number"
+              placeholder={t("Phone Number")}
               placeholderTextColor={'grey'}
             />
           </View>
           <View style={styles.rowView}>
-            <Text style={styles.titleTxt}>Fax</Text>
+            <Text style={styles.titleTxt}>{t('Fax')}</Text>
             <TextInput
               value={fax}
               onChangeText={value => handleTextInputChange(value, setFax)}
               style={{...styles.titleTxt, textAlign: 'right'}}
-              placeholder="Fax Number"
+              placeholder={t("Fax Number")}
               placeholderTextColor={'grey'}
             />
           </View>
@@ -322,7 +324,7 @@ const AddClientScreen = ({navigation, route}: any) => {
               value={contact}
               onChangeText={value => handleTextInputChange(value, setContact)}
               style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-              placeholder="Contact"
+              placeholder={t("Contact")}
               placeholderTextColor={'grey'}
             />
           </View>
@@ -331,7 +333,7 @@ const AddClientScreen = ({navigation, route}: any) => {
               value={address1}
               onChangeText={value => handleTextInputChange(value, setAddress1)}
               style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-              placeholder="Address Line 1"
+              placeholder={t("Address Line 1")}
               placeholderTextColor={'grey'}
             />
           </View>
@@ -340,7 +342,7 @@ const AddClientScreen = ({navigation, route}: any) => {
               value={address2}
               onChangeText={value => handleTextInputChange(value, setAddress2)}
               style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-              placeholder="Address Line 2"
+              placeholder={t("Address Line 2")}
               placeholderTextColor={'grey'}
             />
           </View>
@@ -349,27 +351,27 @@ const AddClientScreen = ({navigation, route}: any) => {
               value={address3}
               onChangeText={value => handleTextInputChange(value, setAddress3)}
               style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-              placeholder="Address Line 3"
+              placeholder={t("Address Line 3")}
               placeholderTextColor={'grey'}
             />
           </View>
         </View>
 
         <TouchableOpacity onPress={selectContact} style={styles.contactBtn}>
-          <Text style={styles.titleTxt2}>{'Import from contacts'}</Text>
+          <Text style={styles.titleTxt2}>{t('Import from contacts')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={alreadyExist ? update : create}
           style={styles.statementBtn}>
           <Text style={[styles.titleTxt2, {color: '#fff', fontWeight: '600'}]}>
-            {alreadyExist ? 'Update' : 'Create'}
+            {alreadyExist ? t('Update') : t('Create')}
           </Text>
         </TouchableOpacity>
         {/* <TouchableOpacity
         onPress={alreadyExist ? update : create}
         style={styles.statementBtn}>
         <Text style={[styles.titleTxt2, {color: '#fff', fontWeight: '600'}]}>
-          {'Create Statement'}
+          {t('Create Statement')}
         </Text>
       </TouchableOpacity> */}
       </View>

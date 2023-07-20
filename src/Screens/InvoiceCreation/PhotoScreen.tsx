@@ -9,9 +9,11 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
-import { Colors } from '../../Helper/Colors';
+import {Colors} from '../../Helper/Colors';
+import {useTranslation} from 'react-i18next';
 
 function AddPhotoScreen({navigation}: any): JSX.Element {
+  const {t, i18n} = useTranslation();
   const [image, setImage] = useState('');
   const [description, setDescription] = useState('');
   const [additionalDetails, setAdditionalDetails] = useState('');
@@ -50,7 +52,7 @@ function AddPhotoScreen({navigation}: any): JSX.Element {
                   value={description}
                   onChangeText={setDescription}
                   style={[styles.input, {textAlign: 'left'}]}
-                  placeholder={'Description'}
+                  placeholder={t('Description')}
                 />
               </View>
             </View>
@@ -58,7 +60,7 @@ function AddPhotoScreen({navigation}: any): JSX.Element {
               <TextInput
                 value={additionalDetails}
                 onChangeText={setAdditionalDetails}
-                placeholder="Additional Details"
+                placeholder={t('Additional Details')}
                 style={styles.detailText}
                 numberOfLines={4}
                 multiline
