@@ -147,11 +147,11 @@ const styles = StyleSheet.create({
   },
   totalTxt: {fontSize: 18, fontWeight: '500', color: '#fff'},
   detailText: {
-    height: 35,
+    height: 40,
     fontSize: 16,
     fontWeight: '400',
     color: '#000',
-    textAlignVertical: 'top',
+    paddingVertical:10
   },
   saveText: {fontSize: 18, fontWeight: '400', color: '#000'},
   dateText: {

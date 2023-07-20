@@ -8,7 +8,7 @@ import DateFormat from '../../CustomComponent/DateFormat';
 import MonthFormat from '../../CustomComponent/MonthFormat';
 import LangFormat from '../../CustomComponent/LangFormat';
 import {useTranslation} from 'react-i18next';
-import { changeLanguage } from '../../redux/reducers/user/UserReducer';
+import {changeLanguage} from '../../redux/reducers/user/UserReducer';
 
 const RegionScreen = () => {
   const {t, i18n} = useTranslation();
@@ -32,7 +32,7 @@ const RegionScreen = () => {
 
   const changeLang = (selectedLanguage: any) => {
     i18n.changeLanguage(selectedLanguage.common);
-    dispatch(changeLanguage(selectedLanguage.common))
+    dispatch(changeLanguage(selectedLanguage.common));
     if (selectedLanguage.common === 'en') {
       setSelectedLanguage('English (U.S.)');
     } else {
@@ -135,6 +135,7 @@ const RegionScreen = () => {
         selectedOption={setSelectedPayment}
       />
       <LangFormat
+        selectedItem={selectedLanguage}
         openModal={langModal}
         closeBottomSheet={() => setLangModal(!langModal)}
         selectedOption={changeLang}

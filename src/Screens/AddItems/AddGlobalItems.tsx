@@ -202,7 +202,7 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>{t('Unit Cost')}: </Text>
+              <Text style={styles.label}>{t('Unit Cost')} : </Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   value={unitCost}
@@ -216,7 +216,7 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>{t('Unit')}: </Text>
+              <Text style={styles.label}>{t('Unit')} : </Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   value={unit}
@@ -228,7 +228,7 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
               </View>
             </View>
             <View style={styles.mainView}>
-              <Text style={styles.label}>{t('Taxable')}: </Text>
+              <Text style={styles.label}>{t('Taxable')} : </Text>
               <Switch
                 value={Taxable}
                 color={Colors.landingColor}
@@ -282,6 +282,8 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: '50%',
+    justifyContent:'center',
+    // alignItems:'center'
   },
   input: {
     fontSize: 18,
@@ -289,6 +291,7 @@ const styles = StyleSheet.create({
     color: '#000',
     textAlign: 'right',
     height: 40,
+    textAlignVertical:'center'
   },
   itemView: {
     backgroundColor: '#fff',

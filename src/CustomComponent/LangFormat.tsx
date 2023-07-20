@@ -8,6 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 import {Overlay} from 'react-native-elements';
+import {Colors} from '../Helper/Colors';
 
 let months = [
   {name: 'English (U.S.)', common: 'en'},
@@ -18,6 +19,7 @@ const LangFormat = ({
   closeBottomSheet,
   openModal = false,
   selectedOption,
+  selectedItem = '',
 }: any) => {
   const {t, i18n} = useTranslation();
 
@@ -35,7 +37,13 @@ const LangFormat = ({
               closeBottomSheet();
             }}
             style={styles.rowView}>
-            <Text style={styles.titleTxt}>{item.name}</Text>
+            <Text
+              style={[
+                styles.titleTxt,
+                selectedItem === item.name && {color: Colors.appColor},
+              ]}>
+              {item.name}
+            </Text>
           </TouchableOpacity>
         ))}
         <TouchableOpacity onPress={closeBottomSheet} style={styles.rowView}>

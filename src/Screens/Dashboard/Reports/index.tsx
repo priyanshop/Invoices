@@ -50,7 +50,7 @@ function ReportScreen({navigation}: any): JSX.Element {
         <Text style={{...styles.tableTitle, textAlign: 'center'}}>
           {t('Invoices')}
         </Text>
-        <Text style={{...styles.tableTitle, textAlign: 'right'}}>{'Paid'}</Text>
+        <Text style={{...styles.tableTitle, textAlign: 'right'}}>{t('Paid')}</Text>
       </View>
     );
   };
@@ -65,7 +65,7 @@ function ReportScreen({navigation}: any): JSX.Element {
         <Text style={{...styles.tableTitle, textAlign: 'center'}}>
           {t('Quantity')}
         </Text>
-        <Text style={{...styles.tableTitle, textAlign: 'right'}}>{'Paid'}</Text>
+        <Text style={{...styles.tableTitle, textAlign: 'right'}}>{t('Paid')}</Text>
       </View>
     );
   };

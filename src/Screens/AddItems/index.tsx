@@ -141,6 +141,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     // marginVertical: Platform.OS === 'ios' ? 5 : 0,
     alignItems: 'center',
+    marginVertical:2
   },
   label: {
     fontSize: 18,
@@ -149,6 +150,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: '50%',
+    justifyContent:'center'
   },
   input: {
     fontSize: 18,

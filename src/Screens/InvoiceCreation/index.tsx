@@ -129,7 +129,7 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
         <TouchableOpacity
           onPress={navigateToInvoiceNumber}
           style={styles.invoiceTopView}>
-          <View style={{justifyContent: 'space-between'}}>
+          <View style={{justifyContent: 'space-between',width:"50%"}}>
             <Text style={styles.invoiceTitle}>INV0001</Text>
             <Text
               onPress={navigateToBusinessDetails}
@@ -137,7 +137,7 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
               {t('Business Info')}
             </Text>
           </View>
-          <View style={{justifyContent: 'space-between'}}>
+          <View style={{justifyContent: 'space-between',width:"50%"}}>
             <View style={styles.dueBox}>
               <Text style={styles.dueTxt}>{t('Due on Receipt')}</Text>
             </View>
@@ -174,7 +174,7 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
           {[0, 0, 0, 0, 0].map(() => (
             <View style={styles.dueBalContent}>
               <View style={styles.dueBalRow}>
-                <Text style={styles.dueBalText}>Discount</Text>
+                <Text style={styles.dueBalText}>{t('Discount')}</Text>
                 <Text style={styles.dueBalText}>$0.00</Text>
               </View>
             </View>
@@ -213,11 +213,11 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
         <View style={styles.requestContainer}>
           <View style={styles.requestSwitchRow}>
             <Text style={styles.requestText}>{t('Request Review')}</Text>
-            <Switch value={true} />
+            <Switch color={Colors.landingColor} value={true} />
           </View>
           <View style={styles.requestLinkRow}>
             <TextInput
-              placeholder="Review Link"
+              placeholder={t('Review Link')}
               style={styles.requestLinkText}
               placeholderTextColor={'#d1d1d1'}
             />
@@ -225,7 +225,7 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
         </View>
 
         <View style={styles.paidContainer}>
-          <Text style={styles.paidText}>Mark Paid</Text>
+          <Text style={styles.paidText}>{t('Mark Paid')}</Text>
         </View>
       </ScrollView>
     );
@@ -251,13 +251,13 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
           <Menu
             visible={visible}
             onDismiss={closeMenu}
-            anchor={{x: screenWidth, y: -10}}>
+            anchor={{x: screenWidth - 10, y: -10}}>
             <Menu.Item onPress={() => {}} title={t('Delete')} />
             <Menu.Item onPress={() => {}} title={t('Open In ..')} />
             <Menu.Item onPress={() => {}} title={t('Share')} />
             <Menu.Item onPress={() => {}} title={t('Print')} />
             <Menu.Item onPress={() => {}} title={t('Get Link')} />
-            <Menu.Item onPress={() => {}} title={t('Mark paid')} />
+            <Menu.Item onPress={() => {}} title={t('Mark Paid')} />
             <Menu.Item onPress={() => {}} title={t('Duplicate')} />
           </Menu>
           <TabView
@@ -520,6 +520,7 @@ const styles = StyleSheet.create({
     padding: 4,
     borderColor: 'grey',
     marginBottom: 10,
+    alignSelf:'flex-end'
   },
   dueTxt: {fontSize: 14, fontWeight: '400', color: 'grey'},
   dueDate: {
@@ -664,6 +665,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: '#000',
+    height: 35,
   },
   paidContainer: {
     flexDirection: 'row',

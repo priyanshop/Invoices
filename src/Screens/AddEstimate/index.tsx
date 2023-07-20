@@ -131,17 +131,17 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
   const itemsData = [
     {
       key: 'first',
-      title: 'Discount',
+      title: t('Discount'),
       value: '$0.00',
       onPress: () => navigateToDiscountScreen(),
     },
     {
       key: 'second',
-      title: 'Tax',
+      title: t('Tax'),
       value: '$0.00',
       onPress: () => navigateToTaxScreen(),
     },
-    {key: 'third', title: 'Total', value: '$0.00'},
+    {key: 'third', title: t('Total'), value: '$0.00'},
   ];
 
   const AllRoute = () => {
@@ -230,7 +230,7 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
         <View style={styles.requestContainer}>
           <View style={styles.requestSwitchRow}>
             <Text style={styles.requestText}>{t('Request Review')}</Text>
-            <Switch value={true} />
+            <Switch color={Colors.landingColor} value={true} />
           </View>
           <View style={styles.requestLinkRow}>
             <TextInput
@@ -268,13 +268,13 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
           <Menu
             visible={visible}
             onDismiss={closeMenu}
-            anchor={{x: screenWidth, y: -10}}>
+            anchor={{x: screenWidth-10, y: -10}}>
             <Menu.Item onPress={() => {}} title={t('Delete')} />
             <Menu.Item onPress={() => {}} title={t('Open In ..')} />
             <Menu.Item onPress={() => {}} title={t('Share')} />
             <Menu.Item onPress={() => {}} title={t('Print')} />
             <Menu.Item onPress={() => {}} title={t('Get Link')} />
-            <Menu.Item onPress={() => {}} title={t('Mark paid')} />
+            <Menu.Item onPress={() => {}} title={t('Mark Paid')} />
             <Menu.Item onPress={() => {}} title={t('Duplicate')} />
           </Menu>
           <TabView
@@ -686,6 +686,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: '#000',
+    height: 35,
   },
   paidContainer: {
     flexDirection: 'row',
