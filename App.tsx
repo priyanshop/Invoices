@@ -12,6 +12,9 @@ import {Provider} from 'react-native-paper';
 import SplashScreen from 'react-native-splash-screen';
 import {Provider as ReduxProvider} from 'react-redux';
 import { store } from './src/redux/store';
+import SwipeApp from './src/Screens/SwipeScreen';
+import SwipeAppWithImages from './src/Screens/SwipeScreen/WithImages';
+import SwipeAppWithCarousel from './src/Screens/SwipeScreen/WithCarousel';
 
 function App(): JSX.Element {
   
@@ -20,7 +23,7 @@ function App(): JSX.Element {
     <NavigationContainer>
       <ReduxProvider store={store}>
         <Provider>
-          <MainNavigator />
+          <SwipeAppWithCarousel />
         </Provider>
       </ReduxProvider>
     </NavigationContainer>
