@@ -14,16 +14,52 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Switch, FAB, Portal, Provider, Menu} from 'react-native-paper';
+import {useTranslation} from 'react-i18next';
+import {useSelector, useDispatch} from 'react-redux';
+import moment from 'moment';
+import {actionStyle, fabStyle} from '../../Helper/CommonStyle';
 import {getScreenDimensions} from '../../Helper/ScreenDimension';
 import {Colors} from '../../Helper/Colors';
-import {actionStyle, fabStyle} from '../../Helper/CommonStyle';
-import {useTranslation} from 'react-i18next';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
+const importedData = {
+  status: 'success',
+  message: 'Invoice created successfully',
+  data: {
+    user: '64ae46fbc749a55e2fabe970',
+    invoice_number: 'INV0008',
+    invoice_date: '2023-07-23T18:30:00.000Z',
+    b_name: 'ppppppp',
+    b_email: 'ppppppp@gmail.com',
+    b_address1: 'test111',
+    b_address2: 'test11',
+    b_address3: 'VALSAD',
+    b_business_logo: 'xyz.png',
+    c_address1: '',
+    c_address2: '',
+    c_address3: '',
+    is_invoice_tax_inclusive: true,
+    paypal_email: 'testing1111@gmail.com',
+    make_checks_payable: 'testing1',
+    payment_instructions: 'testing111',
+    additional_payment_instructions: 'ppppppp',
+    notes: 'ppppppp',
+    is_paid: false,
+    _id: '64be3e282c8cafeac0e8b5f7',
+    items: [],
+    photos: [],
+    payments: [],
+    createdAt: '2023-07-24T09:02:32.954Z',
+    updatedAt: '2023-07-24T09:02:32.954Z',
+    __v: 0,
+  },
+};
 
 function InvoiceCreationScreen({navigation}: any): JSX.Element {
   const {t, i18n} = useTranslation();
+  const dispatch = useDispatch();
+  const selector = useSelector(state => state.user);
   const data = [
     {key: 'first', title: t('Edit')},
     {key: 'second', title: t('Preview')},
@@ -65,6 +101,7 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
   const [index, setIndex] = useState(0);
   const [searchStart, setSearchStart] = useState(false);
   const [routes] = useState(data);
+  const [globalData, setGlobalData] = useState(importedData.data);
   const [state, setState] = React.useState({open: false});
 
   const onStateChange = ({open}) => setState({open});
@@ -129,19 +166,23 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
         <TouchableOpacity
           onPress={navigateToInvoiceNumber}
           style={styles.invoiceTopView}>
-          <View style={{justifyContent: 'space-between',width:"50%"}}>
-            <Text style={styles.invoiceTitle}>INV0001</Text>
+          <View style={{justifyContent: 'space-between', width: '50%'}}>
+            <Text style={styles.invoiceTitle}>{globalData.invoice_number}</Text>
             <Text
               onPress={navigateToBusinessDetails}
               style={styles.businessInfo}>
               {t('Business Info')}
             </Text>
           </View>
-          <View style={{justifyContent: 'space-between',width:"50%"}}>
+          <View style={{justifyContent: 'space-between', width: '50%'}}>
             <View style={styles.dueBox}>
               <Text style={styles.dueTxt}>{t('Due on Receipt')}</Text>
             </View>
-            <Text style={styles.dueDate}>06/07/2023</Text>
+            <Text style={styles.dueDate}>
+              {moment(globalData.invoice_date).format(
+                selector.globalDateFormat,
+              )}
+            </Text>
           </View>
         </TouchableOpacity>
 
@@ -520,7 +561,7 @@ const styles = StyleSheet.create({
     padding: 4,
     borderColor: 'grey',
     marginBottom: 10,
-    alignSelf:'flex-end'
+    alignSelf: 'flex-end',
   },
   dueTxt: {fontSize: 14, fontWeight: '400', color: 'grey'},
   dueDate: {

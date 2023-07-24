@@ -5,6 +5,8 @@ const API_TYPE = {
   CLIENTS: 'clients',
   ITEMS: 'items',
   SETTINGS: 'settings',
+  INVOICES: 'invoices',
+  ESTIMATE: 'estimate',
 };
 
 export const endpoint = {
@@ -31,4 +33,32 @@ export const endpoint = {
   invoiceNumber: `${API_BASE_URL}/${API_TYPE.SETTINGS}/invoice-number`,
   addCustomize: `${API_BASE_URL}/${API_TYPE.SETTINGS}/customize-info`,
   getCustomize: `${API_BASE_URL}/${API_TYPE.SETTINGS}/customize-info`,
+  
+  createInvoice: `${API_BASE_URL}/${API_TYPE.INVOICES}/create`,
+  getInvoiceList: `${API_BASE_URL}/${API_TYPE.INVOICES}`,
+  getInvoiceDetail: (id: any) => `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}`,
+  updateIVBusiness: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/businessinfo-details`,
+  updateIVPayment: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/paymentinfo-details`,
+  updateIVNotes: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/notes-details`,
+  updateIVClient: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/client-details`,
+  updateIVItem: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/item-details`,
+
+  createEstimate: `${API_BASE_URL}/${API_TYPE.ESTIMATE}/create`,
+  getEstimateList: `${API_BASE_URL}/${API_TYPE.ESTIMATE}`,
+  getEstimateDetail: (id: any) => `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}`,
+  updateETBusiness: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/businessinfo-details`,
+  updateETPayment: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/paymentinfo-details`,
+  updateETNotes: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/notes-details`,
+  updateETClient: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/client-details`,
+  updateETItem: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/item-details`,
 };
