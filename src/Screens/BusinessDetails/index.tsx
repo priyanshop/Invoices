@@ -169,7 +169,7 @@ const BusinessDetails = () => {
             onBlur={checkUpdate}
           />
         </View>
-        <View style={styles.rowView}>
+        {/* <View style={styles.rowView}>
           <TextInput
             value={ownerName}
             onChangeText={setOwnerName}
@@ -178,8 +178,8 @@ const BusinessDetails = () => {
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
-        </View>
-        <View style={styles.rowView}>
+        </View> */}
+        {/* <View style={styles.rowView}>
           <TextInput
             value={businessNumber}
             onChangeText={setBusinessNumber}
@@ -188,7 +188,7 @@ const BusinessDetails = () => {
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
-        </View>
+        </View> */}
       </View>
       <View style={styles.mainContain}>
         <View style={styles.rowView}>
@@ -242,7 +242,7 @@ const BusinessDetails = () => {
             onBlur={checkUpdate}
           />
         </View>
-        <View style={styles.rowView}>
+        {/* <View style={styles.rowView}>
           <TextInput
             value={Mobile}
             onChangeText={setMobile}
@@ -251,8 +251,8 @@ const BusinessDetails = () => {
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
-        </View>
-        <View style={styles.rowView}>
+        </View> */}
+        {/* <View style={styles.rowView}>
           <TextInput
             value={Website}
             onChangeText={setWebsite}
@@ -261,7 +261,7 @@ const BusinessDetails = () => {
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
-        </View>
+        </View> */}
       </View>
       <ImagePickerComponent
         openModal={openModal}

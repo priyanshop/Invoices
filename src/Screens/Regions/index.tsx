@@ -8,7 +8,11 @@ import DateFormat from '../../CustomComponent/DateFormat';
 import MonthFormat from '../../CustomComponent/MonthFormat';
 import LangFormat from '../../CustomComponent/LangFormat';
 import {useTranslation} from 'react-i18next';
-import {changeLanguage} from '../../redux/reducers/user/UserReducer';
+import {
+  changeGlobalDateFormat,
+  changeLanguage,
+} from '../../redux/reducers/user/UserReducer';
+import moment from 'moment';
 
 const RegionScreen = () => {
   const {t, i18n} = useTranslation();
@@ -21,6 +25,7 @@ const RegionScreen = () => {
   const [langModal, setLangModal] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('');
   const [selectedPayment, setSelectedPayment] = useState('dd-MM-yyyy');
+  const [selectedDate, setSelectedDate] = useState('DD-MM-yyyy');
 
   useEffect(() => {
     if (selector.language === 'en') {
@@ -30,6 +35,12 @@ const RegionScreen = () => {
     }
   }, [selector.language]);
 
+  useEffect(() => {
+    if (selector.globalDateFormat) {
+      setSelectedDate(selector.globalDateFormat);
+    }
+  }, [selector.globalDateFormat]);
+
   const changeLang = (selectedLanguage: any) => {
     i18n.changeLanguage(selectedLanguage.common);
     dispatch(changeLanguage(selectedLanguage.common));
@@ -38,6 +49,11 @@ const RegionScreen = () => {
     } else {
       setSelectedLanguage('Portuguese');
     }
+  };
+
+  const changeGlobalDate = (date: any) => {
+    setSelectedDate(date);
+    dispatch(changeGlobalDateFormat(date));
   };
 
   return (
@@ -59,20 +75,20 @@ const RegionScreen = () => {
             January
           </Text>
         </View>
-        <View style={styles.rowView}>
+        {/* <View style={styles.rowView}>
           <Text style={styles.titleTxt}>{t('Currency')} : </Text>
           <Text
             onPress={() => setCurrenciesModal(!currenciesModal)}
             style={styles.titleTxt}>
             GBP
           </Text>
-        </View>
+        </View> */}
         <View style={styles.rowView}>
           <Text style={styles.titleTxt}>{t('Date Format')} : </Text>
           <Text
             onPress={() => setDateModal(!dateModal)}
             style={styles.titleTxt}>
-            {selectedPayment}
+            {selectedDate}
           </Text>
         </View>
       </View>
@@ -98,12 +114,12 @@ const RegionScreen = () => {
           </View>
           <View style={styles.rowView}>
             <Text style={styles.titleTxt}>{t('Date')} : </Text>
-            <Text style={styles.titleTxt}>13-07-2023</Text>
+            <Text style={styles.titleTxt}>{moment().format(selectedDate)}</Text>
           </View>
-          <View style={styles.rowView}>
+          {/* <View style={styles.rowView}>
             <Text style={styles.titleTxt}>{t('Currency')} : </Text>
             <Text style={styles.titleTxt}>$ 123.02</Text>
-          </View>
+          </View> */}
         </View>
       </View>
       <View>
@@ -120,9 +136,10 @@ const RegionScreen = () => {
         /> */}
       </View>
       <DateFormat
+        selectedItem={selectedDate}
         openModal={dateModal}
         closeBottomSheet={() => setDateModal(!dateModal)}
-        selectedOption={setSelectedPayment}
+        selectedOption={changeGlobalDate}
       />
       <CurrencyFormat
         openModal={currenciesModal}

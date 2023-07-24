@@ -41,6 +41,7 @@ const initialState: IUserState = {
     quantityAndUnitCost: true,
   },
   sendToEmail: false,
+  globalDateFormat:'yyyy-MM-DD'
   // localChats: [],
   // localChatsPub: [],
 };
@@ -95,6 +96,9 @@ const UserReducer = createSlice({
     changeSendToEmail: (state, action) => {
       state.sendToEmail = action.payload;
     },
+    changeGlobalDateFormat: (state, action) => {
+      state.globalDateFormat = action.payload;
+    },
     // setChat: (state, action) => {
     //   state.localChats = action.payload;
     // },
@@ -123,6 +127,7 @@ export const {
   changeDefaultEmailMsg,
   changeCustomize,
   changeSendToEmail,
+  changeGlobalDateFormat
   // setChat,
   // setPubChat,
   // removePubChat,
