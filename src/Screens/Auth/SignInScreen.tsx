@@ -52,7 +52,7 @@ function SignInScreen({navigation}: any): JSX.Element {
     try {
       const payload = {
         email: email,
-        password: Password,
+        password: 'nitish@123',
       };
       const data = await FetchAPI('post', endpoint.login, payload);
       if (data.status === 'success') {

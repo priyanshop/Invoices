@@ -32,29 +32,33 @@ function Customize({navigation}: any): JSX.Element {
     if (selector.token === 'Guest') {
       fetchData(selector.customizeLabels);
     } else {
-      //   getInfo();
+      getInfo();
     }
   }, [selector.token]);
 
   const fetchData = (data: any) => {
     const element = data;
-    setEstimate(element.invoices);
-    setInvoices(element.estimate);
-    setBusinessNumber(element.businessNumber);
-    setQuantityLabel(element.quantityLabel);
-    setUnitCostLabel(element.unitCostLabel);
+    setEstimate(element.invoice_title);
+    setInvoices(element.estimate_title);
+    setBusinessNumber(element.business_number);
+    setQuantityLabel(element.quantity_label);
+    setUnitCostLabel(element.rate_label);
     setQuantityAndUnitCost(element.quantityAndUnitCost);
   };
 
   const getInfo = async () => {
     try {
-      const data = await FetchAPI('get', endpoint.invoiceNumber, null, {
+      const data = await FetchAPI('get', endpoint.getCustomize, null, {
         Authorization: 'Bearer ' + selector.token,
       });
       if (data.status === 'success') {
-        // const element = data.data.invoice_numbering;
-        // setEstimate(element.estimate_number_prefix);
-        // setInvoices(element.invoice_number_prefix);
+        const element = data.data.customize;
+        setEstimate(element.invoice_title);
+        setInvoices(element.estimate_title);
+        setBusinessNumber(element.business_number);
+        setQuantityLabel(element.quantity_label);
+        setUnitCostLabel(element.rate_label);
+        setQuantityAndUnitCost(element.quantityAndUnitCost);
       }
     } catch (error) {}
   };
@@ -62,21 +66,20 @@ function Customize({navigation}: any): JSX.Element {
   const addInfo = async () => {
     try {
       const payload = {
-        invoices: invoices,
-        estimate: estimate,
-        businessNumber: businessNumber,
-        quantityLabel: quantityLabel,
-        unitCostLabel: unitCostLabel,
-        quantityAndUnitCost: quantityAndUnitCost,
+        invoice_title: invoices,
+        estimate_title: estimate,
+        business_number: businessNumber,
+        quantity_label: quantityLabel,
+        rate_label: unitCostLabel,
       };
       if (selector.token === 'Guest') {
         dispatch(changeCustomize(payload));
       } else {
-        // const data = await FetchAPI('post', endpoint.invoiceNumber, payload, {
-        //   Authorization: 'Bearer ' + selector.token,
-        // });
-        // if (data.status === 'success') {
-        // }
+        const data = await FetchAPI('post', endpoint.addCustomize, payload, {
+          Authorization: 'Bearer ' + selector.token,
+        });
+        if (data.status === 'success') {
+        }
       }
     } catch (error) {}
   };

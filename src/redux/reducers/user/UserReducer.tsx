@@ -33,15 +33,15 @@ const initialState: IUserState = {
   language: 'en',
   defaultEmailMessage: '',
   customizeLabels: {
-    invoices: '',
-    estimate: '',
-    businessNumber: '',
-    quantityLabel: '',
-    unitCostLabel: '',
+    invoice_title: '',
+    estimate_title: '',
+    business_number: '',
+    quantity_label: '',
+    rate_label: '',
     quantityAndUnitCost: true,
   },
   sendToEmail: false,
-  globalDateFormat:'yyyy-MM-DD'
+  globalDateFormat: 'yyyy-MM-DD',
   // localChats: [],
   // localChatsPub: [],
 };
@@ -127,7 +127,7 @@ export const {
   changeDefaultEmailMsg,
   changeCustomize,
   changeSendToEmail,
-  changeGlobalDateFormat
+  changeGlobalDateFormat,
   // setChat,
   // setPubChat,
   // removePubChat,

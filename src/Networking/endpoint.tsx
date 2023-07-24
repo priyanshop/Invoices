@@ -1,21 +1,34 @@
+const API_BASE_URL = '/api';
+
+const API_TYPE = {
+  USERS: 'users',
+  CLIENTS: 'clients',
+  ITEMS: 'items',
+  SETTINGS: 'settings',
+};
+
 export const endpoint = {
-  login: '/api/users/login',
-  register: '/api/users/register',
-  deleteUser: '/api/users/delete-user',
-  addClient: '/api/clients',
-  updateClient: (id: any) => '/api/clients/' + id,
-  getClient: (id: any) => '/api/clients/' + id,
-  getAllClient: (id: any) => '/api/clients/' + id + '/clientlist',
-  deleteClient: (id: any) => '/api/clients/' + id,
-  addItems: '/api/items',
-  updateItems: (id: any) => '/api/items/' + id,
-  getItems: (id: any) => '/api/items/' + id,
-  deleteItems: (id: any) => '/api/items/' + id,
-  getAllItems: (id: any) => '/api/items/' + id + '/itemlist',
-  addPaymentInfo: '/api/settings/payment-info',
-  getPaymentInfo: '/api/settings/payment-info',
-  defaultNotes: '/api/settings/default-note',
-  businessInfo :'/api/settings/business-info',
-  updateBusinessInfo: (id: any) => '/api/settings/business-info/' + id,
-  invoiceNumber:'/api/settings/invoice-number'
+  login: `${API_BASE_URL}/${API_TYPE.USERS}/login`,
+  register: `${API_BASE_URL}/${API_TYPE.USERS}/register`,
+  deleteUser: `${API_BASE_URL}/${API_TYPE.USERS}/delete-user`,
+  addClient: `${API_BASE_URL}/${API_TYPE.CLIENTS}`,
+  updateClient: (id: any) => `${API_BASE_URL}/${API_TYPE.CLIENTS}/${id}`,
+  getClient: (id: any) => `${API_BASE_URL}/${API_TYPE.CLIENTS}/${id}`,
+  getAllClient: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.CLIENTS}/${id}/clientlist`,
+  deleteClient: (id: any) => `${API_BASE_URL}/${API_TYPE.CLIENTS}/${id}`,
+  addItems: `${API_BASE_URL}/${API_TYPE.ITEMS}`,
+  updateItems: (id: any) => `${API_BASE_URL}/${API_TYPE.ITEMS}/${id}`,
+  getItems: (id: any) => `${API_BASE_URL}/${API_TYPE.ITEMS}/${id}`,
+  deleteItems: (id: any) => `${API_BASE_URL}/${API_TYPE.ITEMS}/${id}`,
+  getAllItems: (id: any) => `${API_BASE_URL}/${API_TYPE.ITEMS}/${id}/itemlist`,
+  addPaymentInfo: `${API_BASE_URL}/${API_TYPE.SETTINGS}/payment-info`,
+  getPaymentInfo: `${API_BASE_URL}/${API_TYPE.SETTINGS}/payment-info`,
+  defaultNotes: `${API_BASE_URL}/${API_TYPE.SETTINGS}/default-note`,
+  businessInfo: `${API_BASE_URL}/${API_TYPE.SETTINGS}/business-info`,
+  updateBusinessInfo: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.SETTINGS}/business-info/${id}`,
+  invoiceNumber: `${API_BASE_URL}/${API_TYPE.SETTINGS}/invoice-number`,
+  addCustomize: `${API_BASE_URL}/${API_TYPE.SETTINGS}/customize-info`,
+  getCustomize: `${API_BASE_URL}/${API_TYPE.SETTINGS}/customize-info`,
 };
