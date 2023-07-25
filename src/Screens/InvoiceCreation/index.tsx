@@ -16,6 +16,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {Switch, FAB, Portal, Provider, Menu} from 'react-native-paper';
 import {useTranslation} from 'react-i18next';
 import {useSelector, useDispatch} from 'react-redux';
+import {useIsFocused} from '@react-navigation/native';
 import moment from 'moment';
 import {actionStyle, fabStyle} from '../../Helper/CommonStyle';
 import {getScreenDimensions} from '../../Helper/ScreenDimension';
@@ -61,7 +62,8 @@ const importedData = {
 function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
   const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
-  const selector = useSelector((state:any) => state.user);
+  const isFocused = useIsFocused();
+  const selector = useSelector((state: any) => state.user);
   const data = [
     {key: 'first', title: t('Edit')},
     {key: 'second', title: t('Preview')},
@@ -122,17 +124,38 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
 
   useEffect(() => {
     if (route.params.status === 'create') {
-      // createInvoiceCall();
+      createInvoiceCall();
     }
-  }, [route.params]);
+    if (route.params.status === 'update') {
+      getInvoiceCall(route?.params?.data);
+    }
+  }, [route.params, isFocused]);
+
+  const getInvoiceCall = async (invoiceDetail: any) => {
+    try {
+      const data = await FetchAPI(
+        'get',
+        endpoint.getInvoiceDetail(invoiceDetail._id),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+        setGlobalData(element);
+      }
+    } catch (error) {}
+  };
 
   const createInvoiceCall = async () => {
     try {
-      const data = await FetchAPI('get', endpoint.createInvoice, null, {
+      const data = await FetchAPI('post', endpoint.createInvoice, null, {
         Authorization: 'Bearer ' + selector.token,
       });
       if (data.status === 'success') {
-        const element = data.data.default_notes;
+        const element = data.data;
+        setGlobalData(element);
       }
     } catch (error) {}
   };
@@ -145,21 +168,33 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
   }
 
   function navigateToBusinessDetails() {
-    navigation.navigate('BusinessDetails', {
-      invoiceUpdate: true,
-      invoiceID: globalData._id,
-    });
+    if (route.params.status === 'update') {
+      navigation.navigate('BusinessDetails', {
+        invoiceUpdate: true,
+        invoiceID: globalData._id,
+        data: globalData,
+      });
+    } else {
+      navigation.navigate('BusinessDetails', {
+        invoiceUpdate: true,
+        invoiceID: globalData._id,
+      });
+    }
   }
 
   function navigateToAddClientScreen() {
-    navigation.navigate('ClientScreen', {
-      invoiceUpdate: true,
-      invoiceID: globalData._id,
-    });
-    // navigation.navigate('AddClientScreen', {
-    //   invoiceUpdate: true,
-    //   invoiceID: globalData._id,
-    // });
+    if (globalData.c_name) {
+      navigation.navigate('AddClientScreen', {
+        invoiceUpdate: true,
+        invoiceID: globalData._id,
+        invoiceData: globalData,
+      });
+    } else {
+      navigation.navigate('ClientScreen', {
+        invoiceUpdate: true,
+        invoiceID: globalData._id,
+      });
+    }
   }
 
   function navigateToAddItemScreen() {
@@ -231,9 +266,15 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
 
         <View style={styles.clientView}>
           <Text style={styles.toTxt}>To : </Text>
-          <Text onPress={navigateToAddClientScreen} style={styles.clientTxt}>
-            {t('Client')}
-          </Text>
+          {globalData.c_name ? (
+            <Text onPress={navigateToAddClientScreen} style={styles.toTxt}>
+              {globalData.c_name}{' '}
+            </Text>
+          ) : (
+            <Text onPress={navigateToAddClientScreen} style={styles.clientTxt}>
+              {t('Client')}
+            </Text>
+          )}
         </View>
 
         <View style={styles.ItemView}>

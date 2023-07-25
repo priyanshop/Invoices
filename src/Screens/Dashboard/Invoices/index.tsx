@@ -95,16 +95,18 @@ function InvoicesScreen({navigation}: any): JSX.Element {
   };
 
   const convertData = (inputData: any) => {
-    const transformedData :any = [];
-    inputData.forEach((item:any) => {
+    const transformedData: any = [];
+    inputData.forEach((item: any) => {
       const invoiceDate = new Date(item.invoice_date);
       const year = invoiceDate.getFullYear();
-      const client = item.b_name;
+      const client = item.c_name || 'No Client';
       const invoiceNumber = item.invoice_number;
-      const price = 0.0; 
+      const price = 0.0;
       const date = invoiceDate.toISOString().split('T')[0];
 
-      const existingYearData = transformedData.find((data:any) => data.year === year);
+      const existingYearData = transformedData.find(
+        (data: any) => data.year === year,
+      );
 
       if (existingYearData) {
         existingYearData.data.push({
@@ -140,9 +142,15 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     navigation.navigate('InvoiceCreation', {status: 'create'});
   }
 
+  function navigateToInvoice(item: any) {
+    navigation.navigate('InvoiceCreation', {status: 'update', data: item});
+  }
+
   const AllRoute = () => {
     const renderInvoiceItem = ({item}: any) => (
-      <View style={styles.invoiceItem}>
+      <TouchableOpacity
+        onPress={() => navigateToInvoice(item)}
+        style={styles.invoiceItem}>
         <View>
           <Text style={styles.clientText}>{`${item.client}`}</Text>
           <Text
@@ -152,7 +160,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
           <Text style={styles.priceText}>{`$${item.price}`}</Text>
           <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
 
     const renderSectionHeader = ({section: {year}}) => (

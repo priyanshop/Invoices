@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -10,17 +10,17 @@ import {
   ScrollView,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import {useSelector, useDispatch} from 'react-redux';
-import {useIsFocused} from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux';
+import { useIsFocused } from '@react-navigation/native';
 import ImagePickerComponent from '../../CustomComponent/ImagePickerComponent';
-import {Colors} from '../../Helper/Colors';
+import { Colors } from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
-import {endpoint} from '../../Networking/endpoint';
-import {setBusinessDetail} from '../../redux/reducers/user/UserReducer';
-import {useTranslation} from 'react-i18next';
+import { endpoint } from '../../Networking/endpoint';
+import { setBusinessDetail } from '../../redux/reducers/user/UserReducer';
+import { useTranslation } from 'react-i18next';
 
-const BusinessDetails = ({navigation, route}: any) => {
-  const {t, i18n} = useTranslation();
+const BusinessDetails = ({ navigation, route }: any) => {
+  const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const selector = useSelector((state: any) => state.user);
   const isFocused = useIsFocused();
@@ -41,7 +41,23 @@ const BusinessDetails = ({navigation, route}: any) => {
 
   useEffect(() => {
     if (route?.params?.invoiceUpdate) {
-      getData();
+      if (route.params.data) {
+        const businessDetails = route.params.data;
+        setAlreadyExist(true);        
+        setPhone(businessDetails.b_phone_number);
+        setAddress1(businessDetails.b_address1);
+        setAddress2(businessDetails.b_address2);
+        setAddress3(businessDetails.b_address3);
+        setBusinessName(businessDetails.b_name);
+        setEmail(businessDetails.b_email);
+        setBusinessNumber(businessDetails.b_business_number.toString());
+        setMobile(businessDetails.b_mobile_number);
+        setWebsite(businessDetails.b_website);
+        setOwnerName(businessDetails.b_owner_name);
+        // b_business_logo
+      } else {
+        getData();
+      }
     } else {
       getData();
     }
@@ -85,7 +101,7 @@ const BusinessDetails = ({navigation, route}: any) => {
         setBusinessName(element.name);
         setEmail(element.email);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const checkUpdate = () => {
@@ -120,7 +136,7 @@ const BusinessDetails = ({navigation, route}: any) => {
         if (data.status === 'success') {
         }
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const updateInfo = async () => {
@@ -148,7 +164,7 @@ const BusinessDetails = ({navigation, route}: any) => {
         if (data.status === 'success') {
         }
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const closeBottomSheet = () => {
@@ -159,12 +175,12 @@ const BusinessDetails = ({navigation, route}: any) => {
     try {
       const payload: any = {
         b_name: businessName,
-        b_owner_name: ' ',
-        b_business_number: '1111 ',
+        b_owner_name: ownerName,
+        b_business_number: businessNumber,
         b_email: email,
         b_phone_number: Phone,
-        b_mobile_number: '',
-        b_website: '',
+        b_mobile_number: Mobile,
+        b_website: Website,
         b_address1: address1,
         b_address2: address2,
         b_address3: address3,
@@ -184,7 +200,7 @@ const BusinessDetails = ({navigation, route}: any) => {
         if (data.status === 'success') {
         }
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   return (
@@ -197,7 +213,7 @@ const BusinessDetails = ({navigation, route}: any) => {
           <TouchableOpacity onPress={closeBottomSheet}>
             {BusinessImage ? (
               <Image
-                source={{uri: BusinessImage}}
+                source={{ uri: BusinessImage }}
                 resizeMode="contain"
                 style={styles.businessImage}
               />
@@ -212,13 +228,13 @@ const BusinessDetails = ({navigation, route}: any) => {
           <TextInput
             value={businessName}
             onChangeText={setBusinessName}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+            style={{ ...styles.titleTxt, flex: 1, textAlign: 'left' }}
             placeholder={t('Business Name')}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
         </View>
-        {/* <View style={styles.rowView}>
+        <View style={styles.rowView}>
           <TextInput
             value={ownerName}
             onChangeText={setOwnerName}
@@ -227,8 +243,8 @@ const BusinessDetails = ({navigation, route}: any) => {
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
-        </View> */}
-        {/* <View style={styles.rowView}>
+        </View>
+        <View style={styles.rowView}>
           <TextInput
             value={businessNumber}
             onChangeText={setBusinessNumber}
@@ -237,14 +253,14 @@ const BusinessDetails = ({navigation, route}: any) => {
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
-        </View> */}
+        </View>
       </View>
       <View style={styles.mainContain}>
         <View style={styles.rowView}>
           <TextInput
             value={address1}
             onChangeText={setAddress1}
-            style={{...styles.titleTxt, textAlign: 'left'}}
+            style={{ ...styles.titleTxt, textAlign: 'left' }}
             placeholder={t('Address Line 1')}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
@@ -254,7 +270,7 @@ const BusinessDetails = ({navigation, route}: any) => {
           <TextInput
             value={address2}
             onChangeText={setAddress2}
-            style={{...styles.titleTxt, textAlign: 'left'}}
+            style={{ ...styles.titleTxt, textAlign: 'left' }}
             placeholder={t('Address Line 2')}
             placeholderTextColor={'grey'}
           />
@@ -263,7 +279,7 @@ const BusinessDetails = ({navigation, route}: any) => {
           <TextInput
             value={address3}
             onChangeText={setAddress3}
-            style={{...styles.titleTxt, textAlign: 'left'}}
+            style={{ ...styles.titleTxt, textAlign: 'left' }}
             placeholder={t('Address Line 3')}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
@@ -275,7 +291,7 @@ const BusinessDetails = ({navigation, route}: any) => {
           <TextInput
             value={email}
             onChangeText={setEmail}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+            style={{ ...styles.titleTxt, flex: 1, textAlign: 'left' }}
             placeholder={t('Email')}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
@@ -285,13 +301,13 @@ const BusinessDetails = ({navigation, route}: any) => {
           <TextInput
             value={Phone}
             onChangeText={setPhone}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+            style={{ ...styles.titleTxt, flex: 1, textAlign: 'left' }}
             placeholder={t('Phone')}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
         </View>
-        {/* <View style={styles.rowView}>
+        <View style={styles.rowView}>
           <TextInput
             value={Mobile}
             onChangeText={setMobile}
@@ -300,8 +316,8 @@ const BusinessDetails = ({navigation, route}: any) => {
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
-        </View> */}
-        {/* <View style={styles.rowView}>
+        </View>
+        <View style={styles.rowView}>
           <TextInput
             value={Website}
             onChangeText={setWebsite}
@@ -310,7 +326,7 @@ const BusinessDetails = ({navigation, route}: any) => {
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
-        </View> */}
+        </View>
       </View>
       <ImagePickerComponent
         openModal={openModal}
@@ -337,7 +353,7 @@ const styles = StyleSheet.create({
     // marginVertical: Platform.OS === 'ios' ? 8 : 0,
     alignItems: 'center',
   },
-  titleTxt: {fontSize: 17, color: '#000', fontWeight: '400', height: 40},
+  titleTxt: { fontSize: 17, color: '#000', fontWeight: '400', height: 40 },
   mainContain: {
     borderRadius: 8,
     backgroundColor: '#fff',
@@ -355,7 +371,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     paddingHorizontal: 0,
   },
-  innerView: {flex: 1, paddingHorizontal: 8},
+  innerView: { flex: 1, paddingHorizontal: 8 },
   businessContainer: {
     borderRadius: 8,
     backgroundColor: '#fff',

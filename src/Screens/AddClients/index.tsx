@@ -13,6 +13,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {selectContactPhone} from 'react-native-select-contact';
 import {Menu} from 'react-native-paper';
 import Entypo from 'react-native-vector-icons/Entypo';
+import {useTranslation} from 'react-i18next';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {Colors} from '../../Helper/Colors';
@@ -22,7 +23,6 @@ import {
   setClientList,
 } from '../../redux/reducers/user/UserReducer';
 import {removeObjectByIndex} from '../../Helper/CommonFunctions';
-import {useTranslation} from 'react-i18next';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -56,6 +56,7 @@ const AddClientScreen = ({navigation, route}: any) => {
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
+
   useEffect(() => {
     if (Platform.OS === 'android') {
       checkContactPermission();
@@ -64,14 +65,32 @@ const AddClientScreen = ({navigation, route}: any) => {
 
   useEffect(() => {
     console.log('route.params', JSON.stringify(route.params));
-    if (route?.params?.clientId && selector.token !== 'Guest') {
-      getClient(route.params.clientId);
+    if (route.params.invoiceUpdate) {
+      fetchClient2(route.params.invoiceData);
     } else {
-      if (route.params?.selectedItem) {
-        fetchClient(route.params?.selectedItem);
+      if (route?.params?.clientId && selector.token !== 'Guest') {
+        getClient(route.params.clientId);
+      } else {
+        if (route.params?.selectedItem) {
+          fetchClient(route.params?.selectedItem);
+        }
       }
     }
   }, [route.params]);
+
+  const fetchClient2 = (data: any) => {
+    const element = data;
+    setClientName(element.c_name);
+    setEmail(element.c_email);
+    setContact(element.c_contact);
+    setAddress1(element.c_address1);
+    setAddress2(element.c_address2);
+    setAddress3(element.c_address3);
+    setPhone(element.c_phone_number);
+    setMobile(element.c_mobile_number);
+    setFax(element.c_fax);
+    setAlreadyExist(true);
+  };
 
   const fetchClient = (data: any) => {
     const element = data;
@@ -85,6 +104,74 @@ const AddClientScreen = ({navigation, route}: any) => {
     setMobile(element.mobile_number);
     setFax(element.fax);
     setAlreadyExist(true);
+  };
+
+  const checkCondition = () => {
+    if (route.params.invoiceUpdate) {
+      updateInvoice();
+    } else {
+      alreadyExist ? update : create;
+    }
+  };
+  const deleteInInvoice = async () => {
+    try {
+      const payload: any = {
+        c_name: null,
+        c_email: null,
+        c_mobile_number: null,
+        c_phone_number: null,
+        c_fax: null,
+        c_contact: null,
+        c_address1: null,
+        c_address2: null,
+        c_address3: null,
+      };
+      if (selector.token === 'Guest') {
+        // dispatch(setBusinessDetail(payload));
+      } else {
+        const data = await FetchAPI(
+          'patch',
+          endpoint.updateIVClient(route?.params?.invoiceID),
+          payload,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+          navigation.goBack();
+        }
+      }
+    } catch (error) {}
+  };
+  const updateInvoice = async () => {
+    try {
+      const payload: any = {
+        c_name: clientName,
+        c_email: email,
+        c_mobile_number: Mobile,
+        c_phone_number: Phone,
+        c_fax: fax,
+        c_contact: contact,
+        c_address1: address1,
+        c_address2: address2,
+        c_address3: address3,
+      };
+      if (selector.token === 'Guest') {
+        // dispatch(setBusinessDetail(payload));
+      } else {
+        const data = await FetchAPI(
+          'patch',
+          endpoint.updateIVClient(route?.params?.invoiceID),
+          payload,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+          navigation.goBack();
+        }
+      }
+    } catch (error) {}
   };
 
   const checkContactPermission = async () => {
@@ -252,6 +339,14 @@ const AddClientScreen = ({navigation, route}: any) => {
     } catch (error) {}
   };
 
+  const checkDeleteCondition = () => {
+    if (route.params.invoiceUpdate) {
+      deleteInInvoice();
+    } else {
+      deleteClient();
+    }
+  };
+  
   return (
     <>
       <Menu
@@ -260,7 +355,7 @@ const AddClientScreen = ({navigation, route}: any) => {
         anchor={{x: screenWidth, y: 50}}>
         <Menu.Item
           disabled={!alreadyExist}
-          onPress={deleteClient}
+          onPress={checkDeleteCondition}
           title={t('Delete')}
         />
       </Menu>
@@ -360,9 +455,7 @@ const AddClientScreen = ({navigation, route}: any) => {
         <TouchableOpacity onPress={selectContact} style={styles.contactBtn}>
           <Text style={styles.titleTxt2}>{t('Import from contacts')}</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={alreadyExist ? update : create}
-          style={styles.statementBtn}>
+        <TouchableOpacity onPress={checkCondition} style={styles.statementBtn}>
           <Text style={[styles.titleTxt2, {color: '#fff', fontWeight: '600'}]}>
             {alreadyExist ? t('Update') : t('Create')}
           </Text>
