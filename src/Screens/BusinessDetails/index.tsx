@@ -17,12 +17,12 @@ import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {setBusinessDetail} from '../../redux/reducers/user/UserReducer';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
-const BusinessDetails = () => {
+const BusinessDetails = ({navigation, route}: any) => {
   const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
-  const selector = useSelector(state => state.user);
+  const selector = useSelector((state: any) => state.user);
   const isFocused = useIsFocused();
   const [openModal, setOpenModal] = useState(false);
   const [BusinessImage, setBusinessImage] = useState(null);
@@ -40,6 +40,14 @@ const BusinessDetails = () => {
   const [businessId, setBusinessId] = useState('');
 
   useEffect(() => {
+    if (route?.params?.invoiceUpdate) {
+      getData();
+    } else {
+      getData();
+    }
+  }, [route.params]);
+
+  const getData = () => {
     if (selector.token === 'Guest') {
       const businessDetails = selector.businessDetails;
       setAlreadyExist(true);
@@ -52,7 +60,12 @@ const BusinessDetails = () => {
     } else {
       getInfo();
     }
-  }, [selector.token]);
+  };
+
+  // useEffect(() => {
+  //   if (selector.token === 'Guest') {
+  //     getData();
+  // }}, []);
 
   const getInfo = async () => {
     try {
@@ -76,16 +89,20 @@ const BusinessDetails = () => {
   };
 
   const checkUpdate = () => {
-    if (alreadyExist) {
-      updateInfo();
+    if (route?.params?.invoiceUpdate) {
+      updateInvoice();
     } else {
-      addInfo();
+      if (alreadyExist) {
+        updateInfo();
+      } else {
+        addInfo();
+      }
     }
   };
 
   const addInfo = async () => {
     try {
-      const payload = {
+      const payload: any = {
         name: businessName,
         email: email,
         phone_number: Phone,
@@ -108,7 +125,7 @@ const BusinessDetails = () => {
 
   const updateInfo = async () => {
     try {
-      const payload = {
+      const payload: any = {
         name: businessName,
         email: email,
         phone_number: Phone,
@@ -138,6 +155,38 @@ const BusinessDetails = () => {
     setOpenModal(!openModal);
   };
 
+  const updateInvoice = async () => {
+    try {
+      const payload: any = {
+        b_name: businessName,
+        b_owner_name: ' ',
+        b_business_number: '1111 ',
+        b_email: email,
+        b_phone_number: Phone,
+        b_mobile_number: '',
+        b_website: '',
+        b_address1: address1,
+        b_address2: address2,
+        b_address3: address3,
+        b_business_logo: 'logo.png ',
+      };
+      if (selector.token === 'Guest') {
+        // dispatch(setBusinessDetail(payload));
+      } else {
+        const data = await FetchAPI(
+          'patch',
+          endpoint.updateIVBusiness(route?.params?.invoiceID),
+          payload,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+        }
+      }
+    } catch (error) {}
+  };
+
   return (
     <ScrollView style={styles.mainContainer}>
       <View style={styles.businessContainer}>
@@ -164,7 +213,7 @@ const BusinessDetails = () => {
             value={businessName}
             onChangeText={setBusinessName}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder={t("Business Name")}
+            placeholder={t('Business Name')}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -196,7 +245,7 @@ const BusinessDetails = () => {
             value={address1}
             onChangeText={setAddress1}
             style={{...styles.titleTxt, textAlign: 'left'}}
-            placeholder={t("Address Line 1")}
+            placeholder={t('Address Line 1')}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -206,7 +255,7 @@ const BusinessDetails = () => {
             value={address2}
             onChangeText={setAddress2}
             style={{...styles.titleTxt, textAlign: 'left'}}
-            placeholder={t("Address Line 2")}
+            placeholder={t('Address Line 2')}
             placeholderTextColor={'grey'}
           />
         </View>
@@ -215,7 +264,7 @@ const BusinessDetails = () => {
             value={address3}
             onChangeText={setAddress3}
             style={{...styles.titleTxt, textAlign: 'left'}}
-            placeholder={t("Address Line 3")}
+            placeholder={t('Address Line 3')}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -227,7 +276,7 @@ const BusinessDetails = () => {
             value={email}
             onChangeText={setEmail}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder={t("Email")}
+            placeholder={t('Email')}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -237,7 +286,7 @@ const BusinessDetails = () => {
             value={Phone}
             onChangeText={setPhone}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder={t("Phone")}
+            placeholder={t('Phone')}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />

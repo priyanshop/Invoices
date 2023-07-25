@@ -5,13 +5,12 @@ import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {setPaymentInfo} from '../../redux/reducers/user/UserReducer';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
-const PaymentInfo = ({navigation}: any) => {
+const PaymentInfo = ({navigation, route}: any) => {
   const dispatch = useDispatch();
   const {t, i18n} = useTranslation();
-
-  const selector = useSelector(state => state.user);
+  const selector = useSelector((state: any) => state.user);
   const [payable, setPayable] = useState('');
   const [email, setEmail] = useState('');
   const [paymentInstructions, setPaymentInstructions] = useState('');
@@ -25,6 +24,11 @@ const PaymentInfo = ({navigation}: any) => {
     }
   }, [selector.token]);
 
+  useEffect(() => {
+    if (route?.params?.invoiceUpdate) {
+    }
+  }, [route?.params]);
+
   const fetchData = (data: any) => {
     const element = data;
     setPayable(element.make_checks_payable);
@@ -32,7 +36,7 @@ const PaymentInfo = ({navigation}: any) => {
     setEmail(element.paypal_email);
     setPaymentInstructions(element.payment_instructions);
   };
-  
+
   const getInfo = async () => {
     try {
       const data = await FetchAPI('get', endpoint.getPaymentInfo, null, {
@@ -50,7 +54,7 @@ const PaymentInfo = ({navigation}: any) => {
 
   const addInfo = async () => {
     try {
-      const payload = {
+      const payload: any = {
         paypal_email: email,
         make_checks_payable: payable,
         payment_instructions: paymentInstructions,
@@ -72,10 +76,44 @@ const PaymentInfo = ({navigation}: any) => {
     setter(value);
   };
 
+  const checkCondition = () => {
+    if (route?.params?.invoiceUpdate) {
+      updateIVinfo();
+    } else {
+      addInfo();
+    }
+  };
+  const updateIVinfo = async () => {
+    try {
+      const payload: any = {
+        paypal_email: email,
+        make_checks_payable: payable,
+        payment_instructions: paymentInstructions,
+        additional_payment_instructions: additionalDetails,
+      };
+      if (selector.token === 'Guest') {
+        dispatch(setPaymentInfo(payload));
+      } else {
+        const data = await FetchAPI(
+          'patch',
+          endpoint.updateIVPayment(route?.params?.invoiceID),
+          payload,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+        }
+      }
+    } catch (error) {}
+  };
+
   return (
     <View style={styles.mainContainer}>
       <View>
-        <Text style={styles.titleTxt}>{t('Settings.SensitiveInformation')}</Text>
+        <Text style={styles.titleTxt}>
+          {t('Settings.SensitiveInformation')}
+        </Text>
       </View>
       <View style={styles.businessContainer}>
         <View style={styles.header}>
@@ -85,9 +123,9 @@ const PaymentInfo = ({navigation}: any) => {
           <TextInput
             value={email}
             onChangeText={value => handleTextInputChange(value, setEmail)}
-            onBlur={addInfo}
+            onBlur={checkCondition}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder={t("Enter your paypal email address")}
+            placeholder={t('Enter your paypal email address')}
             placeholderTextColor={'grey'}
           />
         </View>
@@ -101,7 +139,7 @@ const PaymentInfo = ({navigation}: any) => {
           <TextInput
             value={payable}
             onChangeText={value => handleTextInputChange(value, setPayable)}
-            onBlur={addInfo}
+            onBlur={checkCondition}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
             placeholder={t("Your or your business's name")}
             placeholderTextColor={'grey'}
@@ -119,7 +157,7 @@ const PaymentInfo = ({navigation}: any) => {
             onChangeText={value =>
               handleTextInputChange(value, setPaymentInstructions)
             }
-            onBlur={addInfo}
+            onBlur={checkCondition}
             style={{
               ...styles.titleTxt,
               flex: 1,
@@ -127,7 +165,7 @@ const PaymentInfo = ({navigation}: any) => {
               height: 60,
               textAlignVertical: 'top',
             }}
-            placeholder={t("Specify instructions for the payments of deposits")}
+            placeholder={t('Specify instructions for the payments of deposits')}
             placeholderTextColor={'grey'}
             multiline
             numberOfLines={4}
@@ -145,7 +183,7 @@ const PaymentInfo = ({navigation}: any) => {
             onChangeText={value =>
               handleTextInputChange(value, setAdditionalDetails)
             }
-            onBlur={addInfo}
+            onBlur={checkCondition}
             style={{
               ...styles.titleTxt,
               flex: 1,
@@ -153,7 +191,7 @@ const PaymentInfo = ({navigation}: any) => {
               height: 60,
               textAlignVertical: 'top',
             }}
-            placeholder={t("Additional payment instructions")}
+            placeholder={t('Additional payment instructions')}
             placeholderTextColor={'grey'}
             multiline
             numberOfLines={4}

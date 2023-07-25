@@ -36,6 +36,7 @@ import EstimationNumber from '../Screens/InvoiceNumber/EstimateNumber';
 import DiscountScreen from '../Screens/Settings/DiscountScreen';
 import {useTranslation} from 'react-i18next';
 import ContactUs from '../Screens/ContactUS';
+import Clients from '../Screens/Dashboard/Clients/Clients';
 
 const headerStyle = {
   headerStyle: {
@@ -172,6 +173,11 @@ function MainNavigator() {
         headerTitle: t('navigationTitle.AddClientScreen'),
         ...headerStyle,
       },
+    },
+    {
+      name: 'ClientScreen',
+      component: Clients,
+      options: {headerShown: false},
     },
     {
       name: 'AddItemScreen',

@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
   ScrollView,
   StatusBar,
@@ -20,6 +20,8 @@ import moment from 'moment';
 import {actionStyle, fabStyle} from '../../Helper/CommonStyle';
 import {getScreenDimensions} from '../../Helper/ScreenDimension';
 import {Colors} from '../../Helper/Colors';
+import FetchAPI from '../../Networking';
+import {endpoint} from '../../Networking/endpoint';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -56,10 +58,10 @@ const importedData = {
   },
 };
 
-function InvoiceCreationScreen({navigation}: any): JSX.Element {
+function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
   const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
-  const selector = useSelector(state => state.user);
+  const selector = useSelector((state:any) => state.user);
   const data = [
     {key: 'first', title: t('Edit')},
     {key: 'second', title: t('Preview')},
@@ -103,6 +105,7 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
   const [routes] = useState(data);
   const [globalData, setGlobalData] = useState(importedData.data);
   const [state, setState] = React.useState({open: false});
+  const {open} = state;
 
   const onStateChange = ({open}) => setState({open});
   const [visible, setVisible] = React.useState(false);
@@ -117,41 +120,81 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
     });
   }, [navigation]);
 
+  useEffect(() => {
+    if (route.params.status === 'create') {
+      // createInvoiceCall();
+    }
+  }, [route.params]);
+
+  const createInvoiceCall = async () => {
+    try {
+      const data = await FetchAPI('get', endpoint.createInvoice, null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        const element = data.data.default_notes;
+      }
+    } catch (error) {}
+  };
+
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
-
-  const {open} = state;
 
   function navigateToSetting() {
     navigation.navigate('Settings');
   }
 
   function navigateToBusinessDetails() {
-    navigation.navigate('BusinessDetails');
+    navigation.navigate('BusinessDetails', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+    });
   }
 
   function navigateToAddClientScreen() {
-    navigation.navigate('AddClientScreen');
+    navigation.navigate('ClientScreen', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+    });
+    // navigation.navigate('AddClientScreen', {
+    //   invoiceUpdate: true,
+    //   invoiceID: globalData._id,
+    // });
   }
 
   function navigateToAddItemScreen() {
-    navigation.navigate('AddItemScreen');
+    navigation.navigate('AddItemScreen', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+    });
   }
 
   function navigateToAddPhotoScreen() {
-    navigation.navigate('AddPhotoScreen');
+    navigation.navigate('AddPhotoScreen', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+    });
   }
 
   function navigateToPaymentInfo() {
-    navigation.navigate('PaymentInfo');
+    navigation.navigate('PaymentInfo', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+    });
   }
 
   function navigateToAdditionalDetails() {
-    navigation.navigate('AdditionalDetails');
+    navigation.navigate('AdditionalDetails', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+    });
   }
 
   function navigateToInvoiceNumber() {
-    navigation.navigate('InvoiceNumber');
+    navigation.navigate('InvoiceNumber', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+    });
   }
 
   function navigateToSignaturePad() {

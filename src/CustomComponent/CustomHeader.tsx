@@ -9,7 +9,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {Colors} from '../Helper/Colors';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 const CustomHeader = ({
   searchStart = false,
@@ -18,6 +18,7 @@ const CustomHeader = ({
   title = '',
   searchText = '',
   handleSearch,
+  backIcon = false,
 }: any) => {
   const {t, i18n} = useTranslation();
   const renderHeader = () => {
@@ -25,7 +26,11 @@ const CustomHeader = ({
       return (
         <View style={styles.headerContainer}>
           <TouchableOpacity onPress={navigateToSetting}>
-            <Icon name="menu" size={25} color="#fff" />
+            <Icon
+              name={backIcon ? 'chevron-back' : 'menu'}
+              size={25}
+              color="#fff"
+            />
           </TouchableOpacity>
           <View>
             <Text style={styles.headerText}>{title}</Text>
@@ -41,13 +46,17 @@ const CustomHeader = ({
       return (
         <View style={styles.headerContainer}>
           <TouchableOpacity onPress={navigateToSetting}>
-            <Icon name="menu" size={25} color="#fff" />
+            <Icon
+              name={backIcon ? 'chevron-back' : 'menu'}
+              size={25}
+              color="#fff"
+            />
           </TouchableOpacity>
           <View style={styles.onSearch}>
             <Icon name="search" size={18} color="#d2d2d2" />
             <TextInput
               value={searchText}
-              placeholder={t("Search")}
+              placeholder={t('Search')}
               placeholderTextColor={'#d2d2d2'}
               style={{width: '80%'}}
               onChangeText={handleSearch}

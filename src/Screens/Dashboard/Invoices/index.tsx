@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   SectionList,
@@ -16,6 +16,10 @@ import {Colors} from '../../../Helper/Colors';
 import CustomHeader from '../../../CustomComponent/CustomHeader';
 import EmptyViewComponent from '../../../CustomComponent/EmptyViewComponent';
 import {useTranslation} from 'react-i18next';
+import FetchAPI from '../../../Networking';
+import {endpoint} from '../../../Networking/endpoint';
+import {useSelector, useDispatch} from 'react-redux';
+import {useIsFocused} from '@react-navigation/native';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -59,6 +63,9 @@ const invoices = [
 
 function InvoicesScreen({navigation}: any): JSX.Element {
   const {t, i18n} = useTranslation();
+  const dispatch = useDispatch();
+  const isFocused = useIsFocused();
+  const selector = useSelector(state => state.user);
   const data = [
     {key: 'first', title: t('All')},
     {key: 'second', title: t('OutStanding')},
@@ -66,14 +73,71 @@ function InvoicesScreen({navigation}: any): JSX.Element {
   ];
   const [index, setIndex] = useState(0);
   const [searchStart, setSearchStart] = useState(false);
+  const [allData, setAllData] = useState([]);
   const [routes] = useState(data);
+
+  useEffect(() => {
+    apiCall();
+  }, [isFocused]);
+
+  const apiCall = async () => {
+    try {
+      const data = await FetchAPI('get', endpoint.getInvoiceList, null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        if (data.data.length > 0) {
+          const savedData: any = convertData(data.data);
+          setAllData(savedData);
+        }
+      }
+    } catch (error) {}
+  };
+
+  const convertData = (inputData: any) => {
+    const transformedData :any = [];
+    inputData.forEach((item:any) => {
+      const invoiceDate = new Date(item.invoice_date);
+      const year = invoiceDate.getFullYear();
+      const client = item.b_name;
+      const invoiceNumber = item.invoice_number;
+      const price = 0.0; 
+      const date = invoiceDate.toISOString().split('T')[0];
+
+      const existingYearData = transformedData.find((data:any) => data.year === year);
+
+      if (existingYearData) {
+        existingYearData.data.push({
+          client,
+          invoiceNumber,
+          price,
+          date,
+          ...item,
+        });
+      } else {
+        transformedData.push({
+          year,
+          data: [
+            {
+              client,
+              invoiceNumber,
+              price,
+              date,
+              ...item,
+            },
+          ],
+        });
+      }
+    });
+    return transformedData;
+  };
 
   function navigateToSetting() {
     navigation.navigate('Settings');
   }
 
   function navigateToAddInvoice() {
-    navigation.navigate('InvoiceCreation');
+    navigation.navigate('InvoiceCreation', {status: 'create'});
   }
 
   const AllRoute = () => {
@@ -104,7 +168,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     return (
       <View style={[styles.scene]}>
         <SectionList
-          sections={invoices}
+          sections={allData}
           keyExtractor={(item: any, index: any) => item + index}
           renderItem={renderInvoiceItem}
           renderSectionHeader={renderSectionHeader}
