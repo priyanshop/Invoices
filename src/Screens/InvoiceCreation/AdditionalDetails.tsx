@@ -24,6 +24,7 @@ function AdditionalDetails({navigation, route}: any): JSX.Element {
 
   useEffect(() => {
     if (route?.params?.invoiceUpdate) {
+      setAdditionalDetails(route?.params?.invoiceData?.notes)
     }
   }, [route?.params]);
 
@@ -35,7 +36,7 @@ function AdditionalDetails({navigation, route}: any): JSX.Element {
       if (selector.token === 'Guest') {
       } else {
         const data = await FetchAPI(
-          'post',
+          'patch',
           endpoint.updateIVNotes(route?.params?.invoiceID),
           payload,
           {

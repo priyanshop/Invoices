@@ -15,12 +15,12 @@ import {Switch} from 'react-native-paper';
 import {useTranslation} from 'react-i18next';
 import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
-import { endpoint } from '../../Networking/endpoint';
+import {endpoint} from '../../Networking/endpoint';
 
-function AddItemScreen({navigation,route}: any): JSX.Element {
+function AddItemScreen({navigation, route}: any): JSX.Element {
   const dispatch = useDispatch();
   const {t, i18n} = useTranslation();
-  const selector = useSelector((state:any) => state.user);
+  const selector = useSelector((state: any) => state.user);
   const [Description, setDescription] = useState('');
   const [Taxable, setTaxable] = useState(false);
   const [Notes, setNotes] = useState('');
@@ -34,20 +34,25 @@ function AddItemScreen({navigation,route}: any): JSX.Element {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <TouchableOpacity style={{marginRight: 10}} onPress={() => {}}>
+        <TouchableOpacity
+          style={{marginRight: 10}}
+          onPress={navigateToAddPhotoScreen}>
           <Icon name="search" size={20} color="#fff" />
         </TouchableOpacity>
       ),
     });
   }, [navigation]);
 
+  function navigateToAddPhotoScreen() {
+    navigation.navigate('SelectItemScreen');
+  }
   const handleTextInputChange = (value: any, setter: any) => {
     setter(value);
   };
 
   const update = async () => {
     try {
-      const payload :any = {
+      const payload: any = {
         description: Description,
         rate: unitCost,
         unit: unit,
@@ -71,7 +76,7 @@ function AddItemScreen({navigation,route}: any): JSX.Element {
       }
     } catch (error) {}
   };
-  
+
   return (
     <>
       <StatusBar backgroundColor={Colors.appColor} />

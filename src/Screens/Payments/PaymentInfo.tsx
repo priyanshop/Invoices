@@ -17,15 +17,18 @@ const PaymentInfo = ({navigation, route}: any) => {
   const [additionalDetails, setAdditionalDetails] = useState('');
 
   useEffect(() => {
-    if (selector.token === 'Guest') {
-      fetchData(selector.paymentInfo);
-    } else {
-      getInfo();
-    }
+   
   }, [selector.token]);
 
   useEffect(() => {
     if (route?.params?.invoiceUpdate) {
+      fetchData(route?.params.invoiceData);
+    }else{
+      if (selector.token === 'Guest') {
+        fetchData(selector.paymentInfo);
+      } else {
+        getInfo();
+      }
     }
   }, [route?.params]);
 

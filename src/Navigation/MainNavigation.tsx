@@ -37,6 +37,7 @@ import DiscountScreen from '../Screens/Settings/DiscountScreen';
 import {useTranslation} from 'react-i18next';
 import ContactUs from '../Screens/ContactUS';
 import Clients from '../Screens/Dashboard/Clients/Clients';
+import SelectItemScreen from '../Screens/Dashboard/Items/SelectItem';
 
 const headerStyle = {
   headerStyle: {
@@ -177,6 +178,11 @@ function MainNavigator() {
     {
       name: 'ClientScreen',
       component: Clients,
+      options: {headerShown: false},
+    },
+    {
+      name: 'SelectItemScreen',
+      component: SelectItemScreen,
       options: {headerShown: false},
     },
     {

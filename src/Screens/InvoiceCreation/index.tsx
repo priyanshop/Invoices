@@ -215,6 +215,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     navigation.navigate('PaymentInfo', {
       invoiceUpdate: true,
       invoiceID: globalData._id,
+      invoiceData: globalData,
     });
   }
 
@@ -222,6 +223,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     navigation.navigate('AdditionalDetails', {
       invoiceUpdate: true,
       invoiceID: globalData._id,
+      invoiceData: globalData,
     });
   }
 
@@ -321,7 +323,20 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
           <TouchableOpacity
             onPress={navigateToPaymentInfo}
             style={styles.notesRow}>
-            <Text style={styles.notesText}>{t('Payment Info')}</Text>
+            {globalData.paypal_email ||
+            globalData.make_checks_payable ||
+            globalData.payment_instructions ||
+            globalData.additional_payment_instructions ? (
+              <Text numberOfLines={1} onPress={navigateToAdditionalDetails} style={styles.toTxt}>
+                {'Payment:  '}
+                {globalData.paypal_email && 'PayPal,'}{' '}
+                {globalData.make_checks_payable && 'Check,'}{' '}
+                {globalData.payment_instructions && 'Payment Instruction,'}{' '}
+                {globalData.additional_payment_instructions && 'Other'}
+              </Text>
+            ) : (
+              <Text style={styles.notesText}>{t('Payment Info')}</Text>
+            )}
           </TouchableOpacity>
           <View style={styles.notesRow}>
             <Text onPress={navigateToSignaturePad} style={styles.notesText}>
@@ -331,7 +346,13 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
           <TouchableOpacity
             onPress={navigateToAdditionalDetails}
             style={styles.notesLastRow}>
-            <Text style={styles.notesText}>{t('Notes')}</Text>
+            {globalData.notes ? (
+              <Text onPress={navigateToAdditionalDetails} style={styles.toTxt}>
+                {globalData.notes}{' '}
+              </Text>
+            ) : (
+              <Text style={styles.notesText}>{t('Notes')}</Text>
+            )}
           </TouchableOpacity>
         </View>
 
