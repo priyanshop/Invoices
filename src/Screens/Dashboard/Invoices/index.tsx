@@ -176,7 +176,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     return (
       <View style={[styles.scene]}>
         <SectionList
-          sections={allData}
+          sections={invoices}
           keyExtractor={(item: any, index: any) => item + index}
           renderItem={renderInvoiceItem}
           renderSectionHeader={renderSectionHeader}

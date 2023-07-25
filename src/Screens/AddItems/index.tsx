@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
   Platform,
   ScrollView,
@@ -16,6 +16,7 @@ import {useTranslation} from 'react-i18next';
 import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
+import DiscountOption from '../../CustomComponent/DiscountOption';
 
 function AddItemScreen({navigation, route}: any): JSX.Element {
   const dispatch = useDispatch();
@@ -26,10 +27,14 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
   const [Notes, setNotes] = useState('');
   const [unitCost, setUnitCost] = useState('');
   const [unit, setUnit] = useState('');
-  const [Quantity, setQuantity] = useState('');
-  const [Discount, setDiscount] = useState('');
+  const [Quantity, setQuantity] = useState('1');
+  const [Discount, setDiscount] = useState('No Discount');
   const [discountAmount, setDiscountAmount] = useState('');
+  const [openModal, setOpenModal] = useState(false);
 
+  const closeBottomSheet = () => {
+    setOpenModal(!openModal);
+  };
   const [saveToItem, setSaveToItem] = useState(false);
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -43,6 +48,20 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
     });
   }, [navigation]);
 
+  useEffect(() => {
+    if (route.params.invoiceUpdate) {
+      const temp = route.params.invoiceData.items[route.params.index];
+      setDescription(temp.description);
+      setDiscount(temp.discount_type);
+      setDiscountAmount(temp.discount_amount);
+      setNotes(temp.item_notes);
+      setQuantity(1);
+      setUnit(temp.unit);
+      setUnitCost(temp.rate);
+      setTaxable(temp.is_taxable)
+    }
+  }, [route.params])
+  
   function navigateToAddPhotoScreen() {
     navigation.navigate('SelectItemScreen');
   }
@@ -50,14 +69,87 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
     setter(value);
   };
 
+  const calculateTotalPrice = (
+    itemPrice: any,
+    quantity: any,
+    discountType: any,
+    flatDiscount: any,
+    percentageDiscount: any,
+  ) => {
+    let totalPrice = itemPrice * (quantity || 1);
+    if (discountType !== 'No Discount') {
+      if (discountType === 'Flat Amount' && flatDiscount && flatDiscount > 0) {
+        totalPrice -= flatDiscount;
+      }
+      if (
+        discountType === 'Percentage' &&
+        percentageDiscount &&
+        percentageDiscount > 0
+      ) {
+        const percentageAmount = (totalPrice * percentageDiscount) / 100;
+        totalPrice -= percentageAmount;
+      }
+    }
+    return totalPrice;
+  };
+
+  const getTotal = items => {
+    let total = 0;
+    items.forEach(item => {
+      total += parseFloat(item.total);
+    });
+    return total.toFixed(2);
+  };
+
+  const getTotalDiscountAmount = items => {
+    let totalDiscountAmount = 0;
+    items.forEach(item => {
+      totalDiscountAmount += parseFloat(item.discount_amount);
+    });
+    return totalDiscountAmount.toFixed(2);
+  };
+
   const update = async () => {
     try {
+      const data: any = {};
+
       const payload: any = {
         description: Description,
-        rate: unitCost,
         unit: unit,
+        rate: unitCost,
+        discount_rate: discountAmount,
+        discount_type: Discount,
+        discount_value: discountAmount,
+        discount_amount: discountAmount,
+        total: calculateTotalPrice(
+          unitCost,
+          Quantity,
+          Discount,
+          discountAmount,
+          discountAmount,
+        ),
+        discount_total: '10',
         is_taxable: Taxable.toString(),
-        notes: Notes,
+        item_notes: Notes,
+      };
+
+      const updatedItemIndex = 0;
+      const updatedItems = [...data.items];
+      updatedItems[updatedItemIndex] = payload;
+      const totalAmount = getTotal(updatedItems);
+      const totalDiscountAmount = getTotalDiscountAmount(updatedItems);
+
+      const tempPayload: any = {
+        items: updatedItems,
+        invoice_discount_type: data.invoice_discount_type,
+        invoice_discount_value: data.invoice_discount_value,
+        invoice_discount_amount: totalDiscountAmount,
+        invoice_tax_type: data.invoice_tax_type,
+        invoice_tax_label: data.invoice_tax_label,
+        invoice_tax_rate: data.invoice_tax_rate,
+        is_invoice_tax_inclusive: data.is_invoice_tax_inclusive,
+        invoice_total_tax_amount: data.invoice_total_tax_amount,
+        invoice_total: totalAmount,
       };
       if (selector.token === 'Guest') {
         // navigation.goBack();
@@ -65,7 +157,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
         const data = await FetchAPI(
           'patch',
           endpoint.updateIVItem(route?.params?.invoiceID),
-          payload,
+          tempPayload,
           {
             Authorization: 'Bearer ' + selector.token,
           },
@@ -98,6 +190,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
                     handleTextInputChange(value, setDescription)
                   }
                 />
+                <Text style={styles.errorTxt}>{'Error'}</Text>
               </View>
             </View>
             <View style={styles.mainView}>
@@ -134,6 +227,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
                   style={styles.input}
                   placeholder={'1'}
                   placeholderTextColor={'grey'}
+                  keyboardType="numeric"
                   onChangeText={value =>
                     handleTextInputChange(value, setQuantity)
                   }
@@ -143,7 +237,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
             <View style={styles.mainView}>
               <Text style={styles.label}>{t('Discount')}: </Text>
               <View style={styles.inputContainer}>
-                <TextInput
+                {/* <TextInput
                   value={Discount}
                   style={styles.input}
                   placeholder={'$0.00'}
@@ -151,23 +245,35 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
                   onChangeText={value =>
                     handleTextInputChange(value, setDiscount)
                   }
-                />
+                /> */}
+                <Text
+                  onPress={closeBottomSheet}
+                  style={{
+                    fontSize: 18,
+                    fontWeight: '400',
+                    color: '#000',
+                    textAlign: 'right',
+                  }}>
+                  {t(Discount)}
+                </Text>
               </View>
             </View>
-            <View style={styles.mainView}>
-              <Text style={styles.label}>{t('Discount Amount')}: </Text>
-              <View style={styles.inputContainer}>
-                <TextInput
-                  value={discountAmount}
-                  style={styles.input}
-                  placeholder={'$0'}
-                  placeholderTextColor={'grey'}
-                  onChangeText={value =>
-                    handleTextInputChange(value, setDiscountAmount)
-                  }
-                />
+            {Discount !== 'No Discount' && (
+              <View style={styles.mainView}>
+                <Text style={styles.label}>{t('Discount Amount')}: </Text>
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    value={discountAmount}
+                    style={styles.input}
+                    placeholder={Discount === 'Percentage' ? '0%' : '$0'}
+                    placeholderTextColor={'grey'}
+                    onChangeText={value =>
+                      handleTextInputChange(value, setDiscountAmount)
+                    }
+                  />
+                </View>
               </View>
-            </View>
+            )}
             <View style={styles.mainView}>
               <Text style={styles.label}>{t('Taxable')}: </Text>
               <Switch
@@ -179,7 +285,15 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
           </View>
           <View style={styles.totalView}>
             <Text style={styles.totalTxt}>{t('Total')}:</Text>
-            <Text style={styles.totalTxt}>195</Text>
+            <Text style={styles.totalTxt}>
+              {calculateTotalPrice(
+                unitCost,
+                Quantity,
+                Discount,
+                discountAmount,
+                discountAmount,
+              )}
+            </Text>
           </View>
         </View>
 
@@ -212,6 +326,11 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
             {true ? t('Update') : t('Create')}
           </Text>
         </TouchableOpacity>
+        <DiscountOption
+          openModal={openModal}
+          closeBottomSheet={closeBottomSheet}
+          selectedOption={setDiscount}
+        />
       </ScrollView>
     </>
   );
@@ -289,6 +408,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   titleTxt2: {fontSize: 17, color: '#000', fontWeight: '400'},
+  errorTxt: {fontSize: 13, fontWeight: '500', color: 'red'},
 });
 
 export default AddItemScreen;

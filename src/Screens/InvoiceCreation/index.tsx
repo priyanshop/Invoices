@@ -26,36 +26,85 @@ import {endpoint} from '../../Networking/endpoint';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
-const importedData = {
+const importedData: any = {
   status: 'success',
-  message: 'Invoice created successfully',
+  message: 'Invoice data',
   data: {
-    user: '64ae46fbc749a55e2fabe970',
-    invoice_number: 'INV0008',
-    invoice_date: '2023-07-23T18:30:00.000Z',
-    b_name: 'ppppppp',
-    b_email: 'ppppppp@gmail.com',
-    b_address1: 'test111',
-    b_address2: 'test11',
-    b_address3: 'VALSAD',
-    b_business_logo: 'xyz.png',
+    _id: '64bfa697cfd6ecfd2fc76d09',
+    user: '64b4de67066c5dd236d85817',
+    invoice_number: 'INV001s4',
+    invoice_date: '2023-07-24T18:30:00.000Z',
+    b_id: '64b52408066c5dd236d85abe',
+    b_name: 'My business',
+    b_email: 'Tereff@gmail.com',
+    b_address1: 'Fdsgsdf',
+    b_address2: 'Gfsdgsd',
+    b_address3: 'Dfsgsdfg',
+    b_business_logo: 'logo.png ',
     c_address1: '',
-    c_address2: '',
-    c_address3: '',
-    is_invoice_tax_inclusive: true,
-    paypal_email: 'testing1111@gmail.com',
-    make_checks_payable: 'testing1',
-    payment_instructions: 'testing111',
-    additional_payment_instructions: 'ppppppp',
-    notes: 'ppppppp',
+    c_address2: 'GA',
+    c_address3: '3494 Kuhl Avenue',
+    is_invoice_tax_inclusive: false,
+    paypal_email: 'Trtrtr.@hm.dvv',
+    make_checks_payable: 'Jjjj',
+    payment_instructions: 'Prius should',
+    additional_payment_instructions: 'Gsdfgsdfg',
+    notes: 'Gfgdgdf',
     is_paid: false,
-    _id: '64be3e282c8cafeac0e8b5f7',
-    items: [],
+    items: [
+      {
+        description: 'testing',
+        unit: '123',
+        rate: 10,
+        discount_rate: 10,
+        discount_type: 'Percentage',
+        discount_value: 10,
+        discount_amount: 10,
+        total: 100,
+        discount_total: 10,
+        is_taxable: true,
+        item_notes: 'for testing',
+        _id: '64bfcfc2f9a4c1b1f6339fa9',
+      },
+      {
+        description: 'testing 222',
+        unit: '123',
+        rate: 10,
+        discount_rate: 10,
+        discount_type: 'none',
+        discount_value: 10,
+        discount_amount: 10,
+        total: 100,
+        discount_total: 10,
+        is_taxable: true,
+        item_notes: 'for testing',
+        _id: '64bfcfc2f9a4c1b1f6339faa',
+      },
+    ],
     photos: [],
     payments: [],
-    createdAt: '2023-07-24T09:02:32.954Z',
-    updatedAt: '2023-07-24T09:02:32.954Z',
+    createdAt: '2023-07-25T10:40:23.284Z',
+    updatedAt: '2023-07-25T13:36:02.810Z',
     __v: 0,
+    b_business_number: 423423423,
+    b_mobile_number: '464654645',
+    b_owner_name: '8868768',
+    b_phone_number: '45546546546',
+    b_website: 'Dsfsdf',
+    c_contact: '',
+    c_email: 'John-Appleseed@mac.com',
+    c_fax: '',
+    c_mobile_number: '888-555-5512',
+    c_name: 'John Appleseed',
+    c_phone_number: '548878787878',
+    invoice_discount_amount: 120,
+    invoice_discount_type: 'zero',
+    invoice_discount_value: 100,
+    invoice_tax_label: 'aaaa',
+    invoice_tax_rate: 10,
+    invoice_tax_type: 'zero',
+    invoice_total: 50,
+    invoice_total_tax_amount: 20,
   },
 };
 
@@ -143,7 +192,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       );
       if (data.status === 'success') {
         const element = data.data;
-        setGlobalData(element);
+        // setGlobalData(element);
       }
     } catch (error) {}
   };
@@ -155,7 +204,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       });
       if (data.status === 'success') {
         const element = data.data;
-        setGlobalData(element);
+        // setGlobalData(element);
       }
     } catch (error) {}
   };
@@ -201,6 +250,15 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     navigation.navigate('AddItemScreen', {
       invoiceUpdate: true,
       invoiceID: globalData._id,
+    });
+  }
+
+  function navigateToItemScreen(index: any) {
+    navigation.navigate('AddItemScreen', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+      invoiceData: globalData,
+      index: index,
     });
   }
 
@@ -280,6 +338,29 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         </View>
 
         <View style={styles.ItemView}>
+          {globalData.items.map((item: any, index: number) => (
+            <TouchableOpacity
+              onPress={() => navigateToItemScreen(index)}
+              style={styles.ItemColumn}>
+              <View>
+                <Text style={styles.dueBalText}>{item.description} </Text>
+                <Text style={styles.dueBalText2}>{item.item_notes} </Text>
+                <Text style={styles.dueBalText2}>
+                  {'Discount'}{' '}
+                  {item.discount_type === 'Percentage'
+                    ? item.discount_rate + '%'
+                    : ''}{' '}
+                </Text>
+              </View>
+              <View>
+                <Text style={styles.dueBalText3}>{'0 * $' + item.rate}</Text>
+                <Text style={styles.dueBalText3}>{'$' + item.total}</Text>
+                <Text style={styles.dueBalText4}>
+                  {'-$' + item.discount_amount}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ))}
           <TouchableOpacity
             onPress={navigateToAddItemScreen}
             style={styles.ItemColumn}>
@@ -327,7 +408,10 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
             globalData.make_checks_payable ||
             globalData.payment_instructions ||
             globalData.additional_payment_instructions ? (
-              <Text numberOfLines={1} onPress={navigateToAdditionalDetails} style={styles.toTxt}>
+              <Text
+                numberOfLines={1}
+                onPress={navigateToAdditionalDetails}
+                style={styles.toTxt}>
                 {'Payment:  '}
                 {globalData.paypal_email && 'PayPal,'}{' '}
                 {globalData.make_checks_payable && 'Check,'}{' '}
@@ -694,7 +778,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 12,
   },
-  addItemTxt: {fontSize: 18, fontWeight: '500', color: '#d1d1d1'},
+  addItemTxt: {fontSize: 16, fontWeight: '500', color: '#d1d1d1'},
   itemPriceTxt: {
     fontSize: 18,
     fontWeight: '400',
@@ -724,9 +808,26 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   dueBalText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '400',
     color: '#000',
+  },
+  dueBalText3: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#000',
+    textAlign: 'right',
+  },
+  dueBalText2: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: 'grey',
+  },
+  dueBalText4: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: 'grey',
+    textAlign: 'right',
   },
   dueBalFooter: {
     backgroundColor: Colors.landingColor,
