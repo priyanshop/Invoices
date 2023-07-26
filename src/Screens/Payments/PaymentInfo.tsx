@@ -1,15 +1,15 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TextInput} from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
-import {Colors} from '../../Helper/Colors';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TextInput } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { Colors } from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
-import {endpoint} from '../../Networking/endpoint';
-import {setPaymentInfo} from '../../redux/reducers/user/UserReducer';
-import {useTranslation} from 'react-i18next';
+import { endpoint } from '../../Networking/endpoint';
+import { setInvoiceList, setPaymentInfo } from '../../redux/reducers/user/UserReducer';
+import { useTranslation } from 'react-i18next';
 
-const PaymentInfo = ({navigation, route}: any) => {
+const PaymentInfo = ({ navigation, route }: any) => {
   const dispatch = useDispatch();
-  const {t, i18n} = useTranslation();
+  const { t, i18n } = useTranslation();
   const selector = useSelector((state: any) => state.user);
   const [payable, setPayable] = useState('');
   const [email, setEmail] = useState('');
@@ -17,13 +17,13 @@ const PaymentInfo = ({navigation, route}: any) => {
   const [additionalDetails, setAdditionalDetails] = useState('');
 
   useEffect(() => {
-   
+
   }, [selector.token]);
 
   useEffect(() => {
     if (route?.params?.invoiceUpdate) {
       fetchData(route?.params.invoiceData);
-    }else{
+    } else {
       if (selector.token === 'Guest') {
         fetchData(selector.paymentInfo);
       } else {
@@ -52,7 +52,7 @@ const PaymentInfo = ({navigation, route}: any) => {
         setEmail(element.paypal_email);
         setPaymentInstructions(element.payment_instructions);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const addInfo = async () => {
@@ -72,7 +72,7 @@ const PaymentInfo = ({navigation, route}: any) => {
         if (data.status === 'success') {
         }
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleTextInputChange = (value: any, setter: any) => {
@@ -81,11 +81,16 @@ const PaymentInfo = ({navigation, route}: any) => {
 
   const checkCondition = () => {
     if (route?.params?.invoiceUpdate) {
-      updateIVinfo();
+      if (selector.token === 'Guest') {
+        offlineInvoiceUpdate()
+      } else {
+        updateIVinfo();
+      }
     } else {
       addInfo();
     }
   };
+
   const updateIVinfo = async () => {
     try {
       const payload: any = {
@@ -108,7 +113,23 @@ const PaymentInfo = ({navigation, route}: any) => {
         if (data.status === 'success') {
         }
       }
-    } catch (error) {}
+    } catch (error) { }
+  };
+
+  const offlineInvoiceUpdate = () => {
+    const updatedArray = selector.invoiceList.map((item: any) => {
+      if (item.index === route?.params?.invoiceData.index) {
+        return {
+          ...item,
+          paypal_email: email,
+          make_checks_payable: payable,
+          payment_instructions: paymentInstructions,
+          additional_payment_instructions: additionalDetails,
+        };
+      }
+      return item;
+    });
+    dispatch(setInvoiceList(updatedArray));
   };
 
   return (
@@ -127,7 +148,7 @@ const PaymentInfo = ({navigation, route}: any) => {
             value={email}
             onChangeText={value => handleTextInputChange(value, setEmail)}
             onBlur={checkCondition}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+            style={{ ...styles.titleTxt, flex: 1, textAlign: 'left' }}
             placeholder={t('Enter your paypal email address')}
             placeholderTextColor={'grey'}
           />
@@ -143,7 +164,7 @@ const PaymentInfo = ({navigation, route}: any) => {
             value={payable}
             onChangeText={value => handleTextInputChange(value, setPayable)}
             onBlur={checkCondition}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+            style={{ ...styles.titleTxt, flex: 1, textAlign: 'left' }}
             placeholder={t("Your or your business's name")}
             placeholderTextColor={'grey'}
           />
@@ -246,7 +267,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     paddingHorizontal: 0,
   },
-  innerView: {flex: 1, paddingHorizontal: 8},
+  innerView: { flex: 1, paddingHorizontal: 8 },
   businessContainer: {
     borderRadius: 8,
     backgroundColor: '#fff',

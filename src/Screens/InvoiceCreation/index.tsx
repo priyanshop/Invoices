@@ -23,6 +23,7 @@ import {getScreenDimensions} from '../../Helper/ScreenDimension';
 import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
+import {addNewInvoice} from '../../redux/reducers/user/UserReducer';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -174,13 +175,108 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
 
   useEffect(() => {
     if (route.params.status === 'create') {
-      createInvoiceCall();
+      if (selector.token === 'Guest') {
+        offline();
+      } else {
+        createInvoiceCall();
+      }
     }
     if (route.params.status === 'update') {
-      getInvoiceCall(route?.params?.data);
+      if (selector.token === 'Guest') {
+        setOffline(selector.invoiceList[route?.params?.data.index]);
+      } else {
+        getInvoiceCall(route?.params?.data);
+      }
     }
-  }, [route.params, isFocused]);
+  }, [isFocused]);
 
+  const offline = () => {
+    const payload = {
+      _id: '',
+      user: '',
+      invoice_number: 'INV' + (selector.invoiceList.length + 1),
+      invoice_date: new Date(),
+      b_id: '',
+      b_name: selector.businessDetails.name,
+      b_email: selector.businessDetails.email,
+      b_address1: selector.businessDetails.address1,
+      b_address2: selector.businessDetails.address2,
+      b_address3: selector.businessDetails.address3,
+      b_business_logo: selector.businessDetails.business_logo,
+      is_invoice_tax_inclusive: false,
+      paypal_email: selector.paymentInfo.paypal_email,
+      make_checks_payable: selector.paymentInfo.make_checks_payable,
+      payment_instructions: selector.paymentInfo.payment_instructions,
+      additional_payment_instructions:
+        selector.paymentInfo.additional_payment_instructions,
+      notes: selector.defaultNotes.invoices,
+      is_paid: false,
+      items: [],
+      photos: [],
+      payments: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      __v: 0,
+      b_business_number: selector.businessDetails.business_number,
+      b_mobile_number: selector.businessDetails.mobile_number,
+      b_owner_name: selector.businessDetails.owner_name,
+      b_phone_number: selector.businessDetails.phone_number,
+      b_website: selector.businessDetails.website,
+      index: selector.invoiceList.length,
+    };
+    dispatch(addNewInvoice(payload));
+    setGlobalData(payload);
+    setPaymentDue([
+      {
+        key: 'first',
+        title: t('Discount'),
+        value: '$' + (payload.invoice_discount_amount || 0),
+        onPress: () => navigateToDiscountScreen(),
+      },
+      {
+        key: 'second',
+        title: t('Tax'),
+        value: '$' + (payload.invoice_total_tax_amount || 0),
+        onPress: () => navigateToTaxScreen(),
+      },
+
+      {
+        key: 'third',
+        title: t('Total'),
+        value:
+          '$' +
+          ((payload.invoice_total_tax_amount || 0) +
+            (payload.invoice_total || 0)),
+      },
+    ]);
+  };
+
+  const setOffline = (payload: any) => {
+    setGlobalData(payload);
+    setPaymentDue([
+      {
+        key: 'first',
+        title: t('Discount'),
+        value: '$' + (payload.invoice_discount_amount || 0),
+        onPress: () => navigateToDiscountScreen(),
+      },
+      {
+        key: 'second',
+        title: t('Tax'),
+        value: '$' + (payload.invoice_total_tax_amount || 0),
+        onPress: () => navigateToTaxScreen(),
+      },
+
+      {
+        key: 'third',
+        title: t('Total'),
+        value:
+          '$' +
+          ((payload.invoice_total_tax_amount || 0) +
+            (payload.invoice_total || 0)),
+      },
+    ]);
+  };
   const getInvoiceCall = async (invoiceDetail: any) => {
     try {
       const data = await FetchAPI(
@@ -284,11 +380,13 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         invoiceUpdate: true,
         invoiceID: globalData._id,
         invoiceData: globalData,
+        data: globalData,
       });
     } else {
       navigation.navigate('ClientScreen', {
         invoiceUpdate: true,
         invoiceID: globalData._id,
+        data: globalData,
       });
     }
   }
@@ -386,31 +484,32 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         </View>
 
         <View style={styles.ItemView}>
-          {globalData?.items?.length > 0 &&  globalData?.items?.map((item: any, index: number) => (
-            <TouchableOpacity
-              onPress={() => navigateToItemScreen(index)}
-              style={styles.ItemColumn}>
-              <View>
-                <Text style={styles.dueBalText}>{item.description} </Text>
-                <Text style={styles.dueBalText2}>{item.item_notes} </Text>
-                <Text style={styles.dueBalText2}>
-                  {'Discount'}{' '}
-                  {item.discount_type === 'Percentage'
-                    ? item.discount_rate + '%'
-                    : ''}{' '}
-                </Text>
-              </View>
-              <View>
-                <Text style={styles.dueBalText3}>
-                  {item.quantity + ' * $' + item.rate}
-                </Text>
-                <Text style={styles.dueBalText3}>{'$' + item.total}</Text>
-                <Text style={styles.dueBalText4}>
-                  {'-$' + item.discount_amount}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          ))}
+          {globalData?.items?.length > 0 &&
+            globalData?.items?.map((item: any, index: number) => (
+              <TouchableOpacity
+                onPress={() => navigateToItemScreen(index)}
+                style={styles.ItemColumn}>
+                <View>
+                  <Text style={styles.dueBalText}>{item.description} </Text>
+                  <Text style={styles.dueBalText2}>{item.item_notes} </Text>
+                  <Text style={styles.dueBalText2}>
+                    {'Discount'}{' '}
+                    {item.discount_type === 'Percentage'
+                      ? item.discount_rate + '%'
+                      : ''}{' '}
+                  </Text>
+                </View>
+                <View>
+                  <Text style={styles.dueBalText3}>
+                    {item.quantity + ' * $' + item.rate}
+                  </Text>
+                  <Text style={styles.dueBalText3}>{'$' + item.total}</Text>
+                  <Text style={styles.dueBalText4}>
+                    {'-$' + item.discount_amount}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ))}
           <TouchableOpacity
             onPress={() =>
               globalData.items.length > 0
@@ -433,7 +532,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         </View>
 
         <View style={styles.dueBalContainer}>
-        {paymentDue.map((selectedItem: any) => (
+          {paymentDue.map((selectedItem: any) => (
             <View style={styles.dueBalContent}>
               <TouchableOpacity
                 onPress={selectedItem.onPress}

@@ -14,6 +14,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {Colors} from '../../Helper/Colors';
+import { setInvoiceList } from '../../redux/reducers/user/UserReducer';
 
 function AdditionalDetails({navigation, route}: any): JSX.Element {
   const dispatch = useDispatch();
@@ -37,6 +38,7 @@ function AdditionalDetails({navigation, route}: any): JSX.Element {
         notes: additionalDetails,
       };
       if (selector.token === 'Guest') {
+        offlineInvoiceUpdate();
       } else {
         const data = await FetchAPI(
           'patch',
@@ -50,6 +52,19 @@ function AdditionalDetails({navigation, route}: any): JSX.Element {
         }
       }
     } catch (error) {}
+  };
+
+  const offlineInvoiceUpdate = () => {
+    const updatedArray = selector.invoiceList.map((item: any) => {
+      if (item.index === route?.params?.invoiceData.index) {
+        return {
+          ...item,
+          notes: additionalDetails,
+        };
+      }
+      return item;
+    });
+    dispatch(setInvoiceList(updatedArray));
   };
 
   const updateETNotesDetail = async () => {

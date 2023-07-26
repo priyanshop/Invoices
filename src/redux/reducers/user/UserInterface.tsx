@@ -27,6 +27,7 @@ export interface IUserState {
   customizeLabels: any | null;
   sendToEmail: any | null;
   globalDateFormat: any | null;
+  invoiceList: any;
   // localChats: IChats[] | [];
   // localChatsPub: IChats2[] | [];
 }

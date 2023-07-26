@@ -77,7 +77,14 @@ function InvoicesScreen({navigation}: any): JSX.Element {
   const [routes] = useState(data);
 
   useEffect(() => {
-    apiCall();
+    if (selector.token === 'Guest') {
+      if (selector.invoiceList?.length > 0) {
+        const savedData: any = convertData(selector.invoiceList);
+        setAllData(savedData);
+      }
+    } else {
+      apiCall();
+    }
   }, [isFocused]);
 
   const apiCall = async () => {

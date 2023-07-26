@@ -16,7 +16,10 @@ import ImagePickerComponent from '../../CustomComponent/ImagePickerComponent';
 import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
-import {setBusinessDetail} from '../../redux/reducers/user/UserReducer';
+import {
+  setBusinessDetail,
+  setInvoiceList,
+} from '../../redux/reducers/user/UserReducer';
 import {useTranslation} from 'react-i18next';
 
 const BusinessDetails = ({navigation, route}: any) => {
@@ -73,6 +76,10 @@ const BusinessDetails = ({navigation, route}: any) => {
       setAddress3(businessDetails.address3);
       setBusinessName(businessDetails.name);
       setEmail(businessDetails.email);
+      setBusinessNumber(businessDetails.business_number);
+      setWebsite(businessDetails.website);
+      setOwnerName(businessDetails.owner_name);
+      setMobile(businessDetails.mobile_number);
     } else {
       getInfo();
     }
@@ -106,7 +113,11 @@ const BusinessDetails = ({navigation, route}: any) => {
 
   const checkUpdate = () => {
     if (route?.params?.invoiceUpdate) {
-      updateInvoice();
+      if (selector.token === 'Guest') {
+        offlineInvoiceUpdate();
+      } else {
+        updateInvoice();
+      }
     } else if (route?.params?.estimateUpdate) {
       updateEstimate();
     } else {
@@ -129,8 +140,21 @@ const BusinessDetails = ({navigation, route}: any) => {
         address3: address3,
         business_logo: 'xyz.png',
       };
+      const payload2: any = {
+        name: businessName,
+        email: email,
+        phone_number: Phone,
+        address1: address1,
+        address2: address2,
+        address3: address3,
+        business_logo: 'xyz.png',
+        business_number: businessNumber,
+        website: Website,
+        owner_name: ownerName,
+        mobile_number: Mobile,
+      };
       if (selector.token === 'Guest') {
-        dispatch(setBusinessDetail(payload));
+        dispatch(setBusinessDetail(payload2));
       } else {
         const data = await FetchAPI('post', endpoint.businessInfo, payload, {
           Authorization: 'Bearer ' + selector.token,
@@ -152,8 +176,21 @@ const BusinessDetails = ({navigation, route}: any) => {
         address3: address3,
         business_logo: 'xyz.png',
       };
+      const payload2: any = {
+        name: businessName,
+        email: email,
+        phone_number: Phone,
+        address1: address1,
+        address2: address2,
+        address3: address3,
+        business_logo: 'xyz.png',
+        business_number: businessNumber,
+        website: Website,
+        owner_name: ownerName,
+        mobile_number: Mobile,
+      };
       if (selector.token === 'Guest') {
-        dispatch(setBusinessDetail(payload));
+        dispatch(setBusinessDetail(payload2));
       } else {
         const data = await FetchAPI(
           'patch',
@@ -205,6 +242,29 @@ const BusinessDetails = ({navigation, route}: any) => {
     } catch (error) {}
   };
 
+  const offlineInvoiceUpdate = () => {
+    const updatedArray = selector.invoiceList.map((item: any) => {
+      if (item.index === route?.params?.data.index) {
+        return {
+          ...item,
+          b_name: businessName,
+          b_owner_name: ownerName,
+          b_business_number: businessNumber,
+          b_email: email,
+          b_phone_number: Phone,
+          b_mobile_number: Mobile,
+          b_website: Website,
+          b_address1: address1,
+          b_address2: address2,
+          b_address3: address3,
+          b_business_logo: 'logo.png ',
+        };
+      }
+      return item;
+    });
+    dispatch(setInvoiceList(updatedArray));
+  };
+
   const updateEstimate = async () => {
     try {
       const payload: any = {
@@ -236,6 +296,7 @@ const BusinessDetails = ({navigation, route}: any) => {
       }
     } catch (error) {}
   };
+
   return (
     <ScrollView style={styles.mainContainer}>
       <View style={styles.businessContainer}>
