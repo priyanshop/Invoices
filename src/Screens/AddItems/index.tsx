@@ -17,6 +17,7 @@ import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import DiscountOption from '../../CustomComponent/DiscountOption';
+import {setInvoiceList} from '../../redux/reducers/user/UserReducer';
 
 function AddItemScreen({navigation, route}: any): JSX.Element {
   const dispatch = useDispatch();
@@ -50,27 +51,26 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
   }, [navigation]);
 
   useEffect(() => {
-    if (
-      route.params.invoiceUpdate &&
-      route.params.invoiceData &&
-      route.params.index !== null &&
-      route.params.index !== 'New'
-    ) {
-      const temp = route.params.invoiceData.items[route.params.index];
-      setDescription(temp.description);
-      setDiscount(temp.discount_type);
-      if (temp.discount_type === 'Percentage') {
-        setDiscountAmount(temp.discount_rate.toString());
+    if (selector.token === 'Guest') {
+      if (
+        route.params.invoiceUpdate &&
+        route.params.invoiceData &&
+        route.params.index !== null &&
+        route.params.index !== 'New'
+      ) {
+        const temp = route.params.invoiceData.items[route.params.index];
+        fetchData(temp);
       }
-      if (temp.discount_type === 'Flat Amount') {
-        setDiscountAmount(temp.discount_amount.toString());
+    } else {
+      if (
+        route.params.invoiceUpdate &&
+        route.params.invoiceData &&
+        route.params.index !== null &&
+        route.params.index !== 'New'
+      ) {
+        const temp = route.params.invoiceData.items[route.params.index];
+        fetchData(temp);
       }
-      setNotes(temp.item_notes.toString());
-      setQuantity(temp.quantity.toString());
-      setUnit(temp.rate.toString());
-      setUnitCost(temp.unit.toString());
-      setTaxable(temp.is_taxable);
-      setTaxRate(temp.item_tax_rate);
     }
   }, [route.params]);
 
@@ -99,9 +99,27 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
     }
   }, [route.params]);
 
+  const fetchData = (temp: any) => {
+    setDescription(temp.description);
+    setDiscount(temp.discount_type);
+    if (temp.discount_type === 'Percentage') {
+      setDiscountAmount(temp.discount_rate?.toString() || '0');
+    }
+    if (temp.discount_type === 'Flat Amount') {
+      setDiscountAmount(temp.discount_amount?.toString() || '0');
+    }
+    setNotes(temp.item_notes.toString());
+    setQuantity(temp.quantity.toString());
+    setUnit(temp.rate.toString());
+    setUnitCost(temp.unit.toString());
+    setTaxable(temp.is_taxable);
+    setTaxRate(temp.item_tax_rate);
+  };
+
   function navigateToAddPhotoScreen() {
     navigation.navigate('SelectItemScreen');
   }
+
   const handleTextInputChange = (value: any, setter: any) => {
     setter(value);
   };
@@ -505,6 +523,90 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
     } catch (error) {}
   };
 
+  const updateOffline = async () => {
+    try {
+      const tempTotal = calculateTotalPrice(
+        unitCost,
+        Quantity,
+        Discount,
+        discountAmount,
+        discountAmount,
+      );
+      const percentageAmount = (tempTotal * parseFloat(discountAmount)) / 100;
+      const tempIndex = route.params.index;
+      const payload: any = {
+        description: Description,
+        unit: unitCost,
+        rate: unit,
+        discount_rate: Discount === 'Percentage' ? discountAmount : '',
+        discount_type: Discount,
+        discount_value: Discount === 'Flat Amount' ? discountAmount : '',
+        discount_amount:
+          Discount === 'Flat Amount'
+            ? discountAmount
+            : Discount === 'Percentage'
+            ? percentageAmount
+            : '',
+        total: tempTotal,
+        is_taxable: Taxable.toString(),
+        item_notes: Notes,
+        item_tax_rate: taxRate,
+        quantity: Quantity,
+        discount_total: discountPrice(
+          unitCost,
+          Quantity,
+          Discount,
+          discountAmount,
+          discountAmount,
+        ),
+      };
+
+      let updatedItems = [...route.params.invoiceData.items];
+      const data: any = route.params.invoiceData;
+
+      if (tempIndex === 'New') {
+        updatedItems = [...updatedItems, payload];
+      } else if (!tempIndex) {
+        updatedItems[0] = payload;
+      } else {
+        updatedItems[tempIndex] = payload;
+      }
+
+      const totalAmount = getTotal(updatedItems);
+      const totalDiscountAmount = getTotalDiscountAmount(updatedItems);
+      const totalTax = getTotalTaxAmount(updatedItems);
+
+      const tempPayload: any = {
+        items: updatedItems,
+        invoice_discount_type: data.invoice_discount_type,
+        invoice_discount_value: data.invoice_discount_value,
+        invoice_discount_amount: totalDiscountAmount,
+        invoice_tax_type: data.invoice_tax_type,
+        invoice_tax_label: data.invoice_tax_label,
+        invoice_tax_rate: data.invoice_tax_rate,
+        is_invoice_tax_inclusive: data.is_invoice_tax_inclusive,
+        invoice_total_tax_amount: totalTax,
+        invoice_total: totalAmount,
+      };
+
+      updateCallOffline(tempPayload);
+    } catch (error) {}
+  };
+
+  const updateCallOffline = async (tempPayload: any) => {
+    const updatedArray = selector.invoiceList.map((item: any) => {
+      if (item.index === route?.params?.invoiceData.index) {
+        return {
+          ...item,
+          ...tempPayload,
+        };
+      }
+      return item;
+    });
+    dispatch(setInvoiceList(updatedArray));
+    navigation.goBack();
+  };
+
   const updateCall = async (tempPayload: any) => {
     try {
       const data = await FetchAPI(
@@ -538,10 +640,12 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
   };
 
   const checkCondition = () => {
-    console.log(route.params.invoiceUpdate, route.params.estimateUpdate);
-
     if (route.params.invoiceUpdate) {
-      update();
+      if (selector.token === 'Guest') {
+        updateOffline();
+      } else {
+        update();
+      }
     }
     if (route.params.estimateUpdate) {
       updateEstimate();

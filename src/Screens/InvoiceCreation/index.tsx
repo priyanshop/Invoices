@@ -257,13 +257,13 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       {
         key: 'first',
         title: t('Discount'),
-        value: '$' + (payload.invoice_discount_amount || 0),
+        value: '$' + (parseFloat(payload.invoice_discount_amount) || 0),
         onPress: () => navigateToDiscountScreen(),
       },
       {
         key: 'second',
         title: t('Tax'),
-        value: '$' + (payload.invoice_total_tax_amount || 0),
+        value: '$' + parseFloat(payload.invoice_total_tax_amount || 0),
         onPress: () => navigateToTaxScreen(),
       },
 
@@ -272,8 +272,8 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         title: t('Total'),
         value:
           '$' +
-          ((payload.invoice_total_tax_amount || 0) +
-            (payload.invoice_total || 0)),
+          (parseFloat(payload.invoice_total_tax_amount || 0) +
+          parseFloat(payload.invoice_total || 0)),
       },
     ]);
   };
@@ -501,7 +501,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
                 </View>
                 <View>
                   <Text style={styles.dueBalText3}>
-                    {item.quantity + ' * $' + item.rate}
+                    {item.quantity + ' * $' + item.unit}
                   </Text>
                   <Text style={styles.dueBalText3}>{'$' + item.total}</Text>
                   <Text style={styles.dueBalText4}>
