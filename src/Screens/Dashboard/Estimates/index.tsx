@@ -139,7 +139,14 @@ function EstimatesScreen({navigation}: any): JSX.Element {
   const [allData, setAllData] = useState([]);
 
   useEffect(() => {
-    apiCall();
+    if (selector.token === 'Guest') {
+      if (selector.estimateList?.length > 0) {
+        const savedData: any = convertData(selector.estimateList);
+        setAllData(savedData);
+      }
+    } else {
+      apiCall();
+    }
   }, [isFocused]);
 
   const apiCall = async () => {

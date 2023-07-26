@@ -21,6 +21,7 @@ import {getScreenDimensions} from '../../Helper/ScreenDimension';
 import {
   addClientInList,
   setClientList,
+  setEstimateList,
   setInvoiceList,
 } from '../../redux/reducers/user/UserReducer';
 import {removeObjectByIndex} from '../../Helper/CommonFunctions';
@@ -67,7 +68,12 @@ const AddClientScreen = ({navigation, route}: any) => {
   useEffect(() => {
     console.log('route.params', JSON.stringify(route.params));
     if (selector.token === 'Guest') {
-      fetchClient2(route.params?.invoiceData);
+      if (route.params?.invoiceUpdate) {
+        fetchClient2(route.params?.invoiceData);
+      } else if (route.params?.estimateUpdate) {
+        fetchClient2(route.params?.estimateData);
+      } else {
+      }
     } else {
       if (route.params?.invoiceUpdate) {
         fetchClient2(route.params?.invoiceData);
@@ -121,7 +127,11 @@ const AddClientScreen = ({navigation, route}: any) => {
         updateInvoice();
       }
     } else if (route?.params?.estimateUpdate) {
-      updateEstimate();
+      if (selector.token === 'Guest') {
+        offlineEStimateUpdate();
+      } else {
+        updateEstimate();
+      }
     } else {
       if (alreadyExist) {
         update();
@@ -212,6 +222,28 @@ const AddClientScreen = ({navigation, route}: any) => {
       return item;
     });
     dispatch(setInvoiceList(updatedArray));
+    navigation.goBack();
+  };
+
+  const offlineEStimateUpdate = () => {
+    const updatedArray = selector.estimateList.map((item: any) => {
+      if (item.index === route?.params?.data.index) {
+        return {
+          ...item,
+          c_name: clientName,
+          c_email: email,
+          c_mobile_number: Mobile,
+          c_phone_number: Phone,
+          c_fax: fax,
+          c_contact: contact,
+          c_address1: address1,
+          c_address2: address2,
+          c_address3: address3,
+        };
+      }
+      return item;
+    });
+    dispatch(setEstimateList(updatedArray));
     navigation.goBack();
   };
 

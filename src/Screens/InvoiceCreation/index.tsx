@@ -24,6 +24,7 @@ import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {addNewInvoice} from '../../redux/reducers/user/UserReducer';
+import {setNewInvoiceInList} from '../../Constant';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -183,47 +184,23 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     }
     if (route.params.status === 'update') {
       if (selector.token === 'Guest') {
-        setOffline(selector.invoiceList[route?.params?.data.index]);
+        const index = findIndexById(
+          route?.params?.data.index,
+          selector.invoiceList,
+        );
+        setOffline(selector.invoiceList[index]);
       } else {
         getInvoiceCall(route?.params?.data);
       }
     }
   }, [isFocused]);
 
+  const findIndexById = (id: any, data: any) => {
+    return data.findIndex((item: any) => item.index === id);
+  };
+
   const offline = () => {
-    const payload = {
-      _id: '',
-      user: '',
-      invoice_number: 'INV' + (selector.invoiceList.length + 1),
-      invoice_date: new Date(),
-      b_id: '',
-      b_name: selector.businessDetails.name,
-      b_email: selector.businessDetails.email,
-      b_address1: selector.businessDetails.address1,
-      b_address2: selector.businessDetails.address2,
-      b_address3: selector.businessDetails.address3,
-      b_business_logo: selector.businessDetails.business_logo,
-      is_invoice_tax_inclusive: false,
-      paypal_email: selector.paymentInfo.paypal_email,
-      make_checks_payable: selector.paymentInfo.make_checks_payable,
-      payment_instructions: selector.paymentInfo.payment_instructions,
-      additional_payment_instructions:
-        selector.paymentInfo.additional_payment_instructions,
-      notes: selector.defaultNotes.invoices,
-      is_paid: false,
-      items: [],
-      photos: [],
-      payments: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      __v: 0,
-      b_business_number: selector.businessDetails.business_number,
-      b_mobile_number: selector.businessDetails.mobile_number,
-      b_owner_name: selector.businessDetails.owner_name,
-      b_phone_number: selector.businessDetails.phone_number,
-      b_website: selector.businessDetails.website,
-      index: selector.invoiceList.length,
-    };
+    const payload = setNewInvoiceInList(selector);
     dispatch(addNewInvoice(payload));
     setGlobalData(payload);
     setPaymentDue([
@@ -273,10 +250,11 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         value:
           '$' +
           (parseFloat(payload.invoice_total_tax_amount || 0) +
-          parseFloat(payload.invoice_total || 0)),
+            parseFloat(payload.invoice_total || 0)),
       },
     ]);
   };
+
   const getInvoiceCall = async (invoiceDetail: any) => {
     try {
       const data = await FetchAPI(

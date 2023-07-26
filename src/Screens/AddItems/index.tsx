@@ -17,7 +17,7 @@ import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import DiscountOption from '../../CustomComponent/DiscountOption';
-import {setInvoiceList} from '../../redux/reducers/user/UserReducer';
+import {setEstimateList, setInvoiceList} from '../../redux/reducers/user/UserReducer';
 
 function AddItemScreen({navigation, route}: any): JSX.Element {
   const dispatch = useDispatch();
@@ -54,7 +54,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
     if (selector.token === 'Guest') {
       if (
         route.params.invoiceUpdate &&
-        route.params.invoiceData &&
+        route.params.invoiceData.items.length > 0 &&
         route.params.index !== null &&
         route.params.index !== 'New'
       ) {
@@ -64,7 +64,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
     } else {
       if (
         route.params.invoiceUpdate &&
-        route.params.invoiceData &&
+        route.params.invoiceData.items.length > 0 &&
         route.params.index !== null &&
         route.params.index !== 'New'
       ) {
@@ -75,27 +75,26 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
   }, [route.params]);
 
   useEffect(() => {
-    if (
-      route.params.estimateUpdate &&
-      route.params.estimateData &&
-      route.params.index !== null &&
-      route.params.index !== 'New'
-    ) {
-      const temp = route.params.estimateData.items[route.params.index];
-      setDescription(temp.description);
-      setDiscount(temp.discount_type);
-      if (temp.discount_type === 'Percentage') {
-        setDiscountAmount(temp.discount_rate.toString());
+    if (selector.token === 'Guest') {
+      if (
+        route.params.estimateUpdate &&
+        route.params.estimateData.items.length > 0 &&
+        route.params.index !== null &&
+        route.params.index !== 'New'
+      ) {
+        const temp = route.params.estimateData.items[route.params.index];
+        fetchData(temp);
       }
-      if (temp.discount_type === 'Flat Amount') {
-        setDiscountAmount(temp.discount_amount.toString());
+    } else {
+      if (
+        route.params.estimateUpdate &&
+        route.params.estimateData.items.length > 0 &&
+        route.params.index !== null &&
+        route.params.index !== 'New'
+      ) {
+        const temp = route.params.estimateData.items[route.params.index];
+        fetchData(temp);
       }
-      setNotes(temp.item_notes.toString());
-      setQuantity(temp.quantity.toString());
-      setUnit(temp.rate.toString());
-      setUnitCost(temp.unit.toString());
-      setTaxable(temp.is_taxable);
-      setTaxRate(temp.item_tax_rate);
     }
   }, [route.params]);
 
@@ -112,7 +111,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
     setQuantity(temp.quantity.toString());
     setUnit(temp.rate.toString());
     setUnitCost(temp.unit.toString());
-    setTaxable(temp.is_taxable);
+    setTaxable(temp.is_taxable === "true" ? true :false);
     setTaxRate(temp.item_tax_rate);
   };
 
@@ -607,6 +606,90 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
     navigation.goBack();
   };
 
+  const updateEstimateOffline = async () => {
+    try {
+      const tempTotal = calculateTotalPrice(
+        unitCost,
+        Quantity,
+        Discount,
+        discountAmount,
+        discountAmount,
+      );
+      const percentageAmount = (tempTotal * parseFloat(discountAmount)) / 100;
+      const tempIndex = route.params.index;
+      const payload: any = {
+        description: Description,
+        unit: unitCost,
+        rate: unit,
+        discount_rate: Discount === 'Percentage' ? discountAmount : '',
+        discount_type: Discount,
+        discount_value: Discount === 'Flat Amount' ? discountAmount : '',
+        discount_amount:
+          Discount === 'Flat Amount'
+            ? discountAmount
+            : Discount === 'Percentage'
+            ? percentageAmount
+            : '',
+        total: tempTotal,
+        is_taxable: Taxable.toString(),
+        item_notes: Notes,
+        item_tax_rate: taxRate,
+        quantity: Quantity,
+        discount_total: discountPrice(
+          unitCost,
+          Quantity,
+          Discount,
+          discountAmount,
+          discountAmount,
+        ),
+      };
+
+      let updatedItems = [...route.params.estimateData.items];
+      const data: any = route.params.estimateData;
+
+      if (!tempIndex) {
+        updatedItems[0] = payload;
+      } else if (tempIndex === 'New') {
+        updatedItems = [...updatedItems, payload];
+      } else {
+        updatedItems[tempIndex] = payload;
+      }
+
+      const totalAmount = getTotal(updatedItems);
+      const totalDiscountAmount = getTotalDiscountAmount(updatedItems);
+      const totalTax = getTotalTaxAmount(updatedItems);
+
+      const tempPayload: any = {
+        items: updatedItems,
+        estimate_discount_type: data.estimate_discount_type,
+        estimate_discount_value: data.estimate_discount_value,
+        estimate_discount_amount: totalDiscountAmount,
+        estimate_tax_type: data.estimate_tax_type,
+        estimate_tax_label: data.estimate_tax_label,
+        estimate_tax_rate: data.estimate_tax_rate,
+        is_estimate_tax_inclusive: data.is_estimate_tax_inclusive,
+        estimate_total_tax_amount: totalTax,
+        estimate_total: totalAmount,
+      };
+
+      updateEstimateCallOffline(tempPayload);
+    } catch (error) {}
+  };
+
+  const updateEstimateCallOffline = async (tempPayload: any) => {
+    const updatedArray = selector.estimateList.map((item: any) => {
+      if (item.index === route?.params?.estimateData.index) {
+        return {
+          ...item,
+          ...tempPayload,
+        };
+      }
+      return item;
+    });
+    dispatch(setEstimateList(updatedArray));
+    navigation.goBack();
+  };
+
   const updateCall = async (tempPayload: any) => {
     try {
       const data = await FetchAPI(
@@ -648,9 +731,14 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
       }
     }
     if (route.params.estimateUpdate) {
-      updateEstimate();
+      if (selector.token === 'Guest') {
+        updateEstimateOffline();
+      } else {
+        updateEstimate();
+      }
     }
   };
+
   return (
     <>
       <StatusBar backgroundColor={Colors.appColor} />

@@ -17,7 +17,10 @@ import EmptyViewComponent from '../../../CustomComponent/EmptyViewComponent';
 import FetchAPI from '../../../Networking';
 import {endpoint} from '../../../Networking/endpoint';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import { setInvoiceList } from '../../../redux/reducers/user/UserReducer';
+import {
+  setEstimateList,
+  setInvoiceList,
+} from '../../../redux/reducers/user/UserReducer';
 
 function Clients({navigation, route}: any): JSX.Element {
   const {t, i18n} = useTranslation();
@@ -74,7 +77,7 @@ function Clients({navigation, route}: any): JSX.Element {
   function navigateToSetting() {
     navigation.goBack();
   }
-  
+
   function navigateToAddClient() {
     navigation.navigate('AddClientScreen');
   }
@@ -83,12 +86,16 @@ function Clients({navigation, route}: any): JSX.Element {
     if (route.params.invoiceUpdate) {
       if (selector.token === 'Guest') {
         offlineInvoiceUpdate(item);
-      }else{
+      } else {
         updateInvoice(item);
       }
     }
     if (route.params.estimateUpdate) {
-      updateEstimate(item);
+      if (selector.token === 'Guest') {
+        offlineEstimateUpdate(item);
+      } else {
+        updateEstimate(item);
+      }
     }
   }
 
@@ -123,7 +130,7 @@ function Clients({navigation, route}: any): JSX.Element {
     } catch (error) {}
   };
 
-  const offlineInvoiceUpdate = (temp:any) => {
+  const offlineInvoiceUpdate = (temp: any) => {
     const updatedArray = selector.invoiceList.map((item: any) => {
       if (item.index === route?.params?.data.index) {
         return {
@@ -142,6 +149,28 @@ function Clients({navigation, route}: any): JSX.Element {
       return item;
     });
     dispatch(setInvoiceList(updatedArray));
+    navigateToSetting();
+  };
+
+  const offlineEstimateUpdate = (temp: any) => {
+    const updatedArray = selector.estimateList.map((item: any) => {
+      if (item.index === route?.params?.data.index) {
+        return {
+          ...item,
+          c_name: temp.name,
+          c_email: temp.email,
+          c_mobile_number: temp.mobile_number,
+          c_phone_number: temp.phone_number,
+          c_fax: temp.fax,
+          c_contact: temp.contact,
+          c_address1: temp.address1,
+          c_address2: temp.address2,
+          c_address3: temp.address3,
+        };
+      }
+      return item;
+    });
+    dispatch(setEstimateList(updatedArray));
     navigateToSetting();
   };
 

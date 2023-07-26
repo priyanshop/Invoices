@@ -23,10 +23,34 @@ import {useIsFocused} from '@react-navigation/native';
 import {endpoint} from '../../Networking/endpoint';
 import FetchAPI from '../../Networking';
 import moment from 'moment';
+import {setNewEstimateInList} from '../../Constant';
+import {addNewEstimate} from '../../redux/reducers/user/UserReducer';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
-
+const tempData = {
+  user: '',
+  estimate_number: '',
+  b_id: '',
+  b_name: 'M',
+  b_email: '',
+  b_address1: '',
+  b_address2: '',
+  b_address3: '',
+  b_business_logo: '',
+  c_address1: '',
+  c_address2: '',
+  c_address3: '',
+  is_estimate_tax_inclusive: true,
+  notes: '',
+  is_paid: false,
+  _id: '',
+  items: [],
+  photos: [],
+  createdAt: '',
+  updatedAt: '',
+  __v: 0,
+};
 function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
@@ -73,7 +97,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   const [index, setIndex] = useState(0);
   const [routes] = useState(data);
   const [state, setState] = React.useState({open: false});
-  const [globalData, setGlobalData] = useState({});
+  const [globalData, setGlobalData] = useState(tempData);
 
   const onStateChange = ({open}) => setState({open});
   const [visible, setVisible] = React.useState(false);
@@ -91,12 +115,28 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
 
   useEffect(() => {
     if (route.params.status === 'create') {
-      createEstimateCall();
+      if (selector.token === 'Guest') {
+        offline();
+      } else {
+        createEstimateCall();
+      }
     }
     if (route.params.status === 'update') {
-      getEstimateCall(route?.params?.data);
+      if (selector.token === 'Guest') {
+        const index = findIndexById(
+          route?.params?.data.index,
+          selector.estimateList,
+        );
+        setOffline(selector.estimateList[index]);
+      } else {
+        getEstimateCall(route?.params?.data);
+      }
     }
   }, [route.params, isFocused]);
+
+  const findIndexById = (id: any, data: any) => {
+    return data.findIndex((item: any) => item.index === id);
+  };
 
   const getEstimateCall = async (estimateDetail: any) => {
     try {
@@ -116,13 +156,14 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
           {
             key: 'first',
             title: t('Discount'),
-            value: '$' + (element.estimate_discount_amount || 0),
+            value:
+              '$' + (parseFloat(element?.estimate_discount_amount || '0') || 0),
             onPress: () => navigateToDiscountScreen(),
           },
           {
             key: 'second',
             title: t('Tax'),
-            value: '$' + (element.estimate_total_tax_amount || 0),
+            value: '$' + parseFloat(element?.estimate_total_tax_amount || 0),
             onPress: () => navigateToTaxScreen(),
           },
 
@@ -131,12 +172,68 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
             title: t('Total'),
             value:
               '$' +
-              ((element.estimate_total_tax_amount || 0) +
-                (element.estimate_total || 0)),
+              (parseFloat(element?.estimate_total_tax_amount || 0) +
+                parseFloat(element?.estimate_total || 0)),
           },
         ]);
       }
     } catch (error) {}
+  };
+
+  const offline = () => {
+    const payload = setNewEstimateInList(selector);
+    dispatch(addNewEstimate(payload));
+    setGlobalData(payload);
+    setPaymentDue([
+      {
+        key: 'first',
+        title: t('Discount'),
+        value: '$' + (payload.estimate_discount_amount || 0),
+        onPress: () => navigateToDiscountScreen(),
+      },
+      {
+        key: 'second',
+        title: t('Tax'),
+        value: '$' + (payload.estimate_total_tax_amount || 0),
+        onPress: () => navigateToTaxScreen(),
+      },
+      {
+        key: 'third',
+        title: t('Total'),
+        value:
+          '$' +
+          ((payload.estimate_total_tax_amount || 0) +
+            (payload.estimate_total || 0)),
+      },
+    ]);
+  };
+
+  const setOffline = (payload: any) => {
+    setGlobalData(payload);
+    setPaymentDue([
+      {
+        key: 'first',
+        title: t('Discount'),
+        value:
+          '$' + (parseFloat(payload?.estimate_discount_amount || '0') || 0),
+        onPress: () => navigateToDiscountScreen(),
+      },
+      {
+        key: 'second',
+        title: t('Tax'),
+        value: '$' + parseFloat(payload?.estimate_total_tax_amount || 0),
+        onPress: () => navigateToTaxScreen(),
+      },
+
+      {
+        key: 'third',
+        title: t('Total'),
+        value:
+          '$' +
+          (parseFloat(payload?.estimate_total_tax_amount || '0') +
+            parseFloat(payload?.estimate_total || '0')),
+      },
+    ]);
   };
 
   const createEstimateCall = async () => {
@@ -193,6 +290,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
       navigation.navigate('BusinessDetails', {
         estimateUpdate: true,
         estimateID: globalData._id,
+        data: globalData,
       });
     }
   }
@@ -203,11 +301,13 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         estimateUpdate: true,
         estimateID: globalData._id,
         estimateData: globalData,
+        data: globalData,
       });
     } else {
       navigation.navigate('ClientScreen', {
         estimateUpdate: true,
         estimateID: globalData._id,
+        data: globalData,
       });
     }
   }
@@ -334,7 +434,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
                 </View>
                 <View>
                   <Text style={styles.dueBalText3}>
-                    {item.quantity + ' * $' + item.rate}
+                    {item.quantity + ' * $' + item.unit}
                   </Text>
                   <Text style={styles.dueBalText3}>{'$' + item.total}</Text>
                   <Text style={styles.dueBalText4}>
@@ -378,8 +478,8 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
           <View style={styles.dueBalFooter}>
             <Text style={styles.dueBalFooterText}>{t('Balance Due')}</Text>
             <Text style={styles.dueBalFooterText}>
-              {(globalData.estimate_total_tax_amount || 0) +
-                (globalData.estimate_total || 0)}
+              {parseFloat(globalData.estimate_total_tax_amount || 0) +
+                parseFloat(globalData.estimate_total || 0)}
             </Text>
           </View>
         </View>

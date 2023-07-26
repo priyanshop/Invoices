@@ -18,6 +18,7 @@ import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {
   setBusinessDetail,
+  setEstimateList,
   setInvoiceList,
 } from '../../redux/reducers/user/UserReducer';
 import {useTranslation} from 'react-i18next';
@@ -119,7 +120,11 @@ const BusinessDetails = ({navigation, route}: any) => {
         updateInvoice();
       }
     } else if (route?.params?.estimateUpdate) {
-      updateEstimate();
+      if (selector.token === 'Guest') {
+        offlineEstimateUpdate();
+      } else {
+        updateEstimate();
+      }
     } else {
       if (alreadyExist) {
         updateInfo();
@@ -263,6 +268,29 @@ const BusinessDetails = ({navigation, route}: any) => {
       return item;
     });
     dispatch(setInvoiceList(updatedArray));
+  };
+
+  const offlineEstimateUpdate = () => {
+    const updatedArray = selector.estimateList.map((item: any) => {
+      if (item.index === route?.params?.data.index) {
+        return {
+          ...item,
+          b_name: businessName,
+          b_owner_name: ownerName,
+          b_business_number: businessNumber,
+          b_email: email,
+          b_phone_number: Phone,
+          b_mobile_number: Mobile,
+          b_website: Website,
+          b_address1: address1,
+          b_address2: address2,
+          b_address3: address3,
+          b_business_logo: 'logo.png ',
+        };
+      }
+      return item;
+    });
+    dispatch(setEstimateList(updatedArray));
   };
 
   const updateEstimate = async () => {
