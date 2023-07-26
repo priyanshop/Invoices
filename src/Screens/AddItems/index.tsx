@@ -30,6 +30,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
   const [Quantity, setQuantity] = useState('1');
   const [Discount, setDiscount] = useState('No Discount');
   const [discountAmount, setDiscountAmount] = useState('');
+  const [taxRate, setTaxRate] = useState('1');
   const [openModal, setOpenModal] = useState(false);
 
   const closeBottomSheet = () => {
@@ -49,19 +50,30 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
   }, [navigation]);
 
   useEffect(() => {
-    if (route.params.invoiceUpdate) {
+    if (
+      route.params.invoiceUpdate &&
+      route.params.invoiceData &&
+      route.params.index !== null &&
+      route.params.index !== 'New'
+    ) {
       const temp = route.params.invoiceData.items[route.params.index];
       setDescription(temp.description);
       setDiscount(temp.discount_type);
-      setDiscountAmount(temp.discount_amount);
-      setNotes(temp.item_notes);
-      setQuantity(1);
-      setUnit(temp.unit);
-      setUnitCost(temp.rate);
-      setTaxable(temp.is_taxable)
+      if (temp.discount_type === 'Percentage') {
+        setDiscountAmount(temp.discount_rate.toString());
+      }
+      if (temp.discount_type === 'Flat Amount') {
+        setDiscountAmount(temp.discount_amount.toString());
+      }
+      setNotes(temp.item_notes.toString());
+      setQuantity(temp.quantity.toString());
+      setUnit(temp.rate.toString());
+      setUnitCost(temp.unit.toString());
+      setTaxable(temp.is_taxable);
+      setTaxRate(temp.item_tax_rate);
     }
-  }, [route.params])
-  
+  }, [route.params]);
+
   function navigateToAddPhotoScreen() {
     navigation.navigate('SelectItemScreen');
   }
@@ -93,82 +105,219 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
     return totalPrice;
   };
 
-  const getTotal = items => {
+  const discountPrice = (
+    itemPrice: any,
+    quantity: any,
+    discountType: any,
+    flatDiscount: any,
+    percentageDiscount: any,
+  ) => {
+    let totalPrice = itemPrice * (quantity || 1);
+    if (discountType !== 'No Discount') {
+      if (discountType === 'Flat Amount' && flatDiscount && flatDiscount > 0) {
+        return flatDiscount;
+      }
+      if (
+        discountType === 'Percentage' &&
+        percentageDiscount &&
+        percentageDiscount > 0
+      ) {
+        const percentageAmount = (totalPrice * percentageDiscount) / 100;
+        return percentageAmount;
+      }
+    }
+    return 0;
+  };
+
+  const getTotal = (items: any) => {
     let total = 0;
-    items.forEach(item => {
+    items.forEach((item: any) => {
       total += parseFloat(item.total);
     });
     return total.toFixed(2);
   };
 
-  const getTotalDiscountAmount = items => {
+  const getTotalDiscountAmount = (items: any) => {
     let totalDiscountAmount = 0;
-    items.forEach(item => {
-      totalDiscountAmount += parseFloat(item.discount_amount);
+    items.forEach((item: any) => {
+      totalDiscountAmount += parseFloat(item.discount_amount || 0);
     });
     return totalDiscountAmount.toFixed(2);
   };
 
   const update = async () => {
     try {
-      const data: any = {};
+      const tempIndex = route.params.index;
+      if (!tempIndex) {
+        const payload: any = {
+          description: Description,
+          unit: unitCost,
+          rate: unit,
+          discount_rate: Discount === 'Percentage' ? discountAmount : '',
+          discount_type: Discount,
+          discount_value: Discount === 'Flat Amount' ? discountAmount : '',
+          total: calculateTotalPrice(
+            unitCost,
+            Quantity,
+            Discount,
+            discountAmount,
+            discountAmount,
+          ),
+          is_taxable: Taxable.toString(),
+          item_notes: Notes,
+          item_tax_rate: taxRate,
+          quantity: Quantity,
+          discount_total: discountPrice(
+            unitCost,
+            Quantity,
+            Discount,
+            discountAmount,
+            discountAmount,
+          ),
+        };
+        const updatedItems = [...route.params.invoiceData.items];
+        updatedItems[0] = payload;
+        const totalAmount = getTotal(updatedItems);
+        const tempPayload: any = {
+          items: updatedItems,
+          // invoice_discount_type: '',
+          // invoice_discount_value: '',
+          invoice_discount_amount: discountAmount,
+          // invoice_tax_type: '',
+          // invoice_tax_label: '',
+          // invoice_tax_rate: '',
+          // is_invoice_tax_inclusive: 'false',
+          // invoice_total_tax_amount: '',
+          invoice_total: totalAmount,
+        };
+        if (selector.token === 'Guest') {
+          // navigation.goBack();
+        } else {
+          updateCall(tempPayload);
+        }
+      } else if (tempIndex === 'New') {
+        const payload: any = {
+          description: Description,
+          unit: unitCost,
+          rate: unit,
+          discount_rate: Discount === 'Percentage' ? discountAmount : '',
+          discount_type: Discount,
+          discount_value: Discount === 'Flat Amount' ? discountAmount : '',
+          total: calculateTotalPrice(
+            unitCost,
+            Quantity,
+            Discount,
+            discountAmount,
+            discountAmount,
+          ),
+          is_taxable: Taxable.toString(),
+          item_notes: Notes,
+          item_tax_rate: taxRate,
+          quantity: Quantity,
+          discount_total: discountPrice(
+            unitCost,
+            Quantity,
+            Discount,
+            discountAmount,
+            discountAmount,
+          ),
+        };
 
-      const payload: any = {
-        description: Description,
-        unit: unit,
-        rate: unitCost,
-        discount_rate: discountAmount,
-        discount_type: Discount,
-        discount_value: discountAmount,
-        discount_amount: discountAmount,
-        total: calculateTotalPrice(
-          unitCost,
-          Quantity,
-          Discount,
-          discountAmount,
-          discountAmount,
-        ),
-        discount_total: '10',
-        is_taxable: Taxable.toString(),
-        item_notes: Notes,
-      };
+        const updatedItemIndex = route.params.index;
+        let updatedItems = [...route.params.invoiceData.items];
+        updatedItems = [...updatedItems, payload];
+        const totalAmount = getTotal(updatedItems);
+        const totalDiscountAmount = getTotalDiscountAmount(updatedItems);
+        const data: any = route.params.invoiceData;
 
-      const updatedItemIndex = 0;
-      const updatedItems = [...data.items];
-      updatedItems[updatedItemIndex] = payload;
-      const totalAmount = getTotal(updatedItems);
-      const totalDiscountAmount = getTotalDiscountAmount(updatedItems);
-
-      const tempPayload: any = {
-        items: updatedItems,
-        invoice_discount_type: data.invoice_discount_type,
-        invoice_discount_value: data.invoice_discount_value,
-        invoice_discount_amount: totalDiscountAmount,
-        invoice_tax_type: data.invoice_tax_type,
-        invoice_tax_label: data.invoice_tax_label,
-        invoice_tax_rate: data.invoice_tax_rate,
-        is_invoice_tax_inclusive: data.is_invoice_tax_inclusive,
-        invoice_total_tax_amount: data.invoice_total_tax_amount,
-        invoice_total: totalAmount,
-      };
-      if (selector.token === 'Guest') {
-        // navigation.goBack();
+        const tempPayload: any = {
+          items: updatedItems,
+          invoice_discount_type: data.invoice_discount_type,
+          invoice_discount_value: data.invoice_discount_value,
+          invoice_discount_amount: totalDiscountAmount,
+          invoice_tax_type: data.invoice_tax_type,
+          invoice_tax_label: data.invoice_tax_label,
+          invoice_tax_rate: data.invoice_tax_rate,
+          is_invoice_tax_inclusive: data.is_invoice_tax_inclusive,
+          invoice_total_tax_amount: data.invoice_total_tax_amount,
+          invoice_total: totalAmount,
+        };
+        if (selector.token === 'Guest') {
+          // navigation.goBack();
+        } else {
+          updateCall(tempPayload);
+        }
       } else {
-        const data = await FetchAPI(
-          'patch',
-          endpoint.updateIVItem(route?.params?.invoiceID),
-          tempPayload,
-          {
-            Authorization: 'Bearer ' + selector.token,
-          },
-        );
-        if (data.status === 'success') {
-          navigation.goBack();
+        const payload: any = {
+          description: Description,
+          unit: unitCost,
+          rate: unit,
+          discount_rate: Discount === 'Percentage' ? discountAmount : '',
+          discount_type: Discount,
+          discount_value: Discount === 'Flat Amount' ? discountAmount : '',
+          total: calculateTotalPrice(
+            unitCost,
+            Quantity,
+            Discount,
+            discountAmount,
+            discountAmount,
+          ),
+          is_taxable: Taxable.toString(),
+          item_notes: Notes,
+          item_tax_rate: taxRate,
+          quantity: Quantity,
+          discount_total: discountPrice(
+            unitCost,
+            Quantity,
+            Discount,
+            discountAmount,
+            discountAmount,
+          ),
+        };
+
+        const updatedItemIndex = route.params.index;
+        const updatedItems = [...route.params.invoiceData.items];
+        updatedItems[updatedItemIndex] = payload;
+        const totalAmount = getTotal(updatedItems);
+        const totalDiscountAmount = getTotalDiscountAmount(updatedItems);
+        const data: any = route.params.invoiceData;
+
+        const tempPayload: any = {
+          items: updatedItems,
+          invoice_discount_type: data.invoice_discount_type,
+          invoice_discount_value: data.invoice_discount_value,
+          invoice_discount_amount: totalDiscountAmount,
+          invoice_tax_type: data.invoice_tax_type,
+          invoice_tax_label: data.invoice_tax_label,
+          invoice_tax_rate: data.invoice_tax_rate,
+          is_invoice_tax_inclusive: data.is_invoice_tax_inclusive,
+          invoice_total_tax_amount: data.invoice_total_tax_amount,
+          invoice_total: totalAmount,
+        };
+        if (selector.token === 'Guest') {
+          // navigation.goBack();
+        } else {
+          updateCall(tempPayload);
         }
       }
     } catch (error) {}
   };
 
+  const updateCall = async (tempPayload: any) => {
+    try {
+      const data = await FetchAPI(
+        'patch',
+        endpoint.updateIVItem(route?.params?.invoiceID),
+        tempPayload,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        navigation.goBack();
+      }
+    } catch (error) {}
+  };
   return (
     <>
       <StatusBar backgroundColor={Colors.appColor} />
@@ -190,7 +339,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
                     handleTextInputChange(value, setDescription)
                   }
                 />
-                <Text style={styles.errorTxt}>{'Error'}</Text>
+                {/* <Text style={styles.errorTxt}>{'Error'}</Text> */}
               </View>
             </View>
             <View style={styles.mainView}>
@@ -260,7 +409,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
             </View>
             {Discount !== 'No Discount' && (
               <View style={styles.mainView}>
-                <Text style={styles.label}>{t('Discount Amount')}: </Text>
+                <Text style={styles.label}>{Discount === 'Percentage' ? 'Discount Rate' : t('Discount Amount')}: </Text>
                 <View style={styles.inputContainer}>
                   <TextInput
                     value={discountAmount}
@@ -282,6 +431,24 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
                 onValueChange={(value: any) => setTaxable(value)}
               />
             </View>
+
+            {Taxable && (
+              <View style={styles.mainView}>
+                <Text style={styles.label}>{t('Tax Rate')}: </Text>
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    value={taxRate}
+                    style={styles.input}
+                    placeholder={'1'}
+                    placeholderTextColor={'grey'}
+                    keyboardType="numeric"
+                    onChangeText={value =>
+                      handleTextInputChange(value, setTaxRate)
+                    }
+                  />
+                </View>
+              </View>
+            )}
           </View>
           <View style={styles.totalView}>
             <Text style={styles.totalTxt}>{t('Total')}:</Text>
@@ -319,9 +486,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
           </View>
         </View>
 
-        <TouchableOpacity
-          // onPress={true ? update : create}
-          style={styles.statementBtn}>
+        <TouchableOpacity onPress={update} style={styles.statementBtn}>
           <Text style={[styles.titleTxt2, {color: '#fff', fontWeight: '600'}]}>
             {true ? t('Update') : t('Create')}
           </Text>

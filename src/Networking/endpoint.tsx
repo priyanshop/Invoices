@@ -6,7 +6,7 @@ const API_TYPE = {
   ITEMS: 'items',
   SETTINGS: 'settings',
   INVOICES: 'invoices',
-  ESTIMATE: 'estimate',
+  ESTIMATE: 'estimates',
 };
 
 export const endpoint = {

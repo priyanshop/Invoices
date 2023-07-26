@@ -192,7 +192,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       );
       if (data.status === 'success') {
         const element = data.data;
-        // setGlobalData(element);
+        setGlobalData(element);
       }
     } catch (error) {}
   };
@@ -204,7 +204,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       });
       if (data.status === 'success') {
         const element = data.data;
-        // setGlobalData(element);
+        setGlobalData(element);
       }
     } catch (error) {}
   };
@@ -250,6 +250,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     navigation.navigate('AddItemScreen', {
       invoiceUpdate: true,
       invoiceID: globalData._id,
+      invoiceData: globalData,
     });
   }
 
@@ -353,7 +354,9 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
                 </Text>
               </View>
               <View>
-                <Text style={styles.dueBalText3}>{'0 * $' + item.rate}</Text>
+                <Text style={styles.dueBalText3}>
+                  {item.quantity + ' * $' + item.rate}
+                </Text>
                 <Text style={styles.dueBalText3}>{'$' + item.total}</Text>
                 <Text style={styles.dueBalText4}>
                   {'-$' + item.discount_amount}
@@ -362,7 +365,11 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
             </TouchableOpacity>
           ))}
           <TouchableOpacity
-            onPress={navigateToAddItemScreen}
+            onPress={() =>
+              globalData.items.length > 0
+                ? navigateToItemScreen('New')
+                : navigateToAddItemScreen()
+            }
             style={styles.ItemColumn}>
             <View>
               <Text style={styles.addItemTxt}>{t('Add Item')} </Text>
@@ -374,22 +381,24 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
           </TouchableOpacity>
           <View style={styles.itemTotal}>
             <Text style={styles.itemTotalTxt}>{t('Subtotal')}</Text>
-            <Text style={styles.itemTotalTxt}>195</Text>
+            <Text style={styles.itemTotalTxt}>{globalData.invoice_total}</Text>
           </View>
         </View>
 
         <View style={styles.dueBalContainer}>
-          {[0, 0, 0, 0, 0].map(() => (
-            <View style={styles.dueBalContent}>
-              <View style={styles.dueBalRow}>
-                <Text style={styles.dueBalText}>{t('Discount')}</Text>
-                <Text style={styles.dueBalText}>$0.00</Text>
-              </View>
+          <View style={styles.dueBalContent}>
+            <View style={styles.dueBalRow}>
+              <Text style={styles.dueBalText}>{t('Discount')}</Text>
+              <Text style={styles.dueBalText}>
+                {globalData.invoice_discount_amount}
+              </Text>
             </View>
-          ))}
+          </View>
           <View style={styles.dueBalFooter}>
             <Text style={styles.dueBalFooterText}>{t('Balance Due')}</Text>
-            <Text style={styles.dueBalFooterText}>195</Text>
+            <Text style={styles.dueBalFooterText}>
+              {globalData.invoice_total}
+            </Text>
           </View>
         </View>
 
@@ -819,12 +828,12 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   dueBalText2: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '400',
     color: 'grey',
   },
   dueBalText4: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '400',
     color: 'grey',
     textAlign: 'right',
