@@ -59,8 +59,6 @@ const invoices = [
   },
 ];
 
-
-
 const OpenRoute = () => {
   const renderInvoiceItem = ({item}: any) => (
     <View style={styles.invoiceItem}>
@@ -154,7 +152,6 @@ function EstimatesScreen({navigation}: any): JSX.Element {
           const savedData: any = convertData(data.data);
           console.log(savedData);
           setAllData(savedData);
-          
         }
       }
     } catch (error) {}
@@ -200,20 +197,27 @@ function EstimatesScreen({navigation}: any): JSX.Element {
     return transformedData;
   };
 
+  function navigateToEstimate(item: any) {
+    navigation.navigate('EstimationCreation', {status: 'update', data: item});
+  }
+
   const AllRoute = () => {
     const renderInvoiceItem = ({item}: any) => (
-      <View style={styles.invoiceItem}>
+      <TouchableOpacity
+        onPress={() => navigateToEstimate(item)}
+        style={styles.invoiceItem}>
         <View>
           <Text style={styles.clientText}>{`${item.client}`}</Text>
-          <Text style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
+          <Text
+            style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
         </View>
         <View>
           <Text style={styles.priceText}>{`$${item.price}`}</Text>
           <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
-  
+
     const renderSectionHeader = ({section: {year}}) => (
       <View style={styles.sectionHeaderContain}>
         <Text style={styles.sectionHeader}>{year}</Text>
@@ -237,7 +241,7 @@ function EstimatesScreen({navigation}: any): JSX.Element {
   }
 
   function navigateToAddEstimate() {
-    navigation.navigate('EstimationCreation');
+    navigation.navigate('EstimationCreation', {status: 'create'});
   }
 
   return (

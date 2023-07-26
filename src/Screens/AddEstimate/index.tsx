@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
   ScrollView,
   StatusBar,
@@ -18,12 +18,20 @@ import {getScreenDimensions} from '../../Helper/ScreenDimension';
 import {Colors} from '../../Helper/Colors';
 import {actionStyle, fabStyle} from '../../Helper/CommonStyle';
 import {useTranslation} from 'react-i18next';
+import {useSelector, useDispatch} from 'react-redux';
+import {useIsFocused} from '@react-navigation/native';
+import {endpoint} from '../../Networking/endpoint';
+import FetchAPI from '../../Networking';
+import moment from 'moment';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
 
-function EstimationCreationScreen({navigation}: any): JSX.Element {
+function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   const {t, i18n} = useTranslation();
+  const dispatch = useDispatch();
+  const isFocused = useIsFocused();
+  const selector = useSelector((state: any) => state.user);
   const data = [
     {key: 'first', title: t('Edit')},
     {key: 'second', title: t('Preview')},
@@ -65,9 +73,11 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
   const [index, setIndex] = useState(0);
   const [routes] = useState(data);
   const [state, setState] = React.useState({open: false});
+  const [globalData, setGlobalData] = useState({});
 
   const onStateChange = ({open}) => setState({open});
   const [visible, setVisible] = React.useState(false);
+  const [paymentDue, setPaymentDue] = useState([]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -79,6 +89,90 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
     });
   }, [navigation]);
 
+  useEffect(() => {
+    if (route.params.status === 'create') {
+      createEstimateCall();
+    }
+    if (route.params.status === 'update') {
+      getEstimateCall(route?.params?.data);
+    }
+  }, [route.params, isFocused]);
+
+  const getEstimateCall = async (estimateDetail: any) => {
+    try {
+      const data = await FetchAPI(
+        'get',
+        endpoint.getEstimateDetail(estimateDetail._id),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+        setGlobalData(element);
+
+        setPaymentDue([
+          {
+            key: 'first',
+            title: t('Discount'),
+            value: '$' + (element.estimate_discount_amount || 0),
+            onPress: () => navigateToDiscountScreen(),
+          },
+          {
+            key: 'second',
+            title: t('Tax'),
+            value: '$' + (element.estimate_total_tax_amount || 0),
+            onPress: () => navigateToTaxScreen(),
+          },
+
+          {
+            key: 'third',
+            title: t('Total'),
+            value:
+              '$' +
+              ((element.estimate_total_tax_amount || 0) +
+                (element.estimate_total || 0)),
+          },
+        ]);
+      }
+    } catch (error) {}
+  };
+
+  const createEstimateCall = async () => {
+    try {
+      const data = await FetchAPI('post', endpoint.createEstimate, null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        const element = data.data;
+        setGlobalData(element);
+        setPaymentDue([
+          {
+            key: 'first',
+            title: t('Discount'),
+            value: '$' + (element.estimate_discount_amount || 0),
+            onPress: () => navigateToDiscountScreen(),
+          },
+          {
+            key: 'second',
+            title: t('Tax'),
+            value: '$' + (element.estimate_total_tax_amount || 0),
+            onPress: () => navigateToTaxScreen(),
+          },
+          {
+            key: 'third',
+            title: t('Total'),
+            value:
+              '$' +
+              ((element.estimate_total_tax_amount || 0) +
+                (element.estimate_total || 0)),
+          },
+        ]);
+      }
+    } catch (error) {}
+  };
+
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
@@ -89,16 +183,43 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
   }
 
   function navigateToBusinessDetails() {
-    navigation.navigate('BusinessDetails');
+    if (route.params.status === 'update') {
+      navigation.navigate('BusinessDetails', {
+        estimateUpdate: true,
+        estimateID: globalData._id,
+        data: globalData,
+      });
+    } else {
+      navigation.navigate('BusinessDetails', {
+        estimateUpdate: true,
+        estimateID: globalData._id,
+      });
+    }
   }
 
   function navigateToAddClientScreen() {
-    navigation.navigate('AddClientScreen');
+    if (globalData.c_name) {
+      navigation.navigate('AddClientScreen', {
+        estimateUpdate: true,
+        estimateID: globalData._id,
+        estimateData: globalData,
+      });
+    } else {
+      navigation.navigate('ClientScreen', {
+        estimateUpdate: true,
+        estimateID: globalData._id,
+      });
+    }
   }
 
-  function navigateToAddItemScreen() {
-    navigation.navigate('AddItemScreen');
-  }
+  const navigateToAddItemScreen = () => {
+    console.log('ssss', globalData._id);
+    navigation.navigate('AddItemScreen', {
+      estimateUpdate: true,
+      estimateID: globalData._id,
+      estimateData: globalData,
+    });
+  };
 
   function navigateToAddPhotoScreen() {
     navigation.navigate('AddPhotoScreen');
@@ -109,7 +230,11 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
   }
 
   function navigateToAdditionalDetails() {
-    navigation.navigate('AdditionalDetails');
+    navigation.navigate('AdditionalDetails', {
+      estimateUpdate: true,
+      estimateID: globalData._id,
+      estimateData: globalData,
+    });
   }
 
   function navigateToInvoiceNumber() {
@@ -126,6 +251,15 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
 
   function navigateToTaxScreen() {
     navigation.navigate('TaxScreen');
+  }
+
+  function navigateToItemScreen(index: any) {
+    navigation.navigate('AddItemScreen', {
+      estimateUpdate: true,
+      estimateID: globalData._id,
+      estimateData: globalData,
+      index: index,
+    });
   }
 
   const itemsData = [
@@ -153,7 +287,9 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
           onPress={navigateToInvoiceNumber}
           style={styles.invoiceTopView}>
           <View style={{justifyContent: 'space-between'}}>
-            <Text style={styles.invoiceTitle}>EST0001</Text>
+            <Text style={styles.invoiceTitle}>
+              {globalData.estimate_number || ''}
+            </Text>
             <Text
               onPress={navigateToBusinessDetails}
               style={styles.businessInfo}>
@@ -161,20 +297,58 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
             </Text>
           </View>
           <View style={{justifyContent: 'flex-end'}}>
-            <Text style={styles.dueDate}>06/07/2023</Text>
+            <Text style={styles.dueDate}>
+              {moment(globalData.createdAt).format(selector.globalDateFormat)}
+            </Text>
           </View>
         </TouchableOpacity>
 
         <View style={styles.clientView}>
           <Text style={styles.toTxt}>{t('To')} : </Text>
-          <Text onPress={navigateToAddClientScreen} style={styles.clientTxt}>
-            {t('Client')}
-          </Text>
+          {globalData.c_name ? (
+            <Text onPress={navigateToAddClientScreen} style={styles.toTxt}>
+              {globalData.c_name}{' '}
+            </Text>
+          ) : (
+            <Text onPress={navigateToAddClientScreen} style={styles.clientTxt}>
+              {t('Client')}
+            </Text>
+          )}
         </View>
 
         <View style={styles.ItemView}>
+          {globalData?.items?.length > 0 &&
+            globalData?.items?.map((item: any, index: number) => (
+              <TouchableOpacity
+                onPress={() => navigateToItemScreen(index)}
+                style={styles.ItemColumn}>
+                <View>
+                  <Text style={styles.dueBalText}>{item.description} </Text>
+                  <Text style={styles.dueBalText2}>{item.item_notes} </Text>
+                  <Text style={styles.dueBalText2}>
+                    {'Discount'}{' '}
+                    {item.discount_type === 'Percentage'
+                      ? item.discount_rate + '%'
+                      : ''}{' '}
+                  </Text>
+                </View>
+                <View>
+                  <Text style={styles.dueBalText3}>
+                    {item.quantity + ' * $' + item.rate}
+                  </Text>
+                  <Text style={styles.dueBalText3}>{'$' + item.total}</Text>
+                  <Text style={styles.dueBalText4}>
+                    {'-$' + item.discount_amount}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ))}
           <TouchableOpacity
-            onPress={navigateToAddItemScreen}
+            onPress={() =>
+              globalData?.items?.length > 0
+                ? navigateToItemScreen('New')
+                : navigateToAddItemScreen()
+            }
             style={styles.ItemColumn}>
             <View>
               <Text style={styles.addItemTxt}>{t('Add Item')} </Text>
@@ -186,12 +360,12 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
           </TouchableOpacity>
           <View style={styles.itemTotal}>
             <Text style={styles.itemTotalTxt}>{t('Subtotal')}</Text>
-            <Text style={styles.itemTotalTxt}>195</Text>
+            <Text style={styles.itemTotalTxt}>{globalData.estimate_total}</Text>
           </View>
         </View>
 
         <View style={styles.dueBalContainer}>
-          {itemsData.map((selectedItem: any) => (
+          {paymentDue.map((selectedItem: any) => (
             <View style={styles.dueBalContent}>
               <TouchableOpacity
                 onPress={selectedItem.onPress}
@@ -203,7 +377,10 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
           ))}
           <View style={styles.dueBalFooter}>
             <Text style={styles.dueBalFooterText}>{t('Balance Due')}</Text>
-            <Text style={styles.dueBalFooterText}>195</Text>
+            <Text style={styles.dueBalFooterText}>
+              {(globalData.estimate_total_tax_amount || 0) +
+                (globalData.estimate_total || 0)}
+            </Text>
           </View>
         </View>
 
@@ -223,7 +400,13 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
           <TouchableOpacity
             onPress={navigateToAdditionalDetails}
             style={styles.notesLastRow}>
-            <Text style={styles.notesText}>{t('Notes')}</Text>
+            {globalData.notes ? (
+              <Text onPress={navigateToAdditionalDetails} style={styles.toTxt}>
+                {globalData.notes}{' '}
+              </Text>
+            ) : (
+              <Text style={styles.notesText}>{t('Notes')}</Text>
+            )}
           </TouchableOpacity>
         </View>
 
@@ -268,7 +451,7 @@ function EstimationCreationScreen({navigation}: any): JSX.Element {
           <Menu
             visible={visible}
             onDismiss={closeMenu}
-            anchor={{x: screenWidth-10, y: -10}}>
+            anchor={{x: screenWidth - 10, y: -10}}>
             <Menu.Item onPress={() => {}} title={t('Delete')} />
             <Menu.Item onPress={() => {}} title={t('Open In ..')} />
             <Menu.Item onPress={() => {}} title={t('Share')} />
@@ -602,6 +785,23 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '400',
     color: '#000',
+  },
+  dueBalText3: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#000',
+    textAlign: 'right',
+  },
+  dueBalText2: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: 'grey',
+  },
+  dueBalText4: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: 'grey',
+    textAlign: 'right',
   },
   dueBalFooter: {
     backgroundColor: Colors.landingColor,

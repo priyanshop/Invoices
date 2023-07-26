@@ -26,6 +26,9 @@ function AdditionalDetails({navigation, route}: any): JSX.Element {
     if (route?.params?.invoiceUpdate) {
       setAdditionalDetails(route?.params?.invoiceData?.notes)
     }
+    if (route?.params?.estimateUpdate) {
+      setAdditionalDetails(route?.params?.estimateData?.notes)
+    }
   }, [route?.params]);
 
   const updateIVNotesDetail = async () => {
@@ -49,11 +52,33 @@ function AdditionalDetails({navigation, route}: any): JSX.Element {
     } catch (error) {}
   };
 
+  const updateETNotesDetail = async () => {
+    try {
+      const payload: any = {
+        notes: additionalDetails,
+      };
+      if (selector.token === 'Guest') {
+      } else {
+        const data = await FetchAPI(
+          'patch',
+          endpoint.updateETNotes(route?.params?.estimateID),
+          payload,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+        }
+      }
+    } catch (error) {}
+  };
   const checkCondition = (text: any) => {
     setAdditionalDetails(text);
     if (route?.params?.invoiceUpdate) {
       updateIVNotesDetail();
-    } else {
+    } else if (route?.params?.estimateUpdate) {
+      updateETNotesDetail();
+    }else{
     }
   };
 

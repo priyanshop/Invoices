@@ -160,6 +160,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
 
   const onStateChange = ({open}) => setState({open});
   const [visible, setVisible] = React.useState(false);
+  const [paymentDue, setPaymentDue] = useState([]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -193,6 +194,29 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       if (data.status === 'success') {
         const element = data.data;
         setGlobalData(element);
+        setPaymentDue([
+          {
+            key: 'first',
+            title: t('Discount'),
+            value: '$' + (element.invoice_discount_amount || 0),
+            onPress: () => navigateToDiscountScreen(),
+          },
+          {
+            key: 'second',
+            title: t('Tax'),
+            value: '$' + (element.invoice_total_tax_amount || 0),
+            onPress: () => navigateToTaxScreen(),
+          },
+
+          {
+            key: 'third',
+            title: t('Total'),
+            value:
+              '$' +
+              ((element.invoice_total_tax_amount || 0) +
+                (element.invoice_total || 0)),
+          },
+        ]);
       }
     } catch (error) {}
   };
@@ -205,6 +229,29 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       if (data.status === 'success') {
         const element = data.data;
         setGlobalData(element);
+        setPaymentDue([
+          {
+            key: 'first',
+            title: t('Discount'),
+            value: '$' + (element.invoice_discount_amount || 0),
+            onPress: () => navigateToDiscountScreen(),
+          },
+          {
+            key: 'second',
+            title: t('Tax'),
+            value: '$' + (element.invoice_total_tax_amount || 0),
+            onPress: () => navigateToTaxScreen(),
+          },
+
+          {
+            key: 'third',
+            title: t('Total'),
+            value:
+              '$' +
+              ((element.invoice_total_tax_amount || 0) +
+                (element.invoice_total || 0)),
+          },
+        ]);
       }
     } catch (error) {}
   };
@@ -339,7 +386,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         </View>
 
         <View style={styles.ItemView}>
-          {globalData.items.map((item: any, index: number) => (
+          {globalData?.items?.length > 0 &&  globalData?.items?.map((item: any, index: number) => (
             <TouchableOpacity
               onPress={() => navigateToItemScreen(index)}
               style={styles.ItemColumn}>
@@ -386,14 +433,16 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         </View>
 
         <View style={styles.dueBalContainer}>
-          <View style={styles.dueBalContent}>
-            <View style={styles.dueBalRow}>
-              <Text style={styles.dueBalText}>{t('Discount')}</Text>
-              <Text style={styles.dueBalText}>
-                {globalData.invoice_discount_amount}
-              </Text>
+        {paymentDue.map((selectedItem: any) => (
+            <View style={styles.dueBalContent}>
+              <TouchableOpacity
+                onPress={selectedItem.onPress}
+                style={styles.dueBalRow}>
+                <Text style={styles.dueBalText}>{selectedItem.title}</Text>
+                <Text style={styles.dueBalText}>{selectedItem.value}</Text>
+              </TouchableOpacity>
             </View>
-          </View>
+          ))}
           <View style={styles.dueBalFooter}>
             <Text style={styles.dueBalFooterText}>{t('Balance Due')}</Text>
             <Text style={styles.dueBalFooterText}>
@@ -419,7 +468,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
             globalData.additional_payment_instructions ? (
               <Text
                 numberOfLines={1}
-                onPress={navigateToAdditionalDetails}
+                onPress={navigateToPaymentInfo}
                 style={styles.toTxt}>
                 {'Payment:  '}
                 {globalData.paypal_email && 'PayPal,'}{' '}

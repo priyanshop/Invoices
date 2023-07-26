@@ -74,6 +74,31 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
     }
   }, [route.params]);
 
+  useEffect(() => {
+    if (
+      route.params.estimateUpdate &&
+      route.params.estimateData &&
+      route.params.index !== null &&
+      route.params.index !== 'New'
+    ) {
+      const temp = route.params.estimateData.items[route.params.index];
+      setDescription(temp.description);
+      setDiscount(temp.discount_type);
+      if (temp.discount_type === 'Percentage') {
+        setDiscountAmount(temp.discount_rate.toString());
+      }
+      if (temp.discount_type === 'Flat Amount') {
+        setDiscountAmount(temp.discount_amount.toString());
+      }
+      setNotes(temp.item_notes.toString());
+      setQuantity(temp.quantity.toString());
+      setUnit(temp.rate.toString());
+      setUnitCost(temp.unit.toString());
+      setTaxable(temp.is_taxable);
+      setTaxRate(temp.item_tax_rate);
+    }
+  }, [route.params]);
+
   function navigateToAddPhotoScreen() {
     navigation.navigate('SelectItemScreen');
   }
@@ -145,6 +170,17 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
     return totalDiscountAmount.toFixed(2);
   };
 
+  function getTotalTaxAmount(products: any) {
+    const totalTaxAmount = products.reduce((acc: any, product: any) => {
+      const taxAmount =
+        parseFloat(product.total || 0) *
+        (parseFloat(product.item_tax_rate || 0) * 0.01);
+      return acc + taxAmount;
+    }, 0);
+
+    return totalTaxAmount;
+  }
+
   const update = async () => {
     try {
       const tempIndex = route.params.index;
@@ -178,6 +214,8 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
         const updatedItems = [...route.params.invoiceData.items];
         updatedItems[0] = payload;
         const totalAmount = getTotal(updatedItems);
+        const totalTax = getTotalTaxAmount(updatedItems);
+
         const tempPayload: any = {
           items: updatedItems,
           // invoice_discount_type: '',
@@ -187,7 +225,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
           // invoice_tax_label: '',
           // invoice_tax_rate: '',
           // is_invoice_tax_inclusive: 'false',
-          // invoice_total_tax_amount: '',
+          invoice_total_tax_amount: totalTax,
           invoice_total: totalAmount,
         };
         if (selector.token === 'Guest') {
@@ -229,6 +267,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
         const totalAmount = getTotal(updatedItems);
         const totalDiscountAmount = getTotalDiscountAmount(updatedItems);
         const data: any = route.params.invoiceData;
+        const totalTax = getTotalTaxAmount(updatedItems);
 
         const tempPayload: any = {
           items: updatedItems,
@@ -239,7 +278,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
           invoice_tax_label: data.invoice_tax_label,
           invoice_tax_rate: data.invoice_tax_rate,
           is_invoice_tax_inclusive: data.is_invoice_tax_inclusive,
-          invoice_total_tax_amount: data.invoice_total_tax_amount,
+          invoice_total_tax_amount: totalTax,
           invoice_total: totalAmount,
         };
         if (selector.token === 'Guest') {
@@ -281,6 +320,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
         const totalAmount = getTotal(updatedItems);
         const totalDiscountAmount = getTotalDiscountAmount(updatedItems);
         const data: any = route.params.invoiceData;
+        const totalTax = getTotalTaxAmount(updatedItems);
 
         const tempPayload: any = {
           items: updatedItems,
@@ -291,13 +331,175 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
           invoice_tax_label: data.invoice_tax_label,
           invoice_tax_rate: data.invoice_tax_rate,
           is_invoice_tax_inclusive: data.is_invoice_tax_inclusive,
-          invoice_total_tax_amount: data.invoice_total_tax_amount,
+          invoice_total_tax_amount: totalTax,
           invoice_total: totalAmount,
         };
         if (selector.token === 'Guest') {
           // navigation.goBack();
         } else {
           updateCall(tempPayload);
+        }
+      }
+    } catch (error) {}
+  };
+
+  const updateEstimate = async () => {
+    try {
+      const tempIndex = route.params.index;
+      if (!tempIndex) {
+        const payload: any = {
+          description: Description,
+          unit: unitCost,
+          rate: unit,
+          discount_rate: Discount === 'Percentage' ? discountAmount : '',
+          discount_type: Discount,
+          discount_value: Discount === 'Flat Amount' ? discountAmount : '',
+          total: calculateTotalPrice(
+            unitCost,
+            Quantity,
+            Discount,
+            discountAmount,
+            discountAmount,
+          ),
+          is_taxable: Taxable.toString(),
+          item_notes: Notes,
+          item_tax_rate: taxRate,
+          quantity: Quantity,
+          discount_total: discountPrice(
+            unitCost,
+            Quantity,
+            Discount,
+            discountAmount,
+            discountAmount,
+          ),
+        };
+        const updatedItems = [...route.params.estimateData.items];
+        updatedItems[0] = payload;
+        const totalAmount = getTotal(updatedItems);
+        const totalTax = getTotalTaxAmount(updatedItems);
+
+        const tempPayload: any = {
+          items: updatedItems,
+          // estimate_discount_type: 'zero',
+          // estimate_discount_value: '100',
+          estimate_discount_amount: discountAmount,
+          // estimate_tax_type: 'zero',
+          // estimate_tax_label: 'aaaa',
+          // estimate_tax_rate: '10',
+          // is_estimate_tax_inclusive: 'false',
+          estimate_total_tax_amount: totalTax,
+          estimate_total: totalAmount,
+        };
+        if (selector.token === 'Guest') {
+          // navigation.goBack();
+        } else {
+          updateETCall(tempPayload);
+        }
+      } else if (tempIndex === 'New') {
+        const payload: any = {
+          description: Description,
+          unit: unitCost,
+          rate: unit,
+          discount_rate: Discount === 'Percentage' ? discountAmount : '',
+          discount_type: Discount,
+          discount_value: Discount === 'Flat Amount' ? discountAmount : '',
+          total: calculateTotalPrice(
+            unitCost,
+            Quantity,
+            Discount,
+            discountAmount,
+            discountAmount,
+          ),
+          is_taxable: Taxable.toString(),
+          item_notes: Notes,
+          item_tax_rate: taxRate,
+          quantity: Quantity,
+          discount_total: discountPrice(
+            unitCost,
+            Quantity,
+            Discount,
+            discountAmount,
+            discountAmount,
+          ),
+        };
+
+        const updatedItemIndex = route.params.index;
+        let updatedItems = [...route.params.estimateData.items];
+        updatedItems = [...updatedItems, payload];
+        const totalAmount = getTotal(updatedItems);
+        const totalDiscountAmount = getTotalDiscountAmount(updatedItems);
+        const data: any = route.params.estimateData;
+        const totalTax = getTotalTaxAmount(updatedItems);
+
+        const tempPayload: any = {
+          items: updatedItems,
+          estimate_discount_type: data.estimate_discount_type,
+          estimate_discount_value: data.estimate_discount_value,
+          estimate_discount_amount: totalDiscountAmount,
+          estimate_tax_type: data.estimate_tax_type,
+          estimate_tax_label: data.estimate_tax_label,
+          estimate_tax_rate: data.estimate_tax_rate,
+          is_estimate_tax_inclusive: data.is_estimate_tax_inclusive,
+          estimate_total_tax_amount: totalTax,
+          estimate_total: totalAmount,
+        };
+        if (selector.token === 'Guest') {
+          // navigation.goBack();
+        } else {
+          updateETCall(tempPayload);
+        }
+      } else {
+        const payload: any = {
+          description: Description,
+          unit: unitCost,
+          rate: unit,
+          discount_rate: Discount === 'Percentage' ? discountAmount : '',
+          discount_type: Discount,
+          discount_value: Discount === 'Flat Amount' ? discountAmount : '',
+          total: calculateTotalPrice(
+            unitCost,
+            Quantity,
+            Discount,
+            discountAmount,
+            discountAmount,
+          ),
+          is_taxable: Taxable.toString(),
+          item_notes: Notes,
+          item_tax_rate: taxRate,
+          quantity: Quantity,
+          discount_total: discountPrice(
+            unitCost,
+            Quantity,
+            Discount,
+            discountAmount,
+            discountAmount,
+          ),
+        };
+
+        const updatedItemIndex = route.params.index;
+        const updatedItems = [...route.params.estimateData.items];
+        updatedItems[updatedItemIndex] = payload;
+        const totalAmount = getTotal(updatedItems);
+        const totalDiscountAmount = getTotalDiscountAmount(updatedItems);
+        const data: any = route.params.estimateData;
+        const totalTax = getTotalTaxAmount(updatedItems);
+
+        const tempPayload: any = {
+          items: updatedItems,
+          estimate_discount_type: data.estimate_discount_type,
+          estimate_discount_value: data.estimate_discount_value,
+          estimate_discount_amount: totalDiscountAmount,
+          estimate_tax_type: data.estimate_tax_type,
+          estimate_tax_label: data.estimate_tax_label,
+          estimate_tax_rate: data.estimate_tax_rate,
+          is_estimate_tax_inclusive: data.is_estimate_tax_inclusive,
+          estimate_total_tax_amount: totalTax,
+          estimate_total: totalAmount,
+        };
+        if (selector.token === 'Guest') {
+          // navigation.goBack();
+        } else {
+          updateETCall(tempPayload);
         }
       }
     } catch (error) {}
@@ -317,6 +519,33 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
         navigation.goBack();
       }
     } catch (error) {}
+  };
+
+  const updateETCall = async (tempPayload: any) => {
+    try {
+      const data = await FetchAPI(
+        'patch',
+        endpoint.updateETItem(route?.params?.estimateID),
+        tempPayload,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        navigation.goBack();
+      }
+    } catch (error) {}
+  };
+
+  const checkCondition = () => {
+    console.log(route.params.invoiceUpdate, route.params.estimateUpdate);
+
+    if (route.params.invoiceUpdate) {
+      update();
+    }
+    if (route.params.estimateUpdate) {
+      updateEstimate();
+    }
   };
   return (
     <>
@@ -409,7 +638,12 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
             </View>
             {Discount !== 'No Discount' && (
               <View style={styles.mainView}>
-                <Text style={styles.label}>{Discount === 'Percentage' ? 'Discount Rate' : t('Discount Amount')}: </Text>
+                <Text style={styles.label}>
+                  {Discount === 'Percentage'
+                    ? 'Discount Rate'
+                    : t('Discount Amount')}
+                  :{' '}
+                </Text>
                 <View style={styles.inputContainer}>
                   <TextInput
                     value={discountAmount}
@@ -486,7 +720,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
           </View>
         </View>
 
-        <TouchableOpacity onPress={update} style={styles.statementBtn}>
+        <TouchableOpacity onPress={checkCondition} style={styles.statementBtn}>
           <Text style={[styles.titleTxt2, {color: '#fff', fontWeight: '600'}]}>
             {true ? t('Update') : t('Create')}
           </Text>

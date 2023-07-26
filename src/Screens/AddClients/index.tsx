@@ -1,4 +1,4 @@
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,27 +9,27 @@ import {
   PermissionsAndroid,
   Alert,
 } from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
-import {selectContactPhone} from 'react-native-select-contact';
-import {Menu} from 'react-native-paper';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectContactPhone } from 'react-native-select-contact';
+import { Menu } from 'react-native-paper';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import FetchAPI from '../../Networking';
-import {endpoint} from '../../Networking/endpoint';
-import {Colors} from '../../Helper/Colors';
-import {getScreenDimensions} from '../../Helper/ScreenDimension';
+import { endpoint } from '../../Networking/endpoint';
+import { Colors } from '../../Helper/Colors';
+import { getScreenDimensions } from '../../Helper/ScreenDimension';
 import {
   addClientInList,
   setClientList,
 } from '../../redux/reducers/user/UserReducer';
-import {removeObjectByIndex} from '../../Helper/CommonFunctions';
+import { removeObjectByIndex } from '../../Helper/CommonFunctions';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
 
-const AddClientScreen = ({navigation, route}: any) => {
+const AddClientScreen = ({ navigation, route }: any) => {
   const dispatch = useDispatch();
-  const {t, i18n} = useTranslation();
+  const { t, i18n } = useTranslation();
   const selector = useSelector((state: any) => state.user);
   const [clientName, setClientName] = useState('');
   const [contact, setContact] = useState('');
@@ -47,7 +47,7 @@ const AddClientScreen = ({navigation, route}: any) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <TouchableOpacity style={{marginRight: 10}} onPress={openMenu}>
+        <TouchableOpacity style={{ marginRight: 10 }} onPress={openMenu}>
           <Entypo name="dots-three-vertical" size={20} color="#fff" />
         </TouchableOpacity>
       ),
@@ -67,6 +67,8 @@ const AddClientScreen = ({navigation, route}: any) => {
     console.log('route.params', JSON.stringify(route.params));
     if (route.params.invoiceUpdate) {
       fetchClient2(route.params.invoiceData);
+    } else if (route.params.estimateUpdate) {
+      fetchClient2(route.params.estimateData);
     } else {
       if (route?.params?.clientId && selector.token !== 'Guest') {
         getClient(route.params.clientId);
@@ -109,6 +111,8 @@ const AddClientScreen = ({navigation, route}: any) => {
   const checkCondition = () => {
     if (route.params.invoiceUpdate) {
       updateInvoice();
+    }else if (route.params.estimateUpdate) {
+      updateEstimate();
     } else {
       alreadyExist ? update : create;
     }
@@ -141,7 +145,7 @@ const AddClientScreen = ({navigation, route}: any) => {
           navigation.goBack();
         }
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   const updateInvoice = async () => {
     try {
@@ -171,9 +175,40 @@ const AddClientScreen = ({navigation, route}: any) => {
           navigation.goBack();
         }
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
+  const updateEstimate = async () => {
+    try {
+      const payload: any = {
+        c_name: clientName,
+        c_email: email,
+        c_mobile_number: Mobile,
+        c_phone_number: Phone,
+        c_fax: fax,
+        c_contact: contact,
+        c_address1: address1,
+        c_address2: address2,
+        c_address3: address3,
+      };
+      if (selector.token === 'Guest') {
+        // dispatch(setBusinessDetail(payload));
+      } else {
+        const data = await FetchAPI(
+          'patch',
+          endpoint.updateETClient(route?.params?.estimateID),
+          payload,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+          navigation.goBack();
+        }
+      }
+    } catch (error) { }
+  };
+  
   const checkContactPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -202,7 +237,7 @@ const AddClientScreen = ({navigation, route}: any) => {
       }
       console.log(JSON.stringify(selection));
 
-      let {contact, selectedPhone} = selection;
+      let { contact, selectedPhone } = selection;
       setClientName(contact.name);
       setMobile(selectedPhone.number);
       setEmail(contact.emails[0].address);
@@ -251,7 +286,7 @@ const AddClientScreen = ({navigation, route}: any) => {
           navigation.goBack();
         }
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const update = async () => {
@@ -286,7 +321,7 @@ const AddClientScreen = ({navigation, route}: any) => {
           navigation.goBack();
         }
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const getClient = async (clientId: any) => {
@@ -307,7 +342,7 @@ const AddClientScreen = ({navigation, route}: any) => {
         setFax(element.fax);
         setAlreadyExist(true);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleTextInputChange = (value: any, setter: any) => {
@@ -336,7 +371,7 @@ const AddClientScreen = ({navigation, route}: any) => {
           navigation.goBack();
         }
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const checkDeleteCondition = () => {
@@ -346,13 +381,13 @@ const AddClientScreen = ({navigation, route}: any) => {
       deleteClient();
     }
   };
-  
+
   return (
     <>
       <Menu
         visible={visible}
         onDismiss={closeMenu}
-        anchor={{x: screenWidth, y: 50}}>
+        anchor={{ x: screenWidth, y: 50 }}>
         <Menu.Item
           disabled={!alreadyExist}
           onPress={checkDeleteCondition}
@@ -367,7 +402,7 @@ const AddClientScreen = ({navigation, route}: any) => {
               onChangeText={value =>
                 handleTextInputChange(value, setClientName)
               }
-              style={{...styles.titleTxt, textAlign: 'left'}}
+              style={{ ...styles.titleTxt, textAlign: 'left' }}
               placeholder={t('Client Name')}
               placeholderTextColor={'grey'}
             />
@@ -376,7 +411,7 @@ const AddClientScreen = ({navigation, route}: any) => {
             <TextInput
               value={email}
               onChangeText={value => handleTextInputChange(value, setEmail)}
-              style={{...styles.titleTxt, textAlign: 'left'}}
+              style={{ ...styles.titleTxt, textAlign: 'left' }}
               placeholder={t('Email')}
               placeholderTextColor={'grey'}
             />
@@ -386,7 +421,7 @@ const AddClientScreen = ({navigation, route}: any) => {
             <TextInput
               value={Mobile}
               onChangeText={value => handleTextInputChange(value, setMobile)}
-              style={{...styles.titleTxt, textAlign: 'right'}}
+              style={{ ...styles.titleTxt, textAlign: 'right' }}
               placeholder={t('Mobile Number')}
               placeholderTextColor={'grey'}
             />
@@ -396,7 +431,7 @@ const AddClientScreen = ({navigation, route}: any) => {
             <TextInput
               value={Phone}
               onChangeText={value => handleTextInputChange(value, setPhone)}
-              style={{...styles.titleTxt, textAlign: 'right'}}
+              style={{ ...styles.titleTxt, textAlign: 'right' }}
               placeholder={t('Phone Number')}
               placeholderTextColor={'grey'}
             />
@@ -406,7 +441,7 @@ const AddClientScreen = ({navigation, route}: any) => {
             <TextInput
               value={fax}
               onChangeText={value => handleTextInputChange(value, setFax)}
-              style={{...styles.titleTxt, textAlign: 'right'}}
+              style={{ ...styles.titleTxt, textAlign: 'right' }}
               placeholder={t('Fax Number')}
               placeholderTextColor={'grey'}
             />
@@ -418,7 +453,7 @@ const AddClientScreen = ({navigation, route}: any) => {
             <TextInput
               value={contact}
               onChangeText={value => handleTextInputChange(value, setContact)}
-              style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+              style={{ ...styles.titleTxt, flex: 1, textAlign: 'left' }}
               placeholder={t('Contact')}
               placeholderTextColor={'grey'}
             />
@@ -427,7 +462,7 @@ const AddClientScreen = ({navigation, route}: any) => {
             <TextInput
               value={address1}
               onChangeText={value => handleTextInputChange(value, setAddress1)}
-              style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+              style={{ ...styles.titleTxt, flex: 1, textAlign: 'left' }}
               placeholder={t('Address Line 1')}
               placeholderTextColor={'grey'}
             />
@@ -436,7 +471,7 @@ const AddClientScreen = ({navigation, route}: any) => {
             <TextInput
               value={address2}
               onChangeText={value => handleTextInputChange(value, setAddress2)}
-              style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+              style={{ ...styles.titleTxt, flex: 1, textAlign: 'left' }}
               placeholder={t('Address Line 2')}
               placeholderTextColor={'grey'}
             />
@@ -445,7 +480,7 @@ const AddClientScreen = ({navigation, route}: any) => {
             <TextInput
               value={address3}
               onChangeText={value => handleTextInputChange(value, setAddress3)}
-              style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+              style={{ ...styles.titleTxt, flex: 1, textAlign: 'left' }}
               placeholder={t('Address Line 3')}
               placeholderTextColor={'grey'}
             />
@@ -456,7 +491,7 @@ const AddClientScreen = ({navigation, route}: any) => {
           <Text style={styles.titleTxt2}>{t('Import from contacts')}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={checkCondition} style={styles.statementBtn}>
-          <Text style={[styles.titleTxt2, {color: '#fff', fontWeight: '600'}]}>
+          <Text style={[styles.titleTxt2, { color: '#fff', fontWeight: '600' }]}>
             {alreadyExist ? t('Update') : t('Create')}
           </Text>
         </TouchableOpacity>
@@ -496,7 +531,7 @@ const styles = StyleSheet.create({
     // height: 40,
     textAlignVertical: 'center',
   },
-  titleTxt2: {fontSize: 17, color: '#000', fontWeight: '400'},
+  titleTxt2: { fontSize: 17, color: '#000', fontWeight: '400' },
   mainContain: {
     borderRadius: 8,
     backgroundColor: '#fff',
@@ -514,7 +549,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     paddingHorizontal: 0,
   },
-  innerView: {flex: 1, paddingHorizontal: 8},
+  innerView: { flex: 1, paddingHorizontal: 8 },
   businessContainer: {
     borderRadius: 8,
     backgroundColor: '#fff',

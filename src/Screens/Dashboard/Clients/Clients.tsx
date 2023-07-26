@@ -78,7 +78,12 @@ function Clients({navigation, route}: any): JSX.Element {
   }
 
   function navigateToClient(id: any, item: any, index: any) {
-    updateInvoice(item);
+    if (route.params.invoiceUpdate) {
+      updateInvoice(item);
+    }
+    if (route.params.estimateUpdate) {
+      updateEstimate(item);
+    }
   }
 
   const updateInvoice = async (temp: any) => {
@@ -100,6 +105,37 @@ function Clients({navigation, route}: any): JSX.Element {
         const data = await FetchAPI(
           'patch',
           endpoint.updateIVClient(route?.params?.invoiceID),
+          payload,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+          navigateToSetting();
+        }
+      }
+    } catch (error) {}
+  };
+
+  const updateEstimate = async (temp: any) => {
+    try {
+      const payload: any = {
+        c_name: temp.name,
+        c_email: temp.email,
+        c_mobile_number: temp.mobile_number,
+        c_phone_number: temp.phone_number,
+        c_fax: temp.fax,
+        c_contact: temp.contact,
+        c_address1: temp.address1,
+        c_address2: temp.address2,
+        c_address3: temp.address3,
+      };
+      if (selector.token === 'Guest') {
+        // dispatch(setBusinessDetail(payload));
+      } else {
+        const data = await FetchAPI(
+          'patch',
+          endpoint.updateETClient(route?.params?.estimateID),
           payload,
           {
             Authorization: 'Bearer ' + selector.token,
