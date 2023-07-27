@@ -4,6 +4,8 @@ import {Colors} from '../../Helper/Colors';
 import {useSelector, useDispatch} from 'react-redux';
 import {changeDefaultEmailMsg} from '../../redux/reducers/user/UserReducer';
 import {useTranslation} from 'react-i18next';
+import {endpoint} from '../../Networking/endpoint';
+import FetchAPI from '../../Networking';
 
 const DefaultEmailMessage = () => {
   const {t, i18n} = useTranslation();
@@ -15,6 +17,8 @@ const DefaultEmailMessage = () => {
   useEffect(() => {
     if (selector.token === 'Guest') {
       fetchData(selector.defaultEmailMessage);
+    } else {
+      getData();
     }
   }, [selector.token]);
 
@@ -24,7 +28,37 @@ const DefaultEmailMessage = () => {
 
   const changeMessage = (msg: string) => {
     setAdditionalDetails(msg);
-    if (selector.token === 'Guest') dispatch(changeDefaultEmailMsg(msg));
+    if (selector.token === 'Guest') {
+      dispatch(changeDefaultEmailMsg(msg));
+    } else {
+      addData(msg);
+    }
+  };
+
+  const getData = async () => {
+    try {
+      const data = await FetchAPI('get', endpoint.getEmailMessage, null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        setAdditionalDetails(data.data.default_email_msg);
+
+      }
+    } catch (error) {}
+  };
+
+  const addData = async (msg: any) => {
+    try {
+      const payload: any = {
+        email_message: msg,
+      };
+
+      const data = await FetchAPI('post', endpoint.addEmailMessage, payload, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+      }
+    } catch (error) {}
   };
 
   return (

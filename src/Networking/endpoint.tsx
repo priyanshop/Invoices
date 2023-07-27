@@ -33,7 +33,9 @@ export const endpoint = {
   invoiceNumber: `${API_BASE_URL}/${API_TYPE.SETTINGS}/invoice-number`,
   addCustomize: `${API_BASE_URL}/${API_TYPE.SETTINGS}/customize-info`,
   getCustomize: `${API_BASE_URL}/${API_TYPE.SETTINGS}/customize-info`,
-  
+  getEmailMessage: `${API_BASE_URL}/${API_TYPE.SETTINGS}/default-email-msg`,
+  addEmailMessage: `${API_BASE_URL}/${API_TYPE.SETTINGS}/default-email-msg`,
+
   createInvoice: `${API_BASE_URL}/${API_TYPE.INVOICES}/create`,
   getInvoiceList: `${API_BASE_URL}/${API_TYPE.INVOICES}`,
   getInvoiceDetail: (id: any) => `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}`,

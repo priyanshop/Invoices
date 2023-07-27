@@ -871,7 +871,7 @@ const styles = StyleSheet.create({
   dueBalContainer: {
     backgroundColor: '#fff',
     borderRadius: 8,
-    marginVertical: 2,
+    marginVertical: 5,
   },
   dueBalContent: {
     paddingHorizontal: 12,
@@ -986,7 +986,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: '#000',
-    height: 35,
+    height: 40,
+    textAlignVertical:'center'
   },
   paidContainer: {
     flexDirection: 'row',

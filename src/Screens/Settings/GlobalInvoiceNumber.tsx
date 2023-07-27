@@ -129,13 +129,15 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: '50%',
+    justifyContent: 'center'
   },
   input: {
     fontSize: 16,
     fontWeight: '400',
     color: '#000',
     textAlign: 'right',
-    height: 35,
+    height: 40,
+    padding:10
   },
   itemView: {
     backgroundColor: '#fff',

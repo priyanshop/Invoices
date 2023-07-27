@@ -189,7 +189,7 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
               padding: 12,
             }}>
             <View style={styles.mainView}>
-              <View style={styles.inputContainer}>
+              {/* <View style={styles.inputContainer}> */}
                 <TextInput
                   value={Description}
                   style={[styles.input, {textAlign: 'left'}]}
@@ -199,7 +199,7 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
                     handleTextInputChange(value, setDescription)
                   }
                 />
-              </View>
+              {/* </View> */}
             </View>
             <View style={styles.mainView}>
               <Text style={styles.label}>{t('Unit Cost')} : </Text>
@@ -212,6 +212,7 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
                   onChangeText={value =>
                     handleTextInputChange(value, setUnitCost)
                   }
+                  keyboardType={'numeric'}
                 />
               </View>
             </View>

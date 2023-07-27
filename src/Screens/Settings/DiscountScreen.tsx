@@ -15,9 +15,14 @@ function DiscountScreen({navigation}: any): JSX.Element {
   const {t, i18n} = useTranslation();
   const [openModal, setOpenModal] = useState(false);
   const [selectedTax, setSelectedTax] = useState('No Discount');
-
+  const [discountAmount, setDiscountAmount] = useState('');
+  const [percentageAmount, setPercentageAmount] = useState('')
   const closeBottomSheet = () => {
     setOpenModal(!openModal);
+  };
+
+  const handleTextInputChange = (value: any, setter: any) => {
+    setter(value);
   };
 
   return (
@@ -48,10 +53,14 @@ function DiscountScreen({navigation}: any): JSX.Element {
                 <Text style={styles.label}>{t('Amount')}: </Text>
                 <View style={styles.inputContainer}>
                   <TextInput
-                    value="0"
+                    value={discountAmount}
                     style={styles.input}
                     placeholder={''}
                     placeholderTextColor={'grey'}
+                    onChangeText={value =>
+                      handleTextInputChange(value, setDiscountAmount)
+                    }
+                    keyboardType='numeric'
                   />
                 </View>
               </View>
@@ -61,10 +70,14 @@ function DiscountScreen({navigation}: any): JSX.Element {
                 <Text style={styles.label}>{t('Percentage')}: </Text>
                 <View style={styles.inputContainer}>
                   <TextInput
-                    value="0"
+                    value={percentageAmount}
                     style={styles.input}
                     placeholder={'0'}
                     placeholderTextColor={'grey'}
+                    onChangeText={value =>
+                      handleTextInputChange(value, setPercentageAmount)
+                    }
+                    keyboardType='numeric'
                   />
                 </View>
               </View>
@@ -99,13 +112,14 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: '50%',
+    justifyContent:'center'
   },
   input: {
     fontSize: 16,
     fontWeight: '400',
     color: '#000',
     textAlign: 'right',
-    height: 35,
+    height: 40,
   },
   itemView: {
     backgroundColor: '#fff',

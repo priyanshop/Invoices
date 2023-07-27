@@ -33,7 +33,7 @@ const EstimationNumber = () => {
         <View style={styles.rowView}>
           <Text style={styles.titleTxt}>{t('PO Number')} : </Text>
           <View style={{width: '50%'}}>
-            <TextInput style={{flex: 1, textAlign: 'right'}} />
+            <TextInput style={{...styles.titleTxt, flex: 1, textAlign: 'right'}} />
           </View>
         </View>
       </View>

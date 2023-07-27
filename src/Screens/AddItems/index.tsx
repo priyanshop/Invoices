@@ -750,7 +750,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
               padding: 12,
             }}>
             <View style={styles.mainView}>
-              <View style={styles.inputContainer}>
+              {/* <View style={styles.inputContainer}> */}
                 <TextInput
                   value={Description}
                   style={[styles.input, {textAlign: 'left'}]}
@@ -761,7 +761,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
                   }
                 />
                 {/* <Text style={styles.errorTxt}>{'Error'}</Text> */}
-              </View>
+              {/* </View> */}
             </View>
             <View style={styles.mainView}>
               <Text style={styles.label}>{t('Unit Cost')}: </Text>
