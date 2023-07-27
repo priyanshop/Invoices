@@ -132,7 +132,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         getEstimateCall(route?.params?.data);
       }
     }
-  }, [route.params, isFocused]);
+  }, [route.params]);
 
   const findIndexById = (id: any, data: any) => {
     return data.findIndex((item: any) => item.index === id);
