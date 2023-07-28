@@ -247,6 +247,7 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
           <TextInput
             value={Notes}
             placeholder={t('Additional Details')}
+            placeholderTextColor={'grey'}
             style={styles.detailText}
             numberOfLines={4}
             multiline
@@ -280,6 +281,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '400',
     color: '#000',
+    marginHorizontal:4
   },
   inputContainer: {
     width: '50%',

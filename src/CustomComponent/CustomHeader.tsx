@@ -58,7 +58,14 @@ const CustomHeader = ({
               value={searchText}
               placeholder={t('Search')}
               placeholderTextColor={'#d2d2d2'}
-              style={{width: '80%',textAlignVertical:'center'}}
+              style={{
+                width: '80%',
+                textAlignVertical: 'center',
+                color: '#000',
+                fontSize: 15,
+                fontWeight: '500',
+                height:40
+              }}
               onChangeText={handleSearch}
             />
             <TouchableOpacity onPress={() => setSearchStart(false)}>

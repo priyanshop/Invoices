@@ -43,6 +43,8 @@ function SignUpScreen({navigation}: any): JSX.Element {
   const [errorPassword, setErrorPassword] = useState('');
   const [errorConfirmPassword, setErrorConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword1, setShowPassword1] = useState(false);
 
   const pages = [{index: 1}, {index: 2}, {index: 3}];
 
@@ -187,32 +189,53 @@ function SignUpScreen({navigation}: any): JSX.Element {
               <Text style={styles.errorTxt}>{emailError}</Text>
             </View>
           )}
-          <TextInput
-            value={password}
-            onChangeText={validatePassword}
-            style={[styles.input]}
-            placeholder={t('businessInfo.password')}
-            placeholderTextColor={'grey'}
-          />
+          <View style={[styles.input2]}>
+            <TextInput
+              value={password}
+              onChangeText={validatePassword}
+              style={[styles.input]}
+              placeholder={t('businessInfo.password')}
+              placeholderTextColor={'grey'}
+              secureTextEntry={!showPassword}
+            />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+              <Ionicons
+                name={!showPassword ? 'eye-off' : 'eye'}
+                color={'#000'}
+                size={15}
+              />
+            </TouchableOpacity>
+          </View>
           {errorPassword.trim() !== '' && (
             <View style={styles.errorView}>
               <Text style={styles.errorTxt}>{errorPassword}</Text>
             </View>
           )}
-          <TextInput
-            value={confirmPassword}
-            onChangeText={validateConfirmPassword}
+          <View
             style={[
-              styles.input,
+              styles.input2,
               styles.phoneInput,
               errorConfirmPassword
                 ? {borderBottomRightRadius: 0, borderBottomLeftRadius: 0}
                 : null,
               {borderTopWidth: 0, marginBottom: 0},
-            ]}
-            placeholder={t('businessInfo.confirmPassword')}
-            placeholderTextColor={'grey'}
-          />
+            ]}>
+            <TextInput
+              value={confirmPassword}
+              onChangeText={validateConfirmPassword}
+              style={[styles.input]}
+              placeholder={t('businessInfo.confirmPassword')}
+              placeholderTextColor={'grey'}
+              secureTextEntry={!showPassword1}
+            />
+            <TouchableOpacity onPress={() => setShowPassword1(!showPassword1)}>
+              <Ionicons
+                name={!showPassword ? 'eye-off' : 'eye'}
+                color={'#000'}
+                size={15}
+              />
+            </TouchableOpacity>
+          </View>
           {errorConfirmPassword.trim() !== '' && (
             <View
               style={[
@@ -384,7 +407,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 0.3,
     borderTopColor: 'grey',
     marginBottom: 10,
-    padding: 4,
   },
   addressInput1: {
     padding: 4,
@@ -435,6 +457,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   errorTxt: {fontSize: 10, fontWeight: '600', color: 'red'},
+  input2: {
+    backgroundColor: '#fff',
+    width: '60%',
+    alignSelf: 'center',
+    height: 40,
+    fontSize: 15,
+    color: '#000',
+    paddingRight: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
 });
 
 export default SignUpScreen;

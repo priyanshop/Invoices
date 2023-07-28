@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {
+  Alert,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -13,13 +14,35 @@ import TaxOption from '../../CustomComponent/TaxOption';
 import {Colors} from '../../Helper/Colors';
 import {useTranslation} from 'react-i18next';
 
-function TaxScreen({navigation}: any): JSX.Element {
+function TaxScreen({navigation, route}: any): JSX.Element {
   const {t, i18n} = useTranslation();
   const [openModal, setOpenModal] = useState(false);
   const [selectedTax, setSelectedTax] = useState('On The Total');
+  const [Taxable, setTaxable] = useState(false);
+  const [taxRate, setTaxRate] = useState('');
 
   const closeBottomSheet = () => {
     setOpenModal(!openModal);
+  };
+
+  const handleTextInputChange = (value: any, setter: any) => {
+    setter(value);
+  };
+
+  const checkCondition = () => {
+    if (selectedTax !== 'Flat Amount' && selectedTax !== 'Percentage') {
+      navigation.goBack();
+    }
+    const payload: any = {
+      invoice_tax_type: selectedTax,
+      invoice_tax_label: 'GST',
+      invoice_tax_rate: selectedTax === 'On The Total' ? taxRate : '',
+      is_invoice_tax_inclusive: 'false',
+      invoice_total_tax_amount: selectedTax === 'On The Total' ? taxRate : '',
+    };
+    if (route.params.invoiceUpdate) {
+      // updateCall(payload);
+    }
   };
 
   return (
@@ -53,6 +76,7 @@ function TaxScreen({navigation}: any): JSX.Element {
                   style={styles.input}
                   placeholder={''}
                   placeholderTextColor={'grey'}
+                  editable={false}
                 />
               </View>
             </View>
@@ -61,10 +85,14 @@ function TaxScreen({navigation}: any): JSX.Element {
                 <Text style={styles.label}>{t('Rate')}: </Text>
                 <View style={styles.inputContainer}>
                   <TextInput
-                    value="18"
+                    value={taxRate}
                     style={styles.input}
                     placeholder={'0'}
                     placeholderTextColor={'grey'}
+                    onChangeText={value =>
+                      handleTextInputChange(value, setTaxRate)
+                    }
+                    keyboardType="numeric"
                   />
                 </View>
               </View>
@@ -72,11 +100,15 @@ function TaxScreen({navigation}: any): JSX.Element {
           </View>
         </View>
 
-        {selectedTax !== 'Deducted' && (
+        {/* {selectedTax !== 'Deducted' && (
           <View style={styles.detailView}>
             <View style={styles.mainView}>
               <Text style={styles.label}>{t('Taxable')}: </Text>
-              <Switch value={true} />
+              <Switch
+                value={Taxable}
+                color={Colors.landingColor}
+                onValueChange={(value: any) => setTaxable(value)}
+              />
             </View>
             <TextInput
               editable={false}
@@ -85,7 +117,14 @@ function TaxScreen({navigation}: any): JSX.Element {
               style={styles.detailText}
             />
           </View>
-        )}
+        )} */}
+
+        <TouchableOpacity onPress={checkCondition} style={styles.statementBtn}>
+          <Text style={[styles.titleTxt2, {color: '#fff', fontWeight: '600'}]}>
+            {t('Update')}
+          </Text>
+        </TouchableOpacity>
+
         <TaxOption
           openModal={openModal}
           closeBottomSheet={closeBottomSheet}
@@ -174,6 +213,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   photoText: {fontSize: 17, fontWeight: '500', color: '#d1d1d1'},
+  statementBtn: {
+    backgroundColor: Colors.appColor,
+    alignItems: 'center',
+    padding: 15,
+    borderRadius: 8,
+    justifyContent: 'center',
+    marginVertical: 5,
+  },
+  titleTxt2: {fontSize: 17, color: '#000', fontWeight: '400'},
 });
 
 export default TaxScreen;

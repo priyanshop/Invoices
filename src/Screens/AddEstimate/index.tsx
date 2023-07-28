@@ -98,6 +98,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   const [routes] = useState(data);
   const [state, setState] = React.useState({open: false});
   const [globalData, setGlobalData] = useState(tempData);
+  const [RequestReview, setRequestReview] = useState(false);
 
   const onStateChange = ({open}) => setState({open});
   const [visible, setVisible] = React.useState(false);
@@ -513,7 +514,11 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         <View style={styles.requestContainer}>
           <View style={styles.requestSwitchRow}>
             <Text style={styles.requestText}>{t('Request Review')}</Text>
-            <Switch color={Colors.landingColor} value={true} />
+            <Switch
+              value={RequestReview}
+              color={Colors.landingColor}
+              onValueChange={(value: any) => setRequestReview(value)}
+            />
           </View>
           <View style={styles.requestLinkRow}>
             <TextInput
@@ -975,7 +980,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 12,
-    paddingVertical: 8,
+    flex: 1,
   },
   requestText: {
     fontSize: 18,
@@ -983,11 +988,12 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   requestLinkText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '500',
     color: '#000',
     height: 40,
-    textAlignVertical:'center'
+    textAlignVertical: 'center',
+    marginVertical: 5,
   },
   paidContainer: {
     flexDirection: 'row',
