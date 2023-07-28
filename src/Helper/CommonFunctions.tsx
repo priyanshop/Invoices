@@ -87,3 +87,22 @@ export const calculateTotalPrice2 = (
     return 0;
   }
 };
+
+export const getTotalDiscountAmount = (items: any) => {
+  let totalDiscountAmount = 0;
+  items.forEach((item: any) => {
+    totalDiscountAmount += parseFloat(item.discount_amount || 0);
+  });
+  return totalDiscountAmount.toFixed(2);
+};
+
+export function getTotalTaxAmount(products: any) {
+  const totalTaxAmount = products.reduce((acc: any, product: any) => {
+    const taxAmount =
+      parseFloat(product.total || 0) *
+      (parseFloat(product.item_tax_rate || 0) * 0.01);
+    return acc + taxAmount;
+  }, 0);
+
+  return totalTaxAmount;
+}

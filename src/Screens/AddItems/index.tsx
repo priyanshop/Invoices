@@ -114,10 +114,10 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
     if (temp.discount_type === 'Flat Amount') {
       setDiscountAmount(temp.discount_amount?.toString() || '0');
     }
-    setNotes(temp.item_notes.toString());
-    setQuantity(temp.quantity.toString());
-    setUnit(temp.rate.toString());
-    setUnitCost(temp.unit.toString());
+    setNotes(temp.item_notes.toString()|| '0');
+    setQuantity(temp.quantity.toString()|| '0');
+    setUnit(temp.rate?.toString() || '0');
+    setUnitCost(temp.unit?.toString()|| '0');
     setTaxable(temp.is_taxable === 'true' ? true : false);
     setTaxRate(temp.item_tax_rate);
   };
@@ -594,7 +594,11 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
           data.invoice_tax_type === 'On The Total' ? data.invoice_tax_rate : '',
         is_invoice_tax_inclusive: 'false',
         invoice_total_tax_amount:
-          data.invoice_tax_type === 'On The Total' ? tempTotal2 : '',
+          data.invoice_tax_type === 'On The Total'
+            ? tempTotal2
+            : data.invoice_tax_type === 'Per Item'
+            ? totalTax
+            : '',
 
         invoice_discount_type: data.invoice_discount_type,
         invoice_discount_value:
@@ -699,7 +703,11 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
             : '',
         is_estimate_tax_inclusive: 'false',
         estimate_total_tax_amount:
-          data.estimate_tax_type === 'On The Total' ? tempTotal2 : '',
+          data.estimate_tax_type === 'On The Total'
+            ? tempTotal2
+            : data.estimate_tax_type === 'Per Item'
+            ? totalTax
+            : '',
 
         estimate_discount_type: data.estimate_discount_type,
         estimate_discount_value:

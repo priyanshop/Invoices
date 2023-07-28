@@ -13,7 +13,10 @@ import {useTranslation} from 'react-i18next';
 
 import TaxOption from '../../CustomComponent/TaxOption';
 import {Colors} from '../../Helper/Colors';
-import {calculateTaxedAmount} from '../../Helper/CommonFunctions';
+import {
+  calculateTaxedAmount,
+  getTotalTaxAmount,
+} from '../../Helper/CommonFunctions';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 
@@ -31,22 +34,17 @@ function TaxScreen({navigation, route}: any): JSX.Element {
     if (route.params?.invoiceUpdate) {
       if (route.params?.invoiceData?.invoice_discount_type) {
         setSelectedTax(route.params.invoiceData.invoice_tax_type);
-        setTaxRate(
-          route.params.invoiceData.invoice_tax_rate?.toString(),
-        );
+        setTaxRate(route.params.invoiceData.invoice_tax_rate?.toString());
       }
     }
     if (route.params?.estimateUpdate) {
       if (route.params?.estimateData?.estimate_tax_type) {
         setSelectedTax(route.params.estimateData.estimate_tax_type);
-        setTaxRate(
-          route.params.estimateData.estimate_tax_rate?.toString(),
-        );
+        setTaxRate(route.params.estimateData.estimate_tax_rate?.toString());
       }
     }
-  
-  }, [route.params])
-  
+  }, [route.params]);
+
   const closeBottomSheet = () => {
     setOpenModal(!openModal);
   };
@@ -56,10 +54,10 @@ function TaxScreen({navigation, route}: any): JSX.Element {
   };
 
   const checkCondition = () => {
-    if (route.params.estimateUpdate) {
+    if (route.params.invoiceUpdate) {
       updateInvoice();
     }
-    if (route.params.invoiceUpdate) {
+    if (route.params.estimateUpdate) {
       updateEstimate();
     }
   };
@@ -72,12 +70,19 @@ function TaxScreen({navigation, route}: any): JSX.Element {
       route.params.invoiceData.invoice_total,
       taxRate,
     );
+    const totalTax = getTotalTaxAmount(route.params.invoiceData.items);
+
     const payload: any = {
       invoice_tax_type: selectedTax,
       invoice_tax_label: 'GST',
       invoice_tax_rate: selectedTax === 'On The Total' ? taxRate : '',
       is_invoice_tax_inclusive: 'false',
-      invoice_total_tax_amount: selectedTax === 'On The Total' ? tempTotal : '',
+      invoice_total_tax_amount:
+        selectedTax === 'On The Total'
+          ? tempTotal
+          : selectedTax === 'Per Item'
+          ? totalTax
+          : '',
     };
     if (route.params.invoiceUpdate) {
       updateCall(payload);
@@ -92,13 +97,18 @@ function TaxScreen({navigation, route}: any): JSX.Element {
       route.params.estimateData.estimate_total,
       taxRate,
     );
+    const totalTax = getTotalTaxAmount(route.params.estimateData.items);
     const payload: any = {
       estimate_tax_type: selectedTax,
       estimate_tax_label: 'GST',
       estimate_tax_rate: selectedTax === 'On The Total' ? taxRate : '',
       is_estimate_tax_inclusive: 'false',
       estimate_total_tax_amount:
-        selectedTax === 'On The Total' ? tempTotal : '',
+        selectedTax === 'On The Total'
+          ? tempTotal
+          : selectedTax === 'Per Item'
+          ? totalTax
+          : '',
     };
     if (route.params.estimateUpdate) {
       updateETCall(payload);
