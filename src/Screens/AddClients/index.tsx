@@ -599,6 +599,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     // height: 40,
     textAlignVertical: 'center',
+    paddingLeft:5
   },
   titleTxt2: {fontSize: 17, color: '#000', fontWeight: '400'},
   mainContain: {

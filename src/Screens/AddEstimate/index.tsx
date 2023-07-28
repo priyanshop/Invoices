@@ -14,15 +14,16 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Switch, FAB, Portal, Provider, Menu} from 'react-native-paper';
-import {getScreenDimensions} from '../../Helper/ScreenDimension';
-import {Colors} from '../../Helper/Colors';
-import {actionStyle, fabStyle} from '../../Helper/CommonStyle';
 import {useTranslation} from 'react-i18next';
 import {useSelector, useDispatch} from 'react-redux';
 import {useIsFocused} from '@react-navigation/native';
+import moment from 'moment';
+
+import {getScreenDimensions} from '../../Helper/ScreenDimension';
+import {Colors} from '../../Helper/Colors';
+import {actionStyle, fabStyle} from '../../Helper/CommonStyle';
 import {endpoint} from '../../Networking/endpoint';
 import FetchAPI from '../../Networking';
-import moment from 'moment';
 import {setNewEstimateInList} from '../../Constant';
 import {addNewEstimate} from '../../redux/reducers/user/UserReducer';
 
@@ -103,6 +104,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   const onStateChange = ({open}) => setState({open});
   const [visible, setVisible] = React.useState(false);
   const [paymentDue, setPaymentDue] = useState([]);
+  const [created, setCreated] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -115,7 +117,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   }, [navigation]);
 
   useEffect(() => {
-    if (route.params.status === 'create') {
+    if (!created && route.params.status === 'create') {
       if (selector.token === 'Guest') {
         offline();
       } else {
@@ -157,24 +159,25 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
           {
             key: 'first',
             title: t('Discount'),
-            value:
-              '$' + (parseFloat(element?.estimate_discount_amount || '0') || 0),
+            value: '$' + parseFloat(element.estimate_discount_amount || 0),
             onPress: () => navigateToDiscountScreen(),
           },
           {
             key: 'second',
             title: t('Tax'),
-            value: '$' + parseFloat(element?.estimate_total_tax_amount || 0),
+            value: '$' + parseFloat(element.estimate_total_tax_amount || 0),
             onPress: () => navigateToTaxScreen(),
           },
-
           {
             key: 'third',
             title: t('Total'),
             value:
               '$' +
-              (parseFloat(element?.estimate_total_tax_amount || 0) +
-                parseFloat(element?.estimate_total || 0)),
+              (
+                parseFloat(element.estimate_total_tax_amount || 0) +
+                parseFloat(element.estimate_total || 0) -
+                parseFloat(element.estimate_discount_amount || 0)
+              ).toFixed(2),
           },
         ]);
       }
@@ -189,13 +192,13 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
       {
         key: 'first',
         title: t('Discount'),
-        value: '$' + (payload.estimate_discount_amount || 0),
+        value: '$' + parseFloat(payload.estimate_discount_amount || 0),
         onPress: () => navigateToDiscountScreen(),
       },
       {
         key: 'second',
         title: t('Tax'),
-        value: '$' + (payload.estimate_total_tax_amount || 0),
+        value: '$' + parseFloat(payload.estimate_total_tax_amount || 0),
         onPress: () => navigateToTaxScreen(),
       },
       {
@@ -203,10 +206,14 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         title: t('Total'),
         value:
           '$' +
-          ((payload.estimate_total_tax_amount || 0) +
-            (payload.estimate_total || 0)),
+          (
+            parseFloat(payload.estimate_total_tax_amount || 0) +
+            parseFloat(payload.estimate_total || 0) -
+            parseFloat(payload.estimate_discount_amount || 0)
+          ).toFixed(2),
       },
     ]);
+    setCreated(true);
   };
 
   const setOffline = (payload: any) => {
@@ -215,24 +222,25 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
       {
         key: 'first',
         title: t('Discount'),
-        value:
-          '$' + (parseFloat(payload?.estimate_discount_amount || '0') || 0),
+        value: '$' + parseFloat(payload.estimate_discount_amount || 0),
         onPress: () => navigateToDiscountScreen(),
       },
       {
         key: 'second',
         title: t('Tax'),
-        value: '$' + parseFloat(payload?.estimate_total_tax_amount || 0),
+        value: '$' + parseFloat(payload.estimate_total_tax_amount || 0),
         onPress: () => navigateToTaxScreen(),
       },
-
       {
         key: 'third',
         title: t('Total'),
         value:
           '$' +
-          (parseFloat(payload?.estimate_total_tax_amount || '0') +
-            parseFloat(payload?.estimate_total || '0')),
+          (
+            parseFloat(payload.estimate_total_tax_amount || 0) +
+            parseFloat(payload.estimate_total || 0) -
+            parseFloat(payload.estimate_discount_amount || 0)
+          ).toFixed(2),
       },
     ]);
   };
@@ -249,13 +257,13 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
           {
             key: 'first',
             title: t('Discount'),
-            value: '$' + (element.estimate_discount_amount || 0),
+            value: '$' + parseFloat(element.estimate_discount_amount || 0),
             onPress: () => navigateToDiscountScreen(),
           },
           {
             key: 'second',
             title: t('Tax'),
-            value: '$' + (element.estimate_total_tax_amount || 0),
+            value: '$' + parseFloat(element.estimate_total_tax_amount || 0),
             onPress: () => navigateToTaxScreen(),
           },
           {
@@ -263,10 +271,14 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
             title: t('Total'),
             value:
               '$' +
-              ((element.estimate_total_tax_amount || 0) +
-                (element.estimate_total || 0)),
+              (
+                parseFloat(element.estimate_total_tax_amount || 0) +
+                parseFloat(element.estimate_total || 0) -
+                parseFloat(element.estimate_discount_amount || 0)
+              ).toFixed(2),
           },
         ]);
+        setCreated(true);
       }
     } catch (error) {}
   };
@@ -347,11 +359,19 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   }
 
   function navigateToDiscountScreen() {
-    navigation.navigate('DiscountScreen');
+    navigation.navigate('DiscountScreen', {
+      estimateUpdate: true,
+      estimateID: globalData._id,
+      estimateData: globalData,
+    });
   }
 
   function navigateToTaxScreen() {
-    navigation.navigate('TaxScreen');
+    navigation.navigate('TaxScreen', {
+      estimateUpdate: true,
+      estimateID: globalData._id,
+      estimateData: globalData,
+    });
   }
 
   function navigateToItemScreen(index: any) {
@@ -426,12 +446,14 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
                 <View>
                   <Text style={styles.dueBalText}>{item.description} </Text>
                   <Text style={styles.dueBalText2}>{item.item_notes} </Text>
-                  <Text style={styles.dueBalText2}>
-                    {'Discount'}{' '}
-                    {item.discount_type === 'Percentage'
-                      ? item.discount_rate + '%'
-                      : ''}{' '}
-                  </Text>
+                  {item.discount_amount && (
+                    <Text style={styles.dueBalText2}>
+                      {'Discount'}{' '}
+                      {item.discount_type === 'Percentage'
+                        ? item.discount_rate + '%'
+                        : ''}{' '}
+                    </Text>
+                  )}
                 </View>
                 <View>
                   <Text style={styles.dueBalText3}>
@@ -439,7 +461,8 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
                   </Text>
                   <Text style={styles.dueBalText3}>{'$' + item.total}</Text>
                   <Text style={styles.dueBalText4}>
-                    {'-$' + item.discount_amount}
+                    {item.discount_amount &&
+                      '-$' + parseFloat(item.discount_amount || 0).toFixed(2)}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -969,7 +992,7 @@ const styles = StyleSheet.create({
   },
   requestSwitchRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent:'space-between',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderBottomColor: 'grey',
@@ -978,8 +1001,7 @@ const styles = StyleSheet.create({
   },
   requestLinkRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
     flex: 1,
   },
   requestText: {

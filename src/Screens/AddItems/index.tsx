@@ -17,7 +17,14 @@ import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import DiscountOption from '../../CustomComponent/DiscountOption';
-import {setEstimateList, setInvoiceList} from '../../redux/reducers/user/UserReducer';
+import {
+  setEstimateList,
+  setInvoiceList,
+} from '../../redux/reducers/user/UserReducer';
+import {
+  calculateTaxedAmount,
+  calculateTotalPrice2,
+} from '../../Helper/CommonFunctions';
 
 function AddItemScreen({navigation, route}: any): JSX.Element {
   const dispatch = useDispatch();
@@ -111,7 +118,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
     setQuantity(temp.quantity.toString());
     setUnit(temp.rate.toString());
     setUnitCost(temp.unit.toString());
-    setTaxable(temp.is_taxable === "true" ? true :false);
+    setTaxable(temp.is_taxable === 'true' ? true : false);
     setTaxRate(temp.item_tax_rate);
   };
 
@@ -237,12 +244,12 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
           items: updatedItems,
           // invoice_discount_type: '',
           // invoice_discount_value: '',
-          invoice_discount_amount: discountAmount,
+          // invoice_discount_amount: discountAmount,
           // invoice_tax_type: '',
           // invoice_tax_label: '',
           // invoice_tax_rate: '',
           // is_invoice_tax_inclusive: 'false',
-          invoice_total_tax_amount: totalTax,
+          // invoice_total_tax_amount: totalTax,
           invoice_total: totalAmount,
         };
         if (selector.token === 'Guest') {
@@ -288,14 +295,14 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
 
         const tempPayload: any = {
           items: updatedItems,
-          invoice_discount_type: data.invoice_discount_type,
-          invoice_discount_value: data.invoice_discount_value,
-          invoice_discount_amount: totalDiscountAmount,
-          invoice_tax_type: data.invoice_tax_type,
-          invoice_tax_label: data.invoice_tax_label,
-          invoice_tax_rate: data.invoice_tax_rate,
-          is_invoice_tax_inclusive: data.is_invoice_tax_inclusive,
-          invoice_total_tax_amount: totalTax,
+          // invoice_discount_type: data.invoice_discount_type,
+          // invoice_discount_value: data.invoice_discount_value,
+          // invoice_discount_amount: totalDiscountAmount,
+          // invoice_tax_type: data.invoice_tax_type,
+          // invoice_tax_label: data.invoice_tax_label,
+          // invoice_tax_rate: data.invoice_tax_rate,
+          // is_invoice_tax_inclusive: data.is_invoice_tax_inclusive,
+          // invoice_total_tax_amount: totalTax,
           invoice_total: totalAmount,
         };
         if (selector.token === 'Guest') {
@@ -341,14 +348,14 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
 
         const tempPayload: any = {
           items: updatedItems,
-          invoice_discount_type: data.invoice_discount_type,
-          invoice_discount_value: data.invoice_discount_value,
-          invoice_discount_amount: totalDiscountAmount,
-          invoice_tax_type: data.invoice_tax_type,
-          invoice_tax_label: data.invoice_tax_label,
-          invoice_tax_rate: data.invoice_tax_rate,
-          is_invoice_tax_inclusive: data.is_invoice_tax_inclusive,
-          invoice_total_tax_amount: totalTax,
+          // invoice_discount_type: data.invoice_discount_type,
+          // invoice_discount_value: data.invoice_discount_value,
+          // invoice_discount_amount: totalDiscountAmount,
+          // invoice_tax_type: data.invoice_tax_type,
+          // invoice_tax_label: data.invoice_tax_label,
+          // invoice_tax_rate: data.invoice_tax_rate,
+          // is_invoice_tax_inclusive: data.is_invoice_tax_inclusive,
+          // invoice_total_tax_amount: totalTax,
           invoice_total: totalAmount,
         };
         if (selector.token === 'Guest') {
@@ -574,21 +581,41 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
       const totalAmount = getTotal(updatedItems);
       const totalDiscountAmount = getTotalDiscountAmount(updatedItems);
       const totalTax = getTotalTaxAmount(updatedItems);
+      const tempTotal2 = calculateTaxedAmount(
+        route.params.invoiceData.invoice_total,
+        route.params.invoiceData.invoice_tax_rate,
+      );
 
       const tempPayload: any = {
         items: updatedItems,
-        invoice_discount_type: data.invoice_discount_type,
-        invoice_discount_value: data.invoice_discount_value,
-        invoice_discount_amount: totalDiscountAmount,
         invoice_tax_type: data.invoice_tax_type,
-        invoice_tax_label: data.invoice_tax_label,
-        invoice_tax_rate: data.invoice_tax_rate,
-        is_invoice_tax_inclusive: data.is_invoice_tax_inclusive,
-        invoice_total_tax_amount: totalTax,
+        invoice_tax_label: 'GST',
+        invoice_tax_rate:
+          data.invoice_tax_type === 'On The Total' ? data.invoice_tax_rate : '',
+        is_invoice_tax_inclusive: 'false',
+        invoice_total_tax_amount:
+          data.invoice_tax_type === 'On The Total' ? tempTotal2 : '',
+
+        invoice_discount_type: data.invoice_discount_type,
+        invoice_discount_value:
+          data.invoice_discount_type === 'Flat Amount'
+            ? data.invoice_discount_value
+            : data.invoice_discount_type === 'Percentage'
+            ? data.invoice_discount_value
+            : '',
+        invoice_discount_amount: calculateTotalPrice2(
+          totalAmount,
+          data.invoice_discount_type,
+          data.invoice_discount_value,
+          data.invoice_discount_value,
+        ),
         invoice_total: totalAmount,
       };
-
-      updateCallOffline(tempPayload);
+      if (selector.token === 'Guest') {
+        updateCallOffline(tempPayload);
+      } else {
+        updateCall(tempPayload);
+      }
     } catch (error) {}
   };
 
@@ -658,21 +685,42 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
       const totalAmount = getTotal(updatedItems);
       const totalDiscountAmount = getTotalDiscountAmount(updatedItems);
       const totalTax = getTotalTaxAmount(updatedItems);
-
+      const tempTotal2 = calculateTaxedAmount(
+        route.params.estimateData.estimate_total,
+        route.params.estimateData.estimate_tax_rate,
+      );
       const tempPayload: any = {
         items: updatedItems,
-        estimate_discount_type: data.estimate_discount_type,
-        estimate_discount_value: data.estimate_discount_value,
-        estimate_discount_amount: totalDiscountAmount,
         estimate_tax_type: data.estimate_tax_type,
-        estimate_tax_label: data.estimate_tax_label,
-        estimate_tax_rate: data.estimate_tax_rate,
-        is_estimate_tax_inclusive: data.is_estimate_tax_inclusive,
-        estimate_total_tax_amount: totalTax,
+        estimate_tax_label: 'GST',
+        estimate_tax_rate:
+          data.estimate_tax_type === 'On The Total'
+            ? data.estimate_tax_type
+            : '',
+        is_estimate_tax_inclusive: 'false',
+        estimate_total_tax_amount:
+          data.estimate_tax_type === 'On The Total' ? tempTotal2 : '',
+
+        estimate_discount_type: data.estimate_discount_type,
+        estimate_discount_value:
+          data.estimate_discount_type === 'Flat Amount'
+            ? data.estimate_discount_value
+            : data.estimate_discount_type === 'Percentage'
+            ? data.estimate_discount_value
+            : '',
+        estimate_discount_amount: calculateTotalPrice2(
+          totalAmount,
+          data.estimate_discount_type,
+          data.estimate_discount_value,
+          data.estimate_discount_value,
+        ),
         estimate_total: totalAmount,
       };
-
-      updateEstimateCallOffline(tempPayload);
+      if (selector.token === 'Guest') {
+        updateEstimateCallOffline(tempPayload);
+      } else {
+        updateETCall(tempPayload);
+      }
     } catch (error) {}
   };
 
@@ -724,18 +772,18 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
 
   const checkCondition = () => {
     if (route.params.invoiceUpdate) {
-      if (selector.token === 'Guest') {
-        updateOffline();
-      } else {
-        update();
-      }
+      // if (selector.token === 'Guest') {
+      updateOffline();
+      // } else {
+      //   update();
+      // }
     }
     if (route.params.estimateUpdate) {
-      if (selector.token === 'Guest') {
-        updateEstimateOffline();
-      } else {
-        updateEstimate();
-      }
+      // if (selector.token === 'Guest') {
+      updateEstimateOffline();
+      // } else {
+      //   updateEstimate();
+      // }
     }
   };
 
@@ -751,16 +799,16 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
             }}>
             <View style={styles.mainView}>
               {/* <View style={styles.inputContainer}> */}
-                <TextInput
-                  value={Description}
-                  style={[styles.input, {textAlign: 'left'}]}
-                  placeholder={t('Description')}
-                  placeholderTextColor={'grey'}
-                  onChangeText={value =>
-                    handleTextInputChange(value, setDescription)
-                  }
-                />
-                {/* <Text style={styles.errorTxt}>{'Error'}</Text> */}
+              <TextInput
+                value={Description}
+                style={[styles.input, {textAlign: 'left'}]}
+                placeholder={t('Description')}
+                placeholderTextColor={'grey'}
+                onChangeText={value =>
+                  handleTextInputChange(value, setDescription)
+                }
+              />
+              {/* <Text style={styles.errorTxt}>{'Error'}</Text> */}
               {/* </View> */}
             </View>
             <View style={styles.mainView}>

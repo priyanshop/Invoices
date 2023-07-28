@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
   ScrollView,
   StatusBar,
@@ -8,23 +8,23 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
+import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Switch, FAB, Portal, Provider, Menu } from 'react-native-paper';
-import { useTranslation } from 'react-i18next';
-import { useSelector, useDispatch } from 'react-redux';
-import { useIsFocused } from '@react-navigation/native';
+import {Switch, FAB, Portal, Provider, Menu} from 'react-native-paper';
+import {useTranslation} from 'react-i18next';
+import {useSelector, useDispatch} from 'react-redux';
+import {useIsFocused} from '@react-navigation/native';
 import moment from 'moment';
-import { actionStyle, fabStyle } from '../../Helper/CommonStyle';
-import { getScreenDimensions } from '../../Helper/ScreenDimension';
-import { Colors } from '../../Helper/Colors';
+import {actionStyle, fabStyle} from '../../Helper/CommonStyle';
+import {getScreenDimensions} from '../../Helper/ScreenDimension';
+import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
-import { endpoint } from '../../Networking/endpoint';
-import { addNewInvoice } from '../../redux/reducers/user/UserReducer';
-import { setNewInvoiceInList } from '../../Constant';
+import {endpoint} from '../../Networking/endpoint';
+import {addNewInvoice} from '../../redux/reducers/user/UserReducer';
+import {setNewInvoiceInList} from '../../Constant';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -81,15 +81,15 @@ const importedData: any = {
   },
 };
 
-function InvoiceCreationScreen({ navigation, route }: any): JSX.Element {
-  const { t, i18n } = useTranslation();
+function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
+  const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const selector = useSelector((state: any) => state.user);
   const data = [
-    { key: 'first', title: t('Edit') },
-    { key: 'second', title: t('Preview') },
-    { key: 'third', title: t('History') },
+    {key: 'first', title: t('Edit')},
+    {key: 'second', title: t('Preview')},
+    {key: 'third', title: t('History')},
   ];
   const actions = [
     {
@@ -102,7 +102,7 @@ function InvoiceCreationScreen({ navigation, route }: any): JSX.Element {
       ),
       label: t('Text'),
       onPress: () => console.log('Pressed notifications'),
-      style: { backgroundColor: '#fff', borderRadius: 50 },
+      style: {backgroundColor: '#fff', borderRadius: 50},
       color: '#000',
       labelTextColor: '#000',
       containerStyle: {
@@ -114,7 +114,7 @@ function InvoiceCreationScreen({ navigation, route }: any): JSX.Element {
       icon: () => <Fontisto name="email" size={22} color="#000" />,
       label: t('Email'),
       onPress: () => console.log('Pressed email'),
-      style: { backgroundColor: '#fff', borderRadius: 50 },
+      style: {backgroundColor: '#fff', borderRadius: 50},
       color: '#000',
       labelTextColor: '#000',
       containerStyle: {
@@ -128,10 +128,10 @@ function InvoiceCreationScreen({ navigation, route }: any): JSX.Element {
   const [searchStart, setSearchStart] = useState(false);
   const [routes] = useState(data);
   const [globalData, setGlobalData] = useState(importedData.data);
-  const [state, setState] = React.useState({ open: false });
-  const { open } = state;
+  const [state, setState] = React.useState({open: false});
+  const {open} = state;
 
-  const onStateChange = ({ open }) => setState({ open });
+  const onStateChange = ({open}) => setState({open});
   const [visible, setVisible] = React.useState(false);
   const [paymentDue, setPaymentDue] = useState([]);
   const [RequestReview, setRequestReview] = useState(false);
@@ -139,7 +139,7 @@ function InvoiceCreationScreen({ navigation, route }: any): JSX.Element {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <TouchableOpacity style={{ marginRight: 10 }} onPress={openMenu}>
+        <TouchableOpacity style={{marginRight: 10}} onPress={openMenu}>
           <Entypo name="dots-three-vertical" size={20} color="#fff" />
         </TouchableOpacity>
       ),
@@ -194,9 +194,12 @@ function InvoiceCreationScreen({ navigation, route }: any): JSX.Element {
         title: t('Total'),
         value:
           '$' +
-          ((payload.invoice_total_tax_amount || 0) +
-            (payload.invoice_total || 0)),
-      },
+          (
+            parseFloat(payload.invoice_total_tax_amount || 0) +
+            parseFloat(payload.invoice_total || 0) -
+            parseFloat(payload.invoice_discount_amount || 0)
+          ).toFixed(2),
+      }
     ]);
   };
 
@@ -206,13 +209,13 @@ function InvoiceCreationScreen({ navigation, route }: any): JSX.Element {
       {
         key: 'first',
         title: t('Discount'),
-        value: '$' + (parseFloat(payload.invoice_discount_amount) || 0),
+        value: '$' + (payload.invoice_discount_amount || 0),
         onPress: () => navigateToDiscountScreen(),
       },
       {
         key: 'second',
         title: t('Tax'),
-        value: '$' + parseFloat(payload.invoice_total_tax_amount || 0),
+        value: '$' + (payload.invoice_total_tax_amount || 0),
         onPress: () => navigateToTaxScreen(),
       },
 
@@ -221,9 +224,12 @@ function InvoiceCreationScreen({ navigation, route }: any): JSX.Element {
         title: t('Total'),
         value:
           '$' +
-          (parseFloat(payload.invoice_total_tax_amount || 0) +
-            parseFloat(payload.invoice_total || 0)),
-      },
+          (
+            parseFloat(payload.invoice_total_tax_amount || 0) +
+            parseFloat(payload.invoice_total || 0) -
+            parseFloat(payload.invoice_discount_amount || 0)
+          ).toFixed(2),
+      }
     ]);
   };
 
@@ -259,12 +265,15 @@ function InvoiceCreationScreen({ navigation, route }: any): JSX.Element {
             title: t('Total'),
             value:
               '$' +
-              ((element.invoice_total_tax_amount || 0) +
-                (element.invoice_total || 0)),
+              (
+                parseFloat(element.invoice_total_tax_amount || 0) +
+                parseFloat(element.invoice_total || 0) -
+                parseFloat(element.invoice_discount_amount || 0)
+              ).toFixed(2),
           },
         ]);
       }
-    } catch (error) { }
+    } catch (error) {}
   };
 
   const createInvoiceCall = async () => {
@@ -294,12 +303,15 @@ function InvoiceCreationScreen({ navigation, route }: any): JSX.Element {
             title: t('Total'),
             value:
               '$' +
-              ((element.invoice_total_tax_amount || 0) +
-                (element.invoice_total || 0)),
+              (
+                parseFloat(element.invoice_total_tax_amount || 0) +
+                parseFloat(element.invoice_total || 0) -
+                parseFloat(element.invoice_discount_amount || 0)
+              ).toFixed(2),
           },
         ]);
       }
-    } catch (error) { }
+    } catch (error) {}
   };
 
   const openMenu = () => setVisible(true);
@@ -333,7 +345,11 @@ function InvoiceCreationScreen({ navigation, route }: any): JSX.Element {
   }
 
   function navigateToTaxScreen() {
-    navigation.navigate('TaxScreen');
+    navigation.navigate('TaxScreen', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+      invoiceData: globalData,
+    });
   }
 
   function navigateToAddClientScreen() {
@@ -408,11 +424,11 @@ function InvoiceCreationScreen({ navigation, route }: any): JSX.Element {
     return (
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={[styles.scene, { backgroundColor: Colors.commonBg, padding: 8 }]}>
+        style={[styles.scene, {backgroundColor: Colors.commonBg, padding: 8}]}>
         <TouchableOpacity
           onPress={navigateToInvoiceNumber}
           style={styles.invoiceTopView}>
-          <View style={{ justifyContent: 'space-between', width: '50%' }}>
+          <View style={{justifyContent: 'space-between', width: '50%'}}>
             <Text style={styles.invoiceTitle}>{globalData.invoice_number}</Text>
             <Text
               onPress={navigateToBusinessDetails}
@@ -420,7 +436,7 @@ function InvoiceCreationScreen({ navigation, route }: any): JSX.Element {
               {t('Business Info')}
             </Text>
           </View>
-          <View style={{ justifyContent: 'space-between', width: '50%' }}>
+          <View style={{justifyContent: 'space-between', width: '50%'}}>
             <View style={styles.dueBox}>
               <Text style={styles.dueTxt}>{t('Due on Receipt')}</Text>
             </View>
@@ -467,7 +483,7 @@ function InvoiceCreationScreen({ navigation, route }: any): JSX.Element {
                   </Text>
                   <Text style={styles.dueBalText3}>{'$' + item.total}</Text>
                   <Text style={styles.dueBalText4}>
-                    {'-$' + item.discount_amount}
+                    {item.discount_amount && '-$' + parseFloat(item.discount_amount || 0).toFixed(2)}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -507,7 +523,11 @@ function InvoiceCreationScreen({ navigation, route }: any): JSX.Element {
           <View style={styles.dueBalFooter}>
             <Text style={styles.dueBalFooterText}>{t('Balance Due')}</Text>
             <Text style={styles.dueBalFooterText}>
-              {globalData.invoice_total}
+              {(
+                parseFloat(globalData.invoice_total_tax_amount || 0) +
+                parseFloat(globalData.invoice_total || 0) -
+                parseFloat(globalData.invoice_discount_amount || 0)
+              ).toFixed(2)}
             </Text>
           </View>
         </View>
@@ -524,9 +544,9 @@ function InvoiceCreationScreen({ navigation, route }: any): JSX.Element {
             onPress={navigateToPaymentInfo}
             style={styles.notesRow}>
             {globalData.paypal_email ||
-              globalData.make_checks_payable ||
-              globalData.payment_instructions ||
-              globalData.additional_payment_instructions ? (
+            globalData.make_checks_payable ||
+            globalData.payment_instructions ||
+            globalData.additional_payment_instructions ? (
               <Text
                 numberOfLines={1}
                 onPress={navigateToPaymentInfo}
@@ -562,9 +582,11 @@ function InvoiceCreationScreen({ navigation, route }: any): JSX.Element {
         <View style={styles.requestContainer}>
           <View style={styles.requestSwitchRow}>
             <Text style={styles.requestText}>{t('Request Review')}</Text>
-            <Switch value={RequestReview}
+            <Switch
+              value={RequestReview}
               color={Colors.landingColor}
-              onValueChange={(value: any) => setRequestReview(value)} />
+              onValueChange={(value: any) => setRequestReview(value)}
+            />
           </View>
           <View style={styles.requestLinkRow}>
             <TextInput
@@ -584,13 +606,13 @@ function InvoiceCreationScreen({ navigation, route }: any): JSX.Element {
 
   const OutStandingRoute = () => {
     return (
-      <View style={[styles.scene, { backgroundColor: Colors.commonBg }]}></View>
+      <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}></View>
     );
   };
 
   const PaidRoute = () => {
     return (
-      <View style={[styles.scene, { backgroundColor: Colors.commonBg }]}></View>
+      <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}></View>
     );
   };
 
@@ -602,33 +624,33 @@ function InvoiceCreationScreen({ navigation, route }: any): JSX.Element {
           <Menu
             visible={visible}
             onDismiss={closeMenu}
-            anchor={{ x: screenWidth - 10, y: -10 }}>
-            <Menu.Item onPress={() => { }} title={t('Delete')} />
-            <Menu.Item onPress={() => { }} title={t('Open In ..')} />
-            <Menu.Item onPress={() => { }} title={t('Share')} />
-            <Menu.Item onPress={() => { }} title={t('Print')} />
-            <Menu.Item onPress={() => { }} title={t('Get Link')} />
-            <Menu.Item onPress={() => { }} title={t('Mark Paid')} />
-            <Menu.Item onPress={() => { }} title={t('Duplicate')} />
+            anchor={{x: screenWidth - 10, y: -10}}>
+            <Menu.Item onPress={() => {}} title={t('Delete')} />
+            <Menu.Item onPress={() => {}} title={t('Open In ..')} />
+            <Menu.Item onPress={() => {}} title={t('Share')} />
+            <Menu.Item onPress={() => {}} title={t('Print')} />
+            <Menu.Item onPress={() => {}} title={t('Get Link')} />
+            <Menu.Item onPress={() => {}} title={t('Mark Paid')} />
+            <Menu.Item onPress={() => {}} title={t('Duplicate')} />
           </Menu>
           <TabView
-            navigationState={{ index, routes }}
+            navigationState={{index, routes}}
             renderScene={SceneMap({
               first: AllRoute,
               second: OutStandingRoute,
               third: PaidRoute,
             })}
             onIndexChange={setIndex}
-            initialLayout={{ width: screenWidth }}
+            initialLayout={{width: screenWidth}}
             style={styles.container2}
             sceneContainerStyle={styles.container2}
             renderTabBar={props => {
               return (
                 <TabBar
                   {...props}
-                  indicatorStyle={{ backgroundColor: '#fff', height: 2 }}
-                  style={{ backgroundColor: Colors.appColor }}
-                  labelStyle={{ fontSize: 15, fontWeight: '500' }}
+                  indicatorStyle={{backgroundColor: '#fff', height: 2}}
+                  style={{backgroundColor: Colors.appColor}}
+                  labelStyle={{fontSize: 15, fontWeight: '500'}}
                 />
               );
             }}
@@ -637,7 +659,7 @@ function InvoiceCreationScreen({ navigation, route }: any): JSX.Element {
         <FAB.Group
           open={open}
           icon={() => <Entypo name="paper-plane" size={22} color="#fff" />}
-          actions={actions.map(action => ({ ...action, ...actionStyle }))}
+          actions={actions.map(action => ({...action, ...actionStyle}))}
           onStateChange={onStateChange}
           onPress={() => {
             if (open) {
@@ -863,8 +885,8 @@ const styles = StyleSheet.create({
     padding: 12,
     marginVertical: 5,
   },
-  invoiceTitle: { fontSize: 18, fontWeight: '600', color: '#000' },
-  businessInfo: { fontSize: 18, fontWeight: '400', color: '#d1d1d1' },
+  invoiceTitle: {fontSize: 18, fontWeight: '600', color: '#000'},
+  businessInfo: {fontSize: 18, fontWeight: '400', color: '#d1d1d1'},
   dueBox: {
     borderWidth: 1,
     borderRadius: 5,
@@ -873,7 +895,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignSelf: 'flex-end',
   },
-  dueTxt: { fontSize: 14, fontWeight: '400', color: 'grey' },
+  dueTxt: {fontSize: 14, fontWeight: '400', color: 'grey'},
   dueDate: {
     fontSize: 18,
     fontWeight: '400',
@@ -887,8 +909,8 @@ const styles = StyleSheet.create({
     padding: 12,
     marginVertical: 5,
   },
-  toTxt: { fontSize: 18, fontWeight: '400', color: '#000' },
-  clientTxt: { fontSize: 18, fontWeight: '400', color: '#d1d1d1', width: '100%' },
+  toTxt: {fontSize: 18, fontWeight: '400', color: '#000'},
+  clientTxt: {fontSize: 18, fontWeight: '400', color: '#d1d1d1', width: '100%'},
   ItemView: {
     backgroundColor: '#fff',
     borderRadius: 8,
@@ -899,7 +921,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 12,
   },
-  addItemTxt: { fontSize: 16, fontWeight: '500', color: '#d1d1d1' },
+  addItemTxt: {fontSize: 16, fontWeight: '500', color: '#d1d1d1'},
   itemPriceTxt: {
     fontSize: 18,
     fontWeight: '400',
@@ -914,7 +936,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 8,
     padding: 8,
   },
-  itemTotalTxt: { fontSize: 18, fontWeight: '500', color: '#fff' },
+  itemTotalTxt: {fontSize: 18, fontWeight: '500', color: '#fff'},
   dueBalContainer: {
     backgroundColor: '#fff',
     borderRadius: 8,
@@ -1011,7 +1033,7 @@ const styles = StyleSheet.create({
   },
   requestSwitchRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent:'space-between',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderBottomColor: 'grey',
@@ -1020,13 +1042,12 @@ const styles = StyleSheet.create({
   },
   requestLinkRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     paddingHorizontal: 12,
-    flex: 1
+    flex: 1,
   },
   requestText: {
     fontSize: 18,
-  fontWeight: '400',
+    fontWeight: '400',
     color: '#000',
   },
   requestLinkText: {
@@ -1035,7 +1056,7 @@ const styles = StyleSheet.create({
     color: '#000',
     height: 40,
     textAlignVertical: 'center',
-    marginVertical: 5
+    marginVertical: 5,
   },
   paidContainer: {
     flexDirection: 'row',

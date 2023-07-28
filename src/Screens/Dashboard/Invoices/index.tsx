@@ -20,6 +20,7 @@ import FetchAPI from '../../../Networking';
 import {endpoint} from '../../../Networking/endpoint';
 import {useSelector, useDispatch} from 'react-redux';
 import {useIsFocused} from '@react-navigation/native';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -56,7 +57,7 @@ const invoices = [
         invoiceNumber: 'INV-004',
         price: 250.0,
         date: '2022-02-01',
-      },
+      }
     ],
   },
 ];
@@ -154,8 +155,9 @@ function InvoicesScreen({navigation}: any): JSX.Element {
   }
 
   const AllRoute = () => {
-    const renderInvoiceItem = ({item}: any) => (
+    const renderInvoiceItem = ({item, index}: any) => (
       <TouchableOpacity
+        key={index}
         onPress={() => navigateToInvoice(item)}
         style={styles.invoiceItem}>
         <View>
@@ -173,7 +175,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     const renderSectionHeader = ({section: {year}}) => (
       <View style={styles.sectionHeaderContain}>
         <Text style={styles.sectionHeader}>{year}</Text>
-        <Text style={styles.sectionHeader}>{'$635'}</Text>
+        <Text style={styles.sectionHeader}>{'$0'}</Text>
       </View>
     );
 
@@ -181,7 +183,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
       <EmptyViewComponent message={t('emptyInvoiceAll')} />
     );
     return (
-      <View style={[styles.scene]}>
+      <ScrollView nestedScrollEnabled style={[styles.scene]}>
         <SectionList
           sections={allData}
           keyExtractor={(item: any, index: any) => item + index}
@@ -189,8 +191,11 @@ function InvoicesScreen({navigation}: any): JSX.Element {
           renderSectionHeader={renderSectionHeader}
           ListEmptyComponent={renderEmptyComponent}
           contentContainerStyle={{flex: 1}}
+          stickySectionHeadersEnabled={false}
+          scrollEnabled
+          nestedScrollEnabled
         />
-      </View>
+      </ScrollView>
     );
   };
 
@@ -220,7 +225,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
       </View>
     );
     return (
-      <View style={[styles.scene]}>
+      <ScrollView nestedScrollEnabled style={[styles.scene]}>
         <SectionList
           sections={invoices}
           keyExtractor={(item: any, index: any) => item + index}
@@ -228,8 +233,9 @@ function InvoicesScreen({navigation}: any): JSX.Element {
           renderSectionHeader={renderSectionHeader}
           ListEmptyComponent={renderEmptyComponent}
           contentContainerStyle={{flex: 1}}
+          nestedScrollEnabled
         />
-      </View>
+      </ScrollView>
     );
   };
 
@@ -291,6 +297,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
         onIndexChange={setIndex}
         initialLayout={{width: screenWidth}}
         style={styles.container2}
+        sceneContainerStyle={styles.container2}
         renderTabBar={props => {
           return (
             <TabBar

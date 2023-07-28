@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {View, SectionList, Text, StyleSheet, TextInput} from 'react-native';
 import TermsComponent from '../../CustomComponent/TermsComponent';
 import DatePicker from 'react-native-date-picker';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 const InvoiceNumber = () => {
   const {t, i18n} = useTranslation();
@@ -20,11 +20,11 @@ const InvoiceNumber = () => {
       <View style={{borderRadius: 8, backgroundColor: '#fff', padding: 8}}>
         <View style={styles.rowView}>
           <Text style={styles.titleTxt}>{t('Invoice Number')} : </Text>
-          <View style={{width: '50%'}}>
-            <TextInput
-              style={{...styles.titleTxt, flex: 1, textAlign: 'right'}}
-            />
-          </View>
+          <TextInput
+            value={invoiceNumber}
+            onChangeText={setInvoiceNumber}
+            style={{...styles.titleTxt2, textAlign: 'right'}}
+          />
         </View>
         <View style={styles.rowView}>
           <Text style={styles.titleTxt}>{t('Date')} : </Text>
@@ -38,15 +38,15 @@ const InvoiceNumber = () => {
         </View>
         <View style={styles.rowView}>
           <Text style={styles.titleTxt}>{t('Due Date')} : </Text>
-          <View style={{width: '50%'}}>
-            <TextInput style={{flex: 1, textAlign: 'right'}} />
-          </View>
+          <TextInput style={{...styles.titleTxt2, textAlign: 'right'}} />
         </View>
         <View style={styles.rowView}>
           <Text style={styles.titleTxt}>{t('PO Number')} : </Text>
-          <View style={{width: '50%'}}>
-            <TextInput style={{flex: 1, textAlign: 'right'}} />
-          </View>
+          <TextInput
+            value={poNumber}
+            onChangeText={setPoNumber}
+            style={{...styles.titleTxt2, textAlign: 'right'}}
+          />
         </View>
       </View>
       <TermsComponent
@@ -85,8 +85,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 5,
+    alignItems:'center'
   },
   titleTxt: {fontSize: 16, color: '#000', fontWeight: '500'},
+  titleTxt2: {
+    fontSize: 16,
+    color: '#000',
+    fontWeight: '500',
+    height: 40,
+    textAlignVertical: 'center',
+    width: '50%',
+  },
 });
 
 export default InvoiceNumber;

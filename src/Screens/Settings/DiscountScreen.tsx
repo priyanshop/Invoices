@@ -9,12 +9,12 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import {Colors} from '../../Helper/Colors';
-import DiscountOption from '../../CustomComponent/DiscountOption';
 import {useTranslation} from 'react-i18next';
 import {useSelector, useDispatch} from 'react-redux';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
+import {Colors} from '../../Helper/Colors';
+import DiscountOption from '../../CustomComponent/DiscountOption';
 
 function DiscountScreen({navigation, route}: any): JSX.Element {
   const dispatch = useDispatch();
@@ -34,6 +34,17 @@ function DiscountScreen({navigation, route}: any): JSX.Element {
         );
         setDiscountAmount(
           route.params.invoiceData.invoice_discount_value?.toString(),
+        );
+      }
+    }
+    if (route.params?.estimateUpdate) {
+      if (route.params?.estimateData?.estimate_discount_type) {
+        setSelectedTax(route.params.estimateData.estimate_discount_type);
+        setPercentageAmount(
+          route.params.estimateData.estimate_discount_value?.toString(),
+        );
+        setDiscountAmount(
+          route.params.estimateData.estimate_discount_value?.toString(),
         );
       }
     }
@@ -63,6 +74,22 @@ function DiscountScreen({navigation, route}: any): JSX.Element {
     } catch (error) {}
   };
 
+  const updateETCall = async (tempPayload: any) => {
+    try {
+      const data = await FetchAPI(
+        'patch',
+        endpoint.updateETItem(route?.params?.estimateID),
+        tempPayload,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        navigation.goBack();
+      }
+    } catch (error) {}
+  };
+
   const checkCondition = () => {
     if (selectedTax !== 'Flat Amount' && selectedTax !== 'Percentage') {
       navigation.goBack();
@@ -79,6 +106,16 @@ function DiscountScreen({navigation, route}: any): JSX.Element {
         return;
       }
     }
+   
+    if (route.params.invoiceUpdate) {
+      updateInvoice();
+    }
+    if (route.params.estimateUpdate) {
+      updateEstimate();
+    }
+  };
+
+  const updateInvoice = ()=>{
     const payload: any = {
       invoice_discount_type: selectedTax,
       invoice_discount_value:
@@ -97,6 +134,26 @@ function DiscountScreen({navigation, route}: any): JSX.Element {
     if (route.params.invoiceUpdate) {
       updateCall(payload);
     }
+  }
+  const updateEstimate = () => {
+    const payload: any = {
+      estimate_discount_type: selectedTax,
+      estimate_discount_value:
+        selectedTax === 'Flat Amount'
+          ? discountAmount
+          : selectedTax === 'Percentage'
+          ? percentageAmount
+          : '',
+        estimate_discount_amount: calculateTotalPrice(
+        route.params.estimateData.estimate_total,
+        selectedTax,
+        discountAmount,
+        percentageAmount,
+      ),
+    };
+    if (route.params.estimateUpdate) {
+      updateETCall(payload);
+    }
   };
 
   const calculateTotalPrice = (
@@ -108,7 +165,7 @@ function DiscountScreen({navigation, route}: any): JSX.Element {
     let totalPrice = total;
     if (discountType !== 'No Discount') {
       if (discountType === 'Flat Amount' && flatDiscount && flatDiscount > 0) {
-        totalPrice -= flatDiscount;
+        return flatDiscount;
       }
       if (
         discountType === 'Percentage' &&
@@ -116,10 +173,11 @@ function DiscountScreen({navigation, route}: any): JSX.Element {
         percentageDiscount > 0
       ) {
         const percentageAmount = (totalPrice * percentageDiscount) / 100;
-        totalPrice -= percentageAmount;
+        return percentageAmount;
       }
+    }else{
+      return 0;
     }
-    return totalPrice;
   };
 
   return (
