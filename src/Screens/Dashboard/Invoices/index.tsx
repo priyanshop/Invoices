@@ -191,6 +191,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
           renderSectionHeader={renderSectionHeader}
           ListEmptyComponent={renderEmptyComponent}
           contentContainerStyle={{flex: 1}}
+          style={{flex:1}}
           stickySectionHeadersEnabled={false}
           scrollEnabled
           nestedScrollEnabled
@@ -233,6 +234,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
           renderSectionHeader={renderSectionHeader}
           ListEmptyComponent={renderEmptyComponent}
           contentContainerStyle={{flex: 1}}
+          style={{flex: 1}}
           nestedScrollEnabled
         />
       </ScrollView>

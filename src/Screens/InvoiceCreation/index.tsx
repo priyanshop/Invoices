@@ -175,62 +175,12 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     const payload = setNewInvoiceInList(selector);
     dispatch(addNewInvoice(payload));
     setGlobalData(payload);
-    setPaymentDue([
-      {
-        key: 'first',
-        title: t('Discount'),
-        value: '$' + (payload.invoice_discount_amount || 0),
-        onPress: () => navigateToDiscountScreen(),
-      },
-      {
-        key: 'second',
-        title: t('Tax'),
-        value: '$' + (payload.invoice_total_tax_amount || 0),
-        onPress: () => navigateToTaxScreen(),
-      },
-
-      {
-        key: 'third',
-        title: t('Total'),
-        value:
-          '$' +
-          (
-            parseFloat(payload.invoice_total_tax_amount || 0) +
-            parseFloat(payload.invoice_total || 0) -
-            parseFloat(payload.invoice_discount_amount || 0)
-          ).toFixed(2),
-      }
-    ]);
+    fetchPaymentDue(payload);
   };
 
   const setOffline = (payload: any) => {
     setGlobalData(payload);
-    setPaymentDue([
-      {
-        key: 'first',
-        title: t('Discount'),
-        value: '$' + (payload.invoice_discount_amount || 0),
-        onPress: () => navigateToDiscountScreen(),
-      },
-      {
-        key: 'second',
-        title: t('Tax'),
-        value: '$' + (payload.invoice_total_tax_amount || 0),
-        onPress: () => navigateToTaxScreen(),
-      },
-
-      {
-        key: 'third',
-        title: t('Total'),
-        value:
-          '$' +
-          (
-            parseFloat(payload.invoice_total_tax_amount || 0) +
-            parseFloat(payload.invoice_total || 0) -
-            parseFloat(payload.invoice_discount_amount || 0)
-          ).toFixed(2),
-      }
-    ]);
+    fetchPaymentDue(payload);
   };
 
   const getInvoiceCall = async (invoiceDetail: any) => {
@@ -246,32 +196,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       if (data.status === 'success') {
         const element = data.data;
         setGlobalData(element);
-        setPaymentDue([
-          {
-            key: 'first',
-            title: t('Discount'),
-            value: '$' + (element.invoice_discount_amount || 0),
-            onPress: () => navigateToDiscountScreen(),
-          },
-          {
-            key: 'second',
-            title: t('Tax'),
-            value: '$' + (element.invoice_total_tax_amount || 0),
-            onPress: () => navigateToTaxScreen(),
-          },
-
-          {
-            key: 'third',
-            title: t('Total'),
-            value:
-              '$' +
-              (
-                parseFloat(element.invoice_total_tax_amount || 0) +
-                parseFloat(element.invoice_total || 0) -
-                parseFloat(element.invoice_discount_amount || 0)
-              ).toFixed(2),
-          },
-        ]);
+        fetchPaymentDue(element);
       }
     } catch (error) {}
   };
@@ -284,36 +209,39 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       if (data.status === 'success') {
         const element = data.data;
         setGlobalData(element);
-        setPaymentDue([
-          {
-            key: 'first',
-            title: t('Discount'),
-            value: '$' + (element.invoice_discount_amount || 0),
-            onPress: () => navigateToDiscountScreen(),
-          },
-          {
-            key: 'second',
-            title: t('Tax'),
-            value: '$' + (element.invoice_total_tax_amount || 0),
-            onPress: () => navigateToTaxScreen(),
-          },
-
-          {
-            key: 'third',
-            title: t('Total'),
-            value:
-              '$' +
-              (
-                parseFloat(element.invoice_total_tax_amount || 0) +
-                parseFloat(element.invoice_total || 0) -
-                parseFloat(element.invoice_discount_amount || 0)
-              ).toFixed(2),
-          },
-        ]);
+        fetchPaymentDue(element);
       }
     } catch (error) {}
   };
 
+  const fetchPaymentDue = (element: any) => {
+    setPaymentDue([
+      {
+        key: 'first',
+        title: t('Discount'),
+        value: '$' + (element.invoice_discount_amount || 0),
+        onPress: () => navigateToDiscountScreen(),
+      },
+      {
+        key: 'second',
+        title: t('Tax'),
+        value: '$' + (element.invoice_total_tax_amount || 0),
+        onPress: () => navigateToTaxScreen(),
+      },
+
+      {
+        key: 'third',
+        title: t('Total'),
+        value:
+          '$' +
+          (
+            parseFloat(element.invoice_total_tax_amount || 0) +
+            parseFloat(element.invoice_total || 0) -
+            parseFloat(element.invoice_discount_amount || 0)
+          ).toFixed(2),
+      },
+    ]);
+  }
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
@@ -341,6 +269,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       invoiceUpdate: true,
       invoiceID: globalData._id,
       invoiceData: globalData,
+      index: index,
     });
   }
 
@@ -349,6 +278,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       invoiceUpdate: true,
       invoiceID: globalData._id,
       invoiceData: globalData,
+      index: index,
     });
   }
 

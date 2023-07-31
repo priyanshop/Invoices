@@ -19,6 +19,10 @@ import {
 } from '../../Helper/CommonFunctions';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
+import {
+  setEstimateList,
+  setInvoiceList,
+} from '../../redux/reducers/user/UserReducer';
 
 function TaxScreen({navigation, route}: any): JSX.Element {
   const dispatch = useDispatch();
@@ -84,9 +88,25 @@ function TaxScreen({navigation, route}: any): JSX.Element {
           ? totalTax
           : '',
     };
-    if (route.params.invoiceUpdate) {
+    if (selector.token === 'Guest') {
+      updateCallOffline(payload);
+    } else {
       updateCall(payload);
     }
+  };
+
+  const updateCallOffline = async (tempPayload: any) => {
+    const updatedArray = selector.invoiceList.map((item: any) => {
+      if (item.index === route?.params?.invoiceData.index) {
+        return {
+          ...item,
+          ...tempPayload,
+        };
+      }
+      return item;
+    });
+    dispatch(setInvoiceList(updatedArray));
+    navigation.goBack();
   };
 
   const updateEstimate = () => {
@@ -97,6 +117,8 @@ function TaxScreen({navigation, route}: any): JSX.Element {
       route.params.estimateData.estimate_total,
       taxRate,
     );
+    console.log('tempPayload', route.params.estimateData);
+
     const totalTax = getTotalTaxAmount(route.params.estimateData.items);
     const payload: any = {
       estimate_tax_type: selectedTax,
@@ -110,9 +132,32 @@ function TaxScreen({navigation, route}: any): JSX.Element {
           ? totalTax
           : '',
     };
-    if (route.params.estimateUpdate) {
+    if (selector.token === 'Guest') {
+      updateEstimateCallOffline(payload);
+    } else {
       updateETCall(payload);
     }
+  };
+
+  const updateEstimateCallOffline = async (tempPayload: any) => {
+    const updatedArray = selector.estimateList.map((item: any) => {
+      if (item.index === route?.params?.estimateData.index) {
+        return {
+          ...item,
+          ...tempPayload,
+        };
+      }
+      console.log("item",item);
+      
+      return item;
+    });
+    const updatedArray2 = selector.estimateList.filter(
+      (item: any) => item.index === route?.params?.estimateData.index,
+    );
+    console.log(updatedArray2);
+    
+    dispatch(setEstimateList(updatedArray));
+    navigation.goBack();
   };
 
   const updateCall = async (tempPayload: any) => {

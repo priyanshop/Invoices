@@ -126,6 +126,8 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     }
     if (route.params.status === 'update') {
       if (selector.token === 'Guest') {
+        console.log('ssssss');
+
         const index = findIndexById(
           route?.params?.data.index,
           selector.estimateList,
@@ -135,7 +137,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         getEstimateCall(route?.params?.data);
       }
     }
-  }, [route.params]);
+  }, [isFocused]);
 
   const findIndexById = (id: any, data: any) => {
     return data.findIndex((item: any) => item.index === id);
@@ -154,32 +156,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
       if (data.status === 'success') {
         const element = data.data;
         setGlobalData(element);
-
-        setPaymentDue([
-          {
-            key: 'first',
-            title: t('Discount'),
-            value: '$' + parseFloat(element.estimate_discount_amount || 0),
-            onPress: () => navigateToDiscountScreen(),
-          },
-          {
-            key: 'second',
-            title: t('Tax'),
-            value: '$' + parseFloat(element.estimate_total_tax_amount || 0),
-            onPress: () => navigateToTaxScreen(),
-          },
-          {
-            key: 'third',
-            title: t('Total'),
-            value:
-              '$' +
-              (
-                parseFloat(element.estimate_total_tax_amount || 0) +
-                parseFloat(element.estimate_total || 0) -
-                parseFloat(element.estimate_discount_amount || 0)
-              ).toFixed(2),
-          },
-        ]);
+        fetchPaymentDue(element);
       }
     } catch (error) {}
   };
@@ -188,61 +165,13 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     const payload = setNewEstimateInList(selector);
     dispatch(addNewEstimate(payload));
     setGlobalData(payload);
-    setPaymentDue([
-      {
-        key: 'first',
-        title: t('Discount'),
-        value: '$' + parseFloat(payload.estimate_discount_amount || 0),
-        onPress: () => navigateToDiscountScreen(),
-      },
-      {
-        key: 'second',
-        title: t('Tax'),
-        value: '$' + parseFloat(payload.estimate_total_tax_amount || 0),
-        onPress: () => navigateToTaxScreen(),
-      },
-      {
-        key: 'third',
-        title: t('Total'),
-        value:
-          '$' +
-          (
-            parseFloat(payload.estimate_total_tax_amount || 0) +
-            parseFloat(payload.estimate_total || 0) -
-            parseFloat(payload.estimate_discount_amount || 0)
-          ).toFixed(2),
-      },
-    ]);
+    fetchPaymentDue(payload);
     setCreated(true);
   };
 
   const setOffline = (payload: any) => {
     setGlobalData(payload);
-    setPaymentDue([
-      {
-        key: 'first',
-        title: t('Discount'),
-        value: '$' + parseFloat(payload.estimate_discount_amount || 0),
-        onPress: () => navigateToDiscountScreen(),
-      },
-      {
-        key: 'second',
-        title: t('Tax'),
-        value: '$' + parseFloat(payload.estimate_total_tax_amount || 0),
-        onPress: () => navigateToTaxScreen(),
-      },
-      {
-        key: 'third',
-        title: t('Total'),
-        value:
-          '$' +
-          (
-            parseFloat(payload.estimate_total_tax_amount || 0) +
-            parseFloat(payload.estimate_total || 0) -
-            parseFloat(payload.estimate_discount_amount || 0)
-          ).toFixed(2),
-      },
-    ]);
+    fetchPaymentDue(payload);
   };
 
   const createEstimateCall = async () => {
@@ -253,36 +182,39 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
       if (data.status === 'success') {
         const element = data.data;
         setGlobalData(element);
-        setPaymentDue([
-          {
-            key: 'first',
-            title: t('Discount'),
-            value: '$' + parseFloat(element.estimate_discount_amount || 0),
-            onPress: () => navigateToDiscountScreen(),
-          },
-          {
-            key: 'second',
-            title: t('Tax'),
-            value: '$' + parseFloat(element.estimate_total_tax_amount || 0),
-            onPress: () => navigateToTaxScreen(),
-          },
-          {
-            key: 'third',
-            title: t('Total'),
-            value:
-              '$' +
-              (
-                parseFloat(element.estimate_total_tax_amount || 0) +
-                parseFloat(element.estimate_total || 0) -
-                parseFloat(element.estimate_discount_amount || 0)
-              ).toFixed(2),
-          },
-        ]);
+        fetchPaymentDue(element);
         setCreated(true);
       }
     } catch (error) {}
   };
 
+  const fetchPaymentDue = (element: any) => {
+    setPaymentDue([
+      {
+        key: 'first',
+        title: t('Discount'),
+        value: '$' + parseFloat(element.estimate_discount_amount || 0),
+        onPress: () => navigateToDiscountScreen(),
+      },
+      {
+        key: 'second',
+        title: t('Tax'),
+        value: '$' + parseFloat(element.estimate_total_tax_amount || 0),
+        onPress: () => navigateToTaxScreen(),
+      },
+      {
+        key: 'third',
+        title: t('Total'),
+        value:
+          '$' +
+          (
+            parseFloat(element.estimate_total_tax_amount || 0) +
+            parseFloat(element.estimate_total || 0) -
+            parseFloat(element.estimate_discount_amount || 0)
+          ).toFixed(2),
+      },
+    ]);
+  };
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
@@ -363,14 +295,18 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
       estimateUpdate: true,
       estimateID: globalData._id,
       estimateData: globalData,
+      index: index,
     });
   }
 
   function navigateToTaxScreen() {
+    console.log(JSON.stringify(globalData));
+
     navigation.navigate('TaxScreen', {
       estimateUpdate: true,
       estimateID: globalData._id,
       estimateData: globalData,
+      index: index,
     });
   }
 
@@ -992,7 +928,7 @@ const styles = StyleSheet.create({
   },
   requestSwitchRow: {
     flexDirection: 'row',
-    justifyContent:'space-between',
+    justifyContent: 'space-between',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderBottomColor: 'grey',

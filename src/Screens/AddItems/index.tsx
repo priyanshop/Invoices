@@ -114,10 +114,10 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
     if (temp.discount_type === 'Flat Amount') {
       setDiscountAmount(temp.discount_amount?.toString() || '0');
     }
-    setNotes(temp.item_notes.toString()|| '0');
-    setQuantity(temp.quantity.toString()|| '0');
+    setNotes(temp.item_notes.toString() || '0');
+    setQuantity(temp.quantity.toString() || '0');
     setUnit(temp.rate?.toString() || '0');
-    setUnitCost(temp.unit?.toString()|| '0');
+    setUnitCost(temp.unit?.toString() || '0');
     setTaxable(temp.is_taxable === 'true' ? true : false);
     setTaxRate(temp.item_tax_rate);
   };
@@ -742,8 +742,9 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
       }
       return item;
     });
-    dispatch(setEstimateList(updatedArray));
-    navigation.goBack();
+    Promise.all([dispatch(setEstimateList(updatedArray))])
+      .then(() => {})
+      .finally(() => navigation.goBack());
   };
 
   const updateCall = async (tempPayload: any) => {
