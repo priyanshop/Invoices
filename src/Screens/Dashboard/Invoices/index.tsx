@@ -20,7 +20,8 @@ import FetchAPI from '../../../Networking';
 import {endpoint} from '../../../Networking/endpoint';
 import {useSelector, useDispatch} from 'react-redux';
 import {useIsFocused} from '@react-navigation/native';
-import { ScrollView } from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
+import {offlineLimit} from '../../../Constant';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -57,7 +58,7 @@ const invoices = [
         invoiceNumber: 'INV-004',
         price: 250.0,
         date: '2022-02-01',
-      }
+      },
     ],
   },
 ];
@@ -146,9 +147,17 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     navigation.navigate('Settings');
   }
 
-  function navigateToAddInvoice() {
+  const navigateToAddInvoice = () => {
+    // if (selector.token === 'Guest') {
+    //   if (selector.invoiceList.length <= offlineLimit) {
+    //     console.log("Ddddd");
+
+    //     navigation.navigate('InvoiceCreation', {status: 'create'});
+    //   }
+    // } else {
     navigation.navigate('InvoiceCreation', {status: 'create'});
-  }
+    // }
+  };
 
   function navigateToInvoice(item: any) {
     navigation.navigate('InvoiceCreation', {status: 'update', data: item});
@@ -183,20 +192,20 @@ function InvoicesScreen({navigation}: any): JSX.Element {
       <EmptyViewComponent message={t('emptyInvoiceAll')} />
     );
     return (
-      <ScrollView nestedScrollEnabled style={[styles.scene]}>
-        <SectionList
-          sections={allData}
-          keyExtractor={(item: any, index: any) => item + index}
-          renderItem={renderInvoiceItem}
-          renderSectionHeader={renderSectionHeader}
-          ListEmptyComponent={renderEmptyComponent}
-          contentContainerStyle={{flex: 1}}
-          style={{flex:1}}
-          stickySectionHeadersEnabled={false}
-          scrollEnabled
-          nestedScrollEnabled
-        />
-      </ScrollView>
+      <View style={[styles.scene]}>
+        {allData.length > 0 ? (
+          <SectionList
+            sections={allData}
+            keyExtractor={(item: any, index: any) => item + index}
+            renderItem={renderInvoiceItem}
+            renderSectionHeader={renderSectionHeader}
+            ListEmptyComponent={renderEmptyComponent}
+            stickySectionHeadersEnabled={false}
+          />
+        ) : (
+          renderEmptyComponent()
+        )}
+      </View>
     );
   };
 
@@ -373,6 +382,7 @@ const styles = StyleSheet.create({
   scene: {
     flex: 1,
     backgroundColor: Colors.commonBg,
+    height: '100%',
   },
   headerContainer: {
     flexDirection: 'row',

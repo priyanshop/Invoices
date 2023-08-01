@@ -15,6 +15,10 @@ import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {Colors} from '../../Helper/Colors';
 import DiscountOption from '../../CustomComponent/DiscountOption';
+import {
+  setEstimateList,
+  setInvoiceList,
+} from '../../redux/reducers/user/UserReducer';
 
 function DiscountScreen({navigation, route}: any): JSX.Element {
   const dispatch = useDispatch();
@@ -106,7 +110,7 @@ function DiscountScreen({navigation, route}: any): JSX.Element {
         return;
       }
     }
-   
+
     if (route.params.invoiceUpdate) {
       updateInvoice();
     }
@@ -115,7 +119,7 @@ function DiscountScreen({navigation, route}: any): JSX.Element {
     }
   };
 
-  const updateInvoice = ()=>{
+  const updateInvoice = () => {
     const payload: any = {
       invoice_discount_type: selectedTax,
       invoice_discount_value:
@@ -131,10 +135,12 @@ function DiscountScreen({navigation, route}: any): JSX.Element {
         percentageAmount,
       ),
     };
-    if (route.params.invoiceUpdate) {
+    if (selector.token === 'Guest') {
+      updateCallOffline(payload);
+    } else {
       updateCall(payload);
     }
-  }
+  };
   const updateEstimate = () => {
     const payload: any = {
       estimate_discount_type: selectedTax,
@@ -144,16 +150,55 @@ function DiscountScreen({navigation, route}: any): JSX.Element {
           : selectedTax === 'Percentage'
           ? percentageAmount
           : '',
-        estimate_discount_amount: calculateTotalPrice(
+      estimate_discount_amount: calculateTotalPrice(
         route.params.estimateData.estimate_total,
         selectedTax,
         discountAmount,
         percentageAmount,
       ),
     };
-    if (route.params.estimateUpdate) {
+    if (selector.token === 'Guest') {
+      updateEstimateCallOffline(payload);
+    } else {
       updateETCall(payload);
     }
+  };
+
+  const updateCallOffline = async (tempPayload: any) => {
+    const updatedArray = selector.invoiceList.map((item: any) => {
+      if (item.index === route?.params?.invoiceData.index) {
+        return {
+          ...item,
+          ...tempPayload,
+        };
+      }
+      return item;
+    });
+    dispatch(setInvoiceList(updatedArray));
+    setTimeout(() => {
+      navigation.goBack();
+    }, 1000);
+  };
+
+  const updateEstimateCallOffline = async (tempPayload: any) => {
+    const updatedArray = selector.estimateList.map((item: any) => {
+      if (item.index === route?.params?.estimateData.index) {
+        return {
+          ...item,
+          ...tempPayload,
+        };
+      }
+      console.log('item', item);
+
+      return item;
+    });
+    const updatedArray2 = selector.estimateList.filter(
+      (item: any) => item.index === route?.params?.estimateData.index,
+    );
+    dispatch(setEstimateList(updatedArray));
+    setTimeout(() => {
+      navigation.goBack();
+    }, 1000);
   };
 
   const calculateTotalPrice = (
@@ -175,7 +220,7 @@ function DiscountScreen({navigation, route}: any): JSX.Element {
         const percentageAmount = (totalPrice * percentageDiscount) / 100;
         return percentageAmount;
       }
-    }else{
+    } else {
       return 0;
     }
   };

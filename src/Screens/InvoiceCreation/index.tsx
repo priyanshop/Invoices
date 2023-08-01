@@ -165,7 +165,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         getInvoiceCall(route?.params?.data);
       }
     }
-  }, [isFocused]);
+  }, []);
 
   const findIndexById = (id: any, data: any) => {
     return data.findIndex((item: any) => item.index === id);
@@ -518,13 +518,13 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
               onValueChange={(value: any) => setRequestReview(value)}
             />
           </View>
-          <View style={styles.requestLinkRow}>
+          {/* <View style={styles.requestLinkRow}> */}
             <TextInput
               placeholder={t('Review Link')}
               style={styles.requestLinkText}
               placeholderTextColor={'#d1d1d1'}
             />
-          </View>
+          {/* </View> */}
         </View>
 
         <View style={styles.paidContainer}>
@@ -984,9 +984,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     color: '#000',
-    height: 40,
+    // height: 40,
     textAlignVertical: 'center',
     marginVertical: 5,
+    paddingVertical:10,
+    paddingHorizontal:12
   },
   paidContainer: {
     flexDirection: 'row',

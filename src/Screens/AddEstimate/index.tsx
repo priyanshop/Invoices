@@ -117,6 +117,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   }, [navigation]);
 
   useEffect(() => {
+    console.log("Isfcuse",isFocused)
     if (!created && route.params.status === 'create') {
       if (selector.token === 'Guest') {
         offline();
@@ -127,17 +128,18 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     if (route.params.status === 'update') {
       if (selector.token === 'Guest') {
         console.log('ssssss');
-
+        console.log("selector.estimateList==",JSON.stringify(selector.estimateList))
         const index = findIndexById(
           route?.params?.data.index,
           selector.estimateList,
         );
+        console.log("index",index)
         setOffline(selector.estimateList[index]);
       } else {
         getEstimateCall(route?.params?.data);
       }
     }
-  }, [isFocused]);
+  }, []);
 
   const findIndexById = (id: any, data: any) => {
     return data.findIndex((item: any) => item.index === id);
@@ -299,7 +301,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     });
   }
 
-  function navigateToTaxScreen() {
+  const navigateToTaxScreen =()=> {
     console.log(JSON.stringify(globalData));
 
     navigation.navigate('TaxScreen', {
@@ -479,13 +481,13 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
               onValueChange={(value: any) => setRequestReview(value)}
             />
           </View>
-          <View style={styles.requestLinkRow}>
+          {/* <View style={styles.requestLinkRow}> */}
             <TextInput
               placeholder={t('Review Link')}
               style={styles.requestLinkText}
               placeholderTextColor={'#d1d1d1'}
             />
-          </View>
+          {/* </View> */}
         </View>
 
         <View style={styles.paidContainer}>
@@ -952,6 +954,8 @@ const styles = StyleSheet.create({
     height: 40,
     textAlignVertical: 'center',
     marginVertical: 5,
+    paddingVertical:10,
+    paddingHorizontal:12
   },
   paidContainer: {
     flexDirection: 'row',

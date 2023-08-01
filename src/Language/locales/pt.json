@@ -280,5 +280,8 @@
   "History": "Histórico",
   "Payment Info": "Informações de Pagamento",
   "Due on Receipt": "Devido no Recebimento",
-  "Save as default": "Salvar como padrão"
+  "Save as default": "Salvar como padrão",
+  "emptyEstimateAll": "Mostre aos clientes os custos fazendo um orçamento, mais tarde você pode convertê-lo em uma fatura.",
+  "emptyEstimateOpen": "Os orçamentos que ainda não foram convertidos em faturas aparecerão aqui.",
+  "emptyEstimateClosed": "Os orçamentos que foram convertidos em faturas aparecerão aqui."
 }

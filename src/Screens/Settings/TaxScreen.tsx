@@ -106,7 +106,9 @@ function TaxScreen({navigation, route}: any): JSX.Element {
       return item;
     });
     dispatch(setInvoiceList(updatedArray));
-    navigation.goBack();
+    setTimeout(() => {
+      navigation.goBack();
+    }, 1000);
   };
 
   const updateEstimate = () => {
@@ -153,11 +155,11 @@ function TaxScreen({navigation, route}: any): JSX.Element {
     });
     const updatedArray2 = selector.estimateList.filter(
       (item: any) => item.index === route?.params?.estimateData.index,
-    );
-    console.log(updatedArray2);
-    
+    );    
     dispatch(setEstimateList(updatedArray));
-    navigation.goBack();
+    setTimeout(() => {
+      navigation.goBack();
+    }, 1000);
   };
 
   const updateCall = async (tempPayload: any) => {

@@ -18,6 +18,8 @@ import {useIsFocused} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import FetchAPI from '../../../Networking';
 import {endpoint} from '../../../Networking/endpoint';
+import {offlineLimit} from '../../../Constant';
+import EmptyViewComponent from '../../../CustomComponent/EmptyViewComponent';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -141,7 +143,7 @@ function EstimatesScreen({navigation}: any): JSX.Element {
   useEffect(() => {
     if (selector.token === 'Guest') {
       if (selector.estimateList?.length > 0) {
-        const savedData: any = convertData(selector.estimateList);        
+        const savedData: any = convertData(selector.estimateList);
         setAllData(savedData);
       }
     } else {
@@ -231,14 +233,23 @@ function EstimatesScreen({navigation}: any): JSX.Element {
         <Text style={styles.sectionHeader}>{'$635'}</Text>
       </View>
     );
+    const renderEmptyComponent = () => (
+      <EmptyViewComponent message={t('emptyEstimateAll')} />
+    );
+
     return (
       <View style={styles.scene}>
-        <SectionList
-          sections={allData}
-          keyExtractor={(item: any, index: any) => item + index}
-          renderItem={renderInvoiceItem}
-          renderSectionHeader={renderSectionHeader}
-        />
+        {allData.length > 0 ? (
+          <SectionList
+            sections={allData}
+            keyExtractor={(item: any, index: any) => item + index}
+            renderItem={renderInvoiceItem}
+            renderSectionHeader={renderSectionHeader}
+            ListEmptyComponent={renderEmptyComponent}
+          />
+        ) : (
+          renderEmptyComponent()
+        )}
       </View>
     );
   };
@@ -248,7 +259,13 @@ function EstimatesScreen({navigation}: any): JSX.Element {
   }
 
   function navigateToAddEstimate() {
-    navigation.navigate('EstimationCreation', {status: 'create'});
+    if (selector.token === 'Guest') {
+      if (selector.estimateList?.length <= offlineLimit) {
+        navigation.navigate('EstimationCreation', {status: 'create'});
+      }
+    } else {
+      navigation.navigate('EstimationCreation', {status: 'create'});
+    }
   }
 
   return (

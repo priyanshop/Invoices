@@ -742,9 +742,10 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
       }
       return item;
     });
-    Promise.all([dispatch(setEstimateList(updatedArray))])
-      .then(() => {})
-      .finally(() => navigation.goBack());
+    dispatch(setEstimateList(updatedArray))
+    setTimeout(() => {
+      navigation.goBack()
+    }, 1000);
   };
 
   const updateCall = async (tempPayload: any) => {
