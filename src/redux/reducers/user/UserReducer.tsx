@@ -115,7 +115,7 @@ const UserReducer = createSlice({
     },
 
     addNewEstimate: (state, action) => {
-      state.estimateList = [...state.invoiceList, action.payload];
+      state.estimateList = [...state.estimateList, action.payload];
     },
 
     setEstimateList: (state, action) => {

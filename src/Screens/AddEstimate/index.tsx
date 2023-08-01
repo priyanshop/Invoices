@@ -120,6 +120,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     console.log("Isfcuse",isFocused)
     if (!created && route.params.status === 'create') {
       if (selector.token === 'Guest') {
+        
         offline();
       } else {
         createEstimateCall();
@@ -139,7 +140,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         getEstimateCall(route?.params?.data);
       }
     }
-  }, []);
+  }, [route?.params]);
 
   const findIndexById = (id: any, data: any) => {
     return data.findIndex((item: any) => item.index === id);
@@ -165,6 +166,8 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
 
   const offline = () => {
     const payload = setNewEstimateInList(selector);
+    console.log("sskskksks",payload);
+
     dispatch(addNewEstimate(payload));
     setGlobalData(payload);
     fetchPaymentDue(payload);

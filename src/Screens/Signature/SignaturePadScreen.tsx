@@ -34,7 +34,7 @@ const SignaturePadScreen = ({navigation}: any) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View style={{flex: 1}}>
       {saved ? (
         <Image
           source={{uri: content}}
@@ -71,7 +71,7 @@ const SignaturePadScreen = ({navigation}: any) => {
           <Text style={styles.btnText}>Resign</Text>
         </TouchableOpacity> */}
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

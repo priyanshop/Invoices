@@ -79,16 +79,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 5,
-    alignItems:'center'
+    alignItems:'center',
+    paddingVertical:2
   },
   titleTxt: {fontSize: 16, color: '#000', fontWeight: '500'},
   titleTxt2: {
     fontSize: 16,
     color: '#000',
     fontWeight: '500',
-    height: 40,
+    // height: 40,
     textAlignVertical: 'center',
-    width:"50%"
+    width:"50%",
+    paddingVertical:2
   },
 });
 
