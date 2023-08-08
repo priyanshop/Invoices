@@ -40,7 +40,7 @@ function ManualExpense({navigation}: any): JSX.Element {
         <View style={styles.photoView}>
           <Text style={styles.photoText}>{t('Add photo')}</Text>
           <TouchableOpacity>
-            <Icon name="attach" size={18} color="#d2d2d2" />
+            <Icon name="attach" size={22} color="#d2d2d2" />
           </TouchableOpacity>
         </View>
         <View style={styles.itemView}>
