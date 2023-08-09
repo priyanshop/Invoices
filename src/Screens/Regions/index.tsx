@@ -17,7 +17,7 @@ import moment from 'moment';
 const RegionScreen = () => {
   const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
-  const selector = useSelector(state => state.user);
+  const selector = useSelector((state:any) => state.user);
   const [openModal, setOpenModal] = useState(false);
   const [monthsModal, setMonthsModal] = useState(false);
   const [currenciesModal, setCurrenciesModal] = useState(false);
@@ -26,6 +26,7 @@ const RegionScreen = () => {
   const [selectedLanguage, setSelectedLanguage] = useState('');
   const [selectedPayment, setSelectedPayment] = useState('dd-MM-yyyy');
   const [selectedDate, setSelectedDate] = useState('DD-MM-yyyy');
+  const [selectCurrency, setSelectCurrency] = useState('GBP');
 
   useEffect(() => {
     if (selector.language === 'en') {
@@ -75,14 +76,14 @@ const RegionScreen = () => {
             January
           </Text>
         </View>
-        {/* <View style={styles.rowView}>
+        <View style={styles.rowView}>
           <Text style={styles.titleTxt}>{t('Currency')} : </Text>
           <Text
             onPress={() => setCurrenciesModal(!currenciesModal)}
             style={styles.titleTxt}>
-            GBP
+            {selectCurrency}
           </Text>
-        </View> */}
+        </View>
         <View style={styles.rowView}>
           <Text style={styles.titleTxt}>{t('Date Format')} : </Text>
           <Text
@@ -116,10 +117,10 @@ const RegionScreen = () => {
             <Text style={styles.titleTxt}>{t('Date')} : </Text>
             <Text style={styles.titleTxt}>{moment().format(selectedDate)}</Text>
           </View>
-          {/* <View style={styles.rowView}>
+          <View style={styles.rowView}>
             <Text style={styles.titleTxt}>{t('Currency')} : </Text>
             <Text style={styles.titleTxt}>$ 123.02</Text>
-          </View> */}
+          </View>
         </View>
       </View>
       <View>
@@ -144,7 +145,7 @@ const RegionScreen = () => {
       <CurrencyFormat
         openModal={currenciesModal}
         closeBottomSheet={() => setCurrenciesModal(!currenciesModal)}
-        selectedOption={setSelectedPayment}
+        selectedOption={setSelectCurrency}
       />
       <MonthFormat
         openModal={monthsModal}

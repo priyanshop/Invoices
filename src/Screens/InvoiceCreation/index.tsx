@@ -148,11 +148,11 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
 
   useEffect(() => {
     if (route.params.status === 'create') {
-      console.log("ssssssjkkk");
+      console.log('ssssssjkkk');
 
       if (selector.token === 'Guest') {
-        console.log("sssjkkk");
-        
+        console.log('sssjkkk');
+
         offline();
       } else {
         createInvoiceCall();
@@ -244,8 +244,13 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
             parseFloat(element.invoice_discount_amount || 0)
           ).toFixed(2),
       },
+      {
+        key: 'fourth',
+        title: t('Total Payments'),
+        value: '$0.00',
+      },
     ]);
-  }
+  };
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
@@ -417,7 +422,8 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
                   </Text>
                   <Text style={styles.dueBalText3}>{'$' + item.total}</Text>
                   <Text style={styles.dueBalText4}>
-                    {item.discount_amount && '-$' + parseFloat(item.discount_amount || 0).toFixed(2)}
+                    {item.discount_amount &&
+                      '-$' + parseFloat(item.discount_amount || 0).toFixed(2)}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -469,7 +475,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         <View style={styles.photoContainer}>
           <Text style={styles.photoText}>{t('Add photo')}</Text>
           <TouchableOpacity onPress={navigateToAddPhotoScreen}>
-            <Icon name="attach" size={18} style={styles.photoIcon} />
+            <Icon name="attach" size={22} style={styles.photoIcon} />
           </TouchableOpacity>
         </View>
 
@@ -523,11 +529,11 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
             />
           </View>
           {/* <View style={styles.requestLinkRow}> */}
-            <TextInput
-              placeholder={t('Review Link')}
-              style={styles.requestLinkText}
-              placeholderTextColor={'#d1d1d1'}
-            />
+          <TextInput
+            placeholder={t('Review Link')}
+            style={styles.requestLinkText}
+            placeholderTextColor={'#d1d1d1'}
+          />
           {/* </View> */}
         </View>
 
@@ -926,6 +932,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginVertical: 5,
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   photoText: {
     fontSize: 18,
@@ -967,7 +974,7 @@ const styles = StyleSheet.create({
   },
   requestSwitchRow: {
     flexDirection: 'row',
-    justifyContent:'space-between',
+    justifyContent: 'space-between',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderBottomColor: 'grey',
@@ -985,14 +992,14 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   requestLinkText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '500',
     color: '#000',
     // height: 40,
     textAlignVertical: 'center',
     marginVertical: 5,
-    paddingVertical:10,
-    paddingHorizontal:12
+    paddingVertical: 10,
+    paddingHorizontal: 12,
   },
   paidContainer: {
     flexDirection: 'row',

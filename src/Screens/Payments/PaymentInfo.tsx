@@ -186,8 +186,9 @@ const PaymentInfo = ({ navigation, route }: any) => {
               ...styles.titleTxt,
               flex: 1,
               textAlign: 'left',
-              height: 60,
+              height: 70,
               textAlignVertical: 'top',
+              paddingBottom:10
             }}
             placeholder={t('Specify instructions for the payments of deposits')}
             placeholderTextColor={'grey'}
@@ -212,8 +213,9 @@ const PaymentInfo = ({ navigation, route }: any) => {
               ...styles.titleTxt,
               flex: 1,
               textAlign: 'left',
-              height: 60,
+              height: 70,
               textAlignVertical: 'top',
+              paddingBottom:10
             }}
             placeholder={t('Additional payment instructions')}
             placeholderTextColor={'grey'}

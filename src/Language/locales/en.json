@@ -283,5 +283,6 @@
   "Save as default": "Save as default",
   "emptyEstimateAll": "Show clients the costs by making an estimate,later you can convert it to an invoice",
   "emptyEstimateOpen": "Estimates that haven't been converted to an invoice will show up here.",
-  "emptyEstimateClosed": "Estimates that have been converted to an invoice will show up here."
+  "emptyEstimateClosed": "Estimates that have been converted to an invoice will show up here.",
+  "Total Payments": "Total Payments"
 }

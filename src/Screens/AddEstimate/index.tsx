@@ -117,10 +117,9 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   }, [navigation]);
 
   useEffect(() => {
-    console.log("Isfcuse",isFocused)
+    console.log('Isfcuse', isFocused);
     if (!created && route.params.status === 'create') {
       if (selector.token === 'Guest') {
-        
         offline();
       } else {
         createEstimateCall();
@@ -129,12 +128,15 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     if (route.params.status === 'update') {
       if (selector.token === 'Guest') {
         console.log('ssssss');
-        console.log("selector.estimateList==",JSON.stringify(selector.estimateList))
+        console.log(
+          'selector.estimateList==',
+          JSON.stringify(selector.estimateList),
+        );
         const index = findIndexById(
           route?.params?.data.index,
           selector.estimateList,
         );
-        console.log("index",index)
+        console.log('index', index);
         setOffline(selector.estimateList[index]);
       } else {
         getEstimateCall(route?.params?.data);
@@ -166,7 +168,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
 
   const offline = () => {
     const payload = setNewEstimateInList(selector);
-    console.log("sskskksks",payload);
+    console.log('sskskksks', payload);
 
     dispatch(addNewEstimate(payload));
     setGlobalData(payload);
@@ -217,6 +219,11 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
             parseFloat(element.estimate_total || 0) -
             parseFloat(element.estimate_discount_amount || 0)
           ).toFixed(2),
+      },
+      {
+        key: 'fourth',
+        title: t('Total Payments'),
+        value: '$0.00',
       },
     ]);
   };
@@ -304,7 +311,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     });
   }
 
-  const navigateToTaxScreen =()=> {
+  const navigateToTaxScreen = () => {
     console.log(JSON.stringify(globalData));
 
     navigation.navigate('TaxScreen', {
@@ -313,7 +320,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
       estimateData: globalData,
       index: index,
     });
-  }
+  };
 
   function navigateToItemScreen(index: any) {
     navigation.navigate('AddItemScreen', {
@@ -452,7 +459,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         <View style={styles.photoContainer}>
           <Text style={styles.photoText}>{t('Add photo')}</Text>
           <TouchableOpacity onPress={navigateToAddPhotoScreen}>
-            <Icon name="attach" size={18} style={styles.photoIcon} />
+            <Icon name="attach" size={22} style={styles.photoIcon} />
           </TouchableOpacity>
         </View>
 
@@ -485,11 +492,11 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
             />
           </View>
           {/* <View style={styles.requestLinkRow}> */}
-            <TextInput
-              placeholder={t('Review Link')}
-              style={styles.requestLinkText}
-              placeholderTextColor={'#d1d1d1'}
-            />
+          <TextInput
+            placeholder={t('Review Link')}
+            style={styles.requestLinkText}
+            placeholderTextColor={'#d1d1d1'}
+          />
           {/* </View> */}
         </View>
 
@@ -892,6 +899,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginVertical: 5,
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   photoText: {
     fontSize: 18,
@@ -951,14 +959,14 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   requestLinkText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '500',
     color: '#000',
     height: 40,
     textAlignVertical: 'center',
     marginVertical: 5,
-    paddingVertical:10,
-    paddingHorizontal:12
+    paddingVertical: 10,
+    paddingHorizontal: 12,
   },
   paidContainer: {
     flexDirection: 'row',
