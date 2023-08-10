@@ -3,6 +3,8 @@ import {View, SectionList, Text, StyleSheet, TextInput} from 'react-native';
 import TermsComponent from '../../CustomComponent/TermsComponent';
 import DatePicker from 'react-native-date-picker';
 import {useTranslation} from 'react-i18next';
+import moment from 'moment';
+import { useSelector } from 'react-redux';
 
 const InvoiceNumber = () => {
   const {t, i18n} = useTranslation();
@@ -12,8 +14,9 @@ const InvoiceNumber = () => {
   const [invoiceNumber, setInvoiceNumber] = useState('');
   const [date, setDate] = useState(new Date());
   const [poNumber, setPoNumber] = useState('');
-  const [dueDate, setDueDate] = useState(null);
+  const [dueDate, setDueDate] = useState(new Date());
   const [openDate, setOpenDate] = useState(false);
+  const selector = useSelector((state: any) => state.user);
 
   return (
     <View style={styles.mainContainer}>
@@ -28,7 +31,10 @@ const InvoiceNumber = () => {
         </View>
         <View style={styles.rowView}>
           <Text style={styles.titleTxt}>{t('Date')} : </Text>
-          <Text style={styles.titleTxt}>06/05/2023</Text>
+          <Text onPress={()=>setOpenModal(!openModal)} style={styles.titleTxt}>
+            {' '}
+            {moment(dueDate).format(selector.globalDateFormat)}
+          </Text>
         </View>
         <View style={styles.rowView}>
           <Text style={styles.titleTxt}>{t('Terms')} : </Text>
@@ -66,6 +72,19 @@ const InvoiceNumber = () => {
             setOpenDate(false);
           }}
         /> */}
+        <DatePicker
+          modal
+          mode="date"
+          open={openModal}
+          date={new Date(dueDate)}
+          onConfirm={date => {
+            setDueDate(date);
+            setOpenModal(false);
+          }}
+          onCancel={() => {
+            setOpenModal(false);
+          }}
+        />
       </View>
     </View>
   );
@@ -85,8 +104,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 5,
-    alignItems:'center',
-    paddingVertical:2
+    alignItems: 'center',
+    paddingVertical: 2,
   },
   titleTxt: {fontSize: 16, color: '#000', fontWeight: '500'},
   titleTxt2: {
@@ -96,7 +115,7 @@ const styles = StyleSheet.create({
     // height: 40,
     textAlignVertical: 'center',
     width: '50%',
-    paddingVertical:2
+    paddingVertical: 2,
   },
 });
 

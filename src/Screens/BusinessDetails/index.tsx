@@ -372,6 +372,7 @@ const BusinessDetails = ({navigation, route}: any) => {
             onChangeText={setBusinessNumber}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
             placeholder={t('Business Number')}
+            keyboardType={'numeric'}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -415,6 +416,7 @@ const BusinessDetails = ({navigation, route}: any) => {
             onChangeText={setEmail}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
             placeholder={t('Email')}
+            keyboardType={'email-address'}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -425,6 +427,7 @@ const BusinessDetails = ({navigation, route}: any) => {
             onChangeText={setPhone}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
             placeholder={t('Phone')}
+            keyboardType={'phone-pad'}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -435,6 +438,7 @@ const BusinessDetails = ({navigation, route}: any) => {
             onChangeText={setMobile}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
             placeholder={t('Mobile')}
+            keyboardType={'phone-pad'}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -6,14 +6,15 @@ import {
   Text,
   TouchableOpacity,
   Image,
+  StatusBar,
 } from 'react-native';
 import Orientation from 'react-native-orientation-locker';
-import {Colors} from '../../Helper/Colors';
+import { Colors } from '../../Helper/Colors';
 import SignaturePad from '../../SignaturePad';
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
-const SignaturePadScreen = ({navigation}: any) => {
-  const {t, i18n} = useTranslation();
+const SignaturePadScreen = ({ navigation }: any) => {
+  const { t, i18n } = useTranslation();
   const [content, setContent] = useState('');
   const [saved, setSaved] = useState(false);
   const ref = useRef();
@@ -34,44 +35,47 @@ const SignaturePadScreen = ({navigation}: any) => {
   };
 
   return (
-    <View style={{flex: 1}}>
-      {saved ? (
-        <Image
-          source={{uri: content}}
-          style={{
-            flex: 1,
-            resizeMode: 'contain',
-          }}
-        />
-      ) : (
-        <SignaturePad
-          ref={ref}
-          onError={() => {}}
-          onChange={(base64DataUrl: any) => {
-            onChange(base64DataUrl);
-          }}
-          style={{flex: 1, backgroundColor: 'white'}}
-        />
-      )}
-      <View style={styles.btnView}>
-        <TouchableOpacity style={styles.btn} onPress={() => {}}>
-          <Text style={styles.btnText}>{t('Cancel')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.btn}
-          onPress={() => {
-            setSaved(!saved);
-          }}>
-          <Text style={styles.btnText}>{t('Save')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.btn} onPress={handleClear}>
-          <Text style={styles.btnText}>{t('Clear')}</Text>
-        </TouchableOpacity>
-        {/* <TouchableOpacity style={styles.btn} onPress={handleClear}>
+    <>
+      <StatusBar backgroundColor={Colors.appColor} />
+      <View style={{ flex: 1 }}>
+        {saved ? (
+          <Image
+            source={{ uri: content }}
+            style={{
+              flex: 1,
+              resizeMode: 'contain',
+            }}
+          />
+        ) : (
+          <SignaturePad
+            ref={ref}
+            onError={() => { }}
+            onChange={(base64DataUrl: any) => {
+              onChange(base64DataUrl);
+            }}
+            style={{ flex: 1, backgroundColor: 'white' }}
+          />
+        )}
+        <View style={styles.btnView}>
+          <TouchableOpacity style={styles.btn} onPress={() => { }}>
+            <Text style={styles.btnText}>{t('Cancel')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => {
+              setSaved(!saved);
+            }}>
+            <Text style={styles.btnText}>{t('Save')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.btn} onPress={handleClear}>
+            <Text style={styles.btnText}>{t('Clear')}</Text>
+          </TouchableOpacity>
+          {/* <TouchableOpacity style={styles.btn} onPress={handleClear}>
           <Text style={styles.btnText}>Resign</Text>
         </TouchableOpacity> */}
+        </View>
       </View>
-    </View>
+    </>
   );
 };
 

@@ -1,5 +1,6 @@
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
+  FlatList,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -25,6 +26,7 @@ import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {addNewInvoice} from '../../redux/reducers/user/UserReducer';
 import {setNewInvoiceInList} from '../../Constant';
+import EmptyHistory from '../../CustomComponent/EmptyHistory';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -550,9 +552,20 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     );
   };
 
-  const PaidRoute = () => {
+  const HistoryRoute = () => {
+    const renderEmptyComponent = () => (
+      <EmptyHistory message={t('emptyInvoiceHistory')} />
+    );
+
     return (
-      <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}></View>
+      <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}>
+        <FlatList
+          data={[]}
+          renderItem={() => <View />}
+          ListEmptyComponent={renderEmptyComponent}
+          contentContainerStyle={{flex: 1}}
+        />
+      </View>
     );
   };
 
@@ -578,7 +591,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
             renderScene={SceneMap({
               first: AllRoute,
               second: OutStandingRoute,
-              third: PaidRoute,
+              third: HistoryRoute,
             })}
             onIndexChange={setIndex}
             initialLayout={{width: screenWidth}}
@@ -861,7 +874,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 12,
   },
-  addItemTxt: {fontSize: 16, fontWeight: '500', color: '#d1d1d1'},
+  addItemTxt: {fontSize: 18, fontWeight: '500', color: '#d1d1d1'},
   itemPriceTxt: {
     fontSize: 18,
     fontWeight: '400',

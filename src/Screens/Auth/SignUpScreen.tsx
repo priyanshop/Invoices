@@ -20,6 +20,7 @@ import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {saveUserData, setToken} from '../../redux/reducers/user/UserReducer';
 import {useTranslation} from 'react-i18next';
+import {CheckBox} from 'react-native-elements';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -45,7 +46,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword1, setShowPassword1] = useState(false);
-
+  const [terms, setTerms] = useState(false);
   const pages = [{index: 1}, {index: 2}, {index: 3}];
 
   const handlePrevious = () => {
@@ -168,13 +169,13 @@ function SignUpScreen({navigation}: any): JSX.Element {
           <Text style={styles.paragraph}>
             {t('businessInfo.optionalFields')}
           </Text>
-          {/* <TextInput
+          <TextInput
             value={businessName}
             onChangeText={setBusinessName}
             style={[styles.input, styles.businessName]}
             placeholder={'Business Name'}
             placeholderTextColor={'grey'}
-          /> */}
+          />
 
           <TextInput
             value={email}
@@ -184,7 +185,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
             onChangeText={validateEmail}
             placeholderTextColor={'grey'}
           />
-          {emailError.trim() !== '' && (
+          {/* {emailError.trim() !== '' && (
             <View style={styles.errorView}>
               <Text style={styles.errorTxt}>{emailError}</Text>
             </View>
@@ -245,8 +246,8 @@ function SignUpScreen({navigation}: any): JSX.Element {
               ]}>
               <Text style={styles.errorTxt}>{errorConfirmPassword}</Text>
             </View>
-          )}
-          {/* <TextInput
+          )} */}
+          <TextInput
             value={phoneNumber}
             onChangeText={setPhoneNumber}
             style={[styles.input, styles.phoneInput]}
@@ -274,7 +275,44 @@ function SignUpScreen({navigation}: any): JSX.Element {
             style={[styles.input, styles.lastAddressInput]}
             placeholder={'Address Line 3'}
             placeholderTextColor={'grey'}
-          /> */}
+          />
+          <View
+            style={{
+              justifyContent: 'center',
+              flexDirection: 'row',
+              width: '70%',
+            }}>
+            <CheckBox
+              containerStyle={{
+                backgroundColor: Colors.landingColor,
+                borderWidth: 0,
+              }}
+              title={
+                <Text
+                  style={{
+                    backgroundColor: Colors.landingColor,
+                    color: '#fff',
+                    fontSize: 14,
+                    fontWeight: '500',
+                    marginTop:10
+                  }}>
+                  I want to receive calls and emails from Invoice Simple and its
+                  Affiliates about...{' '}
+                  <Text
+                    style={{textDecorationLine: 'underline'}}
+                    onPress={() => {}}>
+                    show more
+                  </Text>
+                </Text>
+              }
+              checked={terms}
+              onPress={() => {
+                setTerms(!terms);
+              }}
+              checkedColor={'#fff'}
+              uncheckedColor="#fff"
+            />
+          </View>
         </View>
       );
     } else if (item.index === 2) {

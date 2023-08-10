@@ -3,6 +3,8 @@ import {View, SectionList, Text, StyleSheet, TextInput} from 'react-native';
 import TermsComponent from '../../CustomComponent/TermsComponent';
 import DatePicker from 'react-native-date-picker';
 import {useTranslation} from 'react-i18next';
+import {useSelector} from 'react-redux';
+import moment from 'moment';
 
 const EstimationNumber = () => {
   const {t, i18n} = useTranslation();
@@ -12,8 +14,9 @@ const EstimationNumber = () => {
   const [invoiceNumber, setInvoiceNumber] = useState('');
   const [date, setDate] = useState(new Date());
   const [poNumber, setPoNumber] = useState('');
-  const [dueDate, setDueDate] = useState(null);
+  const [dueDate, setDueDate] = useState(new Date());
   const [openDate, setOpenDate] = useState(false);
+  const selector = useSelector((state: any) => state.user);
 
   return (
     <View style={styles.mainContainer}>
@@ -21,25 +24,29 @@ const EstimationNumber = () => {
         <View style={styles.rowView}>
           <Text style={styles.titleTxt}>{t('Estimate Number')} : </Text>
           {/* <View style={{width: '50%'}}> */}
-            <TextInput
-              value={invoiceNumber}
-              onChangeText={setInvoiceNumber}
-              style={{...styles.titleTxt2, textAlign: 'right'}}
-            />
+          <TextInput
+            value={invoiceNumber}
+            onChangeText={setInvoiceNumber}
+            style={{...styles.titleTxt2, textAlign: 'right'}}
+          />
           {/* </View> */}
         </View>
         <View style={styles.rowView}>
           <Text style={styles.titleTxt}>{t('Date')} : </Text>
-          <Text style={styles.titleTxt}>06/05/2023</Text>
+          <Text
+            onPress={() => setOpenModal(!openModal)}
+            style={styles.titleTxt}>
+            {moment(dueDate).format(selector.globalDateFormat)}
+          </Text>
         </View>
         <View style={styles.rowView}>
           <Text style={styles.titleTxt}>{t('PO Number')} : </Text>
           {/* <View style={{width: '50%'}}> */}
-            <TextInput
-              value={poNumber}
-              onChangeText={setPoNumber}
-              style={{...styles.titleTxt2, textAlign: 'right'}}
-            />
+          <TextInput
+            value={poNumber}
+            onChangeText={setPoNumber}
+            style={{...styles.titleTxt2, textAlign: 'right'}}
+          />
           {/* </View> */}
         </View>
       </View>
@@ -49,17 +56,19 @@ const EstimationNumber = () => {
         setSelectedTerm={setSelectedTerm}
       />
       <View>
-        {/* <DatePicker
-          open={false}
-          date={date}
+        <DatePicker
+          modal
+          mode="date"
+          open={openModal}
+          date={new Date(dueDate)}
           onConfirm={date => {
             setDueDate(date);
-            setOpenDate(false);
+            setOpenModal(false);
           }}
           onCancel={() => {
-            setOpenDate(false);
+            setOpenModal(false);
           }}
-        /> */}
+        />
       </View>
     </View>
   );
@@ -79,8 +88,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 5,
-    alignItems:'center',
-    paddingVertical:2
+    alignItems: 'center',
+    paddingVertical: 2,
   },
   titleTxt: {fontSize: 16, color: '#000', fontWeight: '500'},
   titleTxt2: {
@@ -89,8 +98,8 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     // height: 40,
     textAlignVertical: 'center',
-    width:"50%",
-    paddingVertical:2
+    width: '50%',
+    paddingVertical: 2,
   },
 });
 

@@ -284,5 +284,8 @@
   "emptyEstimateAll": "Mostre aos clientes os custos fazendo um orçamento, mais tarde você pode convertê-lo em uma fatura.",
   "emptyEstimateOpen": "Os orçamentos que ainda não foram convertidos em faturas aparecerão aqui.",
   "emptyEstimateClosed": "Os orçamentos que foram convertidos em faturas aparecerão aqui.",
-  "Total Payments": "Total de Pagamentos"
+  "Total Payments": "Total de Pagamentos",
+  "emptyInvoiceHistory": "O histórico de emails de faturas aparecerá aqui",
+  "emptyEstimateHistory": "O histórico de emails de orçamentos aparecerá aqui",
+  "Mark Invoice": "Marcar Fatura"
 }

@@ -742,9 +742,9 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
       }
       return item;
     });
-    dispatch(setEstimateList(updatedArray))
+    dispatch(setEstimateList(updatedArray));
     setTimeout(() => {
-      navigation.goBack()
+      navigation.goBack();
     }, 1000);
   };
 
@@ -814,14 +814,12 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
                 style={[styles.input, {textAlign: 'left'}]}
                 placeholder={t('Description')}
                 placeholderTextColor={'grey'}
-                onChangeText={value =>
-                  handleTextInputChange(value, setDescription)
-                }
+                onChangeText={value => setDescription(value)}
               />
               {/* <Text style={styles.errorTxt}>{'Error'}</Text> */}
               {/* </View> */}
             </View>
-            <View style={styles.mainView}>
+            <View style={[styles.mainView, {marginHorizontal: 4}]}>
               <Text style={styles.label}>{t('Unit Cost')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
@@ -829,13 +827,14 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
                   style={styles.input}
                   placeholder={'$0.00'}
                   placeholderTextColor={'grey'}
+                  keyboardType="numeric"
                   onChangeText={value =>
                     handleTextInputChange(value, setUnitCost)
                   }
                 />
               </View>
             </View>
-            <View style={styles.mainView}>
+            <View style={[styles.mainView, {marginHorizontal: 4}]}>
               <Text style={styles.label}>{t('Unit')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
@@ -847,7 +846,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
                 />
               </View>
             </View>
-            <View style={styles.mainView}>
+            <View style={[styles.mainView, {marginHorizontal: 4}]}>
               <Text style={styles.label}>{t('Quantity')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
@@ -862,7 +861,11 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
                 />
               </View>
             </View>
-            <View style={styles.mainView}>
+            <View
+              style={[
+                styles.mainView,
+                {marginVertical: 10, marginHorizontal: 4},
+              ]}>
               <Text style={styles.label}>{t('Discount')}: </Text>
               <View style={styles.inputContainer}>
                 {/* <TextInput
@@ -887,7 +890,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
               </View>
             </View>
             {Discount !== 'No Discount' && (
-              <View style={styles.mainView}>
+              <View style={[styles.mainView, {marginHorizontal: 4}]}>
                 <Text style={styles.label}>
                   {Discount === 'Percentage'
                     ? 'Discount Rate'
@@ -907,7 +910,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
                 </View>
               </View>
             )}
-            <View style={styles.mainView}>
+            <View style={[styles.mainView, {marginHorizontal: 4}]}>
               <Text style={styles.label}>{t('Taxable')}: </Text>
               <Switch
                 value={Taxable}
@@ -917,7 +920,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
             </View>
 
             {Taxable && (
-              <View style={styles.mainView}>
+              <View style={[styles.mainView,{marginHorizontal:4}]}>
                 <Text style={styles.label}>{t('Tax Rate')}: </Text>
                 <View style={styles.inputContainer}>
                   <TextInput

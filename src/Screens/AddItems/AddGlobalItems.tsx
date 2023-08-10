@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
   detailView: {
     backgroundColor: '#fff',
     borderRadius: 8,
-    paddingHorizontal: 12,
+    paddingHorizontal: 13,
     marginVertical: 5,
     paddingVertical: 10,
   },

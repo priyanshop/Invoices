@@ -284,5 +284,8 @@
   "emptyEstimateAll": "Show clients the costs by making an estimate,later you can convert it to an invoice",
   "emptyEstimateOpen": "Estimates that haven't been converted to an invoice will show up here.",
   "emptyEstimateClosed": "Estimates that have been converted to an invoice will show up here.",
-  "Total Payments": "Total Payments"
+  "Total Payments": "Total Payments",
+  "emptyInvoiceHistory": "Invoice email history will show up here",
+  "emptyEstimateHistory": "Estimate email history will show up here",
+  "Mark Invoice": "Mark Invoice"
 }

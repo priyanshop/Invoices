@@ -26,6 +26,8 @@ import {endpoint} from '../../Networking/endpoint';
 import FetchAPI from '../../Networking';
 import {setNewEstimateInList} from '../../Constant';
 import {addNewEstimate} from '../../redux/reducers/user/UserReducer';
+import EmptyHistory from '../../CustomComponent/EmptyHistory';
+import { FlatList } from 'react-native';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -501,7 +503,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         </View>
 
         <View style={styles.paidContainer}>
-          <Text style={styles.paidText}>{t('Mark Paid')}</Text>
+          <Text style={styles.paidText}>{t('Mark Invoice')}</Text>
         </View>
       </ScrollView>
     );
@@ -513,9 +515,20 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     );
   };
 
-  const PaidRoute = () => {
+  const HistoryRoute = () => {
+    const renderEmptyComponent = () => (
+      <EmptyHistory message={t('emptyEstimateHistory')} />
+    );
+
     return (
-      <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}></View>
+      <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}>
+        <FlatList
+          data={[]}
+          renderItem={() => <View />}
+          ListEmptyComponent={renderEmptyComponent}
+          contentContainerStyle={{flex: 1}}
+        />
+      </View>
     );
   };
 
@@ -541,7 +554,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
             renderScene={SceneMap({
               first: AllRoute,
               second: OutStandingRoute,
-              third: PaidRoute,
+              third: HistoryRoute,
             })}
             onIndexChange={setIndex}
             initialLayout={{width: screenWidth}}
