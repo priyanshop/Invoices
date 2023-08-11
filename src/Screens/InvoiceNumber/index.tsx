@@ -31,7 +31,7 @@ const InvoiceNumber = () => {
         </View>
         <View style={styles.rowView}>
           <Text style={styles.titleTxt}>{t('Date')} : </Text>
-          <Text onPress={()=>setOpenModal(!openModal)} style={styles.titleTxt}>
+          <Text onPress={()=>setOpenDate(!openDate)} style={styles.titleTxt}>
             {' '}
             {moment(dueDate).format(selector.globalDateFormat)}
           </Text>
@@ -75,14 +75,14 @@ const InvoiceNumber = () => {
         <DatePicker
           modal
           mode="date"
-          open={openModal}
+          open={openDate}
           date={new Date(dueDate)}
           onConfirm={date => {
             setDueDate(date);
-            setOpenModal(false);
+            setOpenDate(false);
           }}
           onCancel={() => {
-            setOpenModal(false);
+            setOpenDate(false);
           }}
         />
       </View>

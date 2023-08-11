@@ -189,17 +189,17 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
               padding: 12,
             }}>
             <View style={styles.mainView}>
-              {/* <View style={styles.inputContainer}> */}
+              <View style={styles.inputContainer}>
                 <TextInput
                   value={Description}
-                  style={[styles.input, {textAlign: 'left'}]}
+                  style={[styles.input2]}
                   placeholder={t('Description')}
                   placeholderTextColor={'grey'}
                   onChangeText={value =>
                     handleTextInputChange(value, setDescription)
                   }
                 />
-              {/* </View> */}
+              </View>
             </View>
             <View style={styles.mainView}>
               <Text style={styles.label}>{t('Unit Cost')} : </Text>
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '400',
     color: '#000',
-    marginHorizontal:4
+    // marginHorizontal:4
   },
   inputContainer: {
     width: '50%',
@@ -293,6 +293,13 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#000',
     textAlign: 'right',
+    height: 40,
+    textAlignVertical: 'center',
+  },
+  input2: {
+    fontSize: 18,
+    fontWeight: '400',
+    color: '#000',
     height: 40,
     textAlignVertical: 'center',
   },

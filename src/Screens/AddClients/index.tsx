@@ -493,6 +493,7 @@ const AddClientScreen = ({navigation, route}: any) => {
               style={{...styles.titleTxt, textAlign: 'right'}}
               placeholder={t('Mobile Number')}
               placeholderTextColor={'grey'}
+              keyboardType={'number-pad'}
             />
           </View>
           <View style={styles.rowView}>
@@ -503,6 +504,7 @@ const AddClientScreen = ({navigation, route}: any) => {
               style={{...styles.titleTxt, textAlign: 'right'}}
               placeholder={t('Phone Number')}
               placeholderTextColor={'grey'}
+              keyboardType={'number-pad'}
             />
           </View>
           <View style={styles.rowView}>
@@ -513,6 +515,7 @@ const AddClientScreen = ({navigation, route}: any) => {
               style={{...styles.titleTxt, textAlign: 'right'}}
               placeholder={t('Fax Number')}
               placeholderTextColor={'grey'}
+              keyboardType={'number-pad'}
             />
           </View>
         </View>

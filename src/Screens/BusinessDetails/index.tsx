@@ -8,6 +8,7 @@ import {
   Image,
   Platform,
   ScrollView,
+  KeyboardAvoidingView,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import {useSelector, useDispatch} from 'react-redux';
@@ -22,6 +23,7 @@ import {
   setInvoiceList,
 } from '../../redux/reducers/user/UserReducer';
 import {useTranslation} from 'react-i18next';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const BusinessDetails = ({navigation, route}: any) => {
   const {t, i18n} = useTranslation();
@@ -326,7 +328,7 @@ const BusinessDetails = ({navigation, route}: any) => {
   };
 
   return (
-    <ScrollView style={styles.mainContainer}>
+    <KeyboardAwareScrollView style={styles.mainContainer}>
       <View style={styles.businessContainer}>
         <View style={styles.header}>
           <Text style={styles.headerText}>{t('Business Logo')}</Text>
@@ -459,7 +461,7 @@ const BusinessDetails = ({navigation, route}: any) => {
         closeBottomSheet={closeBottomSheet}
         setImage={setBusinessImage}
       />
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 };
 

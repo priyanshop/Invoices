@@ -279,39 +279,40 @@ function SignUpScreen({navigation}: any): JSX.Element {
           <View
             style={{
               justifyContent: 'center',
-              flexDirection: 'row',
               width: '70%',
+              flexDirection: 'row',
+              marginTop:10
             }}>
             <CheckBox
               containerStyle={{
                 backgroundColor: Colors.landingColor,
                 borderWidth: 0,
+                margin:0,
+                padding:0,
+                marginTop:1
               }}
-              title={
-                <Text
-                  style={{
-                    backgroundColor: Colors.landingColor,
-                    color: '#fff',
-                    fontSize: 14,
-                    fontWeight: '500',
-                    marginTop:10
-                  }}>
-                  I want to receive calls and emails from Invoice Simple and its
-                  Affiliates about...{' '}
-                  <Text
-                    style={{textDecorationLine: 'underline'}}
-                    onPress={() => {}}>
-                    show more
-                  </Text>
-                </Text>
-              }
               checked={terms}
               onPress={() => {
                 setTerms(!terms);
               }}
               checkedColor={'#fff'}
               uncheckedColor="#fff"
+              size={30}
             />
+            <Text
+              style={{
+                color: '#fff',
+                fontSize: 14,
+                fontWeight: '500',
+              }}>
+              I want to receive calls and emails from Invoice Simple and its
+              Affiliates about...{' '}
+              <Text
+                style={{textDecorationLine: 'underline'}}
+                onPress={() => {}}>
+                show more
+              </Text>
+            </Text>
           </View>
         </View>
       );

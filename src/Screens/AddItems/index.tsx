@@ -807,11 +807,11 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
             style={{
               padding: 12,
             }}>
-            <View style={styles.mainView}>
+            <View style={[styles.mainView,{marginHorizontal: 4}]}>
               {/* <View style={styles.inputContainer}> */}
               <TextInput
                 value={Description}
-                style={[styles.input, {textAlign: 'left'}]}
+                style={[styles.input2]}
                 placeholder={t('Description')}
                 placeholderTextColor={'grey'}
                 onChangeText={value => setDescription(value)}
@@ -955,6 +955,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
           <TextInput
             value={Notes}
             placeholder={t('Additional Details')}
+            placeholderTextColor={'grey'}
             style={styles.detailText}
             numberOfLines={4}
             multiline
@@ -1013,6 +1014,12 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#000',
     textAlign: 'right',
+    height: 40,
+  },
+  input2: {
+    fontSize: 18,
+    fontWeight: '400',
+    color: '#000',
     height: 40,
   },
   itemView: {
