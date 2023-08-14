@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Alert,
   SafeAreaView,
@@ -9,17 +9,17 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { Colors } from '../../Helper/Colors';
-import { saveUserData, setToken } from '../../redux/reducers/user/UserReducer';
+import {useDispatch, useSelector} from 'react-redux';
+import {Colors} from '../../Helper/Colors';
+import {saveUserData, setToken} from '../../redux/reducers/user/UserReducer';
 import FetchAPI from '../../Networking';
-import { endpoint } from '../../Networking/endpoint';
-import { useTranslation } from 'react-i18next';
+import {endpoint} from '../../Networking/endpoint';
+import {useTranslation} from 'react-i18next';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-function SignInScreen({ navigation }: any): JSX.Element {
+function SignInScreen({navigation}: any): JSX.Element {
   const dispatch = useDispatch();
-  const { t, i18n } = useTranslation();
+  const {t, i18n} = useTranslation();
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const [Password, setPassword] = useState('');
@@ -52,7 +52,7 @@ function SignInScreen({ navigation }: any): JSX.Element {
 
   const apiCall = async () => {
     try {
-      const payload = {
+      const payload: any = {
         email: email,
         password: Password,
       };
@@ -62,10 +62,10 @@ function SignInScreen({ navigation }: any): JSX.Element {
         dispatch(setToken(data.token));
         navigation.reset({
           index: 0,
-          routes: [{ name: 'Dashboard' }],
+          routes: [{name: 'Dashboard'}],
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       Alert.alert('', error.message);
     }
   };
@@ -89,7 +89,6 @@ function SignInScreen({ navigation }: any): JSX.Element {
       <View
         style={{
           ...styles.input2,
-       
         }}>
         <TextInput
           value={Password}
@@ -100,7 +99,11 @@ function SignInScreen({ navigation }: any): JSX.Element {
           secureTextEntry={!showPassword}
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <Ionicons name={!showPassword ? "eye-off" : "eye"} color={'#000'} size={20} />
+          <Ionicons
+            name={!showPassword ? 'eye-off' : 'eye'}
+            color={'#000'}
+            size={20}
+          />
         </TouchableOpacity>
       </View>
 
@@ -153,7 +156,7 @@ const styles = StyleSheet.create({
     height: 40,
     fontSize: 15,
     color: '#000',
-    paddingRight:5,
+    paddingRight: 5,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -190,7 +193,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     flexDirection: 'row',
   },
-  errorTxt: { fontSize: 10, fontWeight: '600', color: 'red' },
+  errorTxt: {fontSize: 10, fontWeight: '600', color: 'red'},
   loginBtnTxt: {
     fontSize: 15,
     fontWeight: '600',

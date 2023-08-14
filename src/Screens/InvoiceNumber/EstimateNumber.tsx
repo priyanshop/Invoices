@@ -34,7 +34,7 @@ const EstimationNumber = () => {
         <View style={styles.rowView}>
           <Text style={styles.titleTxt}>{t('Date')} : </Text>
           <Text
-            onPress={() => setOpenModal(!openModal)}
+            onPress={() => setOpenDate(!openDate)}
             style={styles.titleTxt}>
             {moment(dueDate).format(selector.globalDateFormat)}
           </Text>
@@ -50,23 +50,23 @@ const EstimationNumber = () => {
           {/* </View> */}
         </View>
       </View>
-      <TermsComponent
+      {/* <TermsComponent
         modalVisible={openModal}
         setModalVisible={() => setOpenModal(false)}
         setSelectedTerm={setSelectedTerm}
-      />
+      /> */}
       <View>
         <DatePicker
           modal
           mode="date"
-          open={openModal}
+          open={openDate}
           date={new Date(dueDate)}
           onConfirm={date => {
             setDueDate(date);
-            setOpenModal(false);
+            setOpenDate(false);
           }}
           onCancel={() => {
-            setOpenModal(false);
+            setOpenDate(false);
           }}
         />
       </View>

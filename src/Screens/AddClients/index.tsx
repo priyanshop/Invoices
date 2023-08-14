@@ -120,25 +120,32 @@ const AddClientScreen = ({navigation, route}: any) => {
   };
 
   const checkCondition = () => {
-    if (route?.params?.invoiceUpdate) {
-      if (selector.token === 'Guest') {
-        offlineInvoiceUpdate();
+ 
+    if (clientName.trim() === '') {
+      return
+    }else{
+
+      if (route?.params?.invoiceUpdate) {
+        if (selector.token === 'Guest') {
+          offlineInvoiceUpdate();
+        } else {
+          updateInvoice();
+        }
+      } else if (route?.params?.estimateUpdate) {
+        if (selector.token === 'Guest') {
+          offlineEStimateUpdate();
+        } else {
+          updateEstimate();
+        }
       } else {
-        updateInvoice();
-      }
-    } else if (route?.params?.estimateUpdate) {
-      if (selector.token === 'Guest') {
-        offlineEStimateUpdate();
-      } else {
-        updateEstimate();
-      }
-    } else {
-      if (alreadyExist) {
-        update();
-      } else {
-        create();
+        if (alreadyExist) {
+          update();
+        } else {
+          create();
+        }
       }
     }
+
   };
 
   const deleteInInvoice = async () => {

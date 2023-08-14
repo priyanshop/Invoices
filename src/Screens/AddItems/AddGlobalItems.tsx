@@ -96,6 +96,10 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
 
   const create = async () => {
     try {
+      if (Description.trim() === "") {
+        navigation.goBack();
+        return
+      }
       const payload: any = {
         description: Description,
         rate: unitCost,
@@ -189,7 +193,7 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
               padding: 12,
             }}>
             <View style={styles.mainView}>
-              <View style={styles.inputContainer}>
+              <View style={[styles.inputContainer,{width:'100%'}]}>
                 <TextInput
                   value={Description}
                   style={[styles.input2]}

@@ -23,7 +23,7 @@ import {
   setInvoiceList,
 } from '../../redux/reducers/user/UserReducer';
 import {useTranslation} from 'react-i18next';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const BusinessDetails = ({navigation, route}: any) => {
   const {t, i18n} = useTranslation();
@@ -251,7 +251,7 @@ const BusinessDetails = ({navigation, route}: any) => {
 
   const offlineInvoiceUpdate = () => {
     const updatedArray = selector.invoiceList.map((item: any) => {
-      if (item.index === route?.params?.data.index) {
+      if (item.index === route?.params?.data?.index) {
         return {
           ...item,
           b_name: businessName,
@@ -274,7 +274,7 @@ const BusinessDetails = ({navigation, route}: any) => {
 
   const offlineEstimateUpdate = () => {
     const updatedArray = selector.estimateList.map((item: any) => {
-      if (item.index === route?.params?.data.index) {
+      if (item.index === route?.params?.data?.index) {
         return {
           ...item,
           b_name: businessName,
@@ -481,7 +481,13 @@ const styles = StyleSheet.create({
     // marginVertical: Platform.OS === 'ios' ? 8 : 0,
     alignItems: 'center',
   },
-  titleTxt: {fontSize: 17, color: '#000', fontWeight: '400', height: 40},
+  titleTxt: {
+    fontSize: 17,
+    color: '#000',
+    fontWeight: '400',
+    height: 40,
+    paddingVertical: 5,
+  },
   mainContain: {
     borderRadius: 8,
     backgroundColor: '#fff',

@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, {useEffect, useRef, useState} from 'react';
 import {
   Alert,
@@ -136,7 +137,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
   const apiCall = async () => {
     setLoading(true);
     try {
-      const payload = {
+      const payload: any = {
         email: email,
         password: password,
       };
@@ -150,13 +151,13 @@ function SignUpScreen({navigation}: any): JSX.Element {
         });
         setLoading(false);
       }
-    } catch (error) {
+    } catch (error: any) {
       Alert.alert('', error.message);
       setLoading(false);
     }
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = ({item}: any) => {
     if (item.index === 1) {
       return (
         <View style={{alignItems: 'center'}}>
@@ -281,15 +282,15 @@ function SignUpScreen({navigation}: any): JSX.Element {
               justifyContent: 'center',
               width: '70%',
               flexDirection: 'row',
-              marginTop:10
+              marginTop: 10,
             }}>
             <CheckBox
               containerStyle={{
                 backgroundColor: Colors.landingColor,
                 borderWidth: 0,
-                margin:0,
-                padding:0,
-                marginTop:1
+                margin: 0,
+                padding: 0,
+                marginTop: 1,
               }}
               checked={terms}
               onPress={() => {
