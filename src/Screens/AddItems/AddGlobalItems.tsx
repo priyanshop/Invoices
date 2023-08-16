@@ -193,7 +193,7 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
               padding: 12,
             }}>
             <View style={styles.mainView}>
-              <View style={[styles.inputContainer,{width:'100%'}]}>
+              {/* <View style={[styles.inputContainer,{width:'100%'}]}> */}
                 <TextInput
                   value={Description}
                   style={[styles.input2]}
@@ -203,9 +203,9 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
                     handleTextInputChange(value, setDescription)
                   }
                 />
-              </View>
+              {/* </View> */}
             </View>
-            <View style={styles.mainView}>
+            <View style={[styles.mainView, {marginHorizontal: 4}]}>
               <Text style={styles.label}>{t('Unit Cost')} : </Text>
               <View style={styles.inputContainer}>
                 <TextInput
@@ -220,7 +220,7 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
                 />
               </View>
             </View>
-            <View style={styles.mainView}>
+            <View style={[styles.mainView, {marginHorizontal: 4}]}>
               <Text style={styles.label}>{t('Unit')} : </Text>
               <View style={styles.inputContainer}>
                 <TextInput
@@ -232,7 +232,7 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
                 />
               </View>
             </View>
-            <View style={styles.mainView}>
+            <View style={[styles.mainView, {marginHorizontal: 4}]}>
               <Text style={styles.label}>{t('Taxable')} : </Text>
               <Switch
                 value={Taxable}
@@ -305,7 +305,6 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#000',
     height: 40,
-    textAlignVertical: 'center',
   },
   itemView: {
     backgroundColor: '#fff',

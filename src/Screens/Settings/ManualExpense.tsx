@@ -89,6 +89,7 @@ function ManualExpense({navigation}: any): JSX.Element {
                   style={styles.input}
                   placeholder={'$0.00'}
                   placeholderTextColor={'grey'}
+                  keyboardType='numeric'
                 />
               </View>
             </View>
@@ -99,6 +100,7 @@ function ManualExpense({navigation}: any): JSX.Element {
                   style={styles.input}
                   placeholder={'$0.00'}
                   placeholderTextColor={'grey'}
+                  keyboardType='numeric'
                 />
               </View>
             </View>

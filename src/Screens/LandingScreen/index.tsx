@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   btnTxt: {
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: '500',
     textAlign: 'center',
     color: Colors.landingColor,
@@ -99,6 +99,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingHorizontal: 15,
     borderRadius: 5,
+    paddingVertical: 15,
+    marginTop: 15,
+    marginBottom: 5,
   },
 });
 

@@ -807,7 +807,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
             style={{
               padding: 12,
             }}>
-            <View style={[styles.mainView,{marginHorizontal: 4}]}>
+            <View style={[styles.mainView]}>
               {/* <View style={styles.inputContainer}> */}
               <TextInput
                 value={Description}
@@ -920,7 +920,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
             </View>
 
             {Taxable && (
-              <View style={[styles.mainView,{marginHorizontal:4}]}>
+              <View style={[styles.mainView, {marginHorizontal: 4}]}>
                 <Text style={styles.label}>{t('Tax Rate')}: </Text>
                 <View style={styles.inputContainer}>
                   <TextInput

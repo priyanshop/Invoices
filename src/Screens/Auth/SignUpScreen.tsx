@@ -280,7 +280,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
           <View
             style={{
               justifyContent: 'center',
-              width: '70%',
+              width: '50%',
               flexDirection: 'row',
               marginTop: 10,
             }}>
@@ -298,12 +298,12 @@ function SignUpScreen({navigation}: any): JSX.Element {
               }}
               checkedColor={'#fff'}
               uncheckedColor="#fff"
-              size={30}
+              size={25}
             />
             <Text
               style={{
                 color: '#fff',
-                fontSize: 14,
+                fontSize: 11,
                 fontWeight: '500',
               }}>
               I want to receive calls and emails from Invoice Simple and its
@@ -425,6 +425,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingHorizontal: 15,
     borderRadius: 5,
+    marginTop: 15,
   },
 
   input: {
@@ -435,6 +436,7 @@ const styles = StyleSheet.create({
     padding: 5,
     fontSize: 15,
     color: '#000',
+    paddingHorizontal: 8,
   },
   emailInput: {
     borderTopRightRadius: 5,

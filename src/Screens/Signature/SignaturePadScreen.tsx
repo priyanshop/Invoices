@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, { useEffect, useRef, useState } from 'react';
 import {
   SafeAreaView,
@@ -37,12 +38,12 @@ const SignaturePadScreen = ({ navigation }: any) => {
   return (
     <>
       <StatusBar backgroundColor={Colors.appColor} />
-      <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flexGrow: 1 }}>
         {saved ? (
           <Image
             source={{ uri: content }}
             style={{
-              flex: 1,
+              flexGrow: 1,
               resizeMode: 'contain',
             }}
           />
@@ -53,7 +54,7 @@ const SignaturePadScreen = ({ navigation }: any) => {
             onChange={(base64DataUrl: any) => {
               onChange(base64DataUrl);
             }}
-            style={{ flex: 1, backgroundColor: 'white' }}
+            style={{ flexGrow: 1, backgroundColor: 'white' }}
           />
         )}
         <View style={styles.btnView}>
@@ -74,7 +75,7 @@ const SignaturePadScreen = ({ navigation }: any) => {
           <Text style={styles.btnText}>Resign</Text>
         </TouchableOpacity> */}
         </View>
-      </SafeAreaView>
+      </View>
     </>
   );
 };
