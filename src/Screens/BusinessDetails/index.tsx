@@ -487,6 +487,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     height: 40,
     paddingVertical: 5,
+    width:"100%",
   },
   mainContain: {
     borderRadius: 8,

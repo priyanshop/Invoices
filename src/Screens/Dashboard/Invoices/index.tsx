@@ -77,6 +77,22 @@ function InvoicesScreen({navigation}: any): JSX.Element {
   const [searchStart, setSearchStart] = useState(false);
   const [allData, setAllData] = useState([]);
   const [routes] = useState(data);
+  const [searchText, setSearchText] = useState('');
+
+  const filteredInvoices = allData.length > 0 && allData
+    .map(yearData => ({
+      year: yearData?.year,
+      data: yearData?.data?.filter(
+        item =>
+          item?.invoiceNumber
+            ?.toLowerCase()
+            ?.includes(searchText?.toLowerCase()) ||
+          item?.client?.toLowerCase()?.includes(searchText?.toLowerCase()) ||
+          item?.price?.toString()?.includes(searchText) ||
+          item?.date?.includes(searchText),
+      ),
+    }))
+    .filter(yearData => yearData?.data?.length > 0);
 
   useEffect(() => {
     if (selector.token === 'Guest') {
@@ -193,9 +209,9 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     );
     return (
       <View style={[styles.scene]}>
-        {allData.length > 0 ? (
+        {filteredInvoices.length > 0 ? (
           <SectionList
-            sections={allData}
+            sections={filteredInvoices}
             keyExtractor={(item: any, index: any) => item + index}
             renderItem={renderInvoiceItem}
             renderSectionHeader={renderSectionHeader}
@@ -296,7 +312,9 @@ function InvoicesScreen({navigation}: any): JSX.Element {
         searchStart={searchStart}
         navigateToSetting={navigateToSetting}
         setSearchStart={setSearchStart}
+        handleSearch={(x: any) => setSearchText(x)}
         title={t('Invoices')}
+        searchText={searchText}
       />
       <TabView
         navigationState={{index, routes}}

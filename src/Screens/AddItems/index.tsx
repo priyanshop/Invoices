@@ -1021,6 +1021,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#000',
     height: 40,
+    width:"100%",
   },
   itemView: {
     backgroundColor: '#fff',

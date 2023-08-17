@@ -120,11 +120,9 @@ const AddClientScreen = ({navigation, route}: any) => {
   };
 
   const checkCondition = () => {
- 
     if (clientName.trim() === '') {
-      return
-    }else{
-
+      return;
+    } else {
       if (route?.params?.invoiceUpdate) {
         if (selector.token === 'Guest') {
           offlineInvoiceUpdate();
@@ -145,7 +143,6 @@ const AddClientScreen = ({navigation, route}: any) => {
         }
       }
     }
-
   };
 
   const deleteInInvoice = async () => {
@@ -478,7 +475,7 @@ const AddClientScreen = ({navigation, route}: any) => {
               onChangeText={value =>
                 handleTextInputChange(value, setClientName)
               }
-              style={{...styles.titleTxt, textAlign: 'left'}}
+              style={{...styles.titleTxt, width: '100%'}}
               placeholder={t('Client Name')}
               placeholderTextColor={'grey'}
             />
@@ -487,7 +484,7 @@ const AddClientScreen = ({navigation, route}: any) => {
             <TextInput
               value={email}
               onChangeText={value => handleTextInputChange(value, setEmail)}
-              style={{...styles.titleTxt, textAlign: 'left'}}
+              style={{...styles.titleTxt, width: '100%'}}
               placeholder={t('Email')}
               placeholderTextColor={'grey'}
             />
@@ -541,7 +538,7 @@ const AddClientScreen = ({navigation, route}: any) => {
             <TextInput
               value={address1}
               onChangeText={value => handleTextInputChange(value, setAddress1)}
-              style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+              style={{...styles.titleTxt, flex: 1, width: '100%'}}
               placeholder={t('Address Line 1')}
               placeholderTextColor={'grey'}
             />
@@ -550,7 +547,7 @@ const AddClientScreen = ({navigation, route}: any) => {
             <TextInput
               value={address2}
               onChangeText={value => handleTextInputChange(value, setAddress2)}
-              style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+              style={{...styles.titleTxt, flex: 1, width: '100%'}}
               placeholder={t('Address Line 2')}
               placeholderTextColor={'grey'}
             />
@@ -559,7 +556,7 @@ const AddClientScreen = ({navigation, route}: any) => {
             <TextInput
               value={address3}
               onChangeText={value => handleTextInputChange(value, setAddress3)}
-              style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+              style={{...styles.titleTxt, flex: 1, width: '100%'}}
               placeholder={t('Address Line 3')}
               placeholderTextColor={'grey'}
             />
@@ -609,7 +606,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     // height: 40,
     textAlignVertical: 'center',
-    paddingLeft:5
+    paddingLeft: 5,
   },
   titleTxt2: {fontSize: 17, color: '#000', fontWeight: '400'},
   mainContain: {

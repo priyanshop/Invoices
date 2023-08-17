@@ -839,7 +839,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   invoiceTitle: {fontSize: 18, fontWeight: '600', color: '#000'},
-  businessInfo: {fontSize: 18, fontWeight: '400', color: '#d1d1d1'},
+  businessInfo: {fontSize: 16, fontWeight: '400', color: '#d1d1d1'},
   dueBox: {
     borderWidth: 1,
     borderRadius: 5,
@@ -861,9 +861,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     marginVertical: 5,
+    alignItems:'center'
   },
-  toTxt: {fontSize: 18, fontWeight: '400', color: '#000'},
-  clientTxt: {fontSize: 18, fontWeight: '400', color: '#d1d1d1', width: '100%'},
+  toTxt: {fontSize: 16, fontWeight: '400', color: '#000'},
+  clientTxt: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#d1d1d1',
+    width: '100%',
+  },
   ItemView: {
     backgroundColor: '#fff',
     borderRadius: 8,
@@ -874,9 +880,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 12,
   },
-  addItemTxt: {fontSize: 18, fontWeight: '500', color: '#d1d1d1'},
+  addItemTxt: {fontSize: 16, fontWeight: '400', color: '#d1d1d1'},
   itemPriceTxt: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '400',
     color: '#d1d1d1',
     textAlign: 'right',
@@ -889,7 +895,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 8,
     padding: 8,
   },
-  itemTotalTxt: {fontSize: 18, fontWeight: '500', color: '#fff'},
+  itemTotalTxt: {fontSize: 16, fontWeight: '400', color: '#fff'},
   dueBalContainer: {
     backgroundColor: '#fff',
     borderRadius: 8,
@@ -934,8 +940,8 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   dueBalFooterText: {
-    fontSize: 18,
-    fontWeight: '500',
+    fontSize: 16,
+    fontWeight: '400',
     color: '#fff',
   },
   photoContainer: {
@@ -948,8 +954,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   photoText: {
-    fontSize: 18,
-    fontWeight: '500',
+    fontSize: 16,
+    fontWeight: '400',
     color: '#d1d1d1',
   },
   photoIcon: {
@@ -976,8 +982,8 @@ const styles = StyleSheet.create({
     height: 70,
   },
   notesText: {
-    fontSize: 18,
-    fontWeight: '500',
+    fontSize: 16,
+    fontWeight: '400',
     color: '#d1d1d1',
   },
   requestContainer: {
@@ -1000,13 +1006,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   requestText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '400',
     color: '#000',
   },
   requestLinkText: {
-    fontSize: 18,
-    fontWeight: '500',
+    fontSize: 16,
+    fontWeight: '400',
     color: '#000',
     // height: 40,
     textAlignVertical: 'center',
@@ -1025,7 +1031,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   paidText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '400',
     color: '#000',
   },

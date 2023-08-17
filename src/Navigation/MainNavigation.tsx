@@ -142,7 +142,7 @@ function MainNavigator() {
     {
       name: 'Settings',
       component: SettingScreen,
-      options: {headerTitle: t('navigationTitle.Settings'), ...headerStyle},
+      options: {headerTitle: t('Menu'), ...headerStyle},
     },
     {
       name: 'InvoiceCreation',

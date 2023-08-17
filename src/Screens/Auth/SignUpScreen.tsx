@@ -48,6 +48,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword1, setShowPassword1] = useState(false);
   const [terms, setTerms] = useState(false);
+  const [showMore, setShowMore] = useState(false);
   const pages = [{index: 1}, {index: 2}, {index: 3}];
 
   const handlePrevious = () => {
@@ -170,6 +171,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
           <Text style={styles.paragraph}>
             {t('businessInfo.optionalFields')}
           </Text>
+          <View style={{height: 15}} />
           <TextInput
             value={businessName}
             onChangeText={setBusinessName}
@@ -304,15 +306,29 @@ function SignUpScreen({navigation}: any): JSX.Element {
               style={{
                 color: '#fff',
                 fontSize: 11,
-                fontWeight: '500',
+                fontWeight: '400',
               }}>
-              I want to receive calls and emails from Invoice Simple and its
-              Affiliates about...{' '}
-              <Text
-                style={{textDecorationLine: 'underline'}}
-                onPress={() => {}}>
-                show more
-              </Text>
+              {
+                'I want to receive calls and emails from Invoice Simple and its Affiliates about'
+              }
+              {!showMore && '...'}
+              {showMore &&
+                ' their products, services, news, events, and promotions. Read our'}{' '}
+              {showMore ? (
+                <Text
+                  style={{textDecorationLine: 'underline'}}
+                  onPress={() => {}}>
+                  {'Privacy Policy'}
+                </Text>
+              ) : (
+                <Text
+                  style={{textDecorationLine: 'underline'}}
+                  onPress={() => {
+                    setShowMore(!showMore);
+                  }}>
+                  {'show more'}
+                </Text>
+              )}
             </Text>
           </View>
         </View>
@@ -414,7 +430,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   btnTxt: {
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: '500',
     textAlign: 'center',
     color: Colors.landingColor,
@@ -426,17 +442,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderRadius: 5,
     marginTop: 15,
+    paddingVertical: 15,
   },
 
   input: {
     backgroundColor: '#fff',
     width: '60%',
     alignSelf: 'center',
-    height: 40,
+    height: 45,
     padding: 5,
     fontSize: 15,
     color: '#000',
     paddingHorizontal: 8,
+    // paddingVertical:15
   },
   emailInput: {
     borderTopRightRadius: 5,
