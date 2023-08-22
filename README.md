@@ -79,7 +79,7 @@ To learn more about React Native, take a look at the following resources:
 - [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
 
 
-# Before Making Build Apply 
+# Before Making Build Apply (Now script is present for adding this code which is "insert-code")
 
 ```bash
 def lintVitalAnalyzeTask = tasks.findByName("lintVitalAnalyze${targetName}")
