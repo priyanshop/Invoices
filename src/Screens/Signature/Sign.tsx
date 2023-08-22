@@ -1,17 +1,20 @@
 //@ts-nocheck
 import {useEffect, useRef} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View, useWindowDimensions} from 'react-native';
 import Orientation from 'react-native-orientation-locker';
-import SignatureScreen from 'react-native-signature-canvas';
+// import SignatureScreen from 'react-native-signature-canvas';
 import {Colors} from '../../Helper/Colors';
 import {useTranslation} from 'react-i18next';
+import SignatureScreen from '../../LibraryToChange/react-native-signature-canvas';
 
 const Sign = ({navigation, route}: any) => {
   const ref = useRef();
   const {t, i18n} = useTranslation();
+  const {width} = useWindowDimensions();
 
   useEffect(() => {
-    Orientation.lockToLandscape();
+    // Orientation.lockToLandscape();
+    Orientation.lockToPortrait();
     return () => {
       Orientation.unlockAllOrientations();
     };
@@ -42,6 +45,11 @@ const Sign = ({navigation, route}: any) => {
     console.log(data);
   };
 
+  const handleCancel = () => {
+    console.log('Empty');
+    navigation.goBack();
+  };
+
   const signaturePadHtml = `
   <div style="display: flex; flex-direction: column; align-items: center;">
     <canvas id="signatureCanvas" style="border: 1px solid black;"></canvas>
@@ -56,39 +64,48 @@ const Sign = ({navigation, route}: any) => {
   };
 
   return (
-    <SignatureScreen
-      ref={ref}
-      onEnd={handleEnd}
-      onOK={handleSignature}
-      onEmpty={handleEmpty}
-      onClear={handleClear}
-      onGetData={handleData}
-      descriptionText={''}
-      clearText={t('Clear')}
-      confirmText={t('Save')}
-      webStyle={`.m-signature-pad--footer
-    .button {
-      background-color: ${Colors.landingColor};
-      color: #FFF;
-      flex: 1;
-      height: 40px;
-      margin-horizontal : 5;
-      margin-right: 10px;
-      margin-left: 10px;
-      font-size: 16px;
-      font-weight: 500;
-    }
-    .save {
+    <View style={{flex: 1}}>
+      <SignatureScreen
+        ref={ref}
+        onEnd={handleEnd}
+        onOK={handleSignature}
+        onEmpty={handleEmpty}
+        onClear={handleClear}
+        onGetData={handleData}
+        onCancel={handleCancel}
+        descriptionText={''}
+        clearText={t('Clear')}
+        confirmText={t('Save')}
+        cancelText={t('Cancel')}
+        style={{flex: 1}}
+        webStyle={`.m-signature-pad {
+            height: ${width - 80}px;
+            margin: 0;
+          }.m-signature-pad--footer
+        .button {
+        background-color: ${Colors.landingColor};
+        color: #FFF;
+        flex: 1;
+        height: 40px;
+        margin-horizontal : 5;
+        margin-right: 10px;
+        margin-left: 10px;
         font-size: 16px;
         font-weight: 500;
-    }
-    .clear {
+        }
+        .save {
         font-size: 16px;
-      font-weight: 500;
-    }`}
-      // customHtml={signaturePadHtml}
-      // onCustomHtmlLoaded={handleCustomHtmlLoaded}
-    />
+        font-weight: 500;
+        }
+        .clear {
+        font-size: 16px;
+        font-weight: 500;
+        }`}
+        rotated
+        // customHtml={signaturePadHtml}
+        // onCustomHtmlLoaded={handleCustomHtmlLoaded}
+      />
+    </View>
   );
 };
 
