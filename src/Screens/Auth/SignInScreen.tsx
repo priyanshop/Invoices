@@ -72,7 +72,7 @@ function SignInScreen({navigation}: any): JSX.Element {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Colors.landingColor} />
-      <Text style={styles.title}>Login</Text>
+      <Text style={[styles.title,{marginBottom:20}]}>Login</Text>
       <TextInput
         value={email}
         style={[styles.input, styles.addressInput1]}

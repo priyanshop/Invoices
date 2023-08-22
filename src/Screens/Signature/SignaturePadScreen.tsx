@@ -12,8 +12,9 @@ import {
 } from 'react-native';
 import Orientation from 'react-native-orientation-locker';
 import {Colors} from '../../Helper/Colors';
-import SignaturePad from '../../SignaturePad';
+// import SignaturePad from '../../SignaturePad';
 import {useTranslation} from 'react-i18next';
+import SignaturePad from '../../Helper/SignaturePad';
 
 const SignaturePadScreen = ({navigation}: any) => {
   const {t, i18n} = useTranslation();
@@ -29,13 +30,16 @@ const SignaturePadScreen = ({navigation}: any) => {
   }, []);
 
   const handleClear = () => {
-    ref.current.Clear();
+    ref.current.cleare();
   };
 
   const onChange = (text: any) => {
     setContent(text);
   };
 
+  useEffect(() => {
+    handleClear();
+  }, []);
   return (
     <View
       style={{
@@ -58,8 +62,7 @@ const SignaturePadScreen = ({navigation}: any) => {
           }}
           style={{
             flex: 1,
-            backgroundColor: 'white',
-            height: Dimensions.get('window').width - 100,
+            backgroundColor: '#fff',
           }}
         />
       )}

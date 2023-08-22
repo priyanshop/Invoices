@@ -25,7 +25,7 @@ const SignaturePad = forwardRef(
       injectedSignaturePad +
       injectedApplication(penColor, '#fff', dataURL);
     const html = htmlContent(injectedJavaScript);
-    const [value, setValue] = useState();
+    const [value, setValue] = useState(Math.random);
 
     const source = {html: html + value};
 
@@ -133,6 +133,9 @@ const SignaturePad = forwardRef(
       //   document.SignaturePad.clear()
       // `);
     };
+    useEffect(() => {
+      Clear();
+    }, []);
 
     return (
       <View style={{flex: 1, justifyContent: 'center'}}>
@@ -141,25 +144,26 @@ const SignaturePad = forwardRef(
           automaticallyAdjustContentInsets={false}
           onNavigationStateChange={_onNavigationChange}
           onError={_renderError}
-          // renderLoading={_renderLoading}
-          // renderLoading={}
           source={source}
           javaScriptEnabled={true}
-          style={style}
+          style={{
+            flex: 1,
+            backgroundColor: 'white',
+          }}
           onTouchStart={() => {
             setFide(false);
           }}
         />
-        {hide && (
+        {/* {hide && (
           <Text
             style={{
-              position: 'absolute',
+              // position: 'absolute',
               alignSelf: 'center',
               color: '#003087',
             }}>
             Sign Here
           </Text>
-        )}
+        )} */}
       </View>
     );
   },
