@@ -81,11 +81,12 @@ To learn more about React Native, take a look at the following resources:
 
 # Before Making Build Apply 
 
+```bash
 def lintVitalAnalyzeTask = tasks.findByName("lintVitalAnalyze${targetName}")
 if (lintVitalAnalyzeTask) {
    lintVitalAnalyzeTask.dependsOn(fontCopyTask)
 }
-
+```
 
 - Path :-  node_modules/react-native-vector-icons/fonts.gradle b/node_modules/react-native-vector-icons/fonts.gradle
 - Under :- android.applicationVariants.all  def variant ->
