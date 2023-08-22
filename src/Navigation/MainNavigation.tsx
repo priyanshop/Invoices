@@ -39,6 +39,7 @@ import {useTranslation} from 'react-i18next';
 import ContactUs from '../Screens/ContactUS';
 import Clients from '../Screens/Dashboard/Clients/Clients';
 import SelectItemScreen from '../Screens/Dashboard/Items/SelectItem';
+import Sign from '../Screens/Signature/Sign';
 
 const headerStyle = {
   headerStyle: {
@@ -259,7 +260,7 @@ function MainNavigator() {
     },
     {
       name: 'SignaturePad',
-      component: SignaturePadScreen,
+      component: Sign,
       options: {headerTitle: t('navigationTitle.SignaturePad'), ...headerStyle},
     },
     {
