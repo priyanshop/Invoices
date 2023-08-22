@@ -91,3 +91,29 @@ if (lintVitalAnalyzeTask) {
 - Path :-  node_modules/react-native-vector-icons/fonts.gradle b/node_modules/react-native-vector-icons/fonts.gradle
 - Under :- android.applicationVariants.all  def variant ->
          def targetName = variant.name.capitalize()
+
+# For Signature Pad: Use the Folder Named "LibraryToChange"
+
+- Change the button or Adding the done in html.js file
+ 
+ ```bash
+ src/LibraryToChange/react-native-signature-canvas/h5/html.js
+ ```
+
+- Click Event on any newly created button 
+
+```bash
+src/LibraryToChange/react-native-signature-canvas/h5/js/app.js
+```
+
+- Related Action and connection with webview for Native side will be added here
+
+```bash
+src/LibraryToChange/react-native-signature-canvas/index.js
+```
+
+- Give Type for the particular new action 
+
+```bash
+src/LibraryToChange/react-native-signature-canvas/index.d.ts
+```
