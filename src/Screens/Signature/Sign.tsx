@@ -5,7 +5,7 @@ import Orientation from 'react-native-orientation-locker';
 // import SignatureScreen from 'react-native-signature-canvas';
 import {Colors} from '../../Helper/Colors';
 import {useTranslation} from 'react-i18next';
-import SignatureScreen from '../../LibraryToChange/react-native-signature-canvas';
+import SignatureScreen from '../../Library/react-native-signature-canvas';
 
 const Sign = ({navigation, route}: any) => {
   const ref = useRef();
