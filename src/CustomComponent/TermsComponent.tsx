@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import {
   Modal,
   Text,
@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   StyleSheet,
 } from 'react-native';
+import {Overlay} from 'react-native-elements';
 const array = [
   {label: 'None', value: 'None'},
   {label: 'Custom', value: 'Custom'},
@@ -57,22 +58,37 @@ const TermsComponent = ({
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Modal
-        visible={modalVisible}
-        animationType="slide"
-        onRequestClose={() => setModalVisible(false)}>
-        <View style={styles.modalContainer}>
-          <FlatList
-            data={data}
-            renderItem={renderItem}
-            keyExtractor={(item: any, index: any) => item + index}
-            style={{flex: 1, marginTop: 50}}
-            contentContainerStyle={{flex: 1}}
-          />
-        </View>
-      </Modal>
-    </SafeAreaView>
+    // <SafeAreaView style={styles.container}>
+    // <Modal
+    //   visible={modalVisible}
+    //   style={{marginTop:50}}
+    //   animationType="slide"
+    //   onRequestClose={() => setModalVisible(false)}>
+    //   <View style={styles.modalContainer}>
+    //     <FlatList
+    //       data={data}
+    //       renderItem={renderItem}
+    //       keyExtractor={(item: any, index: any) => item + index}
+    //       style={{flex: 1, marginTop: 50}}
+    //       contentContainerStyle={{flex: 1}}
+    //     />
+    //   </View>
+    // </Modal>
+    // </SafeAreaView>
+    <Overlay
+      animationType={'slide'}
+      isVisible={modalVisible}
+      onBackdropPress={() => setModalVisible(false)}
+      overlayStyle={styles.bottomSheetContainer}>
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={(item: any, index: any) => item + index}
+        // style={{flex: 1}}
+        // contentContainerStyle={{flex: 1}}
+      />
+      <View style={{height: 10}}></View>
+    </Overlay>
   );
 };
 
@@ -120,6 +136,17 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  bottomSheetContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: '75%',
+    backgroundColor: '#F8FAFE',
+    width: '100%',
+    paddingBottom: 0,
+    paddingHorizontal: 0,
   },
 });
 

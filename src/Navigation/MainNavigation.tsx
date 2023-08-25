@@ -1,3 +1,4 @@
+//@ts-nocheck
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -36,6 +37,10 @@ import EstimationNumber from '../Screens/InvoiceNumber/EstimateNumber';
 import DiscountScreen from '../Screens/Settings/DiscountScreen';
 import {useTranslation} from 'react-i18next';
 import ContactUs from '../Screens/ContactUS';
+import Clients from '../Screens/Dashboard/Clients/Clients';
+import SelectItemScreen from '../Screens/Dashboard/Items/SelectItem';
+import Sign from '../Screens/Signature/Sign';
+import SplashScreen2 from '../Screens/SplashScreen/SplashScreen2';
 
 const headerStyle = {
   headerStyle: {
@@ -121,12 +126,21 @@ function Dashboard() {
 
 function MainNavigator() {
   const {t, i18n} = useTranslation();
-
+  const forFade = ({current}) => ({
+    cardStyle: {
+      opacity: current.progress,
+    },
+  });
   const screenConfigurations = [
     {
       name: 'SplashScreen',
+      component: SplashScreen2,
+      options: {headerShown: false, cardStyleInterpolator: forFade},
+    },
+    {
+      name: 'SplashScreenLoading',
       component: SplashScreenLoading,
-      options: {headerShown: false},
+      options: {headerShown: false, cardStyleInterpolator: forFade},
     },
     {
       name: 'LandingPage',
@@ -139,7 +153,7 @@ function MainNavigator() {
     {
       name: 'Settings',
       component: SettingScreen,
-      options: {headerTitle: t('navigationTitle.Settings'), ...headerStyle},
+      options: {headerTitle: t('Menu'), ...headerStyle},
     },
     {
       name: 'InvoiceCreation',
@@ -172,6 +186,16 @@ function MainNavigator() {
         headerTitle: t('navigationTitle.AddClientScreen'),
         ...headerStyle,
       },
+    },
+    {
+      name: 'ClientScreen',
+      component: Clients,
+      options: {headerShown: false},
+    },
+    {
+      name: 'SelectItemScreen',
+      component: SelectItemScreen,
+      options: {headerShown: false},
     },
     {
       name: 'AddItemScreen',
@@ -246,8 +270,9 @@ function MainNavigator() {
     },
     {
       name: 'SignaturePad',
-      component: SignaturePadScreen,
-      options: {headerTitle: t('navigationTitle.SignaturePad'), ...headerStyle},
+      component: Sign,
+      // options: {headerTitle: t('navigationTitle.SignaturePad'), ...headerStyle},
+      options: {headerShown: false},
     },
     {
       name: 'PaymentScreen',

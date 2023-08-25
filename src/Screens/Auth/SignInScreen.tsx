@@ -15,6 +15,7 @@ import {saveUserData, setToken} from '../../redux/reducers/user/UserReducer';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {useTranslation} from 'react-i18next';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 function SignInScreen({navigation}: any): JSX.Element {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ function SignInScreen({navigation}: any): JSX.Element {
   const [emailError, setEmailError] = useState('');
   const [Password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const validateEmail = (text: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -50,7 +52,7 @@ function SignInScreen({navigation}: any): JSX.Element {
 
   const apiCall = async () => {
     try {
-      const payload = {
+      const payload: any = {
         email: email,
         password: Password,
       };
@@ -63,14 +65,14 @@ function SignInScreen({navigation}: any): JSX.Element {
           routes: [{name: 'Dashboard'}],
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       Alert.alert('', error.message);
     }
   };
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Colors.landingColor} />
-      <Text style={styles.title}>Login</Text>
+      <Text style={[styles.title,{marginBottom:20}]}>Login</Text>
       <TextInput
         value={email}
         style={[styles.input, styles.addressInput1]}
@@ -84,13 +86,27 @@ function SignInScreen({navigation}: any): JSX.Element {
           <Text style={styles.errorTxt}>{emailError}</Text>
         </View>
       )}
-      <TextInput
-        value={Password}
-        style={styles.input}
-        placeholder={t('businessInfo.password')}
-        onChangeText={validatePassword}
-        placeholderTextColor={'grey'}
-      />
+      <View
+        style={{
+          ...styles.input2,
+        }}>
+        <TextInput
+          value={Password}
+          style={styles.input}
+          placeholder={t('businessInfo.password')}
+          onChangeText={validatePassword}
+          placeholderTextColor={'grey'}
+          secureTextEntry={!showPassword}
+        />
+        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+          <Ionicons
+            name={!showPassword ? 'eye-off' : 'eye'}
+            color={'#000'}
+            size={20}
+          />
+        </TouchableOpacity>
+      </View>
+
       {passwordError.trim() !== '' && (
         <View style={styles.errorView}>
           <Text style={styles.errorTxt}>{passwordError}</Text>
@@ -132,6 +148,18 @@ const styles = StyleSheet.create({
     padding: 5,
     fontSize: 15,
     color: '#000',
+  },
+  input2: {
+    backgroundColor: '#fff',
+    width: '75%',
+    alignSelf: 'center',
+    height: 40,
+    fontSize: 15,
+    color: '#000',
+    paddingRight: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   errorView: {
     backgroundColor: '#fff',

@@ -1,29 +1,36 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TextInput} from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
-import {Colors} from '../../Helper/Colors';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TextInput } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { Colors } from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
-import {endpoint} from '../../Networking/endpoint';
-import {setPaymentInfo} from '../../redux/reducers/user/UserReducer';
+import { endpoint } from '../../Networking/endpoint';
+import { setInvoiceList, setPaymentInfo } from '../../redux/reducers/user/UserReducer';
 import { useTranslation } from 'react-i18next';
 
-const PaymentInfo = ({navigation}: any) => {
+const PaymentInfo = ({ navigation, route }: any) => {
   const dispatch = useDispatch();
-  const {t, i18n} = useTranslation();
-
-  const selector = useSelector(state => state.user);
+  const { t, i18n } = useTranslation();
+  const selector = useSelector((state: any) => state.user);
   const [payable, setPayable] = useState('');
   const [email, setEmail] = useState('');
   const [paymentInstructions, setPaymentInstructions] = useState('');
   const [additionalDetails, setAdditionalDetails] = useState('');
 
   useEffect(() => {
-    if (selector.token === 'Guest') {
-      fetchData(selector.paymentInfo);
-    } else {
-      getInfo();
-    }
+
   }, [selector.token]);
+
+  useEffect(() => {
+    if (route?.params?.invoiceUpdate) {
+      fetchData(route?.params.invoiceData);
+    } else {
+      if (selector.token === 'Guest') {
+        fetchData(selector.paymentInfo);
+      } else {
+        getInfo();
+      }
+    }
+  }, [route?.params]);
 
   const fetchData = (data: any) => {
     const element = data;
@@ -32,7 +39,7 @@ const PaymentInfo = ({navigation}: any) => {
     setEmail(element.paypal_email);
     setPaymentInstructions(element.payment_instructions);
   };
-  
+
   const getInfo = async () => {
     try {
       const data = await FetchAPI('get', endpoint.getPaymentInfo, null, {
@@ -45,12 +52,12 @@ const PaymentInfo = ({navigation}: any) => {
         setEmail(element.paypal_email);
         setPaymentInstructions(element.payment_instructions);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const addInfo = async () => {
     try {
-      const payload = {
+      const payload: any = {
         paypal_email: email,
         make_checks_payable: payable,
         payment_instructions: paymentInstructions,
@@ -65,17 +72,72 @@ const PaymentInfo = ({navigation}: any) => {
         if (data.status === 'success') {
         }
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleTextInputChange = (value: any, setter: any) => {
     setter(value);
   };
 
+  const checkCondition = () => {
+    if (route?.params?.invoiceUpdate) {
+      if (selector.token === 'Guest') {
+        offlineInvoiceUpdate()
+      } else {
+        updateIVinfo();
+      }
+    } else {
+      addInfo();
+    }
+  };
+
+  const updateIVinfo = async () => {
+    try {
+      const payload: any = {
+        paypal_email: email,
+        make_checks_payable: payable,
+        payment_instructions: paymentInstructions,
+        additional_payment_instructions: additionalDetails,
+      };
+      if (selector.token === 'Guest') {
+        dispatch(setPaymentInfo(payload));
+      } else {
+        const data = await FetchAPI(
+          'patch',
+          endpoint.updateIVPayment(route?.params?.invoiceID),
+          payload,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+        }
+      }
+    } catch (error) { }
+  };
+
+  const offlineInvoiceUpdate = () => {
+    const updatedArray = selector.invoiceList.map((item: any) => {
+      if (item.index === route?.params?.invoiceData.index) {
+        return {
+          ...item,
+          paypal_email: email,
+          make_checks_payable: payable,
+          payment_instructions: paymentInstructions,
+          additional_payment_instructions: additionalDetails,
+        };
+      }
+      return item;
+    });
+    dispatch(setInvoiceList(updatedArray));
+  };
+
   return (
     <View style={styles.mainContainer}>
       <View>
-        <Text style={styles.titleTxt}>{t('Settings.SensitiveInformation')}</Text>
+        <Text style={styles.titleTxt}>
+          {t('Settings.SensitiveInformation')}
+        </Text>
       </View>
       <View style={styles.businessContainer}>
         <View style={styles.header}>
@@ -85,9 +147,9 @@ const PaymentInfo = ({navigation}: any) => {
           <TextInput
             value={email}
             onChangeText={value => handleTextInputChange(value, setEmail)}
-            onBlur={addInfo}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder={t("Enter your paypal email address")}
+            onBlur={checkCondition}
+            style={{ ...styles.titleTxt, flex: 1, textAlign: 'left' }}
+            placeholder={t('Enter your paypal email address')}
             placeholderTextColor={'grey'}
           />
         </View>
@@ -101,8 +163,8 @@ const PaymentInfo = ({navigation}: any) => {
           <TextInput
             value={payable}
             onChangeText={value => handleTextInputChange(value, setPayable)}
-            onBlur={addInfo}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+            onBlur={checkCondition}
+            style={{ ...styles.titleTxt, flex: 1, textAlign: 'left' }}
             placeholder={t("Your or your business's name")}
             placeholderTextColor={'grey'}
           />
@@ -119,15 +181,16 @@ const PaymentInfo = ({navigation}: any) => {
             onChangeText={value =>
               handleTextInputChange(value, setPaymentInstructions)
             }
-            onBlur={addInfo}
+            onBlur={checkCondition}
             style={{
               ...styles.titleTxt,
               flex: 1,
               textAlign: 'left',
-              height: 60,
+              height: 70,
               textAlignVertical: 'top',
+              paddingBottom:10
             }}
-            placeholder={t("Specify instructions for the payments of deposits")}
+            placeholder={t('Specify instructions for the payments of deposits')}
             placeholderTextColor={'grey'}
             multiline
             numberOfLines={4}
@@ -145,15 +208,16 @@ const PaymentInfo = ({navigation}: any) => {
             onChangeText={value =>
               handleTextInputChange(value, setAdditionalDetails)
             }
-            onBlur={addInfo}
+            onBlur={checkCondition}
             style={{
               ...styles.titleTxt,
               flex: 1,
               textAlign: 'left',
-              height: 60,
+              height: 70,
               textAlignVertical: 'top',
+              paddingBottom:10
             }}
-            placeholder={t("Additional payment instructions")}
+            placeholder={t('Additional payment instructions')}
             placeholderTextColor={'grey'}
             multiline
             numberOfLines={4}
@@ -205,7 +269,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     paddingHorizontal: 0,
   },
-  innerView: {flex: 1, paddingHorizontal: 8},
+  innerView: { flex: 1, paddingHorizontal: 8 },
   businessContainer: {
     borderRadius: 8,
     backgroundColor: '#fff',

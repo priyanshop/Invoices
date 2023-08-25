@@ -15,6 +15,10 @@ const initialState: IUserState = {
     address2: '',
     address3: '',
     business_logo: '',
+    business_number: '',
+    website: '',
+    owner_name: '',
+    mobile_number: '',
   },
   paymentInfo: {
     paypal_email: '',
@@ -33,14 +37,17 @@ const initialState: IUserState = {
   language: 'en',
   defaultEmailMessage: '',
   customizeLabels: {
-    invoices: '',
-    estimate: '',
-    businessNumber: '',
-    quantityLabel: '',
-    unitCostLabel: '',
+    invoice_title: '',
+    estimate_title: '',
+    business_number: '',
+    quantity_label: '',
+    rate_label: '',
     quantityAndUnitCost: true,
   },
   sendToEmail: false,
+  globalDateFormat: 'yyyy-MM-DD',
+  invoiceList: [],
+  estimateList: [],
   // localChats: [],
   // localChatsPub: [],
 };
@@ -95,6 +102,25 @@ const UserReducer = createSlice({
     changeSendToEmail: (state, action) => {
       state.sendToEmail = action.payload;
     },
+    changeGlobalDateFormat: (state, action) => {
+      state.globalDateFormat = action.payload;
+    },
+
+    addNewInvoice: (state, action) => {
+      state.invoiceList = [...state.invoiceList, action.payload];
+    },
+
+    setInvoiceList: (state, action) => {
+      state.invoiceList = action.payload;
+    },
+
+    addNewEstimate: (state, action) => {
+      state.estimateList = [...state.estimateList, action.payload];
+    },
+
+    setEstimateList: (state, action) => {
+      state.estimateList = action.payload;
+    },
     // setChat: (state, action) => {
     //   state.localChats = action.payload;
     // },
@@ -123,6 +149,11 @@ export const {
   changeDefaultEmailMsg,
   changeCustomize,
   changeSendToEmail,
+  changeGlobalDateFormat,
+  addNewInvoice,
+  setInvoiceList,
+  addNewEstimate,
+  setEstimateList,
   // setChat,
   // setPubChat,
   // removePubChat,

@@ -13,6 +13,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {selectContactPhone} from 'react-native-select-contact';
 import {Menu} from 'react-native-paper';
 import Entypo from 'react-native-vector-icons/Entypo';
+import {useTranslation} from 'react-i18next';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {Colors} from '../../Helper/Colors';
@@ -20,9 +21,10 @@ import {getScreenDimensions} from '../../Helper/ScreenDimension';
 import {
   addClientInList,
   setClientList,
+  setEstimateList,
+  setInvoiceList,
 } from '../../redux/reducers/user/UserReducer';
 import {removeObjectByIndex} from '../../Helper/CommonFunctions';
-import { useTranslation } from 'react-i18next';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -30,7 +32,7 @@ const screenWidth = screenDimensions.width;
 const AddClientScreen = ({navigation, route}: any) => {
   const dispatch = useDispatch();
   const {t, i18n} = useTranslation();
-  const selector = useSelector(state => state.user);
+  const selector = useSelector((state: any) => state.user);
   const [clientName, setClientName] = useState('');
   const [contact, setContact] = useState('');
   const [address1, setAddress1] = useState('');
@@ -56,6 +58,7 @@ const AddClientScreen = ({navigation, route}: any) => {
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
+
   useEffect(() => {
     if (Platform.OS === 'android') {
       checkContactPermission();
@@ -64,14 +67,43 @@ const AddClientScreen = ({navigation, route}: any) => {
 
   useEffect(() => {
     console.log('route.params', JSON.stringify(route.params));
-    if (route?.params?.clientId && selector.token !== 'Guest') {
-      getClient(route.params.clientId);
+    if (selector.token === 'Guest') {
+      if (route.params?.invoiceUpdate) {
+        fetchClient2(route.params?.invoiceData);
+      } else if (route.params?.estimateUpdate) {
+        fetchClient2(route.params?.estimateData);
+      } else {
+      }
     } else {
-      if (route.params?.selectedItem) {
-        fetchClient(route.params?.selectedItem);
+      if (route.params?.invoiceUpdate) {
+        fetchClient2(route.params?.invoiceData);
+      } else if (route.params?.estimateUpdate) {
+        fetchClient2(route.params?.estimateData);
+      } else {
+        if (route?.params?.clientId && selector.token !== 'Guest') {
+          getClient(route.params.clientId);
+        } else {
+          if (route.params?.selectedItem) {
+            fetchClient(route.params?.selectedItem);
+          }
+        }
       }
     }
   }, [route.params]);
+
+  const fetchClient2 = (data: any) => {
+    const element = data;
+    setClientName(element.c_name);
+    setEmail(element.c_email);
+    setContact(element.c_contact);
+    setAddress1(element.c_address1);
+    setAddress2(element.c_address2);
+    setAddress3(element.c_address3);
+    setPhone(element.c_phone_number);
+    setMobile(element.c_mobile_number);
+    setFax(element.c_fax);
+    setAlreadyExist(true);
+  };
 
   const fetchClient = (data: any) => {
     const element = data;
@@ -85,6 +117,169 @@ const AddClientScreen = ({navigation, route}: any) => {
     setMobile(element.mobile_number);
     setFax(element.fax);
     setAlreadyExist(true);
+  };
+
+  const checkCondition = () => {
+    if (clientName.trim() === '') {
+      return;
+    } else {
+      if (route?.params?.invoiceUpdate) {
+        if (selector.token === 'Guest') {
+          offlineInvoiceUpdate();
+        } else {
+          updateInvoice();
+        }
+      } else if (route?.params?.estimateUpdate) {
+        if (selector.token === 'Guest') {
+          offlineEStimateUpdate();
+        } else {
+          updateEstimate();
+        }
+      } else {
+        if (alreadyExist) {
+          update();
+        } else {
+          create();
+        }
+      }
+    }
+  };
+
+  const deleteInInvoice = async () => {
+    try {
+      const payload: any = {
+        c_name: null,
+        c_email: null,
+        c_mobile_number: null,
+        c_phone_number: null,
+        c_fax: null,
+        c_contact: null,
+        c_address1: null,
+        c_address2: null,
+        c_address3: null,
+      };
+      if (selector.token === 'Guest') {
+        // dispatch(setBusinessDetail(payload));
+      } else {
+        const data = await FetchAPI(
+          'patch',
+          endpoint.updateIVClient(route?.params?.invoiceID),
+          payload,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+          navigation.goBack();
+        }
+      }
+    } catch (error) {}
+  };
+
+  const updateInvoice = async () => {
+    try {
+      const payload: any = {
+        c_name: clientName,
+        c_email: email,
+        c_mobile_number: Mobile,
+        c_phone_number: Phone,
+        c_fax: fax,
+        c_contact: contact,
+        c_address1: address1,
+        c_address2: address2,
+        c_address3: address3,
+      };
+      if (selector.token === 'Guest') {
+        // dispatch(setBusinessDetail(payload));
+      } else {
+        const data = await FetchAPI(
+          'patch',
+          endpoint.updateIVClient(route?.params?.invoiceID),
+          payload,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+          navigation.goBack();
+        }
+      }
+    } catch (error) {}
+  };
+
+  const offlineInvoiceUpdate = () => {
+    const updatedArray = selector.invoiceList.map((item: any) => {
+      if (item.index === route?.params?.data.index) {
+        return {
+          ...item,
+          c_name: clientName,
+          c_email: email,
+          c_mobile_number: Mobile,
+          c_phone_number: Phone,
+          c_fax: fax,
+          c_contact: contact,
+          c_address1: address1,
+          c_address2: address2,
+          c_address3: address3,
+        };
+      }
+      return item;
+    });
+    dispatch(setInvoiceList(updatedArray));
+    navigation.goBack();
+  };
+
+  const offlineEStimateUpdate = () => {
+    const updatedArray = selector.estimateList.map((item: any) => {
+      if (item.index === route?.params?.data.index) {
+        return {
+          ...item,
+          c_name: clientName,
+          c_email: email,
+          c_mobile_number: Mobile,
+          c_phone_number: Phone,
+          c_fax: fax,
+          c_contact: contact,
+          c_address1: address1,
+          c_address2: address2,
+          c_address3: address3,
+        };
+      }
+      return item;
+    });
+    dispatch(setEstimateList(updatedArray));
+    navigation.goBack();
+  };
+
+  const updateEstimate = async () => {
+    try {
+      const payload: any = {
+        c_name: clientName,
+        c_email: email,
+        c_mobile_number: Mobile,
+        c_phone_number: Phone,
+        c_fax: fax,
+        c_contact: contact,
+        c_address1: address1,
+        c_address2: address2,
+        c_address3: address3,
+      };
+      if (selector.token === 'Guest') {
+        // dispatch(setBusinessDetail(payload));
+      } else {
+        const data = await FetchAPI(
+          'patch',
+          endpoint.updateETClient(route?.params?.estimateID),
+          payload,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+          navigation.goBack();
+        }
+      }
+    } catch (error) {}
   };
 
   const checkContactPermission = async () => {
@@ -142,7 +337,7 @@ const AddClientScreen = ({navigation, route}: any) => {
 
   const create = async () => {
     try {
-      const payload = {
+      const payload: any = {
         name: clientName,
         phone_number: Phone,
         email: email,
@@ -169,7 +364,7 @@ const AddClientScreen = ({navigation, route}: any) => {
 
   const update = async () => {
     try {
-      const payload = {
+      const payload: any = {
         name: clientName,
         phone_number: Phone,
         email: email,
@@ -252,6 +447,14 @@ const AddClientScreen = ({navigation, route}: any) => {
     } catch (error) {}
   };
 
+  const checkDeleteCondition = () => {
+    if (route.params.invoiceUpdate) {
+      deleteInInvoice();
+    } else {
+      deleteClient();
+    }
+  };
+
   return (
     <>
       <Menu
@@ -260,8 +463,8 @@ const AddClientScreen = ({navigation, route}: any) => {
         anchor={{x: screenWidth, y: 50}}>
         <Menu.Item
           disabled={!alreadyExist}
-          onPress={deleteClient}
-          title={t("Delete")}
+          onPress={checkDeleteCondition}
+          title={t('Delete')}
         />
       </Menu>
       <View style={styles.mainContainer}>
@@ -272,8 +475,8 @@ const AddClientScreen = ({navigation, route}: any) => {
               onChangeText={value =>
                 handleTextInputChange(value, setClientName)
               }
-              style={{...styles.titleTxt, textAlign: 'left'}}
-              placeholder={t("Client Name")}
+              style={{...styles.titleTxt, width: '100%'}}
+              placeholder={t('Client Name')}
               placeholderTextColor={'grey'}
             />
           </View>
@@ -281,8 +484,8 @@ const AddClientScreen = ({navigation, route}: any) => {
             <TextInput
               value={email}
               onChangeText={value => handleTextInputChange(value, setEmail)}
-              style={{...styles.titleTxt, textAlign: 'left'}}
-              placeholder={t("Email")}
+              style={{...styles.titleTxt, width: '100%'}}
+              placeholder={t('Email')}
               placeholderTextColor={'grey'}
             />
           </View>
@@ -292,8 +495,9 @@ const AddClientScreen = ({navigation, route}: any) => {
               value={Mobile}
               onChangeText={value => handleTextInputChange(value, setMobile)}
               style={{...styles.titleTxt, textAlign: 'right'}}
-              placeholder={t("Mobile Number")}
+              placeholder={t('Mobile Number')}
               placeholderTextColor={'grey'}
+              keyboardType={'number-pad'}
             />
           </View>
           <View style={styles.rowView}>
@@ -302,8 +506,9 @@ const AddClientScreen = ({navigation, route}: any) => {
               value={Phone}
               onChangeText={value => handleTextInputChange(value, setPhone)}
               style={{...styles.titleTxt, textAlign: 'right'}}
-              placeholder={t("Phone Number")}
+              placeholder={t('Phone Number')}
               placeholderTextColor={'grey'}
+              keyboardType={'number-pad'}
             />
           </View>
           <View style={styles.rowView}>
@@ -312,8 +517,9 @@ const AddClientScreen = ({navigation, route}: any) => {
               value={fax}
               onChangeText={value => handleTextInputChange(value, setFax)}
               style={{...styles.titleTxt, textAlign: 'right'}}
-              placeholder={t("Fax Number")}
+              placeholder={t('Fax Number')}
               placeholderTextColor={'grey'}
+              keyboardType={'number-pad'}
             />
           </View>
         </View>
@@ -324,7 +530,7 @@ const AddClientScreen = ({navigation, route}: any) => {
               value={contact}
               onChangeText={value => handleTextInputChange(value, setContact)}
               style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-              placeholder={t("Contact")}
+              placeholder={t('Contact')}
               placeholderTextColor={'grey'}
             />
           </View>
@@ -332,8 +538,8 @@ const AddClientScreen = ({navigation, route}: any) => {
             <TextInput
               value={address1}
               onChangeText={value => handleTextInputChange(value, setAddress1)}
-              style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-              placeholder={t("Address Line 1")}
+              style={{...styles.titleTxt, flex: 1, width: '100%'}}
+              placeholder={t('Address Line 1')}
               placeholderTextColor={'grey'}
             />
           </View>
@@ -341,8 +547,8 @@ const AddClientScreen = ({navigation, route}: any) => {
             <TextInput
               value={address2}
               onChangeText={value => handleTextInputChange(value, setAddress2)}
-              style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-              placeholder={t("Address Line 2")}
+              style={{...styles.titleTxt, flex: 1, width: '100%'}}
+              placeholder={t('Address Line 2')}
               placeholderTextColor={'grey'}
             />
           </View>
@@ -350,8 +556,8 @@ const AddClientScreen = ({navigation, route}: any) => {
             <TextInput
               value={address3}
               onChangeText={value => handleTextInputChange(value, setAddress3)}
-              style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-              placeholder={t("Address Line 3")}
+              style={{...styles.titleTxt, flex: 1, width: '100%'}}
+              placeholder={t('Address Line 3')}
               placeholderTextColor={'grey'}
             />
           </View>
@@ -360,9 +566,7 @@ const AddClientScreen = ({navigation, route}: any) => {
         <TouchableOpacity onPress={selectContact} style={styles.contactBtn}>
           <Text style={styles.titleTxt2}>{t('Import from contacts')}</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={alreadyExist ? update : create}
-          style={styles.statementBtn}>
+        <TouchableOpacity onPress={checkCondition} style={styles.statementBtn}>
           <Text style={[styles.titleTxt2, {color: '#fff', fontWeight: '600'}]}>
             {alreadyExist ? t('Update') : t('Create')}
           </Text>
@@ -402,6 +606,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     // height: 40,
     textAlignVertical: 'center',
+    paddingLeft: 5,
   },
   titleTxt2: {fontSize: 17, color: '#000', fontWeight: '400'},
   mainContain: {

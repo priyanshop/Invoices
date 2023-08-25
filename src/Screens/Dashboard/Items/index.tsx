@@ -125,6 +125,7 @@ function ItemsScreen({navigation}: any): JSX.Element {
           keyExtractor={(item: any, index: any) => item + index}
           ListEmptyComponent={renderEmptyComponent}
           contentContainerStyle={{flex: 1}}
+          style={{flex:1}}
         />
         <FloatingButton onPress={navigateToAddItem} />
       </View>

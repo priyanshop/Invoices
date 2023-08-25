@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, {useEffect, useRef, useState} from 'react';
 import {
   SafeAreaView,
@@ -5,15 +6,20 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  Image,
+  StatusBar,
+  Dimensions,
 } from 'react-native';
 import Orientation from 'react-native-orientation-locker';
 import {Colors} from '../../Helper/Colors';
-import SignaturePad from '../../SignaturePad';
-import { useTranslation } from 'react-i18next';
+// import SignaturePad from '../../SignaturePad';
+import {useTranslation} from 'react-i18next';
+import SignaturePad from '../../Helper/SignaturePad';
 
 const SignaturePadScreen = ({navigation}: any) => {
   const {t, i18n} = useTranslation();
   const [content, setContent] = useState('');
+  const [saved, setSaved] = useState(false);
   const ref = useRef();
 
   useEffect(() => {
@@ -24,28 +30,51 @@ const SignaturePadScreen = ({navigation}: any) => {
   }, []);
 
   const handleClear = () => {
-    ref.current.Clear();
+    ref.current.cleare();
   };
 
   const onChange = (text: any) => {
     setContent(text);
   };
 
+  useEffect(() => {
+    handleClear();
+  }, []);
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <SignaturePad
-        ref={ref}
-        onError={() => {}}
-        onChange={(base64DataUrl: any) => {
-          onChange(base64DataUrl);
-        }}
-        style={{flex: 1, backgroundColor: 'white'}}
-      />
+    <View
+      style={{
+        flex: 1,
+      }}>
+      {saved ? (
+        <Image
+          source={{uri: content}}
+          style={{
+            flex: 1,
+            resizeMode: 'contain',
+          }}
+        />
+      ) : (
+        <SignaturePad
+          ref={ref}
+          onError={() => {}}
+          onChange={(base64DataUrl: any) => {
+            onChange(base64DataUrl);
+          }}
+          style={{
+            flex: 1,
+            backgroundColor: '#fff',
+          }}
+        />
+      )}
       <View style={styles.btnView}>
         <TouchableOpacity style={styles.btn} onPress={() => {}}>
           <Text style={styles.btnText}>{t('Cancel')}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.btn} onPress={() => {}}>
+        <TouchableOpacity
+          style={styles.btn}
+          onPress={() => {
+            setSaved(!saved);
+          }}>
           <Text style={styles.btnText}>{t('Save')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.btn} onPress={handleClear}>
@@ -55,7 +84,7 @@ const SignaturePadScreen = ({navigation}: any) => {
           <Text style={styles.btnText}>Resign</Text>
         </TouchableOpacity> */}
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

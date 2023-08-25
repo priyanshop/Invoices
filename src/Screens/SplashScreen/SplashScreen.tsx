@@ -10,27 +10,33 @@ import {useTranslation} from 'react-i18next';
 const SplashScreenLoading: React.FC = ({navigation}: any) => {
   const {t, i18n} = useTranslation();
   const selector = useSelector(state => state.user);
-  
+
   useEffect(() => {
-    // SplashScreen.hide(); //hides the splash screen on app load.
+    SplashScreen.hide(); //hides the splash screen on app load.
     i18n.changeLanguage(selector.language);
   }, [selector.language]);
 
   useEffect(() => {
-    console.log('USER');
+    console.log('USER',selector.token);
 
     if (selector.token) {
-      navigation.reset({
-        index: 0,
-        routes: [{name: 'Dashboard'}],
-      });
-      SplashScreen.hide();
+      setTimeout(() => {
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Dashboard'}],
+        });
+      }, 1000);
+     
+      // SplashScreen.hide();
     } else {
-      navigation.reset({
-        index: 0,
-        routes: [{name: 'LandingPage'}],
-      });
-      SplashScreen.hide();
+  
+      setTimeout(() => {
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'LandingPage'}],
+        });
+      }, 1000);
+      // SplashScreen.hide();
     }
   }, [selector.token]);
 
@@ -54,9 +60,10 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   text: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '500',
     color: '#fff',
+    marginTop: 15,
   },
 });
 // Export the component

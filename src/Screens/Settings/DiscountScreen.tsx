@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ScrollView,
   StatusBar,
@@ -6,18 +6,223 @@ import {
   Text,
   TextInput,
   View,
+  TouchableOpacity,
+  Alert,
 } from 'react-native';
+import {useTranslation} from 'react-i18next';
+import {useSelector, useDispatch} from 'react-redux';
+import FetchAPI from '../../Networking';
+import {endpoint} from '../../Networking/endpoint';
 import {Colors} from '../../Helper/Colors';
 import DiscountOption from '../../CustomComponent/DiscountOption';
-import {useTranslation} from 'react-i18next';
+import {
+  setEstimateList,
+  setInvoiceList,
+} from '../../redux/reducers/user/UserReducer';
 
-function DiscountScreen({navigation}: any): JSX.Element {
+function DiscountScreen({navigation, route}: any): JSX.Element {
+  const dispatch = useDispatch();
   const {t, i18n} = useTranslation();
+  const selector = useSelector((state: any) => state.user);
   const [openModal, setOpenModal] = useState(false);
   const [selectedTax, setSelectedTax] = useState('No Discount');
+  const [discountAmount, setDiscountAmount] = useState('');
+  const [percentageAmount, setPercentageAmount] = useState('');
+
+  useEffect(() => {
+    if (route.params?.invoiceUpdate) {
+      if (route.params?.invoiceData?.invoice_discount_type) {
+        setSelectedTax(route.params.invoiceData.invoice_discount_type);
+        setPercentageAmount(
+          route.params.invoiceData.invoice_discount_value?.toString(),
+        );
+        setDiscountAmount(
+          route.params.invoiceData.invoice_discount_value?.toString(),
+        );
+      }
+    }
+    if (route.params?.estimateUpdate) {
+      if (route.params?.estimateData?.estimate_discount_type) {
+        setSelectedTax(route.params.estimateData.estimate_discount_type);
+        setPercentageAmount(
+          route.params.estimateData.estimate_discount_value?.toString(),
+        );
+        setDiscountAmount(
+          route.params.estimateData.estimate_discount_value?.toString(),
+        );
+      }
+    }
+  }, [route.params]);
 
   const closeBottomSheet = () => {
     setOpenModal(!openModal);
+  };
+
+  const handleTextInputChange = (value: any, setter: any) => {
+    setter(value);
+  };
+
+  const updateCall = async (tempPayload: any) => {
+    try {
+      const data = await FetchAPI(
+        'patch',
+        endpoint.updateIVItem(route?.params?.invoiceID),
+        tempPayload,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        navigation.goBack();
+      }
+    } catch (error) {}
+  };
+
+  const updateETCall = async (tempPayload: any) => {
+    try {
+      const data = await FetchAPI(
+        'patch',
+        endpoint.updateETItem(route?.params?.estimateID),
+        tempPayload,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        navigation.goBack();
+      }
+    } catch (error) {}
+  };
+
+  const checkCondition = () => {
+    if (selectedTax !== 'Flat Amount' && selectedTax !== 'Percentage') {
+      navigation.goBack();
+    }
+    if (selectedTax === 'Flat Amount') {
+      if (parseFloat(discountAmount) <= 0 || !discountAmount) {
+        Alert.alert('', 'Please Enter Amount');
+        return;
+      }
+    }
+    if (selectedTax === 'Percentage') {
+      if (parseFloat(percentageAmount) <= 0 || !percentageAmount) {
+        Alert.alert('', 'Please Enter Percentage');
+        return;
+      }
+    }
+
+    if (route.params.invoiceUpdate) {
+      updateInvoice();
+    }
+    if (route.params.estimateUpdate) {
+      updateEstimate();
+    }
+  };
+
+  const updateInvoice = () => {
+    const payload: any = {
+      invoice_discount_type: selectedTax,
+      invoice_discount_value:
+        selectedTax === 'Flat Amount'
+          ? discountAmount
+          : selectedTax === 'Percentage'
+          ? percentageAmount
+          : '',
+      invoice_discount_amount: calculateTotalPrice(
+        route.params.invoiceData.invoice_total,
+        selectedTax,
+        discountAmount,
+        percentageAmount,
+      ),
+    };
+    if (selector.token === 'Guest') {
+      updateCallOffline(payload);
+    } else {
+      updateCall(payload);
+    }
+  };
+  const updateEstimate = () => {
+    const payload: any = {
+      estimate_discount_type: selectedTax,
+      estimate_discount_value:
+        selectedTax === 'Flat Amount'
+          ? discountAmount
+          : selectedTax === 'Percentage'
+          ? percentageAmount
+          : '',
+      estimate_discount_amount: calculateTotalPrice(
+        route.params.estimateData.estimate_total,
+        selectedTax,
+        discountAmount,
+        percentageAmount,
+      ),
+    };
+    if (selector.token === 'Guest') {
+      updateEstimateCallOffline(payload);
+    } else {
+      updateETCall(payload);
+    }
+  };
+
+  const updateCallOffline = async (tempPayload: any) => {
+    const updatedArray = selector.invoiceList.map((item: any) => {
+      if (item.index === route?.params?.invoiceData.index) {
+        return {
+          ...item,
+          ...tempPayload,
+        };
+      }
+      return item;
+    });
+    dispatch(setInvoiceList(updatedArray));
+    setTimeout(() => {
+      navigation.goBack();
+    }, 1000);
+  };
+
+  const updateEstimateCallOffline = async (tempPayload: any) => {
+    const updatedArray = selector.estimateList.map((item: any) => {
+      if (item.index === route?.params?.estimateData.index) {
+        return {
+          ...item,
+          ...tempPayload,
+        };
+      }
+      console.log('item', item);
+
+      return item;
+    });
+    const updatedArray2 = selector.estimateList.filter(
+      (item: any) => item.index === route?.params?.estimateData.index,
+    );
+    dispatch(setEstimateList(updatedArray));
+    setTimeout(() => {
+      navigation.goBack();
+    }, 1000);
+  };
+
+  const calculateTotalPrice = (
+    total: any,
+    discountType: any,
+    flatDiscount: any,
+    percentageDiscount: any,
+  ) => {
+    let totalPrice = total;
+    if (discountType !== 'No Discount') {
+      if (discountType === 'Flat Amount' && flatDiscount && flatDiscount > 0) {
+        return flatDiscount;
+      }
+      if (
+        discountType === 'Percentage' &&
+        percentageDiscount &&
+        percentageDiscount > 0
+      ) {
+        const percentageAmount = (totalPrice * percentageDiscount) / 100;
+        return percentageAmount;
+      }
+    } else {
+      return 0;
+    }
   };
 
   return (
@@ -48,10 +253,14 @@ function DiscountScreen({navigation}: any): JSX.Element {
                 <Text style={styles.label}>{t('Amount')}: </Text>
                 <View style={styles.inputContainer}>
                   <TextInput
-                    value="0"
+                    value={discountAmount}
                     style={styles.input}
                     placeholder={''}
                     placeholderTextColor={'grey'}
+                    onChangeText={value =>
+                      handleTextInputChange(value, setDiscountAmount)
+                    }
+                    keyboardType="numeric"
                   />
                 </View>
               </View>
@@ -61,16 +270,26 @@ function DiscountScreen({navigation}: any): JSX.Element {
                 <Text style={styles.label}>{t('Percentage')}: </Text>
                 <View style={styles.inputContainer}>
                   <TextInput
-                    value="0"
+                    value={percentageAmount}
                     style={styles.input}
                     placeholder={'0'}
                     placeholderTextColor={'grey'}
+                    onChangeText={value =>
+                      handleTextInputChange(value, setPercentageAmount)
+                    }
+                    keyboardType="numeric"
                   />
                 </View>
               </View>
             )}
           </View>
         </View>
+
+        <TouchableOpacity onPress={checkCondition} style={styles.statementBtn}>
+          <Text style={[styles.titleTxt2, {color: '#fff', fontWeight: '600'}]}>
+            {t('Update')}
+          </Text>
+        </TouchableOpacity>
 
         <DiscountOption
           openModal={openModal}
@@ -99,13 +318,14 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: '50%',
+    justifyContent: 'center',
   },
   input: {
     fontSize: 16,
     fontWeight: '400',
     color: '#000',
     textAlign: 'right',
-    height: 35,
+    height: 40,
   },
   itemView: {
     backgroundColor: '#fff',
@@ -160,6 +380,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   photoText: {fontSize: 17, fontWeight: '500', color: '#d1d1d1'},
+  statementBtn: {
+    backgroundColor: Colors.appColor,
+    alignItems: 'center',
+    padding: 15,
+    borderRadius: 8,
+    justifyContent: 'center',
+    marginVertical: 5,
+  },
+  titleTxt2: {fontSize: 17, color: '#000', fontWeight: '400'},
 });
 
 export default DiscountScreen;

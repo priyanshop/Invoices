@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   SectionList,
@@ -16,6 +16,12 @@ import {Colors} from '../../../Helper/Colors';
 import CustomHeader from '../../../CustomComponent/CustomHeader';
 import EmptyViewComponent from '../../../CustomComponent/EmptyViewComponent';
 import {useTranslation} from 'react-i18next';
+import FetchAPI from '../../../Networking';
+import {endpoint} from '../../../Networking/endpoint';
+import {useSelector, useDispatch} from 'react-redux';
+import {useIsFocused} from '@react-navigation/native';
+import {ScrollView} from 'react-native-gesture-handler';
+import {offlineLimit} from '../../../Constant';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -59,6 +65,9 @@ const invoices = [
 
 function InvoicesScreen({navigation}: any): JSX.Element {
   const {t, i18n} = useTranslation();
+  const dispatch = useDispatch();
+  const isFocused = useIsFocused();
+  const selector = useSelector(state => state.user);
   const data = [
     {key: 'first', title: t('All')},
     {key: 'second', title: t('OutStanding')},
@@ -66,19 +75,116 @@ function InvoicesScreen({navigation}: any): JSX.Element {
   ];
   const [index, setIndex] = useState(0);
   const [searchStart, setSearchStart] = useState(false);
+  const [allData, setAllData] = useState([]);
   const [routes] = useState(data);
+  const [searchText, setSearchText] = useState('');
+
+  const filteredInvoices = allData.length > 0 && allData
+    .map(yearData => ({
+      year: yearData?.year,
+      data: yearData?.data?.filter(
+        item =>
+          item?.invoiceNumber
+            ?.toLowerCase()
+            ?.includes(searchText?.toLowerCase()) ||
+          item?.client?.toLowerCase()?.includes(searchText?.toLowerCase()) ||
+          item?.price?.toString()?.includes(searchText) ||
+          item?.date?.includes(searchText),
+      ),
+    }))
+    .filter(yearData => yearData?.data?.length > 0);
+
+  useEffect(() => {
+    if (selector.token === 'Guest') {
+      if (selector.invoiceList?.length > 0) {
+        const savedData: any = convertData(selector.invoiceList);
+        setAllData(savedData);
+      }
+    } else {
+      apiCall();
+    }
+  }, [isFocused]);
+
+  const apiCall = async () => {
+    try {
+      const data = await FetchAPI('get', endpoint.getInvoiceList, null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        if (data.data.length > 0) {
+          const savedData: any = convertData(data.data);
+          setAllData(savedData);
+        }
+      }
+    } catch (error) {}
+  };
+
+  const convertData = (inputData: any) => {
+    const transformedData: any = [];
+    inputData.forEach((item: any) => {
+      const invoiceDate = new Date(item.invoice_date);
+      const year = invoiceDate.getFullYear();
+      const client = item.c_name || 'No Client';
+      const invoiceNumber = item.invoice_number;
+      const price = 0.0;
+      const date = invoiceDate.toISOString().split('T')[0];
+
+      const existingYearData = transformedData.find(
+        (data: any) => data.year === year,
+      );
+
+      if (existingYearData) {
+        existingYearData.data.push({
+          client,
+          invoiceNumber,
+          price,
+          date,
+          ...item,
+        });
+      } else {
+        transformedData.push({
+          year,
+          data: [
+            {
+              client,
+              invoiceNumber,
+              price,
+              date,
+              ...item,
+            },
+          ],
+        });
+      }
+    });
+    return transformedData;
+  };
 
   function navigateToSetting() {
     navigation.navigate('Settings');
   }
 
-  function navigateToAddInvoice() {
-    navigation.navigate('InvoiceCreation');
+  const navigateToAddInvoice = () => {
+    // if (selector.token === 'Guest') {
+    //   if (selector.invoiceList.length <= offlineLimit) {
+    //     console.log("Ddddd");
+
+    //     navigation.navigate('InvoiceCreation', {status: 'create'});
+    //   }
+    // } else {
+    navigation.navigate('InvoiceCreation', {status: 'create'});
+    // }
+  };
+
+  function navigateToInvoice(item: any) {
+    navigation.navigate('InvoiceCreation', {status: 'update', data: item});
   }
 
   const AllRoute = () => {
-    const renderInvoiceItem = ({item}: any) => (
-      <View style={styles.invoiceItem}>
+    const renderInvoiceItem = ({item, index}: any) => (
+      <TouchableOpacity
+        key={index}
+        onPress={() => navigateToInvoice(item)}
+        style={styles.invoiceItem}>
         <View>
           <Text style={styles.clientText}>{`${item.client}`}</Text>
           <Text
@@ -88,13 +194,13 @@ function InvoicesScreen({navigation}: any): JSX.Element {
           <Text style={styles.priceText}>{`$${item.price}`}</Text>
           <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
 
     const renderSectionHeader = ({section: {year}}) => (
       <View style={styles.sectionHeaderContain}>
         <Text style={styles.sectionHeader}>{year}</Text>
-        <Text style={styles.sectionHeader}>{'$635'}</Text>
+        <Text style={styles.sectionHeader}>{'$0'}</Text>
       </View>
     );
 
@@ -103,14 +209,18 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     );
     return (
       <View style={[styles.scene]}>
-        <SectionList
-          sections={invoices}
-          keyExtractor={(item: any, index: any) => item + index}
-          renderItem={renderInvoiceItem}
-          renderSectionHeader={renderSectionHeader}
-          ListEmptyComponent={renderEmptyComponent}
-          contentContainerStyle={{flex: 1}}
-        />
+        {filteredInvoices.length > 0 ? (
+          <SectionList
+            sections={filteredInvoices}
+            keyExtractor={(item: any, index: any) => item + index}
+            renderItem={renderInvoiceItem}
+            renderSectionHeader={renderSectionHeader}
+            ListEmptyComponent={renderEmptyComponent}
+            stickySectionHeadersEnabled={false}
+          />
+        ) : (
+          renderEmptyComponent()
+        )}
       </View>
     );
   };
@@ -141,7 +251,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
       </View>
     );
     return (
-      <View style={[styles.scene]}>
+      <ScrollView nestedScrollEnabled style={[styles.scene]}>
         <SectionList
           sections={invoices}
           keyExtractor={(item: any, index: any) => item + index}
@@ -149,8 +259,10 @@ function InvoicesScreen({navigation}: any): JSX.Element {
           renderSectionHeader={renderSectionHeader}
           ListEmptyComponent={renderEmptyComponent}
           contentContainerStyle={{flex: 1}}
+          style={{flex: 1}}
+          nestedScrollEnabled
         />
-      </View>
+      </ScrollView>
     );
   };
 
@@ -200,7 +312,9 @@ function InvoicesScreen({navigation}: any): JSX.Element {
         searchStart={searchStart}
         navigateToSetting={navigateToSetting}
         setSearchStart={setSearchStart}
+        handleSearch={(x: any) => setSearchText(x)}
         title={t('Invoices')}
+        searchText={searchText}
       />
       <TabView
         navigationState={{index, routes}}
@@ -212,6 +326,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
         onIndexChange={setIndex}
         initialLayout={{width: screenWidth}}
         style={styles.container2}
+        sceneContainerStyle={styles.container2}
         renderTabBar={props => {
           return (
             <TabBar
@@ -285,6 +400,7 @@ const styles = StyleSheet.create({
   scene: {
     flex: 1,
     backgroundColor: Colors.commonBg,
+    height: '100%',
   },
   headerContainer: {
     flexDirection: 'row',

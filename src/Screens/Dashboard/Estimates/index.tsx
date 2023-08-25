@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   SectionList,
@@ -14,6 +14,12 @@ import {getScreenDimensions} from '../../../Helper/ScreenDimension';
 import {Colors} from '../../../Helper/Colors';
 import CustomHeader from '../../../CustomComponent/CustomHeader';
 import {useTranslation} from 'react-i18next';
+import {useIsFocused} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
+import FetchAPI from '../../../Networking';
+import {endpoint} from '../../../Networking/endpoint';
+import {offlineLimit} from '../../../Constant';
+import EmptyViewComponent from '../../../CustomComponent/EmptyViewComponent';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -54,38 +60,6 @@ const invoices = [
     ],
   },
 ];
-
-const AllRoute = () => {
-  const renderInvoiceItem = ({item}: any) => (
-    <View style={styles.invoiceItem}>
-      <View>
-        <Text style={styles.clientText}>{`${item.client}`}</Text>
-        <Text style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
-      </View>
-      <View>
-        <Text style={styles.priceText}>{`$${item.price}`}</Text>
-        <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
-      </View>
-    </View>
-  );
-
-  const renderSectionHeader = ({section: {year}}) => (
-    <View style={styles.sectionHeaderContain}>
-      <Text style={styles.sectionHeader}>{year}</Text>
-      <Text style={styles.sectionHeader}>{'$635'}</Text>
-    </View>
-  );
-  return (
-    <View style={styles.scene}>
-      <SectionList
-        sections={invoices}
-        keyExtractor={(item: any, index: any) => item + index}
-        renderItem={renderInvoiceItem}
-        renderSectionHeader={renderSectionHeader}
-      />
-    </View>
-  );
-};
 
 const OpenRoute = () => {
   const renderInvoiceItem = ({item}: any) => (
@@ -158,16 +132,156 @@ function EstimatesScreen({navigation}: any): JSX.Element {
     {key: 'second', title: t('Open')},
     {key: 'third', title: t('Closed')},
   ];
+  const dispatch = useDispatch();
+  const isFocused = useIsFocused();
+  const selector = useSelector(state => state.user);
   const [index, setIndex] = useState(0);
   const [searchStart, setSearchStart] = useState(false);
   const [routes] = useState(data);
+  const [allData, setAllData] = useState([]);
+  const [searchText, setSearchText] = useState('');
+
+  const filteredInvoices = allData.length > 0 && allData
+    .map(yearData => ({
+      year: yearData?.year,
+      data: yearData?.data?.filter(
+        item =>
+          item?.invoiceNumber
+            ?.toLowerCase()
+            ?.includes(searchText?.toLowerCase()) ||
+          item?.client?.toLowerCase()?.includes(searchText?.toLowerCase()) ||
+          item?.price?.toString()?.includes(searchText) ||
+          item?.date?.includes(searchText),
+      ),
+    }))
+    .filter(yearData => yearData.data.length > 0);
+
+  useEffect(() => {
+    if (selector.token === 'Guest') {
+      if (selector.estimateList?.length > 0) {
+        const savedData: any = convertData(selector.estimateList);
+        setAllData(savedData);
+      }
+    } else {
+      apiCall();
+    }
+  }, [isFocused]);
+
+  const apiCall = async () => {
+    try {
+      const data = await FetchAPI('get', endpoint.getEstimateList, null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        if (data.data.length > 0) {
+          const savedData: any = convertData(data.data);
+          console.log(savedData);
+          setAllData(savedData);
+        }
+      }
+    } catch (error) {}
+  };
+
+  const convertData = (inputData: any) => {
+    const transformedData: any = [];
+    inputData.forEach((item: any) => {
+      const invoiceDate = new Date(item.createdAt);
+      const year = invoiceDate.getFullYear();
+      const client = item.c_name || 'No Client';
+      const invoiceNumber = item.estimate_number;
+      const price = 0.0;
+      const date = invoiceDate.toISOString().split('T')[0];
+
+      const existingYearData = transformedData.find(
+        (data: any) => data.year === year,
+      );
+
+      if (existingYearData) {
+        existingYearData.data.push({
+          client,
+          invoiceNumber,
+          price,
+          date,
+          ...item,
+        });
+      } else {
+        transformedData.push({
+          year,
+          data: [
+            {
+              client,
+              invoiceNumber,
+              price,
+              date,
+              ...item,
+            },
+          ],
+        });
+      }
+    });
+    return transformedData;
+  };
+
+  function navigateToEstimate(item: any) {
+    navigation.navigate('EstimationCreation', {status: 'update', data: item});
+  }
+
+  const AllRoute = () => {
+    const renderInvoiceItem = ({item}: any) => (
+      <TouchableOpacity
+        onPress={() => navigateToEstimate(item)}
+        style={styles.invoiceItem}>
+        <View>
+          <Text style={styles.clientText}>{`${item.client}`}</Text>
+          <Text
+            style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
+        </View>
+        <View>
+          <Text style={styles.priceText}>{`$${item.price}`}</Text>
+          <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+
+    const renderSectionHeader = ({section: {year}}) => (
+      <View style={styles.sectionHeaderContain}>
+        <Text style={styles.sectionHeader}>{year}</Text>
+        <Text style={styles.sectionHeader}>{'$635'}</Text>
+      </View>
+    );
+    const renderEmptyComponent = () => (
+      <EmptyViewComponent message={t('emptyEstimateAll')} />
+    );
+
+    return (
+      <View style={styles.scene}>
+        {filteredInvoices.length > 0 ? (
+          <SectionList
+            sections={filteredInvoices}
+            keyExtractor={(item: any, index: any) => item + index}
+            renderItem={renderInvoiceItem}
+            renderSectionHeader={renderSectionHeader}
+            ListEmptyComponent={renderEmptyComponent}
+          />
+        ) : (
+          renderEmptyComponent()
+        )}
+      </View>
+    );
+  };
 
   function navigateToSetting() {
     navigation.navigate('Settings');
   }
 
   function navigateToAddEstimate() {
-    navigation.navigate('EstimationCreation');
+    if (selector.token === 'Guest') {
+      if (selector.estimateList?.length <= offlineLimit) {
+        navigation.navigate('EstimationCreation', {status: 'create'});
+      }
+    } else {
+      navigation.navigate('EstimationCreation', {status: 'create'});
+    }
   }
 
   return (
@@ -178,6 +292,8 @@ function EstimatesScreen({navigation}: any): JSX.Element {
         navigateToSetting={navigateToSetting}
         setSearchStart={setSearchStart}
         title={t('Estimates')}
+        searchText={searchText}
+        handleSearch={(x: any) => setSearchText(x)}
       />
       <TabView
         navigationState={{index, routes}}

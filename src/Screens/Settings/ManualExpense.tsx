@@ -11,19 +11,36 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Colors} from '../../Helper/Colors';
 import {useTranslation} from 'react-i18next';
+import DatePicker from 'react-native-date-picker';
+import moment from 'moment';
+const dateFormat = 'YYYY-MM-DD';
 
 function ManualExpense({navigation}: any): JSX.Element {
   const {t, i18n} = useTranslation();
-
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [openModal, setOpenModal] = useState(false);
   return (
     <>
       <StatusBar backgroundColor={Colors.appColor} />
       <ScrollView
         style={[styles.scene, {backgroundColor: Colors.commonBg, padding: 8}]}>
+        <DatePicker
+          modal
+          mode="date"
+          open={openModal}
+          date={selectedDate}
+          onConfirm={date => {
+            setSelectedDate(date);
+            setOpenModal(false);
+          }}
+          onCancel={() => {
+            setOpenModal(false);
+          }}
+        />
         <View style={styles.photoView}>
           <Text style={styles.photoText}>{t('Add photo')}</Text>
           <TouchableOpacity>
-            <Icon name="attach" size={18} color="#d2d2d2" />
+            <Icon name="attach" size={22} color="#d2d2d2" />
           </TouchableOpacity>
         </View>
         <View style={styles.itemView}>
@@ -58,7 +75,11 @@ function ManualExpense({navigation}: any): JSX.Element {
                   styles.inputContainer,
                   {height: 40, justifyContent: 'center'},
                 ]}>
-                <Text style={styles.dateText}>07/07/2023</Text>
+                <Text
+                  onPress={() => setOpenModal(true)}
+                  style={styles.dateText}>
+                  {moment(selectedDate).format(dateFormat)}
+                </Text>
               </View>
             </View>
             <View style={styles.mainView}>
@@ -68,6 +89,7 @@ function ManualExpense({navigation}: any): JSX.Element {
                   style={styles.input}
                   placeholder={'$0.00'}
                   placeholderTextColor={'grey'}
+                  keyboardType='numeric'
                 />
               </View>
             </View>
@@ -78,6 +100,7 @@ function ManualExpense({navigation}: any): JSX.Element {
                   style={styles.input}
                   placeholder={'$0.00'}
                   placeholderTextColor={'grey'}
+                  keyboardType='numeric'
                 />
               </View>
             </View>
@@ -151,7 +174,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '400',
     color: '#000',
-    paddingVertical:10
+    paddingVertical: 10,
   },
   saveText: {fontSize: 18, fontWeight: '400', color: '#000'},
   dateText: {

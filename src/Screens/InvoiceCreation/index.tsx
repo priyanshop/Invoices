@@ -1,5 +1,6 @@
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
+  FlatList,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -14,16 +15,79 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Switch, FAB, Portal, Provider, Menu} from 'react-native-paper';
+import {useTranslation} from 'react-i18next';
+import {useSelector, useDispatch} from 'react-redux';
+import {useIsFocused} from '@react-navigation/native';
+import moment from 'moment';
+import {actionStyle, fabStyle} from '../../Helper/CommonStyle';
 import {getScreenDimensions} from '../../Helper/ScreenDimension';
 import {Colors} from '../../Helper/Colors';
-import {actionStyle, fabStyle} from '../../Helper/CommonStyle';
-import {useTranslation} from 'react-i18next';
+import FetchAPI from '../../Networking';
+import {endpoint} from '../../Networking/endpoint';
+import {addNewInvoice} from '../../redux/reducers/user/UserReducer';
+import {setNewInvoiceInList} from '../../Constant';
+import EmptyHistory from '../../CustomComponent/EmptyHistory';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
+const importedData: any = {
+  status: 'success',
+  message: 'Invoice data',
+  data: {
+    _id: '',
+    user: '',
+    invoice_number: '',
+    invoice_date: '',
+    b_id: '',
+    b_name: '',
+    b_email: '',
+    b_address1: '',
+    b_address2: '',
+    b_address3: '',
+    b_business_logo: ' ',
+    c_address1: '',
+    c_address2: '',
+    c_address3: '',
+    is_invoice_tax_inclusive: false,
+    paypal_email: '',
+    make_checks_payable: '',
+    payment_instructions: '',
+    additional_payment_instructions: '',
+    notes: '',
+    is_paid: false,
+    items: [],
+    photos: [],
+    payments: [],
+    createdAt: '',
+    updatedAt: '',
+    __v: 0,
+    b_business_number: 0,
+    b_mobile_number: '',
+    b_owner_name: '',
+    b_phone_number: '',
+    b_website: 'Dsfsdf',
+    c_contact: '',
+    c_email: '',
+    c_fax: '',
+    c_mobile_number: '',
+    c_name: '',
+    c_phone_number: '',
+    invoice_discount_amount: 0,
+    invoice_discount_type: '',
+    invoice_discount_value: 1,
+    invoice_tax_label: '',
+    invoice_tax_rate: 0,
+    invoice_tax_type: '',
+    invoice_total: 0,
+    invoice_total_tax_amount: 0,
+  },
+};
 
-function InvoiceCreationScreen({navigation}: any): JSX.Element {
+function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
   const {t, i18n} = useTranslation();
+  const dispatch = useDispatch();
+  const isFocused = useIsFocused();
+  const selector = useSelector((state: any) => state.user);
   const data = [
     {key: 'first', title: t('Edit')},
     {key: 'second', title: t('Preview')},
@@ -65,10 +129,14 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
   const [index, setIndex] = useState(0);
   const [searchStart, setSearchStart] = useState(false);
   const [routes] = useState(data);
+  const [globalData, setGlobalData] = useState(importedData.data);
   const [state, setState] = React.useState({open: false});
+  const {open} = state;
 
   const onStateChange = ({open}) => setState({open});
   const [visible, setVisible] = React.useState(false);
+  const [paymentDue, setPaymentDue] = useState([]);
+  const [RequestReview, setRequestReview] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -80,41 +148,213 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
     });
   }, [navigation]);
 
+  useEffect(() => {
+    if (route.params.status === 'create') {
+      console.log('ssssssjkkk');
+
+      if (selector.token === 'Guest') {
+        console.log('sssjkkk');
+
+        offline();
+      } else {
+        createInvoiceCall();
+      }
+    }
+    if (route.params.status === 'update') {
+      if (selector.token === 'Guest') {
+        const index = findIndexById(
+          route?.params?.data.index,
+          selector.invoiceList,
+        );
+        setOffline(selector.invoiceList[index]);
+      } else {
+        getInvoiceCall(route?.params?.data);
+      }
+    }
+  }, [route?.params]);
+
+  const findIndexById = (id: any, data: any) => {
+    return data.findIndex((item: any) => item.index === id);
+  };
+
+  const offline = () => {
+    const payload = setNewInvoiceInList(selector);
+    dispatch(addNewInvoice(payload));
+    setGlobalData(payload);
+    fetchPaymentDue(payload);
+  };
+
+  const setOffline = (payload: any) => {
+    setGlobalData(payload);
+    fetchPaymentDue(payload);
+  };
+
+  const getInvoiceCall = async (invoiceDetail: any) => {
+    try {
+      const data = await FetchAPI(
+        'get',
+        endpoint.getInvoiceDetail(invoiceDetail._id),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+        setGlobalData(element);
+        fetchPaymentDue(element);
+      }
+    } catch (error) {}
+  };
+
+  const createInvoiceCall = async () => {
+    try {
+      const data = await FetchAPI('post', endpoint.createInvoice, null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        const element = data.data;
+        setGlobalData(element);
+        fetchPaymentDue(element);
+      }
+    } catch (error) {}
+  };
+
+  const fetchPaymentDue = (element: any) => {
+    setPaymentDue([
+      {
+        key: 'first',
+        title: t('Discount'),
+        value: '$' + (element.invoice_discount_amount || 0),
+        onPress: () => navigateToDiscountScreen(),
+      },
+      {
+        key: 'second',
+        title: t('Tax'),
+        value: '$' + (element.invoice_total_tax_amount || 0),
+        onPress: () => navigateToTaxScreen(),
+      },
+
+      {
+        key: 'third',
+        title: t('Total'),
+        value:
+          '$' +
+          (
+            parseFloat(element.invoice_total_tax_amount || 0) +
+            parseFloat(element.invoice_total || 0) -
+            parseFloat(element.invoice_discount_amount || 0)
+          ).toFixed(2),
+      },
+      {
+        key: 'fourth',
+        title: t('Total Payments'),
+        value: '$0.00',
+      },
+    ]);
+  };
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
-
-  const {open} = state;
 
   function navigateToSetting() {
     navigation.navigate('Settings');
   }
 
   function navigateToBusinessDetails() {
-    navigation.navigate('BusinessDetails');
+    if (route.params.status === 'update') {
+      navigation.navigate('BusinessDetails', {
+        invoiceUpdate: true,
+        invoiceID: globalData._id,
+        data: globalData,
+      });
+    } else {
+      navigation.navigate('BusinessDetails', {
+        invoiceUpdate: true,
+        invoiceID: globalData._id,
+      });
+    }
+  }
+
+  function navigateToDiscountScreen() {
+    navigation.navigate('DiscountScreen', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+      invoiceData: globalData,
+      index: index,
+    });
+  }
+
+  function navigateToTaxScreen() {
+    navigation.navigate('TaxScreen', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+      invoiceData: globalData,
+      index: index,
+    });
   }
 
   function navigateToAddClientScreen() {
-    navigation.navigate('AddClientScreen');
+    if (globalData.c_name) {
+      navigation.navigate('AddClientScreen', {
+        invoiceUpdate: true,
+        invoiceID: globalData._id,
+        invoiceData: globalData,
+        data: globalData,
+      });
+    } else {
+      navigation.navigate('ClientScreen', {
+        invoiceUpdate: true,
+        invoiceID: globalData._id,
+        data: globalData,
+      });
+    }
   }
 
   function navigateToAddItemScreen() {
-    navigation.navigate('AddItemScreen');
+    navigation.navigate('AddItemScreen', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+      invoiceData: globalData,
+    });
+  }
+
+  function navigateToItemScreen(index: any) {
+    navigation.navigate('AddItemScreen', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+      invoiceData: globalData,
+      index: index,
+    });
   }
 
   function navigateToAddPhotoScreen() {
-    navigation.navigate('AddPhotoScreen');
+    navigation.navigate('AddPhotoScreen', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+    });
   }
 
   function navigateToPaymentInfo() {
-    navigation.navigate('PaymentInfo');
+    navigation.navigate('PaymentInfo', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+      invoiceData: globalData,
+    });
   }
 
   function navigateToAdditionalDetails() {
-    navigation.navigate('AdditionalDetails');
+    navigation.navigate('AdditionalDetails', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+      invoiceData: globalData,
+    });
   }
 
   function navigateToInvoiceNumber() {
-    navigation.navigate('InvoiceNumber');
+    navigation.navigate('InvoiceNumber', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+    });
   }
 
   function navigateToSignaturePad() {
@@ -129,32 +369,73 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
         <TouchableOpacity
           onPress={navigateToInvoiceNumber}
           style={styles.invoiceTopView}>
-          <View style={{justifyContent: 'space-between',width:"50%"}}>
-            <Text style={styles.invoiceTitle}>INV0001</Text>
+          <View style={{justifyContent: 'space-between', width: '50%'}}>
+            <Text style={styles.invoiceTitle}>{globalData.invoice_number}</Text>
             <Text
               onPress={navigateToBusinessDetails}
               style={styles.businessInfo}>
               {t('Business Info')}
             </Text>
           </View>
-          <View style={{justifyContent: 'space-between',width:"50%"}}>
+          <View style={{justifyContent: 'space-between', width: '50%'}}>
             <View style={styles.dueBox}>
               <Text style={styles.dueTxt}>{t('Due on Receipt')}</Text>
             </View>
-            <Text style={styles.dueDate}>06/07/2023</Text>
+            <Text style={styles.dueDate}>
+              {moment(globalData.invoice_date).format(
+                selector.globalDateFormat,
+              )}
+            </Text>
           </View>
         </TouchableOpacity>
 
         <View style={styles.clientView}>
           <Text style={styles.toTxt}>To : </Text>
-          <Text onPress={navigateToAddClientScreen} style={styles.clientTxt}>
-            {t('Client')}
-          </Text>
+          {globalData.c_name ? (
+            <Text onPress={navigateToAddClientScreen} style={styles.toTxt}>
+              {globalData.c_name}{' '}
+            </Text>
+          ) : (
+            <Text onPress={navigateToAddClientScreen} style={styles.clientTxt}>
+              {t('Client')}
+            </Text>
+          )}
         </View>
 
         <View style={styles.ItemView}>
+          {globalData?.items?.length > 0 &&
+            globalData?.items?.map((item: any, index: number) => (
+              <TouchableOpacity
+                onPress={() => navigateToItemScreen(index)}
+                style={styles.ItemColumn}>
+                <View>
+                  <Text style={styles.dueBalText}>{item.description} </Text>
+                  <Text style={styles.dueBalText2}>{item.item_notes} </Text>
+                  <Text style={styles.dueBalText2}>
+                    {'Discount'}{' '}
+                    {item.discount_type === 'Percentage'
+                      ? item.discount_rate + '%'
+                      : ''}{' '}
+                  </Text>
+                </View>
+                <View>
+                  <Text style={styles.dueBalText3}>
+                    {item.quantity + ' * $' + item.unit}
+                  </Text>
+                  <Text style={styles.dueBalText3}>{'$' + item.total}</Text>
+                  <Text style={styles.dueBalText4}>
+                    {item.discount_amount &&
+                      '-$' + parseFloat(item.discount_amount || 0).toFixed(2)}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ))}
           <TouchableOpacity
-            onPress={navigateToAddItemScreen}
+            onPress={() =>
+              globalData.items.length > 0
+                ? navigateToItemScreen('New')
+                : navigateToAddItemScreen()
+            }
             style={styles.ItemColumn}>
             <View>
               <Text style={styles.addItemTxt}>{t('Add Item')} </Text>
@@ -166,29 +447,37 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
           </TouchableOpacity>
           <View style={styles.itemTotal}>
             <Text style={styles.itemTotalTxt}>{t('Subtotal')}</Text>
-            <Text style={styles.itemTotalTxt}>195</Text>
+            <Text style={styles.itemTotalTxt}>{globalData.invoice_total}</Text>
           </View>
         </View>
 
         <View style={styles.dueBalContainer}>
-          {[0, 0, 0, 0, 0].map(() => (
+          {paymentDue.map((selectedItem: any) => (
             <View style={styles.dueBalContent}>
-              <View style={styles.dueBalRow}>
-                <Text style={styles.dueBalText}>{t('Discount')}</Text>
-                <Text style={styles.dueBalText}>$0.00</Text>
-              </View>
+              <TouchableOpacity
+                onPress={selectedItem.onPress}
+                style={styles.dueBalRow}>
+                <Text style={styles.dueBalText}>{selectedItem.title}</Text>
+                <Text style={styles.dueBalText}>{selectedItem.value}</Text>
+              </TouchableOpacity>
             </View>
           ))}
           <View style={styles.dueBalFooter}>
             <Text style={styles.dueBalFooterText}>{t('Balance Due')}</Text>
-            <Text style={styles.dueBalFooterText}>195</Text>
+            <Text style={styles.dueBalFooterText}>
+              {(
+                parseFloat(globalData.invoice_total_tax_amount || 0) +
+                parseFloat(globalData.invoice_total || 0) -
+                parseFloat(globalData.invoice_discount_amount || 0)
+              ).toFixed(2)}
+            </Text>
           </View>
         </View>
 
         <View style={styles.photoContainer}>
           <Text style={styles.photoText}>{t('Add photo')}</Text>
           <TouchableOpacity onPress={navigateToAddPhotoScreen}>
-            <Icon name="attach" size={18} style={styles.photoIcon} />
+            <Icon name="attach" size={22} style={styles.photoIcon} />
           </TouchableOpacity>
         </View>
 
@@ -196,7 +485,23 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
           <TouchableOpacity
             onPress={navigateToPaymentInfo}
             style={styles.notesRow}>
-            <Text style={styles.notesText}>{t('Payment Info')}</Text>
+            {globalData.paypal_email ||
+            globalData.make_checks_payable ||
+            globalData.payment_instructions ||
+            globalData.additional_payment_instructions ? (
+              <Text
+                numberOfLines={1}
+                onPress={navigateToPaymentInfo}
+                style={styles.toTxt}>
+                {'Payment:  '}
+                {globalData.paypal_email && 'PayPal,'}{' '}
+                {globalData.make_checks_payable && 'Check,'}{' '}
+                {globalData.payment_instructions && 'Payment Instruction,'}{' '}
+                {globalData.additional_payment_instructions && 'Other'}
+              </Text>
+            ) : (
+              <Text style={styles.notesText}>{t('Payment Info')}</Text>
+            )}
           </TouchableOpacity>
           <View style={styles.notesRow}>
             <Text onPress={navigateToSignaturePad} style={styles.notesText}>
@@ -206,22 +511,32 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
           <TouchableOpacity
             onPress={navigateToAdditionalDetails}
             style={styles.notesLastRow}>
-            <Text style={styles.notesText}>{t('Notes')}</Text>
+            {globalData.notes ? (
+              <Text onPress={navigateToAdditionalDetails} style={styles.toTxt}>
+                {globalData.notes}{' '}
+              </Text>
+            ) : (
+              <Text style={styles.notesText}>{t('Notes')}</Text>
+            )}
           </TouchableOpacity>
         </View>
 
         <View style={styles.requestContainer}>
           <View style={styles.requestSwitchRow}>
             <Text style={styles.requestText}>{t('Request Review')}</Text>
-            <Switch color={Colors.landingColor} value={true} />
-          </View>
-          <View style={styles.requestLinkRow}>
-            <TextInput
-              placeholder={t('Review Link')}
-              style={styles.requestLinkText}
-              placeholderTextColor={'#d1d1d1'}
+            <Switch
+              value={RequestReview}
+              color={Colors.landingColor}
+              onValueChange={(value: any) => setRequestReview(value)}
             />
           </View>
+          {/* <View style={styles.requestLinkRow}> */}
+          <TextInput
+            placeholder={t('Review Link')}
+            style={styles.requestLinkText}
+            placeholderTextColor={'#d1d1d1'}
+          />
+          {/* </View> */}
         </View>
 
         <View style={styles.paidContainer}>
@@ -237,9 +552,20 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
     );
   };
 
-  const PaidRoute = () => {
+  const HistoryRoute = () => {
+    const renderEmptyComponent = () => (
+      <EmptyHistory message={t('emptyInvoiceHistory')} />
+    );
+
     return (
-      <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}></View>
+      <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}>
+        <FlatList
+          data={[]}
+          renderItem={() => <View />}
+          ListEmptyComponent={renderEmptyComponent}
+          contentContainerStyle={{flex: 1}}
+        />
+      </View>
     );
   };
 
@@ -251,7 +577,8 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
           <Menu
             visible={visible}
             onDismiss={closeMenu}
-            anchor={{x: screenWidth - 10, y: -10}}>
+            anchor={{x: screenWidth - 15, y: -10}}
+            style={{width: 200}}>
             <Menu.Item onPress={() => {}} title={t('Delete')} />
             <Menu.Item onPress={() => {}} title={t('Open In ..')} />
             <Menu.Item onPress={() => {}} title={t('Share')} />
@@ -265,7 +592,7 @@ function InvoiceCreationScreen({navigation}: any): JSX.Element {
             renderScene={SceneMap({
               first: AllRoute,
               second: OutStandingRoute,
-              third: PaidRoute,
+              third: HistoryRoute,
             })}
             onIndexChange={setIndex}
             initialLayout={{width: screenWidth}}
@@ -513,14 +840,14 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   invoiceTitle: {fontSize: 18, fontWeight: '600', color: '#000'},
-  businessInfo: {fontSize: 18, fontWeight: '400', color: '#d1d1d1'},
+  businessInfo: {fontSize: 16, fontWeight: '400', color: '#d1d1d1'},
   dueBox: {
     borderWidth: 1,
     borderRadius: 5,
     padding: 4,
     borderColor: 'grey',
     marginBottom: 10,
-    alignSelf:'flex-end'
+    alignSelf: 'flex-end',
   },
   dueTxt: {fontSize: 14, fontWeight: '400', color: 'grey'},
   dueDate: {
@@ -535,9 +862,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     marginVertical: 5,
+    alignItems: 'center',
   },
-  toTxt: {fontSize: 18, fontWeight: '400', color: '#000'},
-  clientTxt: {fontSize: 18, fontWeight: '400', color: '#d1d1d1', width: '100%'},
+  toTxt: {fontSize: 16, fontWeight: '400', color: '#000'},
+  clientTxt: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#d1d1d1',
+    width: '100%',
+  },
   ItemView: {
     backgroundColor: '#fff',
     borderRadius: 8,
@@ -548,9 +881,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 12,
   },
-  addItemTxt: {fontSize: 18, fontWeight: '500', color: '#d1d1d1'},
+  addItemTxt: {fontSize: 16, fontWeight: '400', color: '#d1d1d1'},
   itemPriceTxt: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '400',
     color: '#d1d1d1',
     textAlign: 'right',
@@ -563,11 +896,11 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 8,
     padding: 8,
   },
-  itemTotalTxt: {fontSize: 18, fontWeight: '500', color: '#fff'},
+  itemTotalTxt: {fontSize: 16, fontWeight: '400', color: '#fff'},
   dueBalContainer: {
     backgroundColor: '#fff',
     borderRadius: 8,
-    marginVertical: 2,
+    marginVertical: 5,
   },
   dueBalContent: {
     paddingHorizontal: 12,
@@ -578,9 +911,26 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   dueBalText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '400',
     color: '#000',
+  },
+  dueBalText3: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#000',
+    textAlign: 'right',
+  },
+  dueBalText2: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: 'grey',
+  },
+  dueBalText4: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: 'grey',
+    textAlign: 'right',
   },
   dueBalFooter: {
     backgroundColor: Colors.landingColor,
@@ -591,8 +941,8 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   dueBalFooterText: {
-    fontSize: 18,
-    fontWeight: '500',
+    fontSize: 16,
+    fontWeight: '400',
     color: '#fff',
   },
   photoContainer: {
@@ -602,10 +952,11 @@ const styles = StyleSheet.create({
     padding: 12,
     marginVertical: 5,
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   photoText: {
-    fontSize: 18,
-    fontWeight: '500',
+    fontSize: 16,
+    fontWeight: '400',
     color: '#d1d1d1',
   },
   photoIcon: {
@@ -632,8 +983,8 @@ const styles = StyleSheet.create({
     height: 70,
   },
   notesText: {
-    fontSize: 18,
-    fontWeight: '500',
+    fontSize: 16,
+    fontWeight: '400',
     color: '#d1d1d1',
   },
   requestContainer: {
@@ -652,20 +1003,23 @@ const styles = StyleSheet.create({
   },
   requestLinkRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     paddingHorizontal: 12,
-    paddingVertical: 8,
+    flex: 1,
   },
   requestText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '400',
     color: '#000',
   },
   requestLinkText: {
-    fontSize: 18,
-    fontWeight: '500',
+    fontSize: 16,
+    fontWeight: '400',
     color: '#000',
-    height: 35,
+    // height: 40,
+    textAlignVertical: 'center',
+    marginVertical: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
   },
   paidContainer: {
     flexDirection: 'row',
@@ -678,7 +1032,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   paidText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '400',
     color: '#000',
   },

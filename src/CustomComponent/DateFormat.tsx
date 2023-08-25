@@ -1,40 +1,47 @@
 import React, {useState} from 'react';
-import { useTranslation } from 'react-i18next';
-import {TouchableOpacity, StyleSheet, Text, View, ScrollView} from 'react-native';
+import {useTranslation} from 'react-i18next';
+import {
+  TouchableOpacity,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+} from 'react-native';
 import {Overlay} from 'react-native-elements';
+import {Colors} from '../Helper/Colors';
 
 let date = new Date(2023, 6, 13); // Note: month is zero-based
 
 let dateFormats = [
-  {format: 'yyyy-MM-dd', value: date.toISOString().slice(0, 10)},
+  {format: 'yyyy-MM-DD', value: date.toISOString().slice(0, 10)},
   {
-    format: 'dd-MM-yyyy',
+    format: 'DD-MM-yyyy',
     value: date.toLocaleDateString('en-GB').replace(/\//g, '-'),
   },
   {
-    format: 'MM-dd-yyyy',
+    format: 'MM-DD-yyyy',
     value: date.toLocaleDateString('en-US').replace(/\//g, '-'),
   },
   {
-    format: 'yyyy/MM/dd',
+    format: 'yyyy/MM/DD',
     value: date.toISOString().slice(0, 10).replace(/-/g, '/'),
   },
-  {format: 'dd/MM/yyyy', value: date.toLocaleDateString('en-GB')},
-  {format: 'MM/dd/yyyy', value: date.toLocaleDateString('en-US')},
+  {format: 'DD/MM/yyyy', value: date.toLocaleDateString('en-GB')},
+  {format: 'MM/DD/yyyy', value: date.toLocaleDateString('en-US')},
   {
-    format: 'yyyy.MM.dd',
+    format: 'yyyy.MM.DD',
     value: date.toISOString().slice(0, 10).replace(/-/g, '.'),
   },
   {
-    format: 'dd.MM.yyyy',
+    format: 'DD.MM.yyyy',
     value: date.toLocaleDateString('en-GB').replace(/\//g, '.'),
   },
   {
-    format: 'MM.dd.yyyy',
+    format: 'MM.DD.yyyy',
     value: date.toLocaleDateString('en-US').replace(/\//g, '.'),
   },
   {
-    format: 'MMM d, yyyy',
+    format: 'MMM D, yyyy',
     value: date.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
@@ -42,7 +49,7 @@ let dateFormats = [
     }),
   },
   {
-    format: 'd MMM yyyy',
+    format: 'D MMM yyyy',
     value: date.toLocaleDateString('en-GB', {
       month: 'short',
       day: 'numeric',
@@ -55,6 +62,7 @@ const DateFormat = ({
   closeBottomSheet,
   openModal = false,
   selectedOption,
+  selectedItem = '',
 }: any) => {
   const {t, i18n} = useTranslation();
   return (
@@ -71,8 +79,21 @@ const DateFormat = ({
               closeBottomSheet();
             }}
             style={styles.rowView}>
-            <Text style={styles.titleTxt}>{item.format}</Text>
-            <Text style={styles.titleTxt}>{" ("} {item.value}{")"}</Text>
+            <Text
+              style={[
+                styles.titleTxt,
+                selectedItem === item.format && {color: Colors.appColor},
+              ]}>
+              {item.format}
+            </Text>
+            <Text
+              style={[
+                styles.titleTxt,
+                selectedItem === item.format && {color: Colors.appColor},
+              ]}>
+              {' ('} {item.value}
+              {')'}
+            </Text>
           </TouchableOpacity>
         ))}
         <TouchableOpacity onPress={closeBottomSheet} style={styles.rowView}>

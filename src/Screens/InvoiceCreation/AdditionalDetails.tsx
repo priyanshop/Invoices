@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
   ScrollView,
   StatusBar,
@@ -9,12 +9,110 @@ import {
   View,
 } from 'react-native';
 import {Switch} from 'react-native-paper';
-import { Colors } from '../../Helper/Colors';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
+import {useSelector, useDispatch} from 'react-redux';
+import FetchAPI from '../../Networking';
+import {endpoint} from '../../Networking/endpoint';
+import {Colors} from '../../Helper/Colors';
+import { setEstimateList, setInvoiceList } from '../../redux/reducers/user/UserReducer';
 
-function AdditionalDetails({navigation}: any): JSX.Element {
+function AdditionalDetails({navigation, route}: any): JSX.Element {
+  const dispatch = useDispatch();
   const {t, i18n} = useTranslation();
+  const selector = useSelector((state: any) => state.user);
   const [additionalDetails, setAdditionalDetails] = useState('');
+  const [addToItem, setAddToItem] = useState(false);
+
+  useEffect(() => {
+    if (route?.params?.invoiceUpdate) {
+      setAdditionalDetails(route?.params?.invoiceData?.notes)
+    }
+    if (route?.params?.estimateUpdate) {
+      setAdditionalDetails(route?.params?.estimateData?.notes)
+    }
+  }, [route?.params]);
+
+  const updateIVNotesDetail = async () => {
+    try {
+      const payload: any = {
+        notes: additionalDetails,
+      };
+      if (selector.token === 'Guest') {
+        offlineInvoiceUpdate();
+      } else {
+        const data = await FetchAPI(
+          'patch',
+          endpoint.updateIVNotes(route?.params?.invoiceID),
+          payload,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+        }
+      }
+    } catch (error) {}
+  };
+
+  const offlineInvoiceUpdate = () => {
+    const updatedArray = selector.invoiceList.map((item: any) => {
+      if (item.index === route?.params?.invoiceData.index) {
+        return {
+          ...item,
+          notes: additionalDetails,
+        };
+      }
+      return item;
+    });
+    dispatch(setInvoiceList(updatedArray));
+  };
+
+ 
+
+  const updateETNotesDetail = async () => {
+    try {
+      const payload: any = {
+        notes: additionalDetails,
+      };
+      if (selector.token === 'Guest') {
+        offlineEStimateUpdate()
+      } else {
+        const data = await FetchAPI(
+          'patch',
+          endpoint.updateETNotes(route?.params?.estimateID),
+          payload,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+        }
+      }
+    } catch (error) {}
+  };
+
+  const offlineEStimateUpdate = () => {
+    const updatedArray = selector.estimateList.map((item: any) => {
+      if (item.index === route?.params?.estimateData.index) {
+        return {
+          ...item,
+          notes: additionalDetails,
+        };
+      }
+      return item;
+    });
+    dispatch(setEstimateList(updatedArray));
+  };
+
+  const checkCondition = (text: any) => {
+    setAdditionalDetails(text);
+    if (route?.params?.invoiceUpdate) {
+      updateIVNotesDetail();
+    } else if (route?.params?.estimateUpdate) {
+      updateETNotesDetail();
+    }else{
+    }
+  };
 
   return (
     <>
@@ -24,8 +122,8 @@ function AdditionalDetails({navigation}: any): JSX.Element {
         <View style={styles.detailView}>
           <TextInput
             value={additionalDetails}
-            onChangeText={setAdditionalDetails}
-            placeholder={t("Additional Details")}
+            onChangeText={checkCondition}
+            placeholder={t('Additional Details')}
             style={styles.detailText}
             numberOfLines={4}
             multiline
@@ -35,7 +133,11 @@ function AdditionalDetails({navigation}: any): JSX.Element {
         <View style={styles.itemView}>
           <View style={styles.saveView}>
             <Text style={styles.saveText}>{t('Save as default')}</Text>
-            <Switch value={false} />
+            <Switch
+              color={Colors.landingColor}
+              value={addToItem}
+              onValueChange={(value: any) => setAddToItem(value)}
+            />
           </View>
         </View>
       </ScrollView>

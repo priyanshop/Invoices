@@ -25,14 +25,14 @@ const TaxOption = ({
           style={styles.rowView}>
           <Text style={styles.titleTxt}>{t('On The Total')}</Text>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => {
             selectedOption('Deducted');
             closeBottomSheet();
           }}
           style={styles.rowView}>
           <Text style={styles.titleTxt}>{t('Deducted')}</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity
           onPress={() => {
             selectedOption('Per Item');

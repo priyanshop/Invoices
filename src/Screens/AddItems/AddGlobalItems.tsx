@@ -20,7 +20,7 @@ import {
   setItemList,
 } from '../../redux/reducers/user/UserReducer';
 import {removeObjectByIndex} from '../../Helper/CommonFunctions';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -28,7 +28,7 @@ const screenWidth = screenDimensions.width;
 function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
   const dispatch = useDispatch();
   const {t, i18n} = useTranslation();
-  const selector = useSelector(state => state.user);
+  const selector = useSelector((state: any) => state.user);
   const [Description, setDescription] = useState('');
   const [Taxable, setTaxable] = useState(false);
   const [Notes, setNotes] = useState('');
@@ -96,7 +96,11 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
 
   const create = async () => {
     try {
-      const payload = {
+      if (Description.trim() === "") {
+        navigation.goBack();
+        return
+      }
+      const payload: any = {
         description: Description,
         rate: unitCost,
         unit: unit,
@@ -119,7 +123,7 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
 
   const update = async () => {
     try {
-      const payload = {
+      const payload: any = {
         description: Description,
         rate: unitCost,
         unit: unit,
@@ -177,7 +181,7 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
         <Menu.Item
           disabled={!alreadyExist}
           onPress={deleteItem}
-          title={t("Delete")}
+          title={t('Delete')}
         />
       </Menu>
       <StatusBar backgroundColor={Colors.appColor} />
@@ -189,19 +193,19 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
               padding: 12,
             }}>
             <View style={styles.mainView}>
-              <View style={styles.inputContainer}>
+              {/* <View style={[styles.inputContainer,{width:'100%'}]}> */}
                 <TextInput
                   value={Description}
-                  style={[styles.input, {textAlign: 'left'}]}
+                  style={[styles.input2]}
                   placeholder={t('Description')}
                   placeholderTextColor={'grey'}
                   onChangeText={value =>
                     handleTextInputChange(value, setDescription)
                   }
                 />
-              </View>
+              {/* </View> */}
             </View>
-            <View style={styles.mainView}>
+            <View style={[styles.mainView, {marginHorizontal: 4}]}>
               <Text style={styles.label}>{t('Unit Cost')} : </Text>
               <View style={styles.inputContainer}>
                 <TextInput
@@ -212,10 +216,11 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
                   onChangeText={value =>
                     handleTextInputChange(value, setUnitCost)
                   }
+                  keyboardType={'numeric'}
                 />
               </View>
             </View>
-            <View style={styles.mainView}>
+            <View style={[styles.mainView, {marginHorizontal: 4}]}>
               <Text style={styles.label}>{t('Unit')} : </Text>
               <View style={styles.inputContainer}>
                 <TextInput
@@ -227,7 +232,7 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
                 />
               </View>
             </View>
-            <View style={styles.mainView}>
+            <View style={[styles.mainView, {marginHorizontal: 4}]}>
               <Text style={styles.label}>{t('Taxable')} : </Text>
               <Switch
                 value={Taxable}
@@ -245,7 +250,8 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
         <View style={styles.detailView}>
           <TextInput
             value={Notes}
-            placeholder={t("Additional Details")}
+            placeholder={t('Additional Details')}
+            placeholderTextColor={'grey'}
             style={styles.detailText}
             numberOfLines={4}
             multiline
@@ -279,10 +285,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '400',
     color: '#000',
+    // marginHorizontal:4
   },
   inputContainer: {
     width: '50%',
-    justifyContent:'center',
+    justifyContent: 'center',
     // alignItems:'center'
   },
   input: {
@@ -291,7 +298,14 @@ const styles = StyleSheet.create({
     color: '#000',
     textAlign: 'right',
     height: 40,
-    textAlignVertical:'center'
+    textAlignVertical: 'center',
+  },
+  input2: {
+    fontSize: 18,
+    fontWeight: '400',
+    color: '#000',
+    height: 40,
+    width:"100%",
   },
   itemView: {
     backgroundColor: '#fff',
@@ -309,7 +323,7 @@ const styles = StyleSheet.create({
   detailView: {
     backgroundColor: '#fff',
     borderRadius: 8,
-    paddingHorizontal: 12,
+    paddingHorizontal: 13,
     marginVertical: 5,
     paddingVertical: 10,
   },

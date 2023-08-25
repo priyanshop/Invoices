@@ -53,6 +53,7 @@ function AddPhotoScreen({navigation}: any): JSX.Element {
                   onChangeText={setDescription}
                   style={[styles.input, {textAlign: 'left'}]}
                   placeholder={t('Description')}
+                  placeholderTextColor={'grey'}
                 />
               </View>
             </View>
@@ -61,6 +62,7 @@ function AddPhotoScreen({navigation}: any): JSX.Element {
                 value={additionalDetails}
                 onChangeText={setAdditionalDetails}
                 placeholder={t('Additional Details')}
+                placeholderTextColor={'grey'}
                 style={styles.detailText}
                 numberOfLines={4}
                 multiline

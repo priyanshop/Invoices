@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ScrollView,
   StatusBar,
@@ -8,18 +8,190 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Switch} from 'react-native-paper';
-import TaxOption from '../../CustomComponent/TaxOption';
-import {Colors} from '../../Helper/Colors';
+import {useSelector, useDispatch} from 'react-redux';
 import {useTranslation} from 'react-i18next';
 
-function TaxScreen({navigation}: any): JSX.Element {
+import TaxOption from '../../CustomComponent/TaxOption';
+import {Colors} from '../../Helper/Colors';
+import {
+  calculateTaxedAmount,
+  getTotalTaxAmount,
+} from '../../Helper/CommonFunctions';
+import FetchAPI from '../../Networking';
+import {endpoint} from '../../Networking/endpoint';
+import {
+  setEstimateList,
+  setInvoiceList,
+} from '../../redux/reducers/user/UserReducer';
+
+function TaxScreen({navigation, route}: any): JSX.Element {
+  const dispatch = useDispatch();
   const {t, i18n} = useTranslation();
+  const selector = useSelector((state: any) => state.user);
+
   const [openModal, setOpenModal] = useState(false);
   const [selectedTax, setSelectedTax] = useState('On The Total');
+  const [Taxable, setTaxable] = useState(false);
+  const [taxRate, setTaxRate] = useState('');
+
+  useEffect(() => {
+    if (route.params?.invoiceUpdate) {
+      if (route.params?.invoiceData?.invoice_discount_type) {
+        setSelectedTax(route.params.invoiceData.invoice_tax_type);
+        setTaxRate(route.params.invoiceData.invoice_tax_rate?.toString());
+      }
+    }
+    if (route.params?.estimateUpdate) {
+      if (route.params?.estimateData?.estimate_tax_type) {
+        setSelectedTax(route.params.estimateData.estimate_tax_type);
+        setTaxRate(route.params.estimateData.estimate_tax_rate?.toString());
+      }
+    }
+  }, [route.params]);
 
   const closeBottomSheet = () => {
     setOpenModal(!openModal);
+  };
+
+  const handleTextInputChange = (value: any, setter: any) => {
+    setter(value);
+  };
+
+  const checkCondition = () => {
+    if (route.params.invoiceUpdate) {
+      updateInvoice();
+    }
+    if (route.params.estimateUpdate) {
+      updateEstimate();
+    }
+  };
+
+  const updateInvoice = () => {
+    if (selectedTax !== 'On The Total' && selectedTax !== 'Per Item') {
+      navigation.goBack();
+    }
+    const tempTotal = calculateTaxedAmount(
+      route.params.invoiceData.invoice_total,
+      taxRate,
+    );
+    const totalTax = getTotalTaxAmount(route.params.invoiceData.items);
+
+    const payload: any = {
+      invoice_tax_type: selectedTax,
+      invoice_tax_label: 'GST',
+      invoice_tax_rate: selectedTax === 'On The Total' ? taxRate : '',
+      is_invoice_tax_inclusive: 'false',
+      invoice_total_tax_amount:
+        selectedTax === 'On The Total'
+          ? tempTotal
+          : selectedTax === 'Per Item'
+          ? totalTax
+          : '',
+    };
+    if (selector.token === 'Guest') {
+      updateCallOffline(payload);
+    } else {
+      updateCall(payload);
+    }
+  };
+
+  const updateCallOffline = async (tempPayload: any) => {
+    const updatedArray = selector.invoiceList.map((item: any) => {
+      if (item.index === route?.params?.invoiceData.index) {
+        return {
+          ...item,
+          ...tempPayload,
+        };
+      }
+      return item;
+    });
+    dispatch(setInvoiceList(updatedArray));
+    setTimeout(() => {
+      navigation.goBack();
+    }, 1000);
+  };
+
+  const updateEstimate = () => {
+    if (selectedTax !== 'On The Total' && selectedTax !== 'Per Item') {
+      navigation.goBack();
+    }
+    const tempTotal = calculateTaxedAmount(
+      route.params.estimateData.estimate_total,
+      taxRate,
+    );
+    console.log('tempPayload', route.params.estimateData);
+
+    const totalTax = getTotalTaxAmount(route.params.estimateData.items);
+    const payload: any = {
+      estimate_tax_type: selectedTax,
+      estimate_tax_label: 'GST',
+      estimate_tax_rate: selectedTax === 'On The Total' ? taxRate : '',
+      is_estimate_tax_inclusive: 'false',
+      estimate_total_tax_amount:
+        selectedTax === 'On The Total'
+          ? tempTotal
+          : selectedTax === 'Per Item'
+          ? totalTax
+          : '',
+    };
+    if (selector.token === 'Guest') {
+      updateEstimateCallOffline(payload);
+    } else {
+      updateETCall(payload);
+    }
+  };
+
+  const updateEstimateCallOffline = async (tempPayload: any) => {
+    const updatedArray = selector.estimateList.map((item: any) => {
+      if (item.index === route?.params?.estimateData.index) {
+        return {
+          ...item,
+          ...tempPayload,
+        };
+      }
+      console.log("item",item);
+      
+      return item;
+    });
+    const updatedArray2 = selector.estimateList.filter(
+      (item: any) => item.index === route?.params?.estimateData.index,
+    );    
+    dispatch(setEstimateList(updatedArray));
+    setTimeout(() => {
+      navigation.goBack();
+    }, 1000);
+  };
+
+  const updateCall = async (tempPayload: any) => {
+    try {
+      const data = await FetchAPI(
+        'patch',
+        endpoint.updateIVItem(route?.params?.invoiceID),
+        tempPayload,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        navigation.goBack();
+      }
+    } catch (error) {}
+  };
+
+  const updateETCall = async (tempPayload: any) => {
+    try {
+      const data = await FetchAPI(
+        'patch',
+        endpoint.updateETItem(route?.params?.estimateID),
+        tempPayload,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        navigation.goBack();
+      }
+    } catch (error) {}
   };
 
   return (
@@ -53,6 +225,7 @@ function TaxScreen({navigation}: any): JSX.Element {
                   style={styles.input}
                   placeholder={''}
                   placeholderTextColor={'grey'}
+                  editable={false}
                 />
               </View>
             </View>
@@ -61,10 +234,14 @@ function TaxScreen({navigation}: any): JSX.Element {
                 <Text style={styles.label}>{t('Rate')}: </Text>
                 <View style={styles.inputContainer}>
                   <TextInput
-                    value="18"
+                    value={taxRate}
                     style={styles.input}
                     placeholder={'0'}
                     placeholderTextColor={'grey'}
+                    onChangeText={value =>
+                      handleTextInputChange(value, setTaxRate)
+                    }
+                    keyboardType="numeric"
                   />
                 </View>
               </View>
@@ -72,11 +249,15 @@ function TaxScreen({navigation}: any): JSX.Element {
           </View>
         </View>
 
-        {selectedTax !== 'Deducted' && (
+        {/* {selectedTax !== 'Deducted' && (
           <View style={styles.detailView}>
             <View style={styles.mainView}>
               <Text style={styles.label}>{t('Taxable')}: </Text>
-              <Switch value={true} />
+              <Switch
+                value={Taxable}
+                color={Colors.landingColor}
+                onValueChange={(value: any) => setTaxable(value)}
+              />
             </View>
             <TextInput
               editable={false}
@@ -85,7 +266,14 @@ function TaxScreen({navigation}: any): JSX.Element {
               style={styles.detailText}
             />
           </View>
-        )}
+        )} */}
+
+        <TouchableOpacity onPress={checkCondition} style={styles.statementBtn}>
+          <Text style={[styles.titleTxt2, {color: '#fff', fontWeight: '600'}]}>
+            {t('Update')}
+          </Text>
+        </TouchableOpacity>
+
         <TaxOption
           openModal={openModal}
           closeBottomSheet={closeBottomSheet}
@@ -119,7 +307,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#000',
     textAlign: 'right',
-    height: 35,
+    height: 40,
   },
   itemView: {
     backgroundColor: '#fff',
@@ -174,6 +362,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   photoText: {fontSize: 17, fontWeight: '500', color: '#d1d1d1'},
+  statementBtn: {
+    backgroundColor: Colors.appColor,
+    alignItems: 'center',
+    padding: 15,
+    borderRadius: 8,
+    justifyContent: 'center',
+    marginVertical: 5,
+  },
+  titleTxt2: {fontSize: 17, color: '#000', fontWeight: '400'},
 });
 
 export default TaxScreen;

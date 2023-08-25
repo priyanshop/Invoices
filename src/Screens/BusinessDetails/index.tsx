@@ -8,6 +8,7 @@ import {
   Image,
   Platform,
   ScrollView,
+  KeyboardAvoidingView,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import {useSelector, useDispatch} from 'react-redux';
@@ -16,13 +17,18 @@ import ImagePickerComponent from '../../CustomComponent/ImagePickerComponent';
 import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
-import {setBusinessDetail} from '../../redux/reducers/user/UserReducer';
-import { useTranslation } from 'react-i18next';
+import {
+  setBusinessDetail,
+  setEstimateList,
+  setInvoiceList,
+} from '../../redux/reducers/user/UserReducer';
+import {useTranslation} from 'react-i18next';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
-const BusinessDetails = () => {
+const BusinessDetails = ({navigation, route}: any) => {
   const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
-  const selector = useSelector(state => state.user);
+  const selector = useSelector((state: any) => state.user);
   const isFocused = useIsFocused();
   const [openModal, setOpenModal] = useState(false);
   const [BusinessImage, setBusinessImage] = useState(null);
@@ -40,6 +46,30 @@ const BusinessDetails = () => {
   const [businessId, setBusinessId] = useState('');
 
   useEffect(() => {
+    if (route?.params?.invoiceUpdate || route?.params?.estimateUpdate) {
+      if (route.params.data) {
+        const businessDetails = route.params.data;
+        setAlreadyExist(true);
+        setPhone(businessDetails.b_phone_number);
+        setAddress1(businessDetails.b_address1);
+        setAddress2(businessDetails.b_address2);
+        setAddress3(businessDetails.b_address3);
+        setBusinessName(businessDetails.b_name);
+        setEmail(businessDetails.b_email);
+        setBusinessNumber(businessDetails?.b_business_number?.toString() || '');
+        setMobile(businessDetails.b_mobile_number);
+        setWebsite(businessDetails.b_website);
+        setOwnerName(businessDetails?.b_owner_name || '');
+        // b_business_logo
+      } else {
+        getData();
+      }
+    } else {
+      getData();
+    }
+  }, [route.params]);
+
+  const getData = () => {
     if (selector.token === 'Guest') {
       const businessDetails = selector.businessDetails;
       setAlreadyExist(true);
@@ -49,10 +79,19 @@ const BusinessDetails = () => {
       setAddress3(businessDetails.address3);
       setBusinessName(businessDetails.name);
       setEmail(businessDetails.email);
+      setBusinessNumber(businessDetails.business_number);
+      setWebsite(businessDetails.website);
+      setOwnerName(businessDetails.owner_name);
+      setMobile(businessDetails.mobile_number);
     } else {
       getInfo();
     }
-  }, [selector.token]);
+  };
+
+  // useEffect(() => {
+  //   if (selector.token === 'Guest') {
+  //     getData();
+  // }}, []);
 
   const getInfo = async () => {
     try {
@@ -76,16 +115,30 @@ const BusinessDetails = () => {
   };
 
   const checkUpdate = () => {
-    if (alreadyExist) {
-      updateInfo();
+    if (route?.params?.invoiceUpdate) {
+      if (selector.token === 'Guest') {
+        offlineInvoiceUpdate();
+      } else {
+        updateInvoice();
+      }
+    } else if (route?.params?.estimateUpdate) {
+      if (selector.token === 'Guest') {
+        offlineEstimateUpdate();
+      } else {
+        updateEstimate();
+      }
     } else {
-      addInfo();
+      if (alreadyExist) {
+        updateInfo();
+      } else {
+        addInfo();
+      }
     }
   };
 
   const addInfo = async () => {
     try {
-      const payload = {
+      const payload: any = {
         name: businessName,
         email: email,
         phone_number: Phone,
@@ -94,8 +147,21 @@ const BusinessDetails = () => {
         address3: address3,
         business_logo: 'xyz.png',
       };
+      const payload2: any = {
+        name: businessName,
+        email: email,
+        phone_number: Phone,
+        address1: address1,
+        address2: address2,
+        address3: address3,
+        business_logo: 'xyz.png',
+        business_number: businessNumber,
+        website: Website,
+        owner_name: ownerName,
+        mobile_number: Mobile,
+      };
       if (selector.token === 'Guest') {
-        dispatch(setBusinessDetail(payload));
+        dispatch(setBusinessDetail(payload2));
       } else {
         const data = await FetchAPI('post', endpoint.businessInfo, payload, {
           Authorization: 'Bearer ' + selector.token,
@@ -108,7 +174,7 @@ const BusinessDetails = () => {
 
   const updateInfo = async () => {
     try {
-      const payload = {
+      const payload: any = {
         name: businessName,
         email: email,
         phone_number: Phone,
@@ -117,8 +183,21 @@ const BusinessDetails = () => {
         address3: address3,
         business_logo: 'xyz.png',
       };
+      const payload2: any = {
+        name: businessName,
+        email: email,
+        phone_number: Phone,
+        address1: address1,
+        address2: address2,
+        address3: address3,
+        business_logo: 'xyz.png',
+        business_number: businessNumber,
+        website: Website,
+        owner_name: ownerName,
+        mobile_number: Mobile,
+      };
       if (selector.token === 'Guest') {
-        dispatch(setBusinessDetail(payload));
+        dispatch(setBusinessDetail(payload2));
       } else {
         const data = await FetchAPI(
           'patch',
@@ -138,8 +217,118 @@ const BusinessDetails = () => {
     setOpenModal(!openModal);
   };
 
+  const updateInvoice = async () => {
+    try {
+      const payload: any = {
+        b_name: businessName,
+        b_owner_name: ownerName,
+        b_business_number: businessNumber,
+        b_email: email,
+        b_phone_number: Phone,
+        b_mobile_number: Mobile,
+        b_website: Website,
+        b_address1: address1,
+        b_address2: address2,
+        b_address3: address3,
+        b_business_logo: 'logo.png ',
+      };
+      if (selector.token === 'Guest') {
+        // dispatch(setBusinessDetail(payload));
+      } else {
+        const data = await FetchAPI(
+          'patch',
+          endpoint.updateIVBusiness(route?.params?.invoiceID),
+          payload,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+        }
+      }
+    } catch (error) {}
+  };
+
+  const offlineInvoiceUpdate = () => {
+    const updatedArray = selector.invoiceList.map((item: any) => {
+      if (item.index === route?.params?.data?.index) {
+        return {
+          ...item,
+          b_name: businessName,
+          b_owner_name: ownerName,
+          b_business_number: businessNumber,
+          b_email: email,
+          b_phone_number: Phone,
+          b_mobile_number: Mobile,
+          b_website: Website,
+          b_address1: address1,
+          b_address2: address2,
+          b_address3: address3,
+          b_business_logo: 'logo.png ',
+        };
+      }
+      return item;
+    });
+    dispatch(setInvoiceList(updatedArray));
+  };
+
+  const offlineEstimateUpdate = () => {
+    const updatedArray = selector.estimateList.map((item: any) => {
+      if (item.index === route?.params?.data?.index) {
+        return {
+          ...item,
+          b_name: businessName,
+          b_owner_name: ownerName,
+          b_business_number: businessNumber,
+          b_email: email,
+          b_phone_number: Phone,
+          b_mobile_number: Mobile,
+          b_website: Website,
+          b_address1: address1,
+          b_address2: address2,
+          b_address3: address3,
+          b_business_logo: 'logo.png ',
+        };
+      }
+      return item;
+    });
+    dispatch(setEstimateList(updatedArray));
+  };
+
+  const updateEstimate = async () => {
+    try {
+      const payload: any = {
+        b_name: businessName,
+        b_owner_name: ownerName,
+        b_business_number: businessNumber,
+        b_email: email,
+        b_phone_number: Phone,
+        b_mobile_number: Mobile,
+        b_website: Website,
+        b_address1: address1,
+        b_address2: address2,
+        b_address3: address3,
+        b_business_logo: 'logo.png ',
+      };
+      if (selector.token === 'Guest') {
+        // dispatch(setBusinessDetail(payload));
+      } else {
+        const data = await FetchAPI(
+          'patch',
+          endpoint.updateETBusiness(route?.params?.estimateID),
+          payload,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+        }
+      }
+    } catch (error) {}
+  };
+
   return (
-    <ScrollView style={styles.mainContainer}>
+    <KeyboardAwareScrollView style={styles.mainContainer}>
       <View style={styles.businessContainer}>
         <View style={styles.header}>
           <Text style={styles.headerText}>{t('Business Logo')}</Text>
@@ -164,7 +353,7 @@ const BusinessDetails = () => {
             value={businessName}
             onChangeText={setBusinessName}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder={t("Business Name")}
+            placeholder={t('Business Name')}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -174,7 +363,7 @@ const BusinessDetails = () => {
             value={ownerName}
             onChangeText={setOwnerName}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder={t("Business Owner Name")}
+            placeholder={t('Business Owner Name')}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -184,7 +373,8 @@ const BusinessDetails = () => {
             value={businessNumber}
             onChangeText={setBusinessNumber}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder={t("Business Number")}
+            placeholder={t('Business Number')}
+            keyboardType={'numeric'}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -196,7 +386,7 @@ const BusinessDetails = () => {
             value={address1}
             onChangeText={setAddress1}
             style={{...styles.titleTxt, textAlign: 'left'}}
-            placeholder={t("Address Line 1")}
+            placeholder={t('Address Line 1')}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -206,7 +396,7 @@ const BusinessDetails = () => {
             value={address2}
             onChangeText={setAddress2}
             style={{...styles.titleTxt, textAlign: 'left'}}
-            placeholder={t("Address Line 2")}
+            placeholder={t('Address Line 2')}
             placeholderTextColor={'grey'}
           />
         </View>
@@ -215,7 +405,7 @@ const BusinessDetails = () => {
             value={address3}
             onChangeText={setAddress3}
             style={{...styles.titleTxt, textAlign: 'left'}}
-            placeholder={t("Address Line 3")}
+            placeholder={t('Address Line 3')}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -227,7 +417,8 @@ const BusinessDetails = () => {
             value={email}
             onChangeText={setEmail}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder={t("Email")}
+            placeholder={t('Email')}
+            keyboardType={'email-address'}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -237,7 +428,8 @@ const BusinessDetails = () => {
             value={Phone}
             onChangeText={setPhone}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder={t("Phone")}
+            placeholder={t('Phone')}
+            keyboardType={'phone-pad'}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -247,7 +439,8 @@ const BusinessDetails = () => {
             value={Mobile}
             onChangeText={setMobile}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder={t("Mobile")}
+            placeholder={t('Mobile')}
+            keyboardType={'phone-pad'}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -257,7 +450,7 @@ const BusinessDetails = () => {
             value={Website}
             onChangeText={setWebsite}
             style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder={t("Website")}
+            placeholder={t('Website')}
             placeholderTextColor={'grey'}
             onBlur={checkUpdate}
           />
@@ -268,7 +461,7 @@ const BusinessDetails = () => {
         closeBottomSheet={closeBottomSheet}
         setImage={setBusinessImage}
       />
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -288,7 +481,14 @@ const styles = StyleSheet.create({
     // marginVertical: Platform.OS === 'ios' ? 8 : 0,
     alignItems: 'center',
   },
-  titleTxt: {fontSize: 17, color: '#000', fontWeight: '400', height: 40},
+  titleTxt: {
+    fontSize: 17,
+    color: '#000',
+    fontWeight: '400',
+    height: 40,
+    paddingVertical: 5,
+    width:"100%",
+  },
   mainContain: {
     borderRadius: 8,
     backgroundColor: '#fff',

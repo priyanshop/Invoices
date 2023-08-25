@@ -5,11 +5,12 @@ import {
   Text,
   TextInput,
   StyleSheet,
+  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {Colors} from '../Helper/Colors';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 const CustomHeader = ({
   searchStart = false,
@@ -18,6 +19,7 @@ const CustomHeader = ({
   title = '',
   searchText = '',
   handleSearch,
+  backIcon = false,
 }: any) => {
   const {t, i18n} = useTranslation();
   const renderHeader = () => {
@@ -25,7 +27,11 @@ const CustomHeader = ({
       return (
         <View style={styles.headerContainer}>
           <TouchableOpacity onPress={navigateToSetting}>
-            <Icon name="menu" size={25} color="#fff" />
+            <Icon
+              name={backIcon ? 'chevron-back' : 'menu'}
+              size={25}
+              color="#fff"
+            />
           </TouchableOpacity>
           <View>
             <Text style={styles.headerText}>{title}</Text>
@@ -39,22 +45,50 @@ const CustomHeader = ({
       );
     } else {
       return (
-        <View style={styles.headerContainer}>
+        <View style={styles.headerContainer2}>
           <TouchableOpacity onPress={navigateToSetting}>
-            <Icon name="menu" size={25} color="#fff" />
-          </TouchableOpacity>
-          <View style={styles.onSearch}>
-            <Icon name="search" size={18} color="#d2d2d2" />
-            <TextInput
-              value={searchText}
-              placeholder={t("Search")}
-              placeholderTextColor={'#d2d2d2'}
-              style={{width: '80%'}}
-              onChangeText={handleSearch}
+            <Icon
+              name={backIcon ? 'chevron-back' : 'menu'}
+              size={25}
+              color="#fff"
             />
-            <TouchableOpacity onPress={() => setSearchStart(false)}>
-              <Entypo name="circle-with-cross" size={18} color="#d2d2d2" />
-            </TouchableOpacity>
+          </TouchableOpacity>
+          <View style={styles.onSearch2}>
+            <View>
+              <Icon
+                name="search"
+                size={18}
+                style={{marginRight: 5, marginLeft: 5}}
+                color="#d2d2d2"
+              />
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+              <View>
+                <TextInput
+                  value={searchText}
+                  placeholder={t('Search')}
+                  placeholderTextColor={'#d2d2d2'}
+                  style={{
+                    width: Dimensions.get('screen').width - 100,
+                    textAlignVertical: 'center',
+                    color: '#000',
+                    fontSize: 15,
+                    fontWeight: '500',
+                    height: 35,
+                    paddingVertical: 2,
+                  }}
+                  onChangeText={handleSearch}
+                />
+              </View>
+              <TouchableOpacity onPress={() => setSearchStart(false)}>
+                <Entypo name="circle-with-cross" size={18} color="#d2d2d2" />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       );
@@ -184,8 +218,28 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginHorizontal: 4,
     padding: 3,
-    height: 35,
+    height: 40,
     alignItems: 'center',
     borderRadius: 5,
+  },
+  onSearch2: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    // justifyContent: 'flex-start',
+    marginHorizontal: 4,
+    // padding: 3,
+    // height: 40,
+    alignItems: 'center',
+    borderRadius: 5,
+    paddingHorizontal: 3,
+  },
+  headerContainer2: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    backgroundColor: Colors.appColor,
+    // paddingVertical: 8,
+    paddingVertical: 4,
   },
 });

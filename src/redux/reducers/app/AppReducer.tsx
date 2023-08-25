@@ -13,6 +13,9 @@ const initialState: IUserState = {
   selectedPatient: [],
   selectedMember: [],
   selectedCareTaker: [],
+
+
+
 };
 
 const AppReducer = createSlice({

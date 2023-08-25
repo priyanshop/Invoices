@@ -4,17 +4,18 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "ios": "react-native run-ios --simulator='iPhone 13'",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
     "pod": "cd ios && pod install && cd ..",
     "clean-ios": "cd ios && rm -rf build/ && pod install && cd ..",
-    "clean-android": "cd android && ./gradlew clean && ./gradlew cleanBuildCache && cd .. && npx jetify",
+    "clean-android": "cd android && ./gradlew clean && cd ..",
     "android-dev-bundle": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
     "debug-apk": "cd android && ./gradlew assembleDebug && cd ..",
     "release-apk": "cd android && ./gradlew assembleRelease && cd ..",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "insert-code": "node insertCode.js"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.19.0",
@@ -38,6 +39,7 @@
     "react-native-elements": "^3.4.3",
     "react-native-gesture-handler": "^2.12.0",
     "react-native-image-picker": "^5.6.0",
+    "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-orientation-locker": "^1.5.0",
     "react-native-pager-view": "^6.2.0",
     "react-native-paper": "^5.9.1",

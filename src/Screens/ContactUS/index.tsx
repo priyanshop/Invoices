@@ -5,21 +5,43 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Keyboard,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {Colors} from '../../Helper/Colors';
 import {useTranslation} from 'react-i18next';
 import MessageButton from '../../CustomComponent/MessageButton';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const ContactUs = ({navigation}: any) => {
   const dispatch = useDispatch();
   const {t, i18n} = useTranslation();
 
-  const selector = useSelector(state => state.user);
+  const selector = useSelector((state: any) => state.user);
   const [Name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [contactNo, setContactNo] = useState('');
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  const handleKeyboardShow = () => setKeyboardVisible(true);
+  const handleKeyboardHide = () => setKeyboardVisible(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      handleKeyboardShow,
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      handleKeyboardHide,
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
 
   const addInfo = async () => {
     try {
@@ -32,85 +54,87 @@ const ContactUs = ({navigation}: any) => {
 
   return (
     <View style={styles.mainContainer}>
-      <MessageButton />
-      <View style={styles.businessContainer}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>{t('name')}</Text>
+      <KeyboardAwareScrollView>
+        <View style={styles.businessContainer}>
+          <View style={styles.header}>
+            <Text style={styles.headerText}>{t('name')}</Text>
+          </View>
+          <View style={styles.rowView}>
+            <TextInput
+              value={Name}
+              onChangeText={value => handleTextInputChange(value, setName)}
+              onBlur={addInfo}
+              style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+              placeholder={t('Enter Name')}
+              placeholderTextColor={'grey'}
+            />
+          </View>
         </View>
-        <View style={styles.rowView}>
-          <TextInput
-            value={Name}
-            onChangeText={value => handleTextInputChange(value, setName)}
-            onBlur={addInfo}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder={t('Enter Name')}
-            placeholderTextColor={'grey'}
-          />
+        <View style={styles.businessContainer}>
+          <View style={styles.header}>
+            <Text style={styles.headerText}>{t('Email')}</Text>
+          </View>
+          <View style={styles.rowView}>
+            <TextInput
+              value={email}
+              onChangeText={value => handleTextInputChange(value, setEmail)}
+              onBlur={addInfo}
+              style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+              placeholder={t('Enter Email')}
+              placeholderTextColor={'grey'}
+            />
+          </View>
         </View>
-      </View>
-      <View style={styles.businessContainer}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>{t('Email')}</Text>
-        </View>
-        <View style={styles.rowView}>
-          <TextInput
-            value={email}
-            onChangeText={value => handleTextInputChange(value, setEmail)}
-            onBlur={addInfo}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder={t('Enter Email')}
-            placeholderTextColor={'grey'}
-          />
-        </View>
-      </View>
 
-      <View style={styles.businessContainer}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>{t('Contact No')}</Text>
+        <View style={styles.businessContainer}>
+          <View style={styles.header}>
+            <Text style={styles.headerText}>{t('Contact No')}</Text>
+          </View>
+          <View style={styles.rowView}>
+            <TextInput
+              value={contactNo}
+              onChangeText={value => handleTextInputChange(value, setContactNo)}
+              onBlur={addInfo}
+              style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+              placeholder={t('Enter Contact No.')}
+              placeholderTextColor={'grey'}
+            />
+          </View>
         </View>
-        <View style={styles.rowView}>
-          <TextInput
-            value={contactNo}
-            onChangeText={value => handleTextInputChange(value, setContactNo)}
-            onBlur={addInfo}
-            style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
-            placeholder={t('Enter Contact No.')}
-            placeholderTextColor={'grey'}
-          />
-        </View>
-      </View>
 
-      <View style={styles.businessContainer}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>{t('Message')}</Text>
+        <View style={styles.businessContainer}>
+          <View style={styles.header}>
+            <Text style={styles.headerText}>{t('Message')}</Text>
+          </View>
+          <View style={styles.rowView}>
+            <TextInput
+              value={message}
+              onChangeText={value => handleTextInputChange(value, setMessage)}
+              onBlur={addInfo}
+              style={{
+                ...styles.titleTxt,
+                flex: 1,
+                textAlign: 'left',
+                height: 60,
+                textAlignVertical: 'top',
+              }}
+              placeholder={t('Enter Message')}
+              placeholderTextColor={'grey'}
+              multiline
+              numberOfLines={4}
+            />
+          </View>
         </View>
-        <View style={styles.rowView}>
-          <TextInput
-            value={message}
-            onChangeText={value => handleTextInputChange(value, setMessage)}
-            onBlur={addInfo}
-            style={{
-              ...styles.titleTxt,
-              flex: 1,
-              textAlign: 'left',
-              height: 60,
-              textAlignVertical: 'top',
-            }}
-            placeholder={t('Enter Message')}
-            placeholderTextColor={'grey'}
-            multiline
-            numberOfLines={4}
-          />
-        </View>
-      </View>
 
-      <TouchableOpacity
-        // onPress={}
-        style={styles.statementBtn}>
-        <Text style={[styles.titleTxt2, {color: '#fff', fontWeight: '600'}]}>
-          {t('Send')}
-        </Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          // onPress={}
+          style={styles.statementBtn}>
+          <Text style={[styles.titleTxt2, {color: '#fff', fontWeight: '600'}]}>
+            {t('Send')}
+          </Text>
+        </TouchableOpacity>
+      </KeyboardAwareScrollView>
+      {!keyboardVisible && <MessageButton />}
     </View>
   );
 };

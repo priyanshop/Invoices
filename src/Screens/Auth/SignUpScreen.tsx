@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, {useEffect, useRef, useState} from 'react';
 import {
   Alert,
@@ -20,6 +21,7 @@ import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {saveUserData, setToken} from '../../redux/reducers/user/UserReducer';
 import {useTranslation} from 'react-i18next';
+import {CheckBox} from 'react-native-elements';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -43,7 +45,10 @@ function SignUpScreen({navigation}: any): JSX.Element {
   const [errorPassword, setErrorPassword] = useState('');
   const [errorConfirmPassword, setErrorConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword1, setShowPassword1] = useState(false);
+  const [terms, setTerms] = useState(false);
+  const [showMore, setShowMore] = useState(false);
   const pages = [{index: 1}, {index: 2}, {index: 3}];
 
   const handlePrevious = () => {
@@ -133,7 +138,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
   const apiCall = async () => {
     setLoading(true);
     try {
-      const payload = {
+      const payload: any = {
         email: email,
         password: password,
       };
@@ -147,13 +152,13 @@ function SignUpScreen({navigation}: any): JSX.Element {
         });
         setLoading(false);
       }
-    } catch (error) {
+    } catch (error: any) {
       Alert.alert('', error.message);
       setLoading(false);
     }
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = ({item}: any) => {
     if (item.index === 1) {
       return (
         <View style={{alignItems: 'center'}}>
@@ -166,13 +171,14 @@ function SignUpScreen({navigation}: any): JSX.Element {
           <Text style={styles.paragraph}>
             {t('businessInfo.optionalFields')}
           </Text>
-          {/* <TextInput
+          <View style={{height: 15}} />
+          <TextInput
             value={businessName}
             onChangeText={setBusinessName}
             style={[styles.input, styles.businessName]}
             placeholder={'Business Name'}
             placeholderTextColor={'grey'}
-          /> */}
+          />
 
           <TextInput
             value={email}
@@ -182,37 +188,58 @@ function SignUpScreen({navigation}: any): JSX.Element {
             onChangeText={validateEmail}
             placeholderTextColor={'grey'}
           />
-          {emailError.trim() !== '' && (
+          {/* {emailError.trim() !== '' && (
             <View style={styles.errorView}>
               <Text style={styles.errorTxt}>{emailError}</Text>
             </View>
           )}
-          <TextInput
-            value={password}
-            onChangeText={validatePassword}
-            style={[styles.input]}
-            placeholder={t('businessInfo.password')}
-            placeholderTextColor={'grey'}
-          />
+          <View style={[styles.input2]}>
+            <TextInput
+              value={password}
+              onChangeText={validatePassword}
+              style={[styles.input]}
+              placeholder={t('businessInfo.password')}
+              placeholderTextColor={'grey'}
+              secureTextEntry={!showPassword}
+            />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+              <Ionicons
+                name={!showPassword ? 'eye-off' : 'eye'}
+                color={'#000'}
+                size={15}
+              />
+            </TouchableOpacity>
+          </View>
           {errorPassword.trim() !== '' && (
             <View style={styles.errorView}>
               <Text style={styles.errorTxt}>{errorPassword}</Text>
             </View>
           )}
-          <TextInput
-            value={confirmPassword}
-            onChangeText={validateConfirmPassword}
+          <View
             style={[
-              styles.input,
+              styles.input2,
               styles.phoneInput,
               errorConfirmPassword
                 ? {borderBottomRightRadius: 0, borderBottomLeftRadius: 0}
                 : null,
               {borderTopWidth: 0, marginBottom: 0},
-            ]}
-            placeholder={t('businessInfo.confirmPassword')}
-            placeholderTextColor={'grey'}
-          />
+            ]}>
+            <TextInput
+              value={confirmPassword}
+              onChangeText={validateConfirmPassword}
+              style={[styles.input]}
+              placeholder={t('businessInfo.confirmPassword')}
+              placeholderTextColor={'grey'}
+              secureTextEntry={!showPassword1}
+            />
+            <TouchableOpacity onPress={() => setShowPassword1(!showPassword1)}>
+              <Ionicons
+                name={!showPassword ? 'eye-off' : 'eye'}
+                color={'#000'}
+                size={15}
+              />
+            </TouchableOpacity>
+          </View>
           {errorConfirmPassword.trim() !== '' && (
             <View
               style={[
@@ -222,8 +249,8 @@ function SignUpScreen({navigation}: any): JSX.Element {
               ]}>
               <Text style={styles.errorTxt}>{errorConfirmPassword}</Text>
             </View>
-          )}
-          {/* <TextInput
+          )} */}
+          <TextInput
             value={phoneNumber}
             onChangeText={setPhoneNumber}
             style={[styles.input, styles.phoneInput]}
@@ -251,7 +278,59 @@ function SignUpScreen({navigation}: any): JSX.Element {
             style={[styles.input, styles.lastAddressInput]}
             placeholder={'Address Line 3'}
             placeholderTextColor={'grey'}
-          /> */}
+          />
+          <View
+            style={{
+              justifyContent: 'center',
+              width: '50%',
+              flexDirection: 'row',
+              marginTop: 10,
+            }}>
+            <CheckBox
+              containerStyle={{
+                backgroundColor: Colors.landingColor,
+                borderWidth: 0,
+                margin: 0,
+                padding: 0,
+                marginTop: 1,
+              }}
+              checked={terms}
+              onPress={() => {
+                setTerms(!terms);
+              }}
+              checkedColor={'#fff'}
+              uncheckedColor="#fff"
+              size={25}
+            />
+            <Text
+              style={{
+                color: '#fff',
+                fontSize: 11,
+                fontWeight: '400',
+              }}>
+              {
+                'I want to receive calls and emails from Invoice Simple and its Affiliates about'
+              }
+              {!showMore && '...'}
+              {showMore &&
+                ' their products, services, news, events, and promotions. Read our'}{' '}
+              {showMore ? (
+                <Text
+                  style={{textDecorationLine: 'underline'}}
+                  onPress={() => {}}>
+                  {'Privacy Policy'}
+                </Text>
+              ) : (
+                <Text
+                  style={{textDecorationLine: 'underline'}}
+                  onPress={() => {
+                    setShowMore(!showMore);
+                  }}>
+                  {'show more'}
+                </Text>
+              )}
+            </Text>
+          </View>
         </View>
       );
     } else if (item.index === 2) {
@@ -351,7 +430,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   btnTxt: {
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: '500',
     textAlign: 'center',
     color: Colors.landingColor,
@@ -362,16 +441,20 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingHorizontal: 15,
     borderRadius: 5,
+    marginTop: 15,
+    paddingVertical: 15,
   },
 
   input: {
     backgroundColor: '#fff',
     width: '60%',
     alignSelf: 'center',
-    height: 40,
+    height: 45,
     padding: 5,
     fontSize: 15,
     color: '#000',
+    paddingHorizontal: 8,
+    // paddingVertical:15
   },
   emailInput: {
     borderTopRightRadius: 5,
@@ -384,7 +467,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 0.3,
     borderTopColor: 'grey',
     marginBottom: 10,
-    padding: 4,
   },
   addressInput1: {
     padding: 4,
@@ -435,6 +517,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   errorTxt: {fontSize: 10, fontWeight: '600', color: 'red'},
+  input2: {
+    backgroundColor: '#fff',
+    width: '60%',
+    alignSelf: 'center',
+    height: 40,
+    fontSize: 15,
+    color: '#000',
+    paddingRight: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
 });
 
 export default SignUpScreen;
