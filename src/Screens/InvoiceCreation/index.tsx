@@ -577,7 +577,8 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
           <Menu
             visible={visible}
             onDismiss={closeMenu}
-            anchor={{x: screenWidth - 10, y: -10}}>
+            anchor={{x: screenWidth - 15, y: -10}}
+            style={{width: 200}}>
             <Menu.Item onPress={() => {}} title={t('Delete')} />
             <Menu.Item onPress={() => {}} title={t('Open In ..')} />
             <Menu.Item onPress={() => {}} title={t('Share')} />
@@ -861,7 +862,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     marginVertical: 5,
-    alignItems:'center'
+    alignItems: 'center',
   },
   toTxt: {fontSize: 16, fontWeight: '400', color: '#000'},
   clientTxt: {

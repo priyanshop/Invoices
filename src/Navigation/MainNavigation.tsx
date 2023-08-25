@@ -40,6 +40,7 @@ import ContactUs from '../Screens/ContactUS';
 import Clients from '../Screens/Dashboard/Clients/Clients';
 import SelectItemScreen from '../Screens/Dashboard/Items/SelectItem';
 import Sign from '../Screens/Signature/Sign';
+import SplashScreen2 from '../Screens/SplashScreen/SplashScreen2';
 
 const headerStyle = {
   headerStyle: {
@@ -125,12 +126,21 @@ function Dashboard() {
 
 function MainNavigator() {
   const {t, i18n} = useTranslation();
-
+  const forFade = ({current}) => ({
+    cardStyle: {
+      opacity: current.progress,
+    },
+  });
   const screenConfigurations = [
     {
       name: 'SplashScreen',
+      component: SplashScreen2,
+      options: {headerShown: false, cardStyleInterpolator: forFade},
+    },
+    {
+      name: 'SplashScreenLoading',
       component: SplashScreenLoading,
-      options: {headerShown: false},
+      options: {headerShown: false, cardStyleInterpolator: forFade},
     },
     {
       name: 'LandingPage',
@@ -261,7 +271,8 @@ function MainNavigator() {
     {
       name: 'SignaturePad',
       component: Sign,
-      options: {headerTitle: t('navigationTitle.SignaturePad'), ...headerStyle},
+      // options: {headerTitle: t('navigationTitle.SignaturePad'), ...headerStyle},
+      options: {headerShown: false},
     },
     {
       name: 'PaymentScreen',

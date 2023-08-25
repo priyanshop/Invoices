@@ -79,17 +79,17 @@ const Sign = ({navigation, route}: any) => {
         cancelText={t('Cancel')}
         style={{flex: 1}}
         webStyle={`.m-signature-pad {
-            height: ${width - 80}px;
+            height: ${width - 65}px;
             margin: 0;
           }.m-signature-pad--footer
         .button {
         background-color: ${Colors.landingColor};
         color: #FFF;
         flex: 1;
-        height: 40px;
-        margin-horizontal : 5;
-        margin-right: 10px;
-        margin-left: 10px;
+        height: 45px;
+        margin-top: 8px;
+        margin-right: 1px;
+        margin-left: 1px;
         font-size: 16px;
         font-weight: 500;
         }

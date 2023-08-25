@@ -7,7 +7,7 @@ import SplashScreen from 'react-native-splash-screen';
 import {useTranslation} from 'react-i18next';
 
 // Define a functional component named Greeting
-const SplashScreenLoading: React.FC = ({navigation}: any) => {
+const SplashScreen2: React.FC = ({navigation}: any) => {
   const {t, i18n} = useTranslation();
   const selector = useSelector(state => state.user);
 
@@ -17,33 +17,17 @@ const SplashScreenLoading: React.FC = ({navigation}: any) => {
   }, [selector.language]);
 
   useEffect(() => {
-    console.log('USER',selector.token);
-
-    if (selector.token) {
-      setTimeout(() => {
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'Dashboard'}],
-        });
-      }, 1000);
-     
-      // SplashScreen.hide();
-    } else {
-  
-      setTimeout(() => {
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'LandingPage'}],
-        });
-      }, 1000);
-      // SplashScreen.hide();
-    }
-  }, [selector.token]);
+    setTimeout(() => {
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'SplashScreenLoading'}],
+      });
+    }, 1000);
+  }, []);
 
   return (
     <View style={styles.container}>
       <Image source={Images.appLogo} style={[styles.image]} />
-      <Text style={styles.text}>{t('Loading')}...</Text>
     </View>
   );
 };
@@ -67,4 +51,4 @@ const styles = StyleSheet.create({
   },
 });
 // Export the component
-export default SplashScreenLoading;
+export default SplashScreen2;

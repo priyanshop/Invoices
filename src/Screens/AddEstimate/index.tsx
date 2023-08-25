@@ -540,7 +540,8 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
           <Menu
             visible={visible}
             onDismiss={closeMenu}
-            anchor={{x: screenWidth - 10, y: -10}}>
+            anchor={{x: screenWidth - 15, y: -10}}
+            style={{width: 200}}>
             <Menu.Item onPress={() => {}} title={t('Delete')} />
             <Menu.Item onPress={() => {}} title={t('Open In ..')} />
             <Menu.Item onPress={() => {}} title={t('Share')} />
