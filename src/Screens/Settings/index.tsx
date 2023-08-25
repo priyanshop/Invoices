@@ -185,7 +185,7 @@ const SettingScreen = ({navigation}: any) => {
           title: 'Sign Up',
           titleTxt: t('Settings.SignUp'),
           description: '',
-          onPress: () => navigation.navigate('SignIn'),
+          onPress: () => navigation.navigate('SignUpOriginal'),
         },
         {
           title: 'Delete Account',
@@ -240,7 +240,7 @@ const SettingScreen = ({navigation}: any) => {
   );
 
   const renderItem = ({item, index}: any) =>
-    item.title === 'Sign Up' && selector.token ? null : (
+    item.title === 'Sign Up' && selector.token !== "Guest" ? null : (
       <TouchableOpacity
         onPress={item.onPress}
         style={[

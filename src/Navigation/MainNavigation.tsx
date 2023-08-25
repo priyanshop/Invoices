@@ -41,6 +41,7 @@ import Clients from '../Screens/Dashboard/Clients/Clients';
 import SelectItemScreen from '../Screens/Dashboard/Items/SelectItem';
 import Sign from '../Screens/Signature/Sign';
 import SplashScreen2 from '../Screens/SplashScreen/SplashScreen2';
+import SignUpOriginal from '../Screens/Auth/SignUpOriginal';
 
 const headerStyle = {
   headerStyle: {
@@ -148,6 +149,7 @@ function MainNavigator() {
       options: {headerShown: false},
     },
     {name: 'SignIn', component: SignInScreen, options: {headerShown: false}},
+    {name: 'SignUpOriginal', component: SignUpOriginal, options: {headerShown: false}},
     {name: 'SignUp', component: SignUpScreen, options: {headerShown: false}},
     {name: 'Dashboard', component: Dashboard, options: {headerShown: false}},
     {
