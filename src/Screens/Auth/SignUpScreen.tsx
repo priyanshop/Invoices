@@ -61,16 +61,16 @@ function SignUpScreen({navigation}: any): JSX.Element {
 
   const handleNext = () => {
     if (activeSlide === 2) {
-      if (email.trim() !== '') {
-        validation();
-      } else {
-        dispatch(setToken('Guest'));
-        dispatch(saveUserData({email: 'Guest'}));
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'Dashboard'}],
-        });
-      }
+      // if (email.trim() !== '') {
+      //   validation();
+      // } else {
+      dispatch(setToken('Guest'));
+      dispatch(saveUserData({email: 'Guest'}));
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Dashboard'}],
+      });
+      // }
     } else {
       carouselRef.current.snapToNext();
     }
