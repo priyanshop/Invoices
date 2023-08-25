@@ -92,28 +92,28 @@ if (lintVitalAnalyzeTask) {
 - Under :- android.applicationVariants.all  def variant ->
          def targetName = variant.name.capitalize()
 
-# For Signature Pad: Use the Folder Named "LibraryToChange"
+# For Signature Pad: Use the Folder Named "Library"
 
 - Change the button or Adding the done in html.js file
  
  ```bash
- src/LibraryToChange/react-native-signature-canvas/h5/html.js
+ src/Library/react-native-signature-canvas/h5/html.js
  ```
 
 - Click Event on any newly created button 
 
 ```bash
-src/LibraryToChange/react-native-signature-canvas/h5/js/app.js
+src/Library/react-native-signature-canvas/h5/js/app.js
 ```
 
 - Related Action and connection with webview for Native side will be added here
 
 ```bash
-src/LibraryToChange/react-native-signature-canvas/index.js
+src/Library/react-native-signature-canvas/index.js
 ```
 
 - Give Type for the particular new action 
 
 ```bash
-src/LibraryToChange/react-native-signature-canvas/index.d.ts
+src/Library/react-native-signature-canvas/index.d.ts
 ```
