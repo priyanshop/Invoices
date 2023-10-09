@@ -1,5 +1,6 @@
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
+  Alert,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -144,7 +145,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         getEstimateCall(route?.params?.data);
       }
     }
-  }, [route?.params]);
+  }, [route?.params,isFocused]);
 
   const findIndexById = (id: any, data: any) => {
     return data.findIndex((item: any) => item.index === id);
@@ -193,6 +194,28 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         setGlobalData(element);
         fetchPaymentDue(element);
         setCreated(true);
+      }
+    } catch (error) {}
+  };
+ const duplicateET = async () => {
+    try {
+      const data = await FetchAPI('post', endpoint.duplicateET(route?.params?.data?._id), null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+       Alert.alert("","Duplicate Estimate is created successfully")
+      }
+    } catch (error) {}
+  };
+
+  const deleteET = async () => {
+    try {
+      const data = await FetchAPI('delete', endpoint.deleteET(route?.params?.data?._id), null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+       Alert.alert("","Estimate is deleted successfully");
+       navigation.navigate(t('bottomNav.Estimates'));
       }
     } catch (error) {}
   };
@@ -542,13 +565,13 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
             onDismiss={closeMenu}
             anchor={{x: screenWidth - 15, y: -10}}
             style={{width: 200}}>
-            <Menu.Item onPress={() => {}} title={t('Delete')} />
+            <Menu.Item onPress={deleteET} title={t('Delete')} />
             <Menu.Item onPress={() => {}} title={t('Open In ..')} />
             <Menu.Item onPress={() => {}} title={t('Share')} />
             <Menu.Item onPress={() => {}} title={t('Print')} />
             <Menu.Item onPress={() => {}} title={t('Get Link')} />
             <Menu.Item onPress={() => {}} title={t('Mark Paid')} />
-            <Menu.Item onPress={() => {}} title={t('Duplicate')} />
+            <Menu.Item onPress={duplicateET} title={t('Duplicate')} />
           </Menu>
           <TabView
             navigationState={{index, routes}}

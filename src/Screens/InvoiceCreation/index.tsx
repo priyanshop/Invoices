@@ -1,5 +1,6 @@
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
+  Alert,
   FlatList,
   ScrollView,
   StatusBar,
@@ -171,7 +172,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         getInvoiceCall(route?.params?.data);
       }
     }
-  }, [route?.params]);
+  }, [route?.params,isFocused]);
 
   const findIndexById = (id: any, data: any) => {
     return data.findIndex((item: any) => item.index === id);
@@ -216,6 +217,29 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         const element = data.data;
         setGlobalData(element);
         fetchPaymentDue(element);
+      }
+    } catch (error) {}
+  };
+
+  const duplicateInvoice = async () => {
+    try {
+      const data = await FetchAPI('post', endpoint.duplicateInvoice(route?.params?.data?._id), null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+       Alert.alert("","Duplicate invoice is created successfully")
+      }
+    } catch (error) {}
+  };
+
+  const deleteInvoice = async () => {
+    try {
+      const data = await FetchAPI('delete', endpoint.deleteInvoice(route?.params?.data?._id), null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+       Alert.alert("","Invoice is deleted successfully");
+       navigation.navigate(t('bottomNav.Invoices'));
       }
     } catch (error) {}
   };
@@ -579,13 +603,13 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
             onDismiss={closeMenu}
             anchor={{x: screenWidth - 15, y: -10}}
             style={{width: 200}}>
-            <Menu.Item onPress={() => {}} title={t('Delete')} />
+            <Menu.Item onPress={deleteInvoice} title={t('Delete')} />
             <Menu.Item onPress={() => {}} title={t('Open In ..')} />
             <Menu.Item onPress={() => {}} title={t('Share')} />
             <Menu.Item onPress={() => {}} title={t('Print')} />
             <Menu.Item onPress={() => {}} title={t('Get Link')} />
             <Menu.Item onPress={() => {}} title={t('Mark Paid')} />
-            <Menu.Item onPress={() => {}} title={t('Duplicate')} />
+            <Menu.Item onPress={duplicateInvoice} title={t('Duplicate')} />
           </Menu>
           <TabView
             navigationState={{index, routes}}

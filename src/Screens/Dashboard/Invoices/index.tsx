@@ -111,7 +111,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
         Authorization: 'Bearer ' + selector.token,
       });
       if (data.status === 'success') {
-        if (data.data.length > 0) {
+        if (data.data) {
           const savedData: any = convertData(data.data);
           setAllData(savedData);
         }
@@ -171,10 +171,21 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     //     navigation.navigate('InvoiceCreation', {status: 'create'});
     //   }
     // } else {
-    navigation.navigate('InvoiceCreation', {status: 'create'});
+      createInvoiceCall();
     // }
   };
 
+  const createInvoiceCall = async () => {
+    try {
+      const data = await FetchAPI('post', endpoint.createInvoice, null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        const element = data.data;
+        navigation.navigate('InvoiceCreation', {status: 'update', data: element});
+      }
+    } catch (error) {}
+  };
   function navigateToInvoice(item: any) {
     navigation.navigate('InvoiceCreation', {status: 'update', data: item});
   }

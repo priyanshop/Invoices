@@ -173,7 +173,7 @@ function EstimatesScreen({navigation}: any): JSX.Element {
         Authorization: 'Bearer ' + selector.token,
       });
       if (data.status === 'success') {
-        if (data.data.length > 0) {
+        if (data.data) {
           const savedData: any = convertData(data.data);
           console.log(savedData);
           setAllData(savedData);
@@ -280,10 +280,21 @@ function EstimatesScreen({navigation}: any): JSX.Element {
         navigation.navigate('EstimationCreation', {status: 'create'});
       }
     } else {
-      navigation.navigate('EstimationCreation', {status: 'create'});
+      createEstimateCall()
     }
   }
 
+  const createEstimateCall = async () => {
+    try {
+      const data = await FetchAPI('post', endpoint.createEstimate, null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        const element = data.data;
+        navigateToEstimate(element)
+      }
+    } catch (error) {}
+  };
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Colors.appColor} />

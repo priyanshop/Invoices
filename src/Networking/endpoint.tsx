@@ -49,6 +49,9 @@ export const endpoint = {
     `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/client-details`,
   updateIVItem: (id: any) =>
     `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/item-details`,
+  duplicateInvoice: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/duplicate`,
+  deleteInvoice: (id: any) => `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}`,
 
   createEstimate: `${API_BASE_URL}/${API_TYPE.ESTIMATE}/create`,
   getEstimateList: `${API_BASE_URL}/${API_TYPE.ESTIMATE}`,
@@ -63,4 +66,7 @@ export const endpoint = {
     `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/client-details`,
   updateETItem: (id: any) =>
     `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/item-details`,
+  duplicateET: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/duplicate`,
+  deleteET: (id: any) => `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}`,
 };
