@@ -145,7 +145,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         getEstimateCall(route?.params?.data);
       }
     }
-  }, [route?.params,isFocused]);
+  }, [route?.params, isFocused]);
 
   const findIndexById = (id: any, data: any) => {
     return data.findIndex((item: any) => item.index === id);
@@ -197,25 +197,51 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
       }
     } catch (error) {}
   };
- const duplicateET = async () => {
+
+  const duplicateET = async () => {
     try {
-      const data = await FetchAPI('post', endpoint.duplicateET(route?.params?.data?._id), null, {
-        Authorization: 'Bearer ' + selector.token,
-      });
+      const data = await FetchAPI(
+        'post',
+        endpoint.duplicateET(route?.params?.data?._id),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
       if (data.status === 'success') {
-       Alert.alert("","Duplicate Estimate is created successfully")
+        Alert.alert('', 'Duplicate Estimate is created successfully');
       }
     } catch (error) {}
   };
 
+  const createInvoice = async () => {
+    try {
+      const data = await FetchAPI(
+        'post',
+        endpoint.makeInvoiceET(route?.params?.data?._id),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        //  Alert.alert("","Duplicate Estimate is created successfully")
+      }
+    } catch (error) {}
+  };
   const deleteET = async () => {
     try {
-      const data = await FetchAPI('delete', endpoint.deleteET(route?.params?.data?._id), null, {
-        Authorization: 'Bearer ' + selector.token,
-      });
+      const data = await FetchAPI(
+        'delete',
+        endpoint.deleteET(route?.params?.data?._id),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
       if (data.status === 'success') {
-       Alert.alert("","Estimate is deleted successfully");
-       navigation.navigate(t('bottomNav.Estimates'));
+        Alert.alert('', 'Estimate is deleted successfully');
+        navigation.navigate(t('bottomNav.Estimates'));
       }
     } catch (error) {}
   };
@@ -525,9 +551,9 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
           {/* </View> */}
         </View>
 
-        <View style={styles.paidContainer}>
-          <Text style={styles.paidText}>{t('Mark Invoice')}</Text>
-        </View>
+        <TouchableOpacity onPress={createInvoice} style={styles.paidContainer}>
+          <Text style={styles.paidText}>{t('Make Invoice')}</Text>
+        </TouchableOpacity>
       </ScrollView>
     );
   };
@@ -569,8 +595,8 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
             <Menu.Item onPress={() => {}} title={t('Open In ..')} />
             <Menu.Item onPress={() => {}} title={t('Share')} />
             <Menu.Item onPress={() => {}} title={t('Print')} />
-            <Menu.Item onPress={() => {}} title={t('Get Link')} />
-            <Menu.Item onPress={() => {}} title={t('Mark Paid')} />
+            {/* <Menu.Item onPress={() => {}} title={t('Get Link')} /> */}
+            <Menu.Item onPress={createInvoice} title={t('Make Invoice')} />
             <Menu.Item onPress={duplicateET} title={t('Duplicate')} />
           </Menu>
           <TabView

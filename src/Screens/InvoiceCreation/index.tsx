@@ -138,6 +138,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
   const [visible, setVisible] = React.useState(false);
   const [paymentDue, setPaymentDue] = useState([]);
   const [RequestReview, setRequestReview] = useState(false);
+  const [isMarkPaid, setIsMarkPaid] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -172,7 +173,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         getInvoiceCall(route?.params?.data);
       }
     }
-  }, [route?.params,isFocused]);
+  }, [route?.params, isFocused]);
 
   const findIndexById = (id: any, data: any) => {
     return data.findIndex((item: any) => item.index === id);
@@ -202,6 +203,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       );
       if (data.status === 'success') {
         const element = data.data;
+        setIsMarkPaid(element.is_paid);
         setGlobalData(element);
         fetchPaymentDue(element);
       }
@@ -223,23 +225,49 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
 
   const duplicateInvoice = async () => {
     try {
-      const data = await FetchAPI('post', endpoint.duplicateInvoice(route?.params?.data?._id), null, {
-        Authorization: 'Bearer ' + selector.token,
-      });
+      const data = await FetchAPI(
+        'post',
+        endpoint.duplicateInvoice(route?.params?.data?._id),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
       if (data.status === 'success') {
-       Alert.alert("","Duplicate invoice is created successfully")
+        Alert.alert('', 'Duplicate invoice is created successfully');
+      }
+    } catch (error) {}
+  };
+
+  const markPaid = async () => {
+    try {
+      const data = await FetchAPI(
+        'patch',
+        endpoint.markPaidInvoice(route?.params?.data?._id),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        setIsMarkPaid(data.data.is_paid);
       }
     } catch (error) {}
   };
 
   const deleteInvoice = async () => {
     try {
-      const data = await FetchAPI('delete', endpoint.deleteInvoice(route?.params?.data?._id), null, {
-        Authorization: 'Bearer ' + selector.token,
-      });
+      const data = await FetchAPI(
+        'delete',
+        endpoint.deleteInvoice(route?.params?.data?._id),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
       if (data.status === 'success') {
-       Alert.alert("","Invoice is deleted successfully");
-       navigation.navigate(t('bottomNav.Invoices'));
+        Alert.alert('', 'Invoice is deleted successfully');
+        navigation.navigate(t('bottomNav.Invoices'));
       }
     } catch (error) {}
   };
@@ -563,9 +591,11 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
           {/* </View> */}
         </View>
 
-        <View style={styles.paidContainer}>
-          <Text style={styles.paidText}>{t('Mark Paid')}</Text>
-        </View>
+        <TouchableOpacity onPress={markPaid} style={styles.paidContainer}>
+          <Text style={styles.paidText}>
+            {isMarkPaid ? 'Mark Unpaid' : t('Mark Paid')}
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     );
   };
@@ -607,8 +637,11 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
             <Menu.Item onPress={() => {}} title={t('Open In ..')} />
             <Menu.Item onPress={() => {}} title={t('Share')} />
             <Menu.Item onPress={() => {}} title={t('Print')} />
-            <Menu.Item onPress={() => {}} title={t('Get Link')} />
-            <Menu.Item onPress={() => {}} title={t('Mark Paid')} />
+            {/* <Menu.Item onPress={() => {}} title={t('Get Link')} /> */}
+            <Menu.Item
+              onPress={markPaid}
+              title={isMarkPaid ? 'Mark Unpaid' : t('Mark Paid')}
+            />
             <Menu.Item onPress={duplicateInvoice} title={t('Duplicate')} />
           </Menu>
           <TabView

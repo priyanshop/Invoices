@@ -52,6 +52,8 @@ export const endpoint = {
   duplicateInvoice: (id: any) =>
     `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/duplicate`,
   deleteInvoice: (id: any) => `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}`,
+  markPaidInvoice: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/marked`,
 
   createEstimate: `${API_BASE_URL}/${API_TYPE.ESTIMATE}/create`,
   getEstimateList: `${API_BASE_URL}/${API_TYPE.ESTIMATE}`,
@@ -69,4 +71,6 @@ export const endpoint = {
   duplicateET: (id: any) =>
     `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/duplicate`,
   deleteET: (id: any) => `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}`,
+  makeInvoiceET: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/make/invoice`,
 };
