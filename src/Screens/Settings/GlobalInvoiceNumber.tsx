@@ -13,17 +13,26 @@ import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {setDefaultInvoiceFormat} from '../../redux/reducers/user/UserReducer';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
+import ToastService from '../../Helper/ToastService';
+import {TouchableOpacity} from 'react-native';
+import {GlobalStyle} from '../../Helper/GlobalStyle';
+import Loader from '../../CustomComponent/Loader';
 
 function GlobalInvoiceNumber({navigation}: any): JSX.Element {
   const dispatch = useDispatch();
   const {t, i18n} = useTranslation();
-  const selector = useSelector(state => state.user);
+  const selector = useSelector((state: any) => state.user);
   const isFocused = useIsFocused();
   const [invoices, setInvoices] = useState('');
   const [estimate, setEstimate] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const setTrue = () => setIsLoading(true);
+  const setFalse = () => setIsLoading(false);
 
   useEffect(() => {
+    setTrue();
     if (selector.token === 'Guest') {
       fetchData(selector.defaultInvoiceFormat);
     } else {
@@ -35,6 +44,7 @@ function GlobalInvoiceNumber({navigation}: any): JSX.Element {
     const element = data;
     setEstimate(element.estimate_number_prefix);
     setInvoices(element.invoice_number_prefix);
+    setFalse();
   };
 
   const getInfo = async () => {
@@ -43,33 +53,48 @@ function GlobalInvoiceNumber({navigation}: any): JSX.Element {
         Authorization: 'Bearer ' + selector.token,
       });
       if (data.status === 'success') {
+        setFalse();
         const element = data.data.invoice_numbering;
         setEstimate(element.estimate_number_prefix);
         setInvoices(element.invoice_number_prefix);
       }
-    } catch (error) {}
+    } catch (error) {
+      setFalse;
+    }
   };
 
   const addInfo = async () => {
+    setTrue();
     try {
-      const payload = {
+      const payload: any = {
         invoice_number_prefix: invoices,
         estimate_number_prefix: estimate,
       };
       if (selector.token === 'Guest') {
         dispatch(setDefaultInvoiceFormat(payload));
+        successMessage();
       } else {
         const data = await FetchAPI('post', endpoint.invoiceNumber, payload, {
           Authorization: 'Bearer ' + selector.token,
         });
         if (data.status === 'success') {
+          successMessage();
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      setFalse;
+    }
+  };
+
+  const successMessage = () => {
+    setIsLoading(false);
+    ToastService.showToast('Updated Successfully');
+    navigation.goBack();
   };
 
   return (
     <>
+      <Loader visible={isLoading} size="large" color={Colors.landingColor} />
       <StatusBar backgroundColor={Colors.appColor} />
       <ScrollView
         style={[styles.scene, {backgroundColor: Colors.commonBg, padding: 8}]}>
@@ -88,7 +113,7 @@ function GlobalInvoiceNumber({navigation}: any): JSX.Element {
                   placeholder={'INV0000'}
                   placeholderTextColor={'grey'}
                   onChangeText={setInvoices}
-                  onBlur={addInfo}
+                  // onBlur={addInfo}
                 />
               </View>
             </View>
@@ -101,12 +126,15 @@ function GlobalInvoiceNumber({navigation}: any): JSX.Element {
                   placeholder={'EST0000'}
                   placeholderTextColor={'grey'}
                   onChangeText={setEstimate}
-                  onBlur={addInfo}
+                  // onBlur={addInfo}
                 />
               </View>
             </View>
           </View>
         </View>
+        <TouchableOpacity onPress={addInfo} style={GlobalStyle.statementBtn}>
+          <Text style={[GlobalStyle.titleTxt2]}>{t('Update')}</Text>
+        </TouchableOpacity>
       </ScrollView>
     </>
   );
@@ -129,7 +157,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: '50%',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   input: {
     fontSize: 16,
@@ -137,7 +165,7 @@ const styles = StyleSheet.create({
     color: '#000',
     textAlign: 'right',
     height: 40,
-    padding:10
+    padding: 10,
   },
   itemView: {
     backgroundColor: '#fff',

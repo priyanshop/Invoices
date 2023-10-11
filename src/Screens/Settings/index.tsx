@@ -16,10 +16,11 @@ import {
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {useTranslation} from 'react-i18next';
+import ToastService from '../../Helper/ToastService';
 
 const SettingScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
-  const selector = useSelector(state => state.user);
+  const selector = useSelector((state: any) => state.user);
   const {t, i18n} = useTranslation();
 
   const apiCall = async () => {
@@ -33,6 +34,7 @@ const SettingScreen = ({navigation}: any) => {
           index: 0,
           routes: [{name: 'LandingPage'}],
         });
+        ToastService.showToast('Account Deleted Successfully');
       }
     } catch (error) {}
   };
@@ -43,6 +45,7 @@ const SettingScreen = ({navigation}: any) => {
       index: 0,
       routes: [{name: screen}],
     });
+    ToastService.showToast('Logout Successfully');
   };
 
   const data = [
@@ -240,7 +243,7 @@ const SettingScreen = ({navigation}: any) => {
   );
 
   const renderItem = ({item, index}: any) =>
-    item.title === 'Sign Up' && selector.token !== "Guest" ? null : (
+    item.title === 'Sign Up' && selector.token !== 'Guest' ? null : (
       <TouchableOpacity
         onPress={item.onPress}
         style={[

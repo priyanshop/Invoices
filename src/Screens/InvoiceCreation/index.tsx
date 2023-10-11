@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
   Alert,
@@ -25,7 +26,10 @@ import {getScreenDimensions} from '../../Helper/ScreenDimension';
 import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
-import {addNewInvoice} from '../../redux/reducers/user/UserReducer';
+import {
+  addNewInvoice,
+  setInvoiceList,
+} from '../../redux/reducers/user/UserReducer';
 import {setNewInvoiceInList} from '../../Constant';
 import EmptyHistory from '../../CustomComponent/EmptyHistory';
 
@@ -257,17 +261,35 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
 
   const deleteInvoice = async () => {
     try {
-      const data = await FetchAPI(
-        'delete',
-        endpoint.deleteInvoice(route?.params?.data?._id),
-        null,
-        {
-          Authorization: 'Bearer ' + selector.token,
-        },
-      );
-      if (data.status === 'success') {
-        Alert.alert('', 'Invoice is deleted successfully');
+      if (selector.token === 'Guest') {
+        const arr = [...selector.invoiceList];
+
+        const indexOfObject = arr.findIndex(object => {
+          return object.index === route?.params?.data.index;
+        });
+
+        if (indexOfObject !== -1) {
+          arr.splice(indexOfObject, 1);
+        }
         navigation.navigate(t('bottomNav.Invoices'));
+
+        Alert.alert('', 'Invoice is deleted successfully');
+        setTimeout(() => {
+          dispatch(setInvoiceList(arr));
+        }, 500);
+      } else {
+        const data = await FetchAPI(
+          'delete',
+          endpoint.deleteInvoice(route?.params?.data?._id),
+          null,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+          Alert.alert('', 'Invoice is deleted successfully');
+          navigation.navigate(t('bottomNav.Invoices'));
+        }
       }
     } catch (error) {}
   };
@@ -277,13 +299,13 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       {
         key: 'first',
         title: t('Discount'),
-        value: '$' + (element.invoice_discount_amount || 0),
+        value: '$' + (element?.invoice_discount_amount || 0),
         onPress: () => navigateToDiscountScreen(),
       },
       {
         key: 'second',
         title: t('Tax'),
-        value: '$' + (element.invoice_total_tax_amount || 0),
+        value: '$' + (element?.invoice_total_tax_amount || 0),
         onPress: () => navigateToTaxScreen(),
       },
 
@@ -293,9 +315,9 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         value:
           '$' +
           (
-            parseFloat(element.invoice_total_tax_amount || 0) +
-            parseFloat(element.invoice_total || 0) -
-            parseFloat(element.invoice_discount_amount || 0)
+            parseFloat(element?.invoice_total_tax_amount || 0) +
+            parseFloat(element?.invoice_total || 0) -
+            parseFloat(element?.invoice_discount_amount || 0)
           ).toFixed(2),
       },
       {

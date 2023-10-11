@@ -23,6 +23,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {useIsFocused} from '@react-navigation/native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {offlineLimit} from '../../../Constant';
+import Loader from '../../../CustomComponent/Loader';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -79,6 +80,10 @@ function InvoicesScreen({navigation}: any): JSX.Element {
   const [allData, setAllData] = useState([]);
   const [routes] = useState(data);
   const [searchText, setSearchText] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const setTrue = () => setIsLoading(true);
+  const setFalse = () => setIsLoading(false);
 
   const filteredInvoices =
     allData.length > 0 &&
@@ -141,15 +146,17 @@ function InvoicesScreen({navigation}: any): JSX.Element {
       .filter(yearData => yearData?.data?.length > 0);
 
   useEffect(() => {
+    setTrue()
     if (selector.token === 'Guest') {
-      if (selector.invoiceList?.length > 0) {
+      if (selector.invoiceList?.length >= 0) {
         const savedData: any = convertData(selector.invoiceList);
         setAllData(savedData);
+        setFalse()
       }
     } else {
       apiCall();
     }
-  }, [isFocused]);
+  }, [isFocused,selector.invoiceList]);
 
   const apiCall = async () => {
     try {
@@ -160,15 +167,16 @@ function InvoicesScreen({navigation}: any): JSX.Element {
         if (data.data) {
           const savedData: any = convertData(data.data);
           setAllData(savedData);
+          setFalse()
         }
       }
-    } catch (error) {}
+    } catch (error) {setFalse}
   };
 
   const convertData = inputData => {
     const transformedData: any = [];
     inputData.forEach(item => {
-      const invoiceDate = new Date(item.invoice_date|| new Date());
+      const invoiceDate = new Date(item.invoice_date || new Date());
       const year = invoiceDate.getFullYear();
       const client = item.c_name || 'No Client';
       const invoiceNumber = item.invoice_number;
@@ -216,15 +224,13 @@ function InvoicesScreen({navigation}: any): JSX.Element {
   }
 
   const navigateToAddInvoice = () => {
-    // if (selector.token === 'Guest') {
-    //   if (selector.invoiceList.length <= offlineLimit) {
-    //     console.log("Ddddd");
-
-    //     navigation.navigate('InvoiceCreation', {status: 'create'});
-    //   }
-    // } else {
-    createInvoiceCall();
-    // }
+    if (selector.token === 'Guest') {
+      if (selector.invoiceList.length <= offlineLimit) {
+        navigation.navigate('InvoiceCreation', {status: 'create'});
+      }
+    } else {
+      createInvoiceCall();
+    }
   };
 
   const createInvoiceCall = async () => {
@@ -280,6 +286,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     );
     return (
       <View style={[styles.scene]}>
+        <Loader visible={isLoading} size="large" color={Colors.landingColor} />
         {filteredInvoices.length > 0 ? (
           <SectionList
             sections={filteredInvoices}
@@ -327,6 +334,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     );
     return (
       <ScrollView nestedScrollEnabled style={[styles.scene]}>
+        <Loader visible={isLoading} size="large" color={Colors.landingColor} />
         {outStandFilteredInvoices.length > 0 && (
           <SectionList
             sections={outStandFilteredInvoices}
@@ -374,6 +382,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     );
     return (
       <View style={[styles.scene]}>
+        <Loader visible={isLoading} size="large" color={Colors.landingColor} />
         {paidFilteredInvoices.length > 0 && (
           <SectionList
             sections={paidFilteredInvoices}
@@ -422,6 +431,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
         }}
       />
       <FloatingButton onPress={navigateToAddInvoice} />
+      
     </SafeAreaView>
   );
 }

@@ -15,11 +15,15 @@ import {endpoint} from '../../Networking/endpoint';
 import {changeCustomize} from '../../redux/reducers/user/UserReducer';
 import {Switch} from 'react-native-paper';
 import {useTranslation} from 'react-i18next';
+import ToastService from '../../Helper/ToastService';
+import {TouchableOpacity} from 'react-native';
+import {GlobalStyle} from '../../Helper/GlobalStyle';
+import Loader from '../../CustomComponent/Loader';
 
 function Customize({navigation}: any): JSX.Element {
   const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
-  const selector = useSelector(state => state.user);
+  const selector = useSelector((state: any) => state.user);
   const isFocused = useIsFocused();
   const [invoices, setInvoices] = useState('');
   const [estimate, setEstimate] = useState('');
@@ -27,8 +31,13 @@ function Customize({navigation}: any): JSX.Element {
   const [quantityLabel, setQuantityLabel] = useState('');
   const [unitCostLabel, setUnitCostLabel] = useState('');
   const [quantityAndUnitCost, setQuantityAndUnitCost] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const setTrue = () => setIsLoading(true);
+  const setFalse = () => setIsLoading(false);
 
   useEffect(() => {
+    setTrue();
     if (selector.token === 'Guest') {
       fetchData(selector.customizeLabels);
     } else {
@@ -37,6 +46,7 @@ function Customize({navigation}: any): JSX.Element {
   }, [selector.token]);
 
   const fetchData = (data: any) => {
+    setFalse();
     const element = data;
     setEstimate(element.invoice_title);
     setInvoices(element.estimate_title);
@@ -52,6 +62,7 @@ function Customize({navigation}: any): JSX.Element {
         Authorization: 'Bearer ' + selector.token,
       });
       if (data.status === 'success') {
+        setFalse();
         const element = data.data.customize;
         setEstimate(element.invoice_title);
         setInvoices(element.estimate_title);
@@ -60,12 +71,14 @@ function Customize({navigation}: any): JSX.Element {
         setUnitCostLabel(element.rate_label);
         setQuantityAndUnitCost(element.quantityAndUnitCost);
       }
-    } catch (error) {}
+    } catch (error) {
+      setFalse();
+    }
   };
 
   const addInfo = async () => {
     try {
-      const payload = {
+      const payload: any = {
         invoice_title: invoices,
         estimate_title: estimate,
         business_number: businessNumber,
@@ -79,13 +92,23 @@ function Customize({navigation}: any): JSX.Element {
           Authorization: 'Bearer ' + selector.token,
         });
         if (data.status === 'success') {
+          successMessage();
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      setFalse();
+    }
+  };
+
+  const successMessage = () => {
+    setIsLoading(false);
+    ToastService.showToast('Updated Successfully');
+    navigation.goBack();
   };
 
   return (
     <>
+      <Loader visible={isLoading} size="large" color={Colors.landingColor} />
       <StatusBar backgroundColor={Colors.appColor} />
       <ScrollView
         style={[styles.scene, {backgroundColor: Colors.commonBg, padding: 8}]}>
@@ -104,7 +127,7 @@ function Customize({navigation}: any): JSX.Element {
                   placeholder={t('Invoice')}
                   placeholderTextColor={'grey'}
                   onChangeText={setInvoices}
-                  onBlur={addInfo}
+                  // onBlur={addInfo}
                 />
               </View>
             </View>
@@ -117,7 +140,7 @@ function Customize({navigation}: any): JSX.Element {
                   placeholder={t('Estimate')}
                   placeholderTextColor={'grey'}
                   onChangeText={setEstimate}
-                  onBlur={addInfo}
+                  // onBlur={addInfo}
                 />
               </View>
             </View>
@@ -143,7 +166,7 @@ function Customize({navigation}: any): JSX.Element {
                   placeholder={t('QTY')}
                   placeholderTextColor={'grey'}
                   onChangeText={setQuantityLabel}
-                  onBlur={addInfo}
+                  // onBlur={addInfo}
                 />
               </View>
             </View>
@@ -156,7 +179,7 @@ function Customize({navigation}: any): JSX.Element {
                   placeholder={t('RATE')}
                   placeholderTextColor={'grey'}
                   onChangeText={setUnitCostLabel}
-                  onBlur={addInfo}
+                  // onBlur={addInfo}
                 />
               </View>
             </View>
@@ -175,6 +198,9 @@ function Customize({navigation}: any): JSX.Element {
             </Text>
           </View>
         </View>
+        <TouchableOpacity onPress={addInfo} style={GlobalStyle.statementBtn}>
+          <Text style={[GlobalStyle.titleTxt2]}>{t('Update')}</Text>
+        </TouchableOpacity>
       </ScrollView>
     </>
   );
@@ -198,7 +224,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: '50%',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   input: {
     fontSize: 16,

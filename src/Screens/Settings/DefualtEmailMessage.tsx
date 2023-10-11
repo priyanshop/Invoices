@@ -1,20 +1,34 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TextInput} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
 import {Colors} from '../../Helper/Colors';
 import {useSelector, useDispatch} from 'react-redux';
 import {changeDefaultEmailMsg} from '../../redux/reducers/user/UserReducer';
 import {useTranslation} from 'react-i18next';
 import {endpoint} from '../../Networking/endpoint';
 import FetchAPI from '../../Networking';
+import {GlobalStyle} from '../../Helper/GlobalStyle';
+import ToastService from '../../Helper/ToastService';
+import Loader from '../../CustomComponent/Loader';
 
-const DefaultEmailMessage = () => {
+const DefaultEmailMessage = ({navigation}: any) => {
   const {t, i18n} = useTranslation();
   const [additionalDetails, setAdditionalDetails] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const setTrue = () => setIsLoading(true);
+  const setFalse = () => setIsLoading(false);
 
   const dispatch = useDispatch();
-  const selector = useSelector(state => state.user);
+  const selector = useSelector((state: any) => state.user);
 
   useEffect(() => {
+    setTrue();
     if (selector.token === 'Guest') {
       fetchData(selector.defaultEmailMessage);
     } else {
@@ -23,15 +37,16 @@ const DefaultEmailMessage = () => {
   }, [selector.token]);
 
   const fetchData = (data: any) => {
+    setFalse();
     setAdditionalDetails(data);
   };
 
-  const changeMessage = (msg: string) => {
-    setAdditionalDetails(msg);
+  const changeMessage = () => {
     if (selector.token === 'Guest') {
-      dispatch(changeDefaultEmailMsg(msg));
+      dispatch(changeDefaultEmailMsg(additionalDetails));
+      successMessage();
     } else {
-      addData(msg);
+      addData(additionalDetails);
     }
   };
 
@@ -42,9 +57,11 @@ const DefaultEmailMessage = () => {
       });
       if (data.status === 'success') {
         setAdditionalDetails(data.data.default_email_msg);
-
+        setFalse();
       }
-    } catch (error) {}
+    } catch (error) {
+      setFalse();
+    }
   };
 
   const addData = async (msg: any) => {
@@ -57,29 +74,45 @@ const DefaultEmailMessage = () => {
         Authorization: 'Bearer ' + selector.token,
       });
       if (data.status === 'success') {
+        successMessage();
       }
-    } catch (error) {}
+    } catch (error) {
+      setFalse();
+    }
   };
 
+  const successMessage = () => {
+    setIsLoading(false);
+    ToastService.showToast('Updated Successfully');
+    navigation.goBack();
+  };
   return (
-    <View style={styles.mainContainer}>
-      <View style={styles.businessContainer}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>{t('Message to customer')}</Text>
+    <>
+      <Loader visible={isLoading} size="large" color={Colors.landingColor} />
+      <View style={styles.mainContainer}>
+        <View style={styles.businessContainer}>
+          <View style={styles.header}>
+            <Text style={styles.headerText}>{t('Message to customer')}</Text>
+          </View>
+          <View style={styles.rowView}>
+            <TextInput
+              value={additionalDetails}
+              onChangeText={setAdditionalDetails}
+              style={styles.titleTxt}
+              placeholder={t('Default Email Message')}
+              placeholderTextColor={'grey'}
+              multiline
+              numberOfLines={4}
+            />
+          </View>
         </View>
-        <View style={styles.rowView}>
-          <TextInput
-            value={additionalDetails}
-            onChangeText={changeMessage}
-            style={styles.titleTxt}
-            placeholder={t('Default Email Message')}
-            placeholderTextColor={'grey'}
-            multiline
-            numberOfLines={4}
-          />
-        </View>
+        <TouchableOpacity
+          onPress={changeMessage}
+          style={GlobalStyle.statementBtn}>
+          <Text style={[GlobalStyle.titleTxt2]}>{t('Update')}</Text>
+        </TouchableOpacity>
       </View>
-    </View>
+    </>
   );
 };
 

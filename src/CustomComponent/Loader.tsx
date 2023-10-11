@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React from 'react';
 import {ActivityIndicator, View} from 'react-native';
 
@@ -25,9 +26,9 @@ export default ModalActivityIndicator = (props: any) => (
             paddingHorizontal: 20,
             backgroundColor: '#fff',
             paddingVertical: 10,
-            borderRadius:8,
-            justifyContent:'center',
-            alignItems:'center'
+            borderRadius: 8,
+            justifyContent: 'center',
+            alignItems: 'center',
           }}>
           <ActivityIndicator
             size={props.size ? props.size : 'large'}

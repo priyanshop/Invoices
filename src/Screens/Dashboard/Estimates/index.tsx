@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
@@ -20,6 +21,7 @@ import FetchAPI from '../../../Networking';
 import {endpoint} from '../../../Networking/endpoint';
 import {offlineLimit} from '../../../Constant';
 import EmptyViewComponent from '../../../CustomComponent/EmptyViewComponent';
+import Loader from '../../../CustomComponent/Loader';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -140,27 +142,36 @@ function EstimatesScreen({navigation}: any): JSX.Element {
   const [routes] = useState(data);
   const [allData, setAllData] = useState([]);
   const [searchText, setSearchText] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const filteredInvoices = allData.length > 0 && allData
-    .map(yearData => ({
-      year: yearData?.year,
-      data: yearData?.data?.filter(
-        item =>
-          item?.invoiceNumber
-            ?.toLowerCase()
-            ?.includes(searchText?.toLowerCase()) ||
-          item?.client?.toLowerCase()?.includes(searchText?.toLowerCase()) ||
-          item?.price?.toString()?.includes(searchText) ||
-          item?.date?.includes(searchText),
-      ),
-    }))
-    .filter(yearData => yearData.data.length > 0);
+  const setTrue = () => setIsLoading(true);
+  const setFalse = () => setIsLoading(false);
+
+  const filteredInvoices =
+    allData.length > 0 &&
+    allData
+      .map(yearData => ({
+        year: yearData?.year,
+        totalInvoiceAmount: yearData?.totalInvoiceAmount,
+        data: yearData?.data?.filter(
+          item =>
+            item?.invoiceNumber
+              ?.toLowerCase()
+              ?.includes(searchText?.toLowerCase()) ||
+            item?.client?.toLowerCase()?.includes(searchText?.toLowerCase()) ||
+            item?.price?.toString()?.includes(searchText) ||
+            item?.date?.includes(searchText),
+        ),
+      }))
+      .filter(yearData => yearData.data.length > 0);
 
   useEffect(() => {
+    setTrue();
     if (selector.token === 'Guest') {
       if (selector.estimateList?.length > 0) {
         const savedData: any = convertData(selector.estimateList);
         setAllData(savedData);
+        setFalse();
       }
     } else {
       apiCall();
@@ -177,9 +188,12 @@ function EstimatesScreen({navigation}: any): JSX.Element {
           const savedData: any = convertData(data.data);
           console.log(savedData);
           setAllData(savedData);
+          setFalse();
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      setFalse;
+    }
   };
 
   const convertData = (inputData: any) => {
@@ -189,7 +203,8 @@ function EstimatesScreen({navigation}: any): JSX.Element {
       const year = invoiceDate.getFullYear();
       const client = item.c_name || 'No Client';
       const invoiceNumber = item.estimate_number;
-      const price = 0.0;
+      const price = item.estimate_total || 0;
+
       const date = invoiceDate.toISOString().split('T')[0];
 
       const existingYearData = transformedData.find(
@@ -204,6 +219,12 @@ function EstimatesScreen({navigation}: any): JSX.Element {
           date,
           ...item,
         });
+        existingYearData.totalInvoiceAmount += price;
+        if (item.is_paid) {
+          existingYearData.totalPaidAmount += price;
+        } else {
+          existingYearData.totalUnpaidAmount += price;
+        }
       } else {
         transformedData.push({
           year,
@@ -216,6 +237,9 @@ function EstimatesScreen({navigation}: any): JSX.Element {
               ...item,
             },
           ],
+          totalInvoiceAmount: price,
+          totalPaidAmount: item.is_paid ? price : 0,
+          totalUnpaidAmount: item.is_paid ? 0 : price,
         });
       }
     });
@@ -243,10 +267,10 @@ function EstimatesScreen({navigation}: any): JSX.Element {
       </TouchableOpacity>
     );
 
-    const renderSectionHeader = ({section: {year}}) => (
+    const renderSectionHeader = ({section: {year, totalInvoiceAmount}}) => (
       <View style={styles.sectionHeaderContain}>
         <Text style={styles.sectionHeader}>{year}</Text>
-        <Text style={styles.sectionHeader}>{'$635'}</Text>
+        <Text style={styles.sectionHeader}>{'$' + totalInvoiceAmount}</Text>
       </View>
     );
     const renderEmptyComponent = () => (
@@ -255,6 +279,7 @@ function EstimatesScreen({navigation}: any): JSX.Element {
 
     return (
       <View style={styles.scene}>
+        <Loader visible={isLoading} size="large" color={Colors.landingColor} />
         {filteredInvoices.length > 0 ? (
           <SectionList
             sections={filteredInvoices}
@@ -280,7 +305,7 @@ function EstimatesScreen({navigation}: any): JSX.Element {
         navigation.navigate('EstimationCreation', {status: 'create'});
       }
     } else {
-      createEstimateCall()
+      createEstimateCall();
     }
   }
 
@@ -291,7 +316,7 @@ function EstimatesScreen({navigation}: any): JSX.Element {
       });
       if (data.status === 'success') {
         const element = data.data;
-        navigateToEstimate(element)
+        navigateToEstimate(element);
       }
     } catch (error) {}
   };

@@ -13,6 +13,7 @@ import {Colors} from '../../Helper/Colors';
 import {useTranslation} from 'react-i18next';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
+import {GlobalStyle} from '../../Helper/GlobalStyle';
 const dateFormat = 'YYYY-MM-DD';
 
 function ManualExpense({navigation}: any): JSX.Element {
@@ -89,7 +90,7 @@ function ManualExpense({navigation}: any): JSX.Element {
                   style={styles.input}
                   placeholder={'$0.00'}
                   placeholderTextColor={'grey'}
-                  keyboardType='numeric'
+                  keyboardType="numeric"
                 />
               </View>
             </View>
@@ -100,7 +101,7 @@ function ManualExpense({navigation}: any): JSX.Element {
                   style={styles.input}
                   placeholder={'$0.00'}
                   placeholderTextColor={'grey'}
-                  keyboardType='numeric'
+                  keyboardType="numeric"
                 />
               </View>
             </View>
@@ -110,6 +111,9 @@ function ManualExpense({navigation}: any): JSX.Element {
         <View style={styles.detailView}>
           <TextInput placeholder="Description" style={styles.detailText} />
         </View>
+        <TouchableOpacity style={GlobalStyle.statementBtn}>
+          <Text style={[GlobalStyle.titleTxt2]}>{t('Create')}</Text>
+        </TouchableOpacity>
       </ScrollView>
     </>
   );

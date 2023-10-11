@@ -6207,6 +6207,11 @@ react-native-keyboard-aware-scroll-view@^0.9.5:
     prop-types "^15.6.2"
     react-native-iphone-x-helper "^1.0.3"
 
+react-native-modal-activityindicator@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-modal-activityindicator/-/react-native-modal-activityindicator-0.0.1.tgz#eea1ea1aec02af17f74122d8b611cf8267ec7b1a"
+  integrity sha512-c1MqFKxQk2KqVQaxueWGXWEIbfG2y3PsiRjoZJC4EXsL52D97NVHNoCXAdd6MlMQCQ7/c+fJyJyKmRWKZcuSvg==
+
 react-native-orientation-locker@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/react-native-orientation-locker/-/react-native-orientation-locker-1.5.0.tgz#324853937eed4835ecd1c8613ab2206135d908ac"
@@ -6265,6 +6270,11 @@ react-native-signature-canvas@^4.5.1:
   version "4.5.1"
   resolved "https://registry.yarnpkg.com/react-native-signature-canvas/-/react-native-signature-canvas-4.5.1.tgz#7b363bc6051e919c29696da181e8b9390aa3f7da"
   integrity sha512-YCiyIMWXiv9fn1JdKAb++b3AkKG5R1GQIXh+cAipxHV1GGZXKVuBukVo5WQ2rL1P9NOGpIOpWyeq0NXdGk41Rw==
+
+react-native-simple-toast@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-simple-toast/-/react-native-simple-toast-3.0.2.tgz#0c020cfeb7aa1c483b1553246a9f859c352c23c2"
+  integrity sha512-bugU0inRKXpcsHuPI92gyHUo5heGvrOkaFphzXldt9awoPl+NioN+aK0m/+I4gMyyxLo1T555LLIs2xU1jEYQw==
 
 react-native-size-matters@^0.3.1:
   version "0.3.1"

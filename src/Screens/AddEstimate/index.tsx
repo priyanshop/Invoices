@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
   Alert,
@@ -26,7 +27,10 @@ import {actionStyle, fabStyle} from '../../Helper/CommonStyle';
 import {endpoint} from '../../Networking/endpoint';
 import FetchAPI from '../../Networking';
 import {setNewEstimateInList} from '../../Constant';
-import {addNewEstimate} from '../../redux/reducers/user/UserReducer';
+import {
+  addNewEstimate,
+  setEstimateList,
+} from '../../redux/reducers/user/UserReducer';
 import EmptyHistory from '../../CustomComponent/EmptyHistory';
 import {FlatList} from 'react-native';
 
@@ -231,17 +235,35 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   };
   const deleteET = async () => {
     try {
-      const data = await FetchAPI(
-        'delete',
-        endpoint.deleteET(route?.params?.data?._id),
-        null,
-        {
-          Authorization: 'Bearer ' + selector.token,
-        },
-      );
-      if (data.status === 'success') {
-        Alert.alert('', 'Estimate is deleted successfully');
+      if (selector.token === 'Guest') {
+        const arr = [...selector.estimateList];
+
+        const indexOfObject = arr.findIndex(object => {
+          return object.index === route?.params?.data.index;
+        });
+
+        if (indexOfObject !== -1) {
+          arr.splice(indexOfObject, 1);
+        }
         navigation.navigate(t('bottomNav.Estimates'));
+
+        Alert.alert('', 'Estimate is deleted successfully');
+        setTimeout(() => {
+          dispatch(setEstimateList(arr));
+        }, 500);
+      } else {
+        const data = await FetchAPI(
+          'delete',
+          endpoint.deleteET(route?.params?.data?._id),
+          null,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+          Alert.alert('', 'Estimate is deleted successfully');
+          navigation.navigate(t('bottomNav.Estimates'));
+        }
       }
     } catch (error) {}
   };
