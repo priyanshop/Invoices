@@ -54,6 +54,9 @@ export const endpoint = {
   deleteInvoice: (id: any) => `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}`,
   markPaidInvoice: (id: any) =>
     `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/marked`,
+  addSignatureIN: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/signature`,
+  addPhotoIN: (id: any) => `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/photo`,
 
   createEstimate: `${API_BASE_URL}/${API_TYPE.ESTIMATE}/create`,
   getEstimateList: `${API_BASE_URL}/${API_TYPE.ESTIMATE}`,
@@ -73,4 +76,9 @@ export const endpoint = {
   deleteET: (id: any) => `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}`,
   makeInvoiceET: (id: any) =>
     `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/make/invoice`,
+  addSignatureET: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/signature`,
+  addPhotoET: (id: any) => `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/photo`,
+
+  exportSpreadSheet : `${API_BASE_URL}/${API_TYPE.INVOICES}/export/excel`
 };

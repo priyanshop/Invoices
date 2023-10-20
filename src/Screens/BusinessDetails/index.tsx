@@ -18,7 +18,7 @@ import ImagePickerComponent from '../../CustomComponent/ImagePickerComponent';
 import ModalActivityIndicator from '../../CustomComponent/Loader';
 
 import {Colors} from '../../Helper/Colors';
-import FetchAPI from '../../Networking';
+import FetchAPI, {IMAGE_BASE_URL} from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {
   setBusinessDetail,
@@ -56,11 +56,18 @@ const BusinessDetails = ({navigation, route}: any) => {
   const [phoneError, setPhoneError] = useState('');
   const [websiteError, setWebsiteError] = useState('');
   const [mobileError, setMobileError] = useState('');
-
+  const setTrue = () => setLoader(true);
+  const setFalse = () => setLoader(false);
   useEffect(() => {
+    console.log("SSs");
+    
     if (route?.params?.invoiceUpdate || route?.params?.estimateUpdate) {
       if (route.params.data) {
+
         const businessDetails = route.params.data;
+        console.log("LLLL",IMAGE_BASE_URL+businessDetails.b_business_logo);
+
+        setBusinessImage(IMAGE_BASE_URL.concat(businessDetails.b_business_logo));
         setAlreadyExist(true);
         setPhone(businessDetails.b_phone_number);
         setAddress1(businessDetails.b_address1);
@@ -72,6 +79,7 @@ const BusinessDetails = ({navigation, route}: any) => {
         setMobile(businessDetails.b_mobile_number);
         setWebsite(businessDetails.b_website);
         setOwnerName(businessDetails?.b_owner_name || '');
+        
         // b_business_logo
       } else {
         getData();
@@ -95,6 +103,7 @@ const BusinessDetails = ({navigation, route}: any) => {
       setWebsite(businessDetails.website);
       setOwnerName(businessDetails.owner_name);
       setMobile(businessDetails.mobile_number);
+
     } else {
       getInfo();
     }
@@ -121,7 +130,12 @@ const BusinessDetails = ({navigation, route}: any) => {
         setAddress2(element.address2);
         setAddress3(element.address3);
         setBusinessName(element.name);
+        setBusinessImage(IMAGE_BASE_URL.concat(element.business_logo));
+        setWebsite(element.website);
+        setMobile(element.mobile_number);
         setEmail(element.email);
+        setOwnerName(element.owner_name);
+        setBusinessNumber(element.business_number?.toString());
       }
     } catch (error) {}
   };
@@ -228,16 +242,41 @@ const BusinessDetails = ({navigation, route}: any) => {
         owner_name: ownerName,
         mobile_number: Mobile,
       };
+      const formData = new FormData();
+      const localImageUri = BusinessImage;
+      const imageFileName = localImageUri.split('/').pop();
+      const extension = localImageUri.split('.').pop();
+      formData.append('business_logo', {
+        uri: localImageUri,
+        name: imageFileName,
+        type: `image/${extension}`,
+      });
+
+      // Append other fields
+      formData.append('name', businessName);
+      formData.append('owner_name', ownerName);
+      formData.append('business_number', businessNumber);
+      formData.append('email', email);
+      formData.append('phone_number', Phone);
+      formData.append('mobile_number', Mobile);
+      formData.append('website', Website);
+      formData.append('address1', address1);
+      formData.append('address2', address2);
+      formData.append('address3', address3);
       if (selector.token === 'Guest') {
         dispatch(setBusinessDetail(payload2));
       } else {
-        const data = await FetchAPI('post', endpoint.businessInfo, payload, {
+        const data = await FetchAPI('post', endpoint.businessInfo, formData, {
           Authorization: 'Bearer ' + selector.token,
+          'Content-Type': 'multipart/form-data',
         });
         if (data.status === 'success') {
+          successMessage();
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      setFalse;
+    }
   };
 
   const updateInfo = async () => {
@@ -264,22 +303,47 @@ const BusinessDetails = ({navigation, route}: any) => {
         owner_name: ownerName,
         mobile_number: Mobile,
       };
+      const formData = new FormData();
+
+      const localImageUri = BusinessImage;
+      const imageFileName = localImageUri.split('/').pop();
+      const extension = localImageUri.split('.').pop();
+      formData.append('business_logo', {
+        uri: localImageUri,
+        name: imageFileName,
+        type: `image/${extension}`,
+      });
+
+      // Append other fields
+      formData.append('name', businessName);
+      formData.append('owner_name', ownerName);
+      formData.append('business_number', businessNumber);
+      formData.append('email', email);
+      formData.append('phone_number', Phone);
+      formData.append('mobile_number', Mobile);
+      formData.append('website', Website);
+      formData.append('address1', address1);
+      formData.append('address2', address2);
+      formData.append('address3', address3);
       if (selector.token === 'Guest') {
         dispatch(setBusinessDetail(payload2));
       } else {
         const data = await FetchAPI(
           'patch',
           endpoint.updateBusinessInfo(businessId),
-          payload,
+          formData,
           {
             Authorization: 'Bearer ' + selector.token,
+            'Content-Type': 'multipart/form-data',
           },
         );
         if (data.status === 'success') {
           successMessage();
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      setFalse;
+    }
   };
 
   const successMessage = () => {
@@ -307,6 +371,28 @@ const BusinessDetails = ({navigation, route}: any) => {
         b_address3: address3,
         b_business_logo: 'logo.png ',
       };
+      const formData = new FormData();
+
+      const localImageUri = BusinessImage;
+      const imageFileName = localImageUri.split('/').pop();
+      const extension = localImageUri.split('.').pop();
+      formData.append('b_business_logo', {
+        uri: localImageUri,
+        name: imageFileName,
+        type: `image/${extension}`,
+      });
+
+      // Append other fields
+      formData.append('b_name', businessName);
+      formData.append('b_owner_name', ownerName);
+      formData.append('b_business_number', businessNumber);
+      formData.append('b_email', email);
+      formData.append('b_phone_number', Phone);
+      formData.append('b_mobile_number', Mobile);
+      formData.append('b_website', Website);
+      formData.append('b_address1', address1);
+      formData.append('b_address2', address2);
+      formData.append('b_address3', address3);
       if (selector.token === 'Guest') {
         // dispatch(setBusinessDetail(payload));
         successMessage();
@@ -314,16 +400,19 @@ const BusinessDetails = ({navigation, route}: any) => {
         const data = await FetchAPI(
           'patch',
           endpoint.updateIVBusiness(route?.params?.invoiceID),
-          payload,
+          formData,
           {
             Authorization: 'Bearer ' + selector.token,
+            'Content-Type': 'multipart/form-data',
           },
         );
         if (data.status === 'success') {
           successMessage();
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      setFalse;
+    }
   };
 
   const offlineInvoiceUpdate = () => {
@@ -388,22 +477,47 @@ const BusinessDetails = ({navigation, route}: any) => {
         b_address3: address3,
         b_business_logo: 'logo.png ',
       };
+      const formData = new FormData();
+
+      const localImageUri = BusinessImage;
+      const imageFileName = localImageUri.split('/').pop();
+      const extension = localImageUri.split('.').pop();
+      formData.append('b_business_logo', {
+        uri: localImageUri,
+        name: imageFileName,
+        type: `image/${extension}`,
+      });
+
+      // Append other fields
+      formData.append('b_name', businessName);
+      formData.append('b_owner_name', ownerName);
+      formData.append('b_business_number', businessNumber);
+      formData.append('b_email', email);
+      formData.append('b_phone_number', Phone);
+      formData.append('b_mobile_number', Mobile);
+      formData.append('b_website', Website);
+      formData.append('b_address1', address1);
+      formData.append('b_address2', address2);
+      formData.append('b_address3', address3);
       if (selector.token === 'Guest') {
         // dispatch(setBusinessDetail(payload));
       } else {
         const data = await FetchAPI(
           'patch',
           endpoint.updateETBusiness(route?.params?.estimateID),
-          payload,
+          formData,
           {
             Authorization: 'Bearer ' + selector.token,
+            'Content-Type': 'multipart/form-data',
           },
         );
         if (data.status === 'success') {
           successMessage();
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      setFalse;
+    }
   };
 
   const handleTextChange = (field: any, value: any) => {
@@ -474,7 +588,7 @@ const BusinessDetails = ({navigation, route}: any) => {
           </View>
           <View style={styles.content}>
             <TouchableOpacity onPress={closeBottomSheet}>
-              {BusinessImage ? (
+              {BusinessImage  ? (
                 <Image
                   source={{uri: BusinessImage}}
                   resizeMode="contain"
@@ -627,6 +741,7 @@ const BusinessDetails = ({navigation, route}: any) => {
           style={GlobalStyle.statementBtn}>
           <Text style={[GlobalStyle.titleTxt2]}>{t('Update')}</Text>
         </TouchableOpacity>
+        <View style={{height: 50}} />
         <ImagePickerComponent
           openModal={openModal}
           closeBottomSheet={closeBottomSheet}

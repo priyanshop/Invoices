@@ -85,6 +85,7 @@ const importedData: any = {
     invoice_tax_type: '',
     invoice_total: 0,
     invoice_total_tax_amount: 0,
+    signature: '',
   },
 };
 
@@ -334,7 +335,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     navigation.navigate('Settings');
   }
 
-  function navigateToBusinessDetails() {
+  const navigateToBusinessDetails =()=> {
     if (route.params.status === 'update') {
       navigation.navigate('BusinessDetails', {
         invoiceUpdate: true,
@@ -408,6 +409,14 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     });
   }
 
+  function navigateToAddPhotoScreen2(item) {
+    navigation.navigate('AddPhotoScreen', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+      data: item,
+    });
+  }
+
   function navigateToPaymentInfo() {
     navigation.navigate('PaymentInfo', {
       invoiceUpdate: true,
@@ -432,7 +441,11 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
   }
 
   function navigateToSignaturePad() {
-    navigation.navigate('SignaturePad');
+    navigation.navigate('SignaturePad', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+      signature: globalData.signature,
+    });
   }
 
   const AllRoute = () => {
@@ -452,8 +465,16 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
             </Text>
           </View>
           <View style={{justifyContent: 'space-between', width: '50%'}}>
-            <View style={styles.dueBox}>
-              <Text style={styles.dueTxt}>{t('Due on Receipt')}</Text>
+            <View
+              style={[
+                styles.dueBox,
+                isMarkPaid && {borderColor: Colors.landingColor},
+              ]}>
+              {isMarkPaid ? (
+                <Text style={styles.paidTxt}>{t('Paid')}</Text>
+              ) : (
+                <Text style={styles.dueTxt}>{t('Due on Receipt')}</Text>
+              )}
             </View>
             <Text style={styles.dueDate}>
               {moment(globalData.invoice_date).format(
@@ -548,11 +569,26 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
           </View>
         </View>
 
-        <View style={styles.photoContainer}>
-          <Text style={styles.photoText}>{t('Add photo')}</Text>
-          <TouchableOpacity onPress={navigateToAddPhotoScreen}>
-            <Icon name="attach" size={22} style={styles.photoIcon} />
-          </TouchableOpacity>
+        <View style={styles.photoContainer2}>
+          {globalData.photos?.length > 0 &&
+            globalData.photos.map((item: any) => {
+              return (
+                <TouchableOpacity
+                  onPress={() => navigateToAddPhotoScreen2(item)}
+                  style={styles.photoElement}>
+                  <Text style={styles.notesText3}>
+                    {item.photo_description}
+                  </Text>
+                  <Text style={styles.notesText4}>{item.photo_notes}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          <View style={styles.photoContainer}>
+            <Text style={styles.photoText}>{t('Add photo')}</Text>
+            <TouchableOpacity onPress={navigateToAddPhotoScreen}>
+              <Icon name="attach" size={22} style={styles.photoIcon} />
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.notesContainer}>
@@ -578,9 +614,15 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
             )}
           </TouchableOpacity>
           <View style={styles.notesRow}>
-            <Text onPress={navigateToSignaturePad} style={styles.notesText}>
-              {t('Signature')}
-            </Text>
+            {globalData.signature ? (
+              <Text onPress={navigateToSignaturePad} style={styles.notesText2}>
+                {'Signed'}
+              </Text>
+            ) : (
+              <Text onPress={navigateToSignaturePad} style={styles.notesText}>
+                {t('Signature')}
+              </Text>
+            )}
           </View>
           <TouchableOpacity
             onPress={navigateToAdditionalDetails}
@@ -929,6 +971,8 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   dueTxt: {fontSize: 14, fontWeight: '400', color: 'grey'},
+  paidTxt: {fontSize: 14, fontWeight: '400', color: Colors.landingColor},
+
   dueDate: {
     fontSize: 18,
     fontWeight: '400',
@@ -1028,10 +1072,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     borderRadius: 8,
-    padding: 12,
+    paddingHorizontal: 12,
     marginVertical: 5,
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingVertical: 5,
+  },
+  photoElement: {
+    borderBottomWidth: 1,
+    paddingHorizontal: 12,
+    borderBottomColor: '#d1d1d1',
+    paddingVertical: 7,
+  },
+  photoContainer2: {
+    // flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    // paddingVertical: 12,
+    marginVertical: 5,
+    justifyContent: 'space-between',
+    // alignItems: 'center',
   },
   photoText: {
     fontSize: 16,
@@ -1063,6 +1123,21 @@ const styles = StyleSheet.create({
   },
   notesText: {
     fontSize: 16,
+    fontWeight: '400',
+    color: '#d1d1d1',
+  },
+  notesText2: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#000',
+  },
+  notesText3: {
+    fontSize: 15,
+    fontWeight: '400',
+    color: '#000',
+  },
+  notesText4: {
+    fontSize: 14,
     fontWeight: '400',
     color: '#d1d1d1',
   },

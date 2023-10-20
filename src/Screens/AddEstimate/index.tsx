@@ -58,6 +58,7 @@ const tempData = {
   createdAt: '',
   updatedAt: '',
   __v: 0,
+  signature:""
 };
 function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   const {t, i18n} = useTranslation();
@@ -303,6 +304,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
+
   const {open} = state;
 
   function navigateToSetting() {
@@ -352,7 +354,10 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   };
 
   function navigateToAddPhotoScreen() {
-    navigation.navigate('AddPhotoScreen');
+    navigation.navigate('AddPhotoScreen',{
+      estimateUpdate: true,
+      estimateID: globalData._id,
+    });
   }
 
   function navigateToPaymentInfo() {
@@ -372,7 +377,11 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   }
 
   function navigateToSignaturePad() {
-    navigation.navigate('SignaturePad');
+    navigation.navigate('SignaturePad',{
+      estimateUpdate: true,
+      estimateID: globalData._id,
+      signature: globalData.signature
+  });
   }
 
   function navigateToDiscountScreen() {
@@ -529,18 +538,37 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
           </View>
         </View>
 
-        <View style={styles.photoContainer}>
-          <Text style={styles.photoText}>{t('Add photo')}</Text>
-          <TouchableOpacity onPress={navigateToAddPhotoScreen}>
-            <Icon name="attach" size={22} style={styles.photoIcon} />
-          </TouchableOpacity>
+        <View style={styles.photoContainer2}>
+          {globalData.photos?.length > 0 &&
+            globalData.photos.map((item: any) => {
+              return (
+                <View style={styles.photoElement}>
+                  <Text style={styles.notesText3}>
+                    {item.photo_description}
+                  </Text>
+                  <Text style={styles.notesText4}>{item.photo_notes}</Text>
+                </View>
+              );
+            })}
+          <View style={styles.photoContainer}>
+            <Text style={styles.photoText}>{t('Add photo')}</Text>
+            <TouchableOpacity onPress={navigateToAddPhotoScreen}>
+              <Icon name="attach" size={22} style={styles.photoIcon} />
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.notesContainer}>
           <View style={styles.notesRow}>
-            <Text onPress={navigateToSignaturePad} style={styles.notesText}>
-              {t('Signature')}
-            </Text>
+          {globalData.signature ? (
+              <Text onPress={navigateToSignaturePad} style={styles.notesText2}>
+                {"Signed"}
+              </Text>
+            ) : (
+              <Text onPress={navigateToSignaturePad} style={styles.notesText}>
+                {t('Signature')}
+              </Text>
+            )}
           </View>
           <TouchableOpacity
             onPress={navigateToAdditionalDetails}
@@ -981,10 +1009,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     borderRadius: 8,
-    padding: 12,
+    paddingHorizontal: 12,
     marginVertical: 5,
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingVertical: 5,
+  },
+  photoElement: {
+    borderBottomWidth: 1,
+    paddingHorizontal: 12,
+    borderBottomColor: '#d1d1d1',
+    paddingVertical: 7,
+  },
+  photoContainer2: {
+    // flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    // paddingVertical: 12,
+    marginVertical: 5,
+    justifyContent: 'space-between',
+    // alignItems: 'center',
   },
   photoText: {
     fontSize: 16,
@@ -1017,6 +1061,21 @@ const styles = StyleSheet.create({
   notesText: {
     fontSize: 16,
     fontWeight: '500',
+    color: '#d1d1d1',
+  },
+  notesText2: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#000',
+  },
+  notesText3: {
+    fontSize: 15,
+    fontWeight: '400',
+    color: '#000',
+  },
+  notesText4: {
+    fontSize: 14,
+    fontWeight: '400',
     color: '#d1d1d1',
   },
   requestContainer: {

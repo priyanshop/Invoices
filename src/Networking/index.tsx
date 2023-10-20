@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API_BASE_URL = 'http://15.236.207.148:4000'; // Replace with your API base URL
-
+export const IMAGE_BASE_URL = "https://invoice-app-assets.s3.eu-west-3.amazonaws.com";
 const api = axios.create({
   baseURL: API_BASE_URL,
 });

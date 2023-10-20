@@ -63,70 +63,6 @@ const invoices = [
   },
 ];
 
-const OpenRoute = () => {
-  const renderInvoiceItem = ({item}: any) => (
-    <View style={styles.invoiceItem}>
-      <View>
-        <Text style={styles.clientText}>{`${item.client}`}</Text>
-        <Text style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
-      </View>
-      <View>
-        <Text style={styles.priceText}>{`$${item.price}`}</Text>
-        <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
-      </View>
-    </View>
-  );
-
-  const renderSectionHeader = ({section: {year}}) => (
-    <View style={styles.sectionHeaderContain}>
-      <Text style={styles.sectionHeader}>{year}</Text>
-      <Text style={styles.sectionHeader}>{'$635'}</Text>
-    </View>
-  );
-  return (
-    <View style={styles.scene}>
-      <SectionList
-        sections={invoices}
-        keyExtractor={(item: any, index: any) => item + index}
-        renderItem={renderInvoiceItem}
-        renderSectionHeader={renderSectionHeader}
-      />
-    </View>
-  );
-};
-
-const ClosedRoute = () => {
-  const renderInvoiceItem = ({item}: any) => (
-    <View style={styles.invoiceItem}>
-      <View>
-        <Text style={styles.clientText}>{`${item.client}`}</Text>
-        <Text style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
-      </View>
-      <View>
-        <Text style={styles.priceText}>{`$${item.price}`}</Text>
-        <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
-      </View>
-    </View>
-  );
-
-  const renderSectionHeader = ({section: {year}}) => (
-    <View style={styles.sectionHeaderContain}>
-      <Text style={styles.sectionHeader}>{year}</Text>
-      <Text style={styles.sectionHeader}>{'$635'}</Text>
-    </View>
-  );
-  return (
-    <View style={styles.scene}>
-      <SectionList
-        sections={invoices}
-        keyExtractor={(item: any, index: any) => item + index}
-        renderItem={renderInvoiceItem}
-        renderSectionHeader={renderSectionHeader}
-      />
-    </View>
-  );
-};
-
 function EstimatesScreen({navigation}: any): JSX.Element {
   const {t, i18n} = useTranslation();
   const data = [
@@ -291,6 +227,75 @@ function EstimatesScreen({navigation}: any): JSX.Element {
         ) : (
           renderEmptyComponent()
         )}
+      </View>
+    );
+  };
+
+  const OpenRoute = () => {
+    const renderInvoiceItem = ({item}: any) => (
+      <View style={styles.invoiceItem}>
+        <View>
+          <Text style={styles.clientText}>{`${item.client}`}</Text>
+          <Text
+            style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
+        </View>
+        <View>
+          <Text style={styles.priceText}>{`$${item.price}`}</Text>
+          <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
+        </View>
+      </View>
+    );
+
+    const renderSectionHeader = ({section: {year,totalInvoiceAmount}}) => (
+      <View style={styles.sectionHeaderContain}>
+        <Text style={styles.sectionHeader}>{year}</Text>
+        <Text style={styles.sectionHeader}>{'$' + totalInvoiceAmount}</Text>
+      </View>
+    );
+    return (
+      <View style={styles.scene}>
+        {filteredInvoices.length >= 0 && (
+          <SectionList
+            sections={filteredInvoices}
+            keyExtractor={(item: any, index: any) => item + index}
+            renderItem={renderInvoiceItem}
+            renderSectionHeader={renderSectionHeader}
+          />
+        )}
+      </View>
+    );
+  };
+
+  const ClosedRoute = () => {
+    const renderInvoiceItem = ({item}: any) => (
+      <View style={styles.invoiceItem}>
+        <View>
+          <Text style={styles.clientText}>{`${item.client}`}</Text>
+          <Text
+            style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
+        </View>
+        <View>
+          <Text style={styles.priceText}>{`$${item.price}`}</Text>
+          <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
+        </View>
+      </View>
+    );
+
+    const renderSectionHeader = ({section: {year}}) => (
+      <View style={styles.sectionHeaderContain}>
+        <Text style={styles.sectionHeader}>{year}</Text>
+        <Text style={styles.sectionHeader}>{'$635'}</Text>
+      </View>
+    );
+    return (
+      <View style={styles.scene}>
+        <SectionList
+          // sections={invoices}
+          sections={[]}
+          keyExtractor={(item: any, index: any) => item + index}
+          renderItem={renderInvoiceItem}
+          renderSectionHeader={renderSectionHeader}
+        />
       </View>
     );
   };
