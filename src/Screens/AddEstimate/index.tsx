@@ -373,7 +373,11 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   }
 
   function navigateToInvoiceNumber() {
-    navigation.navigate('EstimationNumber');
+    navigation.navigate('EstimationNumber',{
+      estimateUpdate: true,
+      estimateID: globalData._id,
+      estimateData: globalData,
+    });
   }
 
   function navigateToSignaturePad() {

@@ -1,13 +1,20 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TextInput} from 'react-native';
 import TermsComponent from '../../CustomComponent/TermsComponent';
 import DatePicker from 'react-native-date-picker';
 import {useTranslation} from 'react-i18next';
 import moment from 'moment';
 import {useSelector} from 'react-redux';
+import {TouchableOpacity} from 'react-native';
+import {GlobalStyle} from '../../Helper/GlobalStyle';
+import FetchAPI from '../../Networking';
+import {endpoint} from '../../Networking/endpoint';
+import ToastService from '../../Helper/ToastService';
+import {setInvoiceList} from '../../redux/reducers/user/UserReducer';
 
-const InvoiceNumber = () => {
+const InvoiceNumber = ({navigation, route}: any) => {
   const {t, i18n} = useTranslation();
+  const dispatch = useDispatch();
 
   const [openModal, setOpenModal] = useState(false);
   const [selectedTerm, setSelectedTerm] = useState('Due on receipt');
@@ -20,6 +27,60 @@ const InvoiceNumber = () => {
   const selector = useSelector((state: any) => state.user);
   const [dueDate2, setDueDate2] = useState(new Date());
 
+  useEffect(() => {
+    setInvoiceStateFromParams(route.params?.invoiceData);
+  }, [route.params]);
+
+  const setInvoiceStateFromParams = (params: any) => {
+    if (params) {
+      const {invoice_number, invoice_date, terms, due_date, PO_number} = params;
+
+      setSelectedTerm(terms || 'Due on receipt');
+      setInvoiceNumber(invoice_number || '');
+      setDate(new Date(invoice_date) || new Date());
+      setPoNumber(PO_number || '');
+      setDueDate(new Date(due_date) || new Date());
+    }
+  };
+
+  const callAPI = async () => {
+    const updatedData: any = {
+      invoice_number: invoiceNumber,
+      invoice_date: date,
+      terms: selectedTerm,
+      due_date: dueDate,
+      PO_number: poNumber,
+    };
+    if (selector.token === 'Guest') {
+      const updatedArray = selector.invoiceList.map((item: any) => {
+        if (item.index === route?.params?.invoiceData.index) {
+          return {
+            ...item,
+            ...updatedData,
+          };
+        }
+        return item;
+      });
+      dispatch(setInvoiceList(updatedArray));
+    } else {
+      const data = await FetchAPI(
+        'patch',
+        endpoint.updateIVNumber(route?.params?.invoiceID),
+        updatedData,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        successMessage();
+      }
+    }
+  };
+
+  const successMessage = () => {
+    ToastService.showToast('Updated Successfully');
+    navigation.goBack();
+  };
   return (
     <View style={styles.mainContainer}>
       <View style={{borderRadius: 8, backgroundColor: '#fff', padding: 8}}>
@@ -63,6 +124,9 @@ const InvoiceNumber = () => {
           />
         </View>
       </View>
+      <TouchableOpacity onPress={callAPI} style={GlobalStyle.statementBtn}>
+        <Text style={[GlobalStyle.titleTxt2]}>{t('Update')}</Text>
+      </TouchableOpacity>
       <TermsComponent
         modalVisible={openModal}
         setModalVisible={() => setOpenModal(false)}

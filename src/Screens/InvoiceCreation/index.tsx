@@ -230,32 +230,62 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
 
   const duplicateInvoice = async () => {
     try {
-      const data = await FetchAPI(
-        'post',
-        endpoint.duplicateInvoice(route?.params?.data?._id),
-        null,
-        {
-          Authorization: 'Bearer ' + selector.token,
-        },
-      );
-      if (data.status === 'success') {
+      if (selector.token === 'Guest') {
+        const tempPayload = {
+          index: new Date().getTime(),
+        };
+        const payload = {
+          ...tempPayload,
+          ...globalData,
+        };
+        dispatch(addNewInvoice(payload));
+
         Alert.alert('', 'Duplicate invoice is created successfully');
+      } else {
+        const data = await FetchAPI(
+          'post',
+          endpoint.duplicateInvoice(route?.params?.data?._id),
+          null,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+          Alert.alert('', 'Duplicate invoice is created successfully');
+        }
       }
     } catch (error) {}
   };
 
   const markPaid = async () => {
     try {
-      const data = await FetchAPI(
-        'patch',
-        endpoint.markPaidInvoice(route?.params?.data?._id),
-        null,
-        {
-          Authorization: 'Bearer ' + selector.token,
-        },
-      );
-      if (data.status === 'success') {
-        setIsMarkPaid(data.data.is_paid);
+      if (selector.token === 'Guest') {
+        const tempPayload = {
+          is_paid: !route?.params?.data.is_paid,
+        };
+        const updatedArray = selector.invoiceList.map((item: any) => {
+          if (item.index === route?.params?.data.index) {
+            return {
+              ...item,
+              ...tempPayload,
+            };
+          }
+          return item;
+        });
+        setIsMarkPaid(!route?.params?.data.is_paid);
+        dispatch(setInvoiceList(updatedArray));
+      } else {
+        const data = await FetchAPI(
+          'patch',
+          endpoint.markPaidInvoice(route?.params?.data?._id),
+          null,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+          setIsMarkPaid(data.data.is_paid);
+        }
       }
     } catch (error) {}
   };
@@ -335,7 +365,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     navigation.navigate('Settings');
   }
 
-  const navigateToBusinessDetails =()=> {
+  const navigateToBusinessDetails = () => {
     if (route.params.status === 'update') {
       navigation.navigate('BusinessDetails', {
         invoiceUpdate: true,
@@ -348,7 +378,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         invoiceID: globalData._id,
       });
     }
-  }
+  };
 
   function navigateToDiscountScreen() {
     navigation.navigate('DiscountScreen', {
@@ -437,6 +467,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     navigation.navigate('InvoiceNumber', {
       invoiceUpdate: true,
       invoiceID: globalData._id,
+      invoiceData: globalData
     });
   }
 
