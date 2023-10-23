@@ -100,6 +100,7 @@ const BusinessDetails = ({navigation, route}: any) => {
       setWebsite(businessDetails.website);
       setOwnerName(businessDetails.owner_name);
       setMobile(businessDetails.mobile_number);
+      setBusinessImage(businessDetails.business_logo)
     } else {
       getInfo();
     }
