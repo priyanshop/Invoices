@@ -18,6 +18,7 @@ import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import DiscountOption from '../../CustomComponent/DiscountOption';
 import {
+  addItemInList,
   setEstimateList,
   setInvoiceList,
 } from '../../redux/reducers/user/UserReducer';
@@ -40,6 +41,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
   const [discountAmount, setDiscountAmount] = useState('');
   const [taxRate, setTaxRate] = useState('1');
   const [openModal, setOpenModal] = useState(false);
+  const [tempNew, setTempNew] = useState(false);
 
   const closeBottomSheet = () => {
     setOpenModal(!openModal);
@@ -57,7 +59,10 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
     });
   }, [navigation]);
 
-  useEffect(() => {
+  useEffect(() => {    
+    if (!route.params.invoiceData.items[route.params.index]) {
+      setTempNew(true)
+    }
     if (selector.token === 'Guest') {
       if (
         route.params.invoiceUpdate &&
@@ -619,6 +624,9 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
         updateCallOffline(tempPayload);
       } else {
         updateCall(tempPayload);
+        if (saveToItem) {
+          createGlobal();
+        }
       }
     } catch (error) {}
   };
@@ -728,6 +736,9 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
         updateEstimateCallOffline(tempPayload);
       } else {
         updateETCall(tempPayload);
+        if (saveToItem) {
+          createGlobal();
+        }
       }
     } catch (error) {}
   };
@@ -795,6 +806,28 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
       //   updateEstimate();
       // }
     }
+  };
+
+  const createGlobal = async () => {
+    try {
+      const payload: any = {
+        description: Description,
+        rate: unitCost,
+        unit: unit,
+        is_taxable: Taxable.toString(),
+        notes: Notes,
+      };
+      if (selector.token === 'Guest') {
+        dispatch(addItemInList(payload));
+        navigation.goBack();
+      } else {
+        const data = await FetchAPI('post', endpoint.addItems, payload, {
+          Authorization: 'Bearer ' + selector.token,
+        });
+        if (data.status === 'success') {
+        }
+      }
+    } catch (error) {}
   };
 
   return (
@@ -963,16 +996,18 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
           />
         </View>
 
-        <View style={styles.itemView}>
-          <View style={styles.saveView}>
-            <Text style={styles.saveText}>{t('Save to "My Items"')}</Text>
-            <Switch
-              value={saveToItem}
-              color={Colors.landingColor}
-              onValueChange={(value: any) => setSaveToItem(value)}
-            />
+        {tempNew ? (
+          <View style={styles.itemView}>
+            <View style={styles.saveView}>
+              <Text style={styles.saveText}>{t('Save to "My Items"')}</Text>
+              <Switch
+                value={saveToItem}
+                color={Colors.landingColor}
+                onValueChange={(value: any) => setSaveToItem(value)}
+              />
+            </View>
           </View>
-        </View>
+        ) : null}
 
         <TouchableOpacity onPress={checkCondition} style={styles.statementBtn}>
           <Text style={[styles.titleTxt2, {color: '#fff', fontWeight: '600'}]}>
@@ -1021,7 +1056,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#000',
     height: 40,
-    width:"100%",
+    width: '100%',
   },
   itemView: {
     backgroundColor: '#fff',

@@ -11,8 +11,7 @@ import FetchAPI, {IMAGE_BASE_URL} from '../../Networking';
 import {useSelector} from 'react-redux';
 import ToastService from '../../Helper/ToastService';
 import {Images} from '../../assets';
-import {Image} from 'react-native';
-import {TouchableOpacity} from 'react-native';
+import {TouchableOpacity, Image} from 'react-native';
 
 const Sign = ({navigation, route}: any) => {
   const ref = useRef();
@@ -22,7 +21,33 @@ const Sign = ({navigation, route}: any) => {
   const [image, setImage] = useState('');
   const [alreadyExist, setAlreadyExist] = useState(false);
   const [imageURL, setImageURL] = useState('');
+  const [base64Image, setBase64Image] = useState('');
 
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setImageUrl(event.target.value);
+  };
+
+  const convertImageUrlToBase64 = imageUrl => {
+    fetch(imageUrl)
+      .then(response => response.blob())
+      .then(blob => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const base64Data = reader.result as string;
+          const base64WithMimeType = `data:image/png;base64,${
+            base64Data.split(',')[1]
+          }`;
+
+          setBase64Image(base64WithMimeType);
+          setAlreadyExist(true);
+        };
+        reader.readAsDataURL(blob);
+      })
+      .catch(error => {
+        console.error('Error converting image to Base64:', error);
+        setBase64Image(null);
+      });
+  };
   useEffect(() => {
     // Orientation.lockToLandscape();
     Orientation.lockToPortrait();
@@ -33,8 +58,11 @@ const Sign = ({navigation, route}: any) => {
   useEffect(() => {
     if (route.params.signature) {
       console.log('route.params.signature', route.params.signature);
-      setAlreadyExist(true);
+      convertImageUrlToBase64(IMAGE_BASE_URL + route.params.signature);
+      // setAlreadyExist(true);
       setImageURL(route.params.signature);
+    } else {
+      setAlreadyExist(true);
     }
   }, [route.params]);
 
@@ -123,6 +151,7 @@ const Sign = ({navigation, route}: any) => {
   };
 
   const handleSignature = signature => {
+    console.log(signature);
     setImage(signature);
   };
 
@@ -163,7 +192,7 @@ const Sign = ({navigation, route}: any) => {
 
   return (
     <View style={{flex: 1}}>
-      {alreadyExist && (
+      {/* {false && (
         <TouchableOpacity
           style={{
             // flex: 1,
@@ -194,21 +223,23 @@ const Sign = ({navigation, route}: any) => {
             resizeMode="cover"
           />
         </TouchableOpacity>
-      )}
-      <SignatureScreen
-        ref={ref}
-        onEnd={handleEnd}
-        onOK={handleSignature}
-        onEmpty={handleEmpty}
-        onClear={handleClear}
-        onGetData={handleData}
-        onCancel={handleCancel}
-        descriptionText={''}
-        clearText={t('Clear')}
-        confirmText={t('Save')}
-        cancelText={t('Cancel')}
-        style={{flex: 1}}
-        webStyle={`.m-signature-pad {
+      )} */}
+      {alreadyExist ? (
+        <SignatureScreen
+          ref={ref}
+          onEnd={handleEnd}
+          onOK={handleSignature}
+          onEmpty={handleEmpty}
+          onClear={handleClear}
+          onGetData={handleData}
+          onCancel={handleCancel}
+          descriptionText={''}
+          clearText={t('Clear')}
+          confirmText={t('Save')}
+          cancelText={t('Cancel')}
+          style={{flex: 1}}
+          dataURL={base64Image || ''}
+          webStyle={`.m-signature-pad {
             height: ${width - 65}px;
             margin: 0;
           }.m-signature-pad--footer
@@ -231,10 +262,11 @@ const Sign = ({navigation, route}: any) => {
         font-size: 16px;
         font-weight: 500;
         }`}
-        rotated
-        // customHtml={signaturePadHtml}
-        // onCustomHtmlLoaded={handleCustomHtmlLoaded}
-      />
+          rotated
+          // customHtml={signaturePadHtml}
+          // onCustomHtmlLoaded={handleCustomHtmlLoaded}
+        />
+      ) : null}
     </View>
   );
 };

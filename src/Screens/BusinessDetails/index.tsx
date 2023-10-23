@@ -59,15 +59,12 @@ const BusinessDetails = ({navigation, route}: any) => {
   const setTrue = () => setLoader(true);
   const setFalse = () => setLoader(false);
   useEffect(() => {
-    console.log("SSs");
-    
     if (route?.params?.invoiceUpdate || route?.params?.estimateUpdate) {
       if (route.params.data) {
-
         const businessDetails = route.params.data;
-        console.log("LLLL",IMAGE_BASE_URL+businessDetails.b_business_logo);
-
-        setBusinessImage(IMAGE_BASE_URL.concat(businessDetails.b_business_logo));
+        setBusinessImage(
+          IMAGE_BASE_URL.concat(businessDetails.b_business_logo),
+        );
         setAlreadyExist(true);
         setPhone(businessDetails.b_phone_number);
         setAddress1(businessDetails.b_address1);
@@ -79,7 +76,7 @@ const BusinessDetails = ({navigation, route}: any) => {
         setMobile(businessDetails.b_mobile_number);
         setWebsite(businessDetails.b_website);
         setOwnerName(businessDetails?.b_owner_name || '');
-        
+
         // b_business_logo
       } else {
         getData();
@@ -103,7 +100,6 @@ const BusinessDetails = ({navigation, route}: any) => {
       setWebsite(businessDetails.website);
       setOwnerName(businessDetails.owner_name);
       setMobile(businessDetails.mobile_number);
-
     } else {
       getInfo();
     }
@@ -183,7 +179,18 @@ const BusinessDetails = ({navigation, route}: any) => {
       setMobileError('');
     }
 
-    if (!Website.match(/^(http|https):\/\/.+/i)) {
+    // if (!Website.match(/^(http|https):\/\/.+/i)) {
+    //   setWebsiteError('Invalid website URL');
+    //   isValid = false;
+    // } else {
+    //   setWebsiteError('');
+    // }
+
+    if (
+      !Website.match(
+        /^(https?:\/\/)?([a-zA-Z0-9-]+\.)?[a-zA-Z0-9][a-zA-Z0-9-]+\.[a-z]{2,}$/i,
+      )
+    ) {
       setWebsiteError('Invalid website URL');
       isValid = false;
     } else {
@@ -588,7 +595,7 @@ const BusinessDetails = ({navigation, route}: any) => {
           </View>
           <View style={styles.content}>
             <TouchableOpacity onPress={closeBottomSheet}>
-              {BusinessImage  ? (
+              {BusinessImage ? (
                 <Image
                   source={{uri: BusinessImage}}
                   resizeMode="contain"
