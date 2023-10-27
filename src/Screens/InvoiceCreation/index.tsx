@@ -157,11 +157,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
 
   useEffect(() => {
     if (route.params.status === 'create') {
-      console.log('ssssssjkkk');
-
       if (selector.token === 'Guest') {
-        console.log('sssjkkk');
-
         offline();
       } else {
         createInvoiceCall();
@@ -192,8 +188,6 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
   };
 
   const setOffline = (payload: any) => {
-    console.log('payload',payload);
-
     setGlobalData(payload);
     fetchPaymentDue(payload);
   };

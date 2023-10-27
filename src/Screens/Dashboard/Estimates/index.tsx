@@ -124,7 +124,6 @@ function EstimatesScreen({ navigation }: any): JSX.Element {
       if (data.status === 'success') {
         if (data.data) {
           const savedData: any = convertData(data.data);
-          console.log(savedData);
           setFalse();
           setAllData(savedData);
         }

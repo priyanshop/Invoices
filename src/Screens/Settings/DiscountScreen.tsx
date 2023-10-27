@@ -188,8 +188,6 @@ function DiscountScreen({navigation, route}: any): JSX.Element {
           ...tempPayload,
         };
       }
-      console.log('item', item);
-
       return item;
     });
     const updatedArray2 = selector.estimateList.filter(

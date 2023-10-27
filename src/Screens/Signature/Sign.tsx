@@ -65,12 +65,10 @@ const Sign = ({navigation, route}: any) => {
   useEffect(() => {
     if (route.params.signature) {
       if (selector.token === 'Guest') {
-        console.log('route.params.s', route.params.signature);
         setBase64Image(route.params.signature);
         setAlreadyExist(true);
         setImageURL(route.params.signature);
       } else {
-        console.log('route.params.signature', route.params.signature);
         convertImageUrlToBase64(IMAGE_BASE_URL + route.params.signature);
         // setAlreadyExist(true);
         setImageURL(route.params.signature);
@@ -127,9 +125,7 @@ const Sign = ({navigation, route}: any) => {
         };
       }
       return item;
-    });
-    console.log("Ssssss",updatedArray);
-    
+    });    
     dispatch(setInvoiceList(updatedArray));
     successMessage();
   };
@@ -228,7 +224,6 @@ const Sign = ({navigation, route}: any) => {
   };
 
   const handleData = data => {
-    console.log(data);
     if(image){
       checkUpdate();
     }else{
@@ -237,7 +232,6 @@ const Sign = ({navigation, route}: any) => {
   };
 
   const handleCancel = () => {
-    console.log('Empty');
     navigation.goBack();
   };
 

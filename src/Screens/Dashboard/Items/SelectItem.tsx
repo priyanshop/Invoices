@@ -31,7 +31,6 @@ function SelectItemScreen({navigation}: any): JSX.Element {
 
   useEffect(() => {
     if (selector.token === 'Guest') {
-      console.log(selector.itemsList);
       setSearchItemList(selector.itemsList);
       setItemList(selector.itemsList);
     } else {
