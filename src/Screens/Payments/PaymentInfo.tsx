@@ -1,29 +1,43 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
-import { Colors } from '../../Helper/Colors';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
+import {useSelector, useDispatch} from 'react-redux';
+import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
-import { endpoint } from '../../Networking/endpoint';
-import { setInvoiceList, setPaymentInfo } from '../../redux/reducers/user/UserReducer';
-import { useTranslation } from 'react-i18next';
+import {endpoint} from '../../Networking/endpoint';
+import {
+  setInvoiceList,
+  setPaymentInfo,
+} from '../../redux/reducers/user/UserReducer';
+import {useTranslation} from 'react-i18next';
+import {GlobalStyle} from '../../Helper/GlobalStyle';
+import ModalActivityIndicator from '../../CustomComponent/Loader';
+import ToastService from '../../Helper/ToastService';
 
-const PaymentInfo = ({ navigation, route }: any) => {
+const PaymentInfo = ({navigation, route}: any) => {
   const dispatch = useDispatch();
-  const { t, i18n } = useTranslation();
+  const {t, i18n} = useTranslation();
   const selector = useSelector((state: any) => state.user);
   const [payable, setPayable] = useState('');
   const [email, setEmail] = useState('');
   const [paymentInstructions, setPaymentInstructions] = useState('');
   const [additionalDetails, setAdditionalDetails] = useState('');
+  const [isUpdate, setIsUpdate] = useState(false);
+  const [Loader, setLoader] = useState(false);
 
-  useEffect(() => {
-
-  }, [selector.token]);
+  useEffect(() => {}, [selector.token]);
 
   useEffect(() => {
     if (route?.params?.invoiceUpdate) {
+      setLoader(true);
       fetchData(route?.params.invoiceData);
     } else {
+      setLoader(true);
       if (selector.token === 'Guest') {
         fetchData(selector.paymentInfo);
       } else {
@@ -33,6 +47,8 @@ const PaymentInfo = ({ navigation, route }: any) => {
   }, [route?.params]);
 
   const fetchData = (data: any) => {
+    setIsUpdate(true);
+    setLoader(false);
     const element = data;
     setPayable(element.make_checks_payable);
     setAdditionalDetails(element.additional_payment_instructions);
@@ -47,12 +63,16 @@ const PaymentInfo = ({ navigation, route }: any) => {
       });
       if (data.status === 'success') {
         const element = data.data.payment_info;
+        setIsUpdate(true);
+        setLoader(false);
         setPayable(element.make_checks_payable);
         setAdditionalDetails(element.additional_payment_instructions);
         setEmail(element.paypal_email);
         setPaymentInstructions(element.payment_instructions);
       }
-    } catch (error) { }
+    } catch (error) {
+      setLoader(false);
+    }
   };
 
   const addInfo = async () => {
@@ -70,9 +90,12 @@ const PaymentInfo = ({ navigation, route }: any) => {
           Authorization: 'Bearer ' + selector.token,
         });
         if (data.status === 'success') {
+          successMessage();
         }
       }
-    } catch (error) { }
+    } catch (error) {
+      setLoader(false);
+    }
   };
 
   const handleTextInputChange = (value: any, setter: any) => {
@@ -80,9 +103,10 @@ const PaymentInfo = ({ navigation, route }: any) => {
   };
 
   const checkCondition = () => {
+    setLoader(true);
     if (route?.params?.invoiceUpdate) {
       if (selector.token === 'Guest') {
-        offlineInvoiceUpdate()
+        offlineInvoiceUpdate();
       } else {
         updateIVinfo();
       }
@@ -111,9 +135,12 @@ const PaymentInfo = ({ navigation, route }: any) => {
           },
         );
         if (data.status === 'success') {
+          successMessage();
         }
       }
-    } catch (error) { }
+    } catch (error) {
+      setLoader(false);
+    }
   };
 
   const offlineInvoiceUpdate = () => {
@@ -130,101 +157,126 @@ const PaymentInfo = ({ navigation, route }: any) => {
       return item;
     });
     dispatch(setInvoiceList(updatedArray));
+    successMessage();
+  };
+
+  const successMessage = () => {
+    setLoader(false);
+    ToastService.showToast('Updated Successfully');
+    navigation.goBack();
   };
 
   return (
-    <View style={styles.mainContainer}>
-      <View>
-        <Text style={styles.titleTxt}>
-          {t('Settings.SensitiveInformation')}
-        </Text>
-      </View>
-      <View style={styles.businessContainer}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>{t('PayPal Email')}</Text>
+    <>
+      <ModalActivityIndicator
+        visible={Loader}
+        size="large"
+        color={Colors.landingColor}
+      />
+      <View style={styles.mainContainer}>
+        <View>
+          <Text style={styles.titleTxt}>
+            {t('Settings.SensitiveInformation')}
+          </Text>
         </View>
-        <View style={styles.rowView}>
-          <TextInput
-            value={email}
-            onChangeText={value => handleTextInputChange(value, setEmail)}
-            onBlur={checkCondition}
-            style={{ ...styles.titleTxt, flex: 1, textAlign: 'left' }}
-            placeholder={t('Enter your paypal email address')}
-            placeholderTextColor={'grey'}
-          />
+        <View style={styles.businessContainer}>
+          <View style={styles.header}>
+            <Text style={styles.headerText}>{t('PayPal Email')}</Text>
+          </View>
+          <View style={styles.rowView}>
+            <TextInput
+              value={email}
+              onChangeText={value => handleTextInputChange(value, setEmail)}
+              // onBlur={checkCondition}
+              style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+              placeholder={t('Enter your paypal email address')}
+              placeholderTextColor={'grey'}
+            />
+          </View>
         </View>
-      </View>
 
-      <View style={styles.businessContainer}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>{t('Make cheques payable to')}</Text>
+        <View style={styles.businessContainer}>
+          <View style={styles.header}>
+            <Text style={styles.headerText}>
+              {t('Make cheques payable to')}
+            </Text>
+          </View>
+          <View style={styles.rowView}>
+            <TextInput
+              value={payable}
+              onChangeText={value => handleTextInputChange(value, setPayable)}
+              // onBlur={checkCondition}
+              style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
+              placeholder={t("Your or your business's name")}
+              placeholderTextColor={'grey'}
+            />
+          </View>
         </View>
-        <View style={styles.rowView}>
-          <TextInput
-            value={payable}
-            onChangeText={value => handleTextInputChange(value, setPayable)}
-            onBlur={checkCondition}
-            style={{ ...styles.titleTxt, flex: 1, textAlign: 'left' }}
-            placeholder={t("Your or your business's name")}
-            placeholderTextColor={'grey'}
-          />
-        </View>
-      </View>
 
-      <View style={styles.businessContainer}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>{t('Payment Instruction')}</Text>
+        <View style={styles.businessContainer}>
+          <View style={styles.header}>
+            <Text style={styles.headerText}>{t('Payment Instruction')}</Text>
+          </View>
+          <View style={styles.rowView}>
+            <TextInput
+              value={paymentInstructions}
+              onChangeText={value =>
+                handleTextInputChange(value, setPaymentInstructions)
+              }
+              // onBlur={checkCondition}
+              style={{
+                ...styles.titleTxt,
+                flex: 1,
+                textAlign: 'left',
+                height: 70,
+                textAlignVertical: 'top',
+                paddingBottom: 10,
+              }}
+              placeholder={t(
+                'Specify instructions for the payments of deposits',
+              )}
+              placeholderTextColor={'grey'}
+              multiline
+              numberOfLines={4}
+            />
+          </View>
         </View>
-        <View style={styles.rowView}>
-          <TextInput
-            value={paymentInstructions}
-            onChangeText={value =>
-              handleTextInputChange(value, setPaymentInstructions)
-            }
-            onBlur={checkCondition}
-            style={{
-              ...styles.titleTxt,
-              flex: 1,
-              textAlign: 'left',
-              height: 70,
-              textAlignVertical: 'top',
-              paddingBottom:10
-            }}
-            placeholder={t('Specify instructions for the payments of deposits')}
-            placeholderTextColor={'grey'}
-            multiline
-            numberOfLines={4}
-          />
-        </View>
-      </View>
 
-      <View style={styles.businessContainer}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>{t('Others')}</Text>
+        <View style={styles.businessContainer}>
+          <View style={styles.header}>
+            <Text style={styles.headerText}>{t('Others')}</Text>
+          </View>
+          <View style={styles.rowView}>
+            <TextInput
+              value={additionalDetails}
+              onChangeText={value =>
+                handleTextInputChange(value, setAdditionalDetails)
+              }
+              onBlur={checkCondition}
+              style={{
+                ...styles.titleTxt,
+                flex: 1,
+                textAlign: 'left',
+                height: 70,
+                textAlignVertical: 'top',
+                paddingBottom: 10,
+              }}
+              placeholder={t('Additional payment instructions')}
+              placeholderTextColor={'grey'}
+              multiline
+              numberOfLines={4}
+            />
+          </View>
         </View>
-        <View style={styles.rowView}>
-          <TextInput
-            value={additionalDetails}
-            onChangeText={value =>
-              handleTextInputChange(value, setAdditionalDetails)
-            }
-            onBlur={checkCondition}
-            style={{
-              ...styles.titleTxt,
-              flex: 1,
-              textAlign: 'left',
-              height: 70,
-              textAlignVertical: 'top',
-              paddingBottom:10
-            }}
-            placeholder={t('Additional payment instructions')}
-            placeholderTextColor={'grey'}
-            multiline
-            numberOfLines={4}
-          />
-        </View>
+        <TouchableOpacity
+          onPress={checkCondition}
+          style={GlobalStyle.statementBtn}>
+          <Text style={[GlobalStyle.titleTxt2]}>
+            {isUpdate ? t('Update') : t('Add')}
+          </Text>
+        </TouchableOpacity>
       </View>
-    </View>
+    </>
   );
 };
 
@@ -269,7 +321,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     paddingHorizontal: 0,
   },
-  innerView: { flex: 1, paddingHorizontal: 8 },
+  innerView: {flex: 1, paddingHorizontal: 8},
   businessContainer: {
     borderRadius: 8,
     backgroundColor: '#fff',

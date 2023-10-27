@@ -119,8 +119,6 @@ function TaxScreen({navigation, route}: any): JSX.Element {
       route.params.estimateData.estimate_total,
       taxRate,
     );
-    console.log('tempPayload', route.params.estimateData);
-
     const totalTax = getTotalTaxAmount(route.params.estimateData.items);
     const payload: any = {
       estimate_tax_type: selectedTax,
@@ -148,9 +146,7 @@ function TaxScreen({navigation, route}: any): JSX.Element {
           ...item,
           ...tempPayload,
         };
-      }
-      console.log("item",item);
-      
+      }      
       return item;
     });
     const updatedArray2 = selector.estimateList.filter(

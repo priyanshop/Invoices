@@ -16,10 +16,14 @@ import {
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {useTranslation} from 'react-i18next';
+import ToastService from '../../Helper/ToastService';
+import RNFS from 'react-native-fs';
+import Share from 'react-native-share';
+import XLSX from 'xlsx';
 
 const SettingScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
-  const selector = useSelector(state => state.user);
+  const selector = useSelector((state: any) => state.user);
   const {t, i18n} = useTranslation();
 
   const apiCall = async () => {
@@ -33,6 +37,7 @@ const SettingScreen = ({navigation}: any) => {
           index: 0,
           routes: [{name: 'LandingPage'}],
         });
+        ToastService.showToast('Account Deleted Successfully');
       }
     } catch (error) {}
   };
@@ -43,6 +48,7 @@ const SettingScreen = ({navigation}: any) => {
       index: 0,
       routes: [{name: screen}],
     });
+    ToastService.showToast('Logout Successfully');
   };
 
   const data = [
@@ -117,6 +123,7 @@ const SettingScreen = ({navigation}: any) => {
           title: 'Export as Spreadsheet',
           titleTxt: t('Settings.ExportAsSpreadsheet'),
           description: '',
+          onPress: ()=>handleDownloadAndShare(),
         },
         {
           title: 'Customize',
@@ -179,7 +186,7 @@ const SettingScreen = ({navigation}: any) => {
           title: 'Switch Account',
           titleTxt: t('Settings.SwitchAccount'),
           description: '',
-          onPress: () => accountAction('SignIn'),
+          onPress: () => accountAction('LandingPage'),
         },
         {
           title: 'Sign Up',
@@ -226,6 +233,35 @@ const SettingScreen = ({navigation}: any) => {
     },
   ];
 
+  const handleDownloadAndShare = async () => {
+    try {
+      
+      const response = await FetchAPI(
+        'get',
+        endpoint.exportSpreadSheet,
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      const data = response.data;
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'DataSheet');
+      const excelFilePath = `${RNFS.DocumentDirectoryPath}/data.xlsx`;
+      RNFS.writeFile(excelFilePath, XLSX.write(wb, { bookType: 'xlsx', type: 'base64' }), 'base64')
+        .then(() => {
+          Share.open({
+            url: `file://${excelFilePath}`,
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            title: 'Share Excel File',
+          });
+        });
+    } catch (error) {
+      console.error('Error downloading and sharing Excel file', error);
+    }
+  }
+
   const renderSectionHeader = ({section}: any) => (
     <View style={styles.headerView}>
       <Text style={{fontSize: 18, color: '#fff', fontWeight: '500'}}>
@@ -240,7 +276,7 @@ const SettingScreen = ({navigation}: any) => {
   );
 
   const renderItem = ({item, index}: any) =>
-    item.title === 'Sign Up' && selector.token !== "Guest" ? null : (
+    item.title === 'Sign Up' && selector.token !== 'Guest' ? null : (
       <TouchableOpacity
         onPress={item.onPress}
         style={[

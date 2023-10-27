@@ -14,6 +14,7 @@ import com.rt2zz.reactnativecontacts.ReactNativeContacts;
 import org.wonday.orientation.OrientationPackage;
 import org.wonday.orientation.OrientationActivityLifecycle;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
+import com.rnfs.RNFSPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -32,6 +33,7 @@ public class MainApplication extends Application implements ReactApplication {
           new ReactNativeContacts();
           new OrientationPackage();
           new SplashScreenReactPackage();
+          new RNFSPackage();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
           return packages;

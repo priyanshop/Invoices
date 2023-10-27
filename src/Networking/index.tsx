@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://7f2a-103-204-189-64.ngrok-free.app'; // Replace with your API base URL
-
+const API_BASE_URL = 'http://15.236.207.148:4000'; // Replace with your API base URL
+export const IMAGE_BASE_URL =
+  'https://invoice-app-assets.s3.eu-west-3.amazonaws.com';
 const api = axios.create({
   baseURL: API_BASE_URL,
 });
@@ -24,8 +25,16 @@ const FetchAPI = async (
     return response.data;
   } catch (error) {
     // Handle error here
-    console.error('API error:', error);
-    throw new Error('API request failed');
+    if (error.response) {
+      // Handle the specific error response from the server
+      const errorData = error.response.data;
+      if (error.response.status === 400) {
+        // The server responded with a 400 status code, indicating an error
+        console.error('API Error Response:', errorData.message);
+      }
+      console.error('API error:', errorData.message);
+      throw new Error(errorData.message);
+    }
   }
 };
 

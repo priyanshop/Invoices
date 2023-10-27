@@ -1,5 +1,7 @@
+//@ts-nocheck
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
+  Alert,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -25,7 +27,10 @@ import {actionStyle, fabStyle} from '../../Helper/CommonStyle';
 import {endpoint} from '../../Networking/endpoint';
 import FetchAPI from '../../Networking';
 import {setNewEstimateInList} from '../../Constant';
-import {addNewEstimate} from '../../redux/reducers/user/UserReducer';
+import {
+  addNewEstimate,
+  setEstimateList,
+} from '../../redux/reducers/user/UserReducer';
 import EmptyHistory from '../../CustomComponent/EmptyHistory';
 import {FlatList} from 'react-native';
 
@@ -53,6 +58,7 @@ const tempData = {
   createdAt: '',
   updatedAt: '',
   __v: 0,
+  signature:""
 };
 function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   const {t, i18n} = useTranslation();
@@ -119,7 +125,6 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   }, [navigation]);
 
   useEffect(() => {
-    console.log('Isfcuse', isFocused);
     if (!created && route.params.status === 'create') {
       if (selector.token === 'Guest') {
         offline();
@@ -129,7 +134,6 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     }
     if (route.params.status === 'update') {
       if (selector.token === 'Guest') {
-        console.log('ssssss');
         console.log(
           'selector.estimateList==',
           JSON.stringify(selector.estimateList),
@@ -138,13 +142,12 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
           route?.params?.data.index,
           selector.estimateList,
         );
-        console.log('index', index);
         setOffline(selector.estimateList[index]);
       } else {
         getEstimateCall(route?.params?.data);
       }
     }
-  }, [route?.params]);
+  }, [route?.params, isFocused]);
 
   const findIndexById = (id: any, data: any) => {
     return data.findIndex((item: any) => item.index === id);
@@ -170,7 +173,6 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
 
   const offline = () => {
     const payload = setNewEstimateInList(selector);
-    console.log('sskskksks', payload);
 
     dispatch(addNewEstimate(payload));
     setGlobalData(payload);
@@ -193,6 +195,72 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         setGlobalData(element);
         fetchPaymentDue(element);
         setCreated(true);
+      }
+    } catch (error) {}
+  };
+
+  const duplicateET = async () => {
+    try {
+      const data = await FetchAPI(
+        'post',
+        endpoint.duplicateET(route?.params?.data?._id),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        Alert.alert('', 'Duplicate Estimate is created successfully');
+      }
+    } catch (error) {}
+  };
+
+  const createInvoice = async () => {
+    try {
+      const data = await FetchAPI(
+        'post',
+        endpoint.makeInvoiceET(route?.params?.data?._id),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        //  Alert.alert("","Duplicate Estimate is created successfully")
+      }
+    } catch (error) {}
+  };
+  const deleteET = async () => {
+    try {
+      if (selector.token === 'Guest') {
+        const arr = [...selector.estimateList];
+
+        const indexOfObject = arr.findIndex(object => {
+          return object.index === route?.params?.data.index;
+        });
+
+        if (indexOfObject !== -1) {
+          arr.splice(indexOfObject, 1);
+        }
+        navigation.navigate(t('bottomNav.Estimates'));
+
+        Alert.alert('', 'Estimate is deleted successfully');
+        setTimeout(() => {
+          dispatch(setEstimateList(arr));
+        }, 500);
+      } else {
+        const data = await FetchAPI(
+          'delete',
+          endpoint.deleteET(route?.params?.data?._id),
+          null,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+          Alert.alert('', 'Estimate is deleted successfully');
+          navigation.navigate(t('bottomNav.Estimates'));
+        }
       }
     } catch (error) {}
   };
@@ -231,6 +299,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   };
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
+
 
   const {open} = state;
 
@@ -272,7 +341,6 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   }
 
   const navigateToAddItemScreen = () => {
-    console.log('ssss', globalData._id);
     navigation.navigate('AddItemScreen', {
       estimateUpdate: true,
       estimateID: globalData._id,
@@ -281,7 +349,10 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   };
 
   function navigateToAddPhotoScreen() {
-    navigation.navigate('AddPhotoScreen');
+    navigation.navigate('AddPhotoScreen',{
+      estimateUpdate: true,
+      estimateID: globalData._id,
+    });
   }
 
   function navigateToPaymentInfo() {
@@ -297,11 +368,20 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   }
 
   function navigateToInvoiceNumber() {
-    navigation.navigate('EstimationNumber');
+    navigation.navigate('EstimationNumber',{
+      estimateUpdate: true,
+      estimateID: globalData._id,
+      estimateData: globalData,
+    });
   }
 
   function navigateToSignaturePad() {
-    navigation.navigate('SignaturePad');
+    navigation.navigate('SignaturePad',{
+      estimateUpdate: true,
+      estimateID: globalData._id,
+      signature: globalData.signature,
+      data: globalData
+  });
   }
 
   function navigateToDiscountScreen() {
@@ -314,8 +394,6 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   }
 
   const navigateToTaxScreen = () => {
-    console.log(JSON.stringify(globalData));
-
     navigation.navigate('TaxScreen', {
       estimateUpdate: true,
       estimateID: globalData._id,
@@ -458,18 +536,37 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
           </View>
         </View>
 
-        <View style={styles.photoContainer}>
-          <Text style={styles.photoText}>{t('Add photo')}</Text>
-          <TouchableOpacity onPress={navigateToAddPhotoScreen}>
-            <Icon name="attach" size={22} style={styles.photoIcon} />
-          </TouchableOpacity>
+        <View style={styles.photoContainer2}>
+          {globalData.photos?.length > 0 &&
+            globalData.photos.map((item: any) => {
+              return (
+                <View style={styles.photoElement}>
+                  <Text style={styles.notesText3}>
+                    {item.photo_description}
+                  </Text>
+                  <Text style={styles.notesText4}>{item.photo_notes}</Text>
+                </View>
+              );
+            })}
+          <View style={styles.photoContainer}>
+            <Text style={styles.photoText}>{t('Add photo')}</Text>
+            <TouchableOpacity onPress={navigateToAddPhotoScreen}>
+              <Icon name="attach" size={22} style={styles.photoIcon} />
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.notesContainer}>
           <View style={styles.notesRow}>
-            <Text onPress={navigateToSignaturePad} style={styles.notesText}>
-              {t('Signature')}
-            </Text>
+          {globalData.signature ? (
+              <Text onPress={navigateToSignaturePad} style={styles.notesText2}>
+                {"Signed"}
+              </Text>
+            ) : (
+              <Text onPress={navigateToSignaturePad} style={styles.notesText}>
+                {t('Signature')}
+              </Text>
+            )}
           </View>
           <TouchableOpacity
             onPress={navigateToAdditionalDetails}
@@ -502,9 +599,9 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
           {/* </View> */}
         </View>
 
-        <View style={styles.paidContainer}>
-          <Text style={styles.paidText}>{t('Mark Invoice')}</Text>
-        </View>
+        <TouchableOpacity onPress={createInvoice} style={styles.paidContainer}>
+          <Text style={styles.paidText}>{t('Make Invoice')}</Text>
+        </TouchableOpacity>
       </ScrollView>
     );
   };
@@ -542,13 +639,13 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
             onDismiss={closeMenu}
             anchor={{x: screenWidth - 15, y: -10}}
             style={{width: 200}}>
-            <Menu.Item onPress={() => {}} title={t('Delete')} />
+            <Menu.Item onPress={deleteET} title={t('Delete')} />
             <Menu.Item onPress={() => {}} title={t('Open In ..')} />
             <Menu.Item onPress={() => {}} title={t('Share')} />
             <Menu.Item onPress={() => {}} title={t('Print')} />
-            <Menu.Item onPress={() => {}} title={t('Get Link')} />
-            <Menu.Item onPress={() => {}} title={t('Mark Paid')} />
-            <Menu.Item onPress={() => {}} title={t('Duplicate')} />
+            {/* <Menu.Item onPress={() => {}} title={t('Get Link')} /> */}
+            <Menu.Item onPress={createInvoice} title={t('Make Invoice')} />
+            <Menu.Item onPress={duplicateET} title={t('Duplicate')} />
           </Menu>
           <TabView
             navigationState={{index, routes}}
@@ -910,10 +1007,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     borderRadius: 8,
-    padding: 12,
+    paddingHorizontal: 12,
     marginVertical: 5,
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingVertical: 5,
+  },
+  photoElement: {
+    borderBottomWidth: 1,
+    paddingHorizontal: 12,
+    borderBottomColor: '#d1d1d1',
+    paddingVertical: 7,
+  },
+  photoContainer2: {
+    // flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    // paddingVertical: 12,
+    marginVertical: 5,
+    justifyContent: 'space-between',
+    // alignItems: 'center',
   },
   photoText: {
     fontSize: 16,
@@ -946,6 +1059,21 @@ const styles = StyleSheet.create({
   notesText: {
     fontSize: 16,
     fontWeight: '500',
+    color: '#d1d1d1',
+  },
+  notesText2: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#000',
+  },
+  notesText3: {
+    fontSize: 15,
+    fontWeight: '400',
+    color: '#000',
+  },
+  notesText4: {
+    fontSize: 14,
+    fontWeight: '400',
     color: '#d1d1d1',
   },
   requestContainer: {

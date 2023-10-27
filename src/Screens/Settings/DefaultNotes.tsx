@@ -6,23 +6,34 @@ import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {setDefaultNotes} from '../../redux/reducers/user/UserReducer';
 import {useTranslation} from 'react-i18next';
+import Loader from '../../CustomComponent/Loader';
+import ToastService from '../../Helper/ToastService';
+import {TouchableOpacity} from 'react-native';
+import {GlobalStyle} from '../../Helper/GlobalStyle';
 
-const DefaultNotes = () => {
+const DefaultNotes = ({navigation}: any) => {
   const dispatch = useDispatch();
   const {t, i18n} = useTranslation();
-  const selector = useSelector(state => state.user);
+  const selector = useSelector((state: any) => state.user);
   const [invoices, setInvoices] = useState('');
   const [estimate, setEstimate] = useState('');
+  const [isLoader, setIsLoader] = useState(false);
 
   useEffect(() => {
     if (selector.token === 'Guest') {
+      setModalTrue();
       fetchData(selector.defaultNotes);
     } else {
+      setModalTrue();
       getInfo();
     }
   }, [selector.token]);
 
+  const setModalTrue = () => setIsLoader(true);
+  const setModalFalse = () => setIsLoader(false);
+
   const fetchData = (data: any) => {
+    setModalFalse();
     const element = data;
     setEstimate(element.estimates);
     setInvoices(element.invoices);
@@ -37,66 +48,86 @@ const DefaultNotes = () => {
         const element = data.data.default_notes;
         setEstimate(element.estimates);
         setInvoices(element.invoices);
+        setModalFalse();
       }
-    } catch (error) {}
+    } catch (error) {
+      setModalFalse;
+    }
   };
 
   const addInfo = async () => {
+    setModalTrue();
     try {
-      const payload = {
+      const payload: any = {
         invoices: invoices,
         estimates: estimate,
       };
       if (selector.token === 'Guest') {
         dispatch(setDefaultNotes(payload));
+        successMessage();
       } else {
         const data = await FetchAPI('post', endpoint.defaultNotes, payload, {
           Authorization: 'Bearer ' + selector.token,
         });
         if (data.status === 'success') {
+          successMessage();
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      setModalFalse;
+    }
+  };
+
+  const successMessage = () => {
+    setIsLoader(false);
+    ToastService.showToast('Updated Successfully');
+    navigation.goBack();
   };
 
   return (
-    <View style={styles.mainContainer}>
-      <View style={styles.businessContainer}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>{t('Invoices')}</Text>
+    <>
+      <Loader visible={isLoader} size="large" color={Colors.landingColor} />
+      <View style={styles.mainContainer}>
+        <View style={styles.businessContainer}>
+          <View style={styles.header}>
+            <Text style={styles.headerText}>{t('Invoices')}</Text>
+          </View>
+          <View style={styles.rowView}>
+            <TextInput
+              value={invoices}
+              onChangeText={setInvoices}
+              style={styles.titleTxt}
+              placeholder={t('Default Invoices')}
+              placeholderTextColor={'grey'}
+              multiline
+              numberOfLines={4}
+              // onBlur={addInfo}
+            />
+          </View>
         </View>
-        <View style={styles.rowView}>
-          <TextInput
-            value={invoices}
-            onChangeText={setInvoices}
-            style={styles.titleTxt}
-            placeholder={t('Default Invoices')}
-            placeholderTextColor={'grey'}
-            multiline
-            numberOfLines={4}
-            onBlur={addInfo}
-          />
-        </View>
-      </View>
 
-      <View style={styles.businessContainer}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>{t('Estimates')}</Text>
+        <View style={styles.businessContainer}>
+          <View style={styles.header}>
+            <Text style={styles.headerText}>{t('Estimates')}</Text>
+          </View>
+          <View style={styles.rowView}>
+            <TextInput
+              value={estimate}
+              onChangeText={setEstimate}
+              style={styles.titleTxt}
+              placeholder={t('Default Estimates')}
+              placeholderTextColor={'grey'}
+              multiline
+              numberOfLines={4}
+              // onBlur={addInfo}
+            />
+          </View>
         </View>
-        <View style={styles.rowView}>
-          <TextInput
-            value={estimate}
-            onChangeText={setEstimate}
-            style={styles.titleTxt}
-            placeholder={t('Default Estimates')}
-            placeholderTextColor={'grey'}
-            multiline
-            numberOfLines={4}
-            onBlur={addInfo}
-          />
-        </View>
+        <TouchableOpacity onPress={addInfo} style={GlobalStyle.statementBtn}>
+          <Text style={[GlobalStyle.titleTxt2]}>{t('Update')}</Text>
+        </TouchableOpacity>
       </View>
-    </View>
+    </>
   );
 };
 

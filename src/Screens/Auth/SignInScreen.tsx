@@ -66,61 +66,79 @@ function SignInScreen({navigation}: any): JSX.Element {
         });
       }
     } catch (error: any) {
-      Alert.alert('', error.message);
+      Alert.alert('', error.message);      
     }
   };
+
+  const handlePrevious = () => {
+    navigation.goBack();
+  };
+
+  const SignUP = () => {
+    navigation.navigate('SignUpOriginal');
+  };
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={Colors.landingColor} />
-      <Text style={[styles.title,{marginBottom:20}]}>Login</Text>
-      <TextInput
-        value={email}
-        style={[styles.input, styles.addressInput1]}
-        placeholder={t('businessInfo.email')}
-        onChangeText={validateEmail}
-        placeholderTextColor={'grey'}
-        keyboardType={'email-address'}
-      />
-      {emailError.trim() !== '' && (
-        <View style={styles.errorView}>
-          <Text style={styles.errorTxt}>{emailError}</Text>
-        </View>
-      )}
-      <View
-        style={{
-          ...styles.input2,
-        }}>
-        <TextInput
-          value={Password}
-          style={styles.input}
-          placeholder={t('businessInfo.password')}
-          onChangeText={validatePassword}
-          placeholderTextColor={'grey'}
-          secureTextEntry={!showPassword}
-        />
-        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <Ionicons
-            name={!showPassword ? 'eye-off' : 'eye'}
-            color={'#000'}
-            size={20}
-          />
+    <SafeAreaView style={{flexGrow: 1, backgroundColor: Colors.landingColor}}>
+      <View style={{width: '20%', marginLeft: 15, marginTop: 10}}>
+        <TouchableOpacity onPress={handlePrevious}>
+          <Ionicons name="arrow-back" color={'#fff'} size={25} />
         </TouchableOpacity>
       </View>
+      <View style={styles.container}>
+        <StatusBar backgroundColor={Colors.landingColor} />
+        <Text style={[styles.title, {marginBottom: 20}]}>Login</Text>
+        <View>
+          <TextInput
+            value={email}
+            style={[styles.input, styles.addressInput1]}
+            placeholder={t('businessInfo.email')}
+            onChangeText={validateEmail}
+            placeholderTextColor={'grey'}
+            keyboardType={'email-address'}
+          />
+          {emailError.trim() !== '' && (
+            <View style={styles.errorView}>
+              <Text style={styles.errorTxt}>{emailError}</Text>
+            </View>
+          )}
+          <View
+            style={{
+              ...styles.input2,
+            }}>
+            <TextInput
+              value={Password}
+              style={styles.input}
+              placeholder={t('businessInfo.password')}
+              onChangeText={validatePassword}
+              placeholderTextColor={'grey'}
+              secureTextEntry={!showPassword}
+            />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+              <Ionicons
+                name={!showPassword ? 'eye-off' : 'eye'}
+                color={'#000'}
+                size={20}
+              />
+            </TouchableOpacity>
+          </View>
 
-      {passwordError.trim() !== '' && (
-        <View style={styles.errorView}>
-          <Text style={styles.errorTxt}>{passwordError}</Text>
+          {passwordError.trim() !== '' && (
+            <View style={styles.errorView}>
+              <Text style={styles.errorTxt}>{passwordError}</Text>
+            </View>
+          )}
+          <TouchableOpacity
+            onPress={handleNext}
+            style={[styles.input, styles.lastAddressInput]}>
+            <Text style={styles.loginBtnTxt}>{t('login')}</Text>
+          </TouchableOpacity>
         </View>
-      )}
-      <TouchableOpacity
-        onPress={handleNext}
-        style={[styles.input, styles.lastAddressInput]}>
-        <Text style={styles.loginBtnTxt}>{t('login')}</Text>
-      </TouchableOpacity>
-
-      <View style={styles.hyperlinkView}>
-        <Text style={styles.hyperlink}>{t('ForgotPassword')}</Text>
-        <Text style={styles.hyperlink}>{t('ContactSupport')}</Text>
+        <View style={styles.hyperlinkView}>
+          <Text style={styles.hyperlink}>{t('ForgotPassword')}</Text>
+          <Text onPress={SignUP} style={styles.hyperlink}>
+            {t('Create account')}
+          </Text>
+        </View>
       </View>
     </SafeAreaView>
   );

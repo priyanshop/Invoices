@@ -1,4 +1,5 @@
-import React, {useEffect, useState} from 'react';
+//@ts-nocheck
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   SectionList,
@@ -8,18 +9,20 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
+import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
 import FloatingButton from '../../../CustomComponent/FloatingButton';
-import {getScreenDimensions} from '../../../Helper/ScreenDimension';
-import {Colors} from '../../../Helper/Colors';
+import { getScreenDimensions } from '../../../Helper/ScreenDimension';
+import { Colors } from '../../../Helper/Colors';
 import CustomHeader from '../../../CustomComponent/CustomHeader';
-import {useTranslation} from 'react-i18next';
-import {useIsFocused} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import { useIsFocused } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
 import FetchAPI from '../../../Networking';
-import {endpoint} from '../../../Networking/endpoint';
-import {offlineLimit} from '../../../Constant';
+import { endpoint } from '../../../Networking/endpoint';
+import { offlineLimit, setNewEstimateInList } from '../../../Constant';
 import EmptyViewComponent from '../../../CustomComponent/EmptyViewComponent';
+import Loader from '../../../CustomComponent/Loader';
+import { addNewEstimate } from '../../../redux/reducers/user/UserReducer';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -61,76 +64,12 @@ const invoices = [
   },
 ];
 
-const OpenRoute = () => {
-  const renderInvoiceItem = ({item}: any) => (
-    <View style={styles.invoiceItem}>
-      <View>
-        <Text style={styles.clientText}>{`${item.client}`}</Text>
-        <Text style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
-      </View>
-      <View>
-        <Text style={styles.priceText}>{`$${item.price}`}</Text>
-        <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
-      </View>
-    </View>
-  );
-
-  const renderSectionHeader = ({section: {year}}) => (
-    <View style={styles.sectionHeaderContain}>
-      <Text style={styles.sectionHeader}>{year}</Text>
-      <Text style={styles.sectionHeader}>{'$635'}</Text>
-    </View>
-  );
-  return (
-    <View style={styles.scene}>
-      <SectionList
-        sections={invoices}
-        keyExtractor={(item: any, index: any) => item + index}
-        renderItem={renderInvoiceItem}
-        renderSectionHeader={renderSectionHeader}
-      />
-    </View>
-  );
-};
-
-const ClosedRoute = () => {
-  const renderInvoiceItem = ({item}: any) => (
-    <View style={styles.invoiceItem}>
-      <View>
-        <Text style={styles.clientText}>{`${item.client}`}</Text>
-        <Text style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
-      </View>
-      <View>
-        <Text style={styles.priceText}>{`$${item.price}`}</Text>
-        <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
-      </View>
-    </View>
-  );
-
-  const renderSectionHeader = ({section: {year}}) => (
-    <View style={styles.sectionHeaderContain}>
-      <Text style={styles.sectionHeader}>{year}</Text>
-      <Text style={styles.sectionHeader}>{'$635'}</Text>
-    </View>
-  );
-  return (
-    <View style={styles.scene}>
-      <SectionList
-        sections={invoices}
-        keyExtractor={(item: any, index: any) => item + index}
-        renderItem={renderInvoiceItem}
-        renderSectionHeader={renderSectionHeader}
-      />
-    </View>
-  );
-};
-
-function EstimatesScreen({navigation}: any): JSX.Element {
-  const {t, i18n} = useTranslation();
+function EstimatesScreen({ navigation }: any): JSX.Element {
+  const { t, i18n } = useTranslation();
   const data = [
-    {key: 'first', title: t('All')},
-    {key: 'second', title: t('Open')},
-    {key: 'third', title: t('Closed')},
+    { key: 'first', title: t('All') },
+    { key: 'second', title: t('Open') },
+    { key: 'third', title: t('Closed') },
   ];
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
@@ -140,27 +79,37 @@ function EstimatesScreen({navigation}: any): JSX.Element {
   const [routes] = useState(data);
   const [allData, setAllData] = useState([]);
   const [searchText, setSearchText] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const filteredInvoices = allData.length > 0 && allData
-    .map(yearData => ({
-      year: yearData?.year,
-      data: yearData?.data?.filter(
-        item =>
-          item?.invoiceNumber
-            ?.toLowerCase()
-            ?.includes(searchText?.toLowerCase()) ||
-          item?.client?.toLowerCase()?.includes(searchText?.toLowerCase()) ||
-          item?.price?.toString()?.includes(searchText) ||
-          item?.date?.includes(searchText),
-      ),
-    }))
-    .filter(yearData => yearData.data.length > 0);
+  const setTrue = () => setIsLoading(true);
+  const setFalse = () => setIsLoading(false);
+
+  const filteredInvoices =
+    allData.length > 0 &&
+    allData
+      .map(yearData => ({
+        year: yearData?.year,
+        totalInvoiceAmount: yearData?.totalInvoiceAmount,
+        data: yearData?.data?.filter(
+          item =>
+            item?.invoiceNumber
+              ?.toLowerCase()
+              ?.includes(searchText?.toLowerCase()) ||
+            item?.client?.toLowerCase()?.includes(searchText?.toLowerCase()) ||
+            item?.price?.toString()?.includes(searchText) ||
+            item?.date?.includes(searchText),
+        ),
+      }))
+      .filter(yearData => yearData.data.length > 0);
 
   useEffect(() => {
+    setTrue();
     if (selector.token === 'Guest') {
-      if (selector.estimateList?.length > 0) {
+      if (selector.estimateList?.length >= 0) {
+        setFalse();
         const savedData: any = convertData(selector.estimateList);
         setAllData(savedData);
+        setFalse();
       }
     } else {
       apiCall();
@@ -173,13 +122,15 @@ function EstimatesScreen({navigation}: any): JSX.Element {
         Authorization: 'Bearer ' + selector.token,
       });
       if (data.status === 'success') {
-        if (data.data.length > 0) {
+        if (data.data) {
           const savedData: any = convertData(data.data);
-          console.log(savedData);
+          setFalse();
           setAllData(savedData);
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      setFalse;
+    }
   };
 
   const convertData = (inputData: any) => {
@@ -189,7 +140,8 @@ function EstimatesScreen({navigation}: any): JSX.Element {
       const year = invoiceDate.getFullYear();
       const client = item.c_name || 'No Client';
       const invoiceNumber = item.estimate_number;
-      const price = 0.0;
+      const price = item.estimate_total || 0;
+
       const date = invoiceDate.toISOString().split('T')[0];
 
       const existingYearData = transformedData.find(
@@ -204,6 +156,12 @@ function EstimatesScreen({navigation}: any): JSX.Element {
           date,
           ...item,
         });
+        existingYearData.totalInvoiceAmount += price;
+        if (item.is_paid) {
+          existingYearData.totalPaidAmount += price;
+        } else {
+          existingYearData.totalUnpaidAmount += price;
+        }
       } else {
         transformedData.push({
           year,
@@ -216,6 +174,9 @@ function EstimatesScreen({navigation}: any): JSX.Element {
               ...item,
             },
           ],
+          totalInvoiceAmount: price,
+          totalPaidAmount: item.is_paid ? price : 0,
+          totalUnpaidAmount: item.is_paid ? 0 : price,
         });
       }
     });
@@ -223,11 +184,11 @@ function EstimatesScreen({navigation}: any): JSX.Element {
   };
 
   function navigateToEstimate(item: any) {
-    navigation.navigate('EstimationCreation', {status: 'update', data: item});
+    navigation.navigate('EstimationCreation', { status: 'update', data: item });
   }
 
   const AllRoute = () => {
-    const renderInvoiceItem = ({item}: any) => (
+    const renderInvoiceItem = ({ item }: any) => (
       <TouchableOpacity
         onPress={() => navigateToEstimate(item)}
         style={styles.invoiceItem}>
@@ -243,10 +204,10 @@ function EstimatesScreen({navigation}: any): JSX.Element {
       </TouchableOpacity>
     );
 
-    const renderSectionHeader = ({section: {year}}) => (
+    const renderSectionHeader = ({ section: { year, totalInvoiceAmount } }) => (
       <View style={styles.sectionHeaderContain}>
         <Text style={styles.sectionHeader}>{year}</Text>
-        <Text style={styles.sectionHeader}>{'$635'}</Text>
+        <Text style={styles.sectionHeader}>{'$' + totalInvoiceAmount}</Text>
       </View>
     );
     const renderEmptyComponent = () => (
@@ -255,6 +216,7 @@ function EstimatesScreen({navigation}: any): JSX.Element {
 
     return (
       <View style={styles.scene}>
+        <Loader visible={isLoading} size="large" color={Colors.landingColor} />
         {filteredInvoices.length > 0 ? (
           <SectionList
             sections={filteredInvoices}
@@ -270,6 +232,75 @@ function EstimatesScreen({navigation}: any): JSX.Element {
     );
   };
 
+  const OpenRoute = () => {
+    const renderInvoiceItem = ({ item }: any) => (
+      <View style={styles.invoiceItem}>
+        <View>
+          <Text style={styles.clientText}>{`${item.client}`}</Text>
+          <Text
+            style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
+        </View>
+        <View>
+          <Text style={styles.priceText}>{`$${item.price}`}</Text>
+          <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
+        </View>
+      </View>
+    );
+
+    const renderSectionHeader = ({ section: { year, totalInvoiceAmount } }) => (
+      <View style={styles.sectionHeaderContain}>
+        <Text style={styles.sectionHeader}>{year}</Text>
+        <Text style={styles.sectionHeader}>{'$' + totalInvoiceAmount}</Text>
+      </View>
+    );
+    return (
+      <View style={styles.scene}>
+        {filteredInvoices.length >= 0 && (
+          <SectionList
+            sections={filteredInvoices}
+            keyExtractor={(item: any, index: any) => item + index}
+            renderItem={renderInvoiceItem}
+            renderSectionHeader={renderSectionHeader}
+          />
+        )}
+      </View>
+    );
+  };
+
+  const ClosedRoute = () => {
+    const renderInvoiceItem = ({ item }: any) => (
+      <View style={styles.invoiceItem}>
+        <View>
+          <Text style={styles.clientText}>{`${item.client}`}</Text>
+          <Text
+            style={styles.invoiceNumberText}>{`${item.invoiceNumber}`}</Text>
+        </View>
+        <View>
+          <Text style={styles.priceText}>{`$${item.price}`}</Text>
+          <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
+        </View>
+      </View>
+    );
+
+    const renderSectionHeader = ({ section: { year } }) => (
+      <View style={styles.sectionHeaderContain}>
+        <Text style={styles.sectionHeader}>{year}</Text>
+        <Text style={styles.sectionHeader}>{'$635'}</Text>
+      </View>
+    );
+    return (
+      <View style={styles.scene}>
+        <SectionList
+          // sections={invoices}
+          sections={[]}
+          keyExtractor={(item: any, index: any) => item + index}
+          renderItem={renderInvoiceItem}
+          renderSectionHeader={renderSectionHeader}
+        />
+      </View>
+    );
+  };
+
   function navigateToSetting() {
     navigation.navigate('Settings');
   }
@@ -277,13 +308,27 @@ function EstimatesScreen({navigation}: any): JSX.Element {
   function navigateToAddEstimate() {
     if (selector.token === 'Guest') {
       if (selector.estimateList?.length <= offlineLimit) {
-        navigation.navigate('EstimationCreation', {status: 'create'});
+        // navigation.navigate('EstimationCreation', {status: 'create'});
+        const payload = setNewEstimateInList(selector);
+        dispatch(addNewEstimate(payload));
+        navigateToEstimate(payload);
       }
     } else {
-      navigation.navigate('EstimationCreation', {status: 'create'});
+      createEstimateCall();
     }
   }
 
+  const createEstimateCall = async () => {
+    try {
+      const data = await FetchAPI('post', endpoint.createEstimate, null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        const element = data.data;
+        navigateToEstimate(element);
+      }
+    } catch (error) { }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Colors.appColor} />
@@ -296,22 +341,22 @@ function EstimatesScreen({navigation}: any): JSX.Element {
         handleSearch={(x: any) => setSearchText(x)}
       />
       <TabView
-        navigationState={{index, routes}}
+        navigationState={{ index, routes }}
         renderScene={SceneMap({
           first: AllRoute,
           second: OpenRoute,
           third: ClosedRoute,
         })}
         onIndexChange={setIndex}
-        initialLayout={{width: screenWidth}}
+        initialLayout={{ width: screenWidth }}
         style={styles.container2}
         renderTabBar={props => {
           return (
             <TabBar
               {...props}
-              indicatorStyle={{backgroundColor: '#fff', height: 2}}
-              style={{backgroundColor: Colors.appColor}}
-              labelStyle={{fontSize: 14, fontWeight: '500'}}
+              indicatorStyle={{ backgroundColor: '#fff', height: 2 }}
+              style={{ backgroundColor: Colors.appColor }}
+              labelStyle={{ fontSize: 14, fontWeight: '500' }}
             />
           );
         }}

@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
@@ -21,7 +22,9 @@ import {endpoint} from '../../../Networking/endpoint';
 import {useSelector, useDispatch} from 'react-redux';
 import {useIsFocused} from '@react-navigation/native';
 import {ScrollView} from 'react-native-gesture-handler';
-import {offlineLimit} from '../../../Constant';
+import {offlineLimit, setNewInvoiceInList} from '../../../Constant';
+import Loader from '../../../CustomComponent/Loader';
+import {addNewInvoice} from '../../../redux/reducers/user/UserReducer';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -78,32 +81,83 @@ function InvoicesScreen({navigation}: any): JSX.Element {
   const [allData, setAllData] = useState([]);
   const [routes] = useState(data);
   const [searchText, setSearchText] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const filteredInvoices = allData.length > 0 && allData
-    .map(yearData => ({
-      year: yearData?.year,
-      data: yearData?.data?.filter(
-        item =>
-          item?.invoiceNumber
-            ?.toLowerCase()
-            ?.includes(searchText?.toLowerCase()) ||
-          item?.client?.toLowerCase()?.includes(searchText?.toLowerCase()) ||
-          item?.price?.toString()?.includes(searchText) ||
-          item?.date?.includes(searchText),
-      ),
-    }))
-    .filter(yearData => yearData?.data?.length > 0);
+  const setTrue = () => setIsLoading(true);
+  const setFalse = () => setIsLoading(false);
+
+  const filteredInvoices =
+    allData.length > 0 &&
+    allData
+      .map(yearData => ({
+        year: yearData?.year,
+        totalInvoiceAmount: yearData?.totalInvoiceAmount,
+        data: yearData?.data?.filter(
+          item =>
+            item?.invoiceNumber
+              ?.toLowerCase()
+              ?.includes(searchText?.toLowerCase()) ||
+            item?.client?.toLowerCase()?.includes(searchText?.toLowerCase()) ||
+            item?.price?.toString()?.includes(searchText) ||
+            item?.date?.includes(searchText),
+        ),
+      }))
+      .filter(yearData => yearData?.data?.length > 0);
+
+  const paidFilteredInvoices =
+    allData.length > 0 &&
+    allData
+      .map(yearData => ({
+        year: yearData?.year,
+        totalInvoiceAmount: yearData?.totalPaidAmount,
+        data: yearData?.data?.filter(
+          item =>
+            item.is_paid &&
+            (item?.invoiceNumber
+              ?.toLowerCase()
+              ?.includes(searchText?.toLowerCase()) ||
+              item?.client
+                ?.toLowerCase()
+                ?.includes(searchText?.toLowerCase()) ||
+              item?.price?.toString()?.includes(searchText) ||
+              item?.date?.includes(searchText)),
+        ),
+      }))
+      .filter(yearData => yearData?.data?.length > 0);
+
+  const outStandFilteredInvoices =
+    allData.length > 0 &&
+    allData
+      .map(yearData => ({
+        year: yearData?.year,
+        totalInvoiceAmount: yearData?.totalUnpaidAmount,
+        data: yearData?.data?.filter(
+          item =>
+            !item.is_paid &&
+            (item?.invoiceNumber
+              ?.toLowerCase()
+              ?.includes(searchText?.toLowerCase()) ||
+              item?.client
+                ?.toLowerCase()
+                ?.includes(searchText?.toLowerCase()) ||
+              item?.price?.toString()?.includes(searchText) ||
+              item?.date?.includes(searchText)),
+        ),
+      }))
+      .filter(yearData => yearData?.data?.length > 0);
 
   useEffect(() => {
+    setTrue();
     if (selector.token === 'Guest') {
-      if (selector.invoiceList?.length > 0) {
+      if (selector.invoiceList?.length >= 0) {
         const savedData: any = convertData(selector.invoiceList);
         setAllData(savedData);
+        setFalse();
       }
     } else {
       apiCall();
     }
-  }, [isFocused]);
+  }, [isFocused, selector.invoiceList]);
 
   const apiCall = async () => {
     try {
@@ -111,27 +165,27 @@ function InvoicesScreen({navigation}: any): JSX.Element {
         Authorization: 'Bearer ' + selector.token,
       });
       if (data.status === 'success') {
-        if (data.data.length > 0) {
+        if (data.data) {
           const savedData: any = convertData(data.data);
           setAllData(savedData);
+          setFalse();
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      setFalse;
+    }
   };
 
-  const convertData = (inputData: any) => {
+  const convertData = inputData => {
     const transformedData: any = [];
-    inputData.forEach((item: any) => {
-      const invoiceDate = new Date(item.invoice_date);
+    inputData.forEach(item => {
+      const invoiceDate = new Date(item.invoice_date || new Date());
       const year = invoiceDate.getFullYear();
       const client = item.c_name || 'No Client';
       const invoiceNumber = item.invoice_number;
-      const price = 0.0;
+      const price = item.invoice_total || 0;
       const date = invoiceDate.toISOString().split('T')[0];
-
-      const existingYearData = transformedData.find(
-        (data: any) => data.year === year,
-      );
+      const existingYearData = transformedData.find(data => data.year === year);
 
       if (existingYearData) {
         existingYearData.data.push({
@@ -141,6 +195,12 @@ function InvoicesScreen({navigation}: any): JSX.Element {
           date,
           ...item,
         });
+        existingYearData.totalInvoiceAmount += price;
+        if (item.is_paid) {
+          existingYearData.totalPaidAmount += price;
+        } else {
+          existingYearData.totalUnpaidAmount += price;
+        }
       } else {
         transformedData.push({
           year,
@@ -153,6 +213,9 @@ function InvoicesScreen({navigation}: any): JSX.Element {
               ...item,
             },
           ],
+          totalInvoiceAmount: price,
+          totalPaidAmount: item.is_paid ? price : 0,
+          totalUnpaidAmount: item.is_paid ? 0 : price,
         });
       }
     });
@@ -164,15 +227,33 @@ function InvoicesScreen({navigation}: any): JSX.Element {
   }
 
   const navigateToAddInvoice = () => {
-    // if (selector.token === 'Guest') {
-    //   if (selector.invoiceList.length <= offlineLimit) {
-    //     console.log("Ddddd");
+    if (selector.token === 'Guest') {
+      if (selector.invoiceList.length <= offlineLimit) {
+        const payload = setNewInvoiceInList(selector);
+        dispatch(addNewInvoice(payload));
+        navigation.navigate('InvoiceCreation', {
+          status: 'update',
+          data: payload,
+        });
+      }
+    } else {
+      createInvoiceCall();
+    }
+  };
 
-    //     navigation.navigate('InvoiceCreation', {status: 'create'});
-    //   }
-    // } else {
-    navigation.navigate('InvoiceCreation', {status: 'create'});
-    // }
+  const createInvoiceCall = async () => {
+    try {
+      const data = await FetchAPI('post', endpoint.createInvoice, null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        const element = data.data;
+        navigation.navigate('InvoiceCreation', {
+          status: 'update',
+          data: element,
+        });
+      }
+    } catch (error) {}
   };
 
   function navigateToInvoice(item: any) {
@@ -192,15 +273,19 @@ function InvoicesScreen({navigation}: any): JSX.Element {
         </View>
         <View>
           <Text style={styles.priceText}>{`$${item.price}`}</Text>
-          <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
+          {item.is_paid ? (
+            <Text style={styles.paidText}>{`Paid: ${item.date}`}</Text>
+          ) : (
+            <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
+          )}
         </View>
       </TouchableOpacity>
     );
 
-    const renderSectionHeader = ({section: {year}}) => (
+    const renderSectionHeader = ({section: {year, totalInvoiceAmount}}) => (
       <View style={styles.sectionHeaderContain}>
         <Text style={styles.sectionHeader}>{year}</Text>
-        <Text style={styles.sectionHeader}>{'$0'}</Text>
+        <Text style={styles.sectionHeader}>{'$' + totalInvoiceAmount}</Text>
       </View>
     );
 
@@ -209,6 +294,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     );
     return (
       <View style={[styles.scene]}>
+        <Loader visible={isLoading} size="large" color={Colors.landingColor} />
         {filteredInvoices.length > 0 ? (
           <SectionList
             sections={filteredInvoices}
@@ -239,29 +325,36 @@ function InvoicesScreen({navigation}: any): JSX.Element {
         </View>
         <View>
           <Text style={styles.priceText}>{`$${item.price}`}</Text>
-          <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
+          {item.is_paid ? (
+            <Text style={styles.paidText}>{`Paid: ${item.date}`}</Text>
+          ) : (
+            <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
+          )}
         </View>
       </View>
     );
 
-    const renderSectionHeader = ({section: {year}}) => (
+    const renderSectionHeader = ({section: {year, totalInvoiceAmount}}) => (
       <View style={styles.sectionHeaderContain}>
         <Text style={styles.sectionHeader}>{year}</Text>
-        <Text style={styles.sectionHeader}>{'$635'}</Text>
+        <Text style={styles.sectionHeader}>{'$' + totalInvoiceAmount}</Text>
       </View>
     );
     return (
       <ScrollView nestedScrollEnabled style={[styles.scene]}>
-        <SectionList
-          sections={invoices}
-          keyExtractor={(item: any, index: any) => item + index}
-          renderItem={renderInvoiceItem}
-          renderSectionHeader={renderSectionHeader}
-          ListEmptyComponent={renderEmptyComponent}
-          contentContainerStyle={{flex: 1}}
-          style={{flex: 1}}
-          nestedScrollEnabled
-        />
+        <Loader visible={isLoading} size="large" color={Colors.landingColor} />
+        {outStandFilteredInvoices.length > 0 && (
+          <SectionList
+            sections={outStandFilteredInvoices}
+            keyExtractor={(item: any, index: any) => item + index}
+            renderItem={renderInvoiceItem}
+            renderSectionHeader={renderSectionHeader}
+            ListEmptyComponent={renderEmptyComponent}
+            contentContainerStyle={{flex: 1}}
+            style={{flex: 1}}
+            nestedScrollEnabled
+          />
+        )}
       </ScrollView>
     );
   };
@@ -280,27 +373,34 @@ function InvoicesScreen({navigation}: any): JSX.Element {
         </View>
         <View>
           <Text style={styles.priceText}>{`$${item.price}`}</Text>
-          <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
+          {item.is_paid ? (
+            <Text style={styles.paidText}>{`Paid: ${item.date}`}</Text>
+          ) : (
+            <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
+          )}
         </View>
       </View>
     );
 
-    const renderSectionHeader = ({section: {year}}) => (
+    const renderSectionHeader = ({section: {year, totalInvoiceAmount}}) => (
       <View style={styles.sectionHeaderContain}>
         <Text style={styles.sectionHeader}>{year}</Text>
-        <Text style={styles.sectionHeader}>{'$635'}</Text>
+        <Text style={styles.sectionHeader}>{totalInvoiceAmount}</Text>
       </View>
     );
     return (
       <View style={[styles.scene]}>
-        <SectionList
-          sections={invoices}
-          keyExtractor={(item: any, index: any) => item + index}
-          renderItem={renderInvoiceItem}
-          renderSectionHeader={renderSectionHeader}
-          ListEmptyComponent={renderEmptyComponent}
-          contentContainerStyle={{flex: 1}}
-        />
+        <Loader visible={isLoading} size="large" color={Colors.landingColor} />
+        {paidFilteredInvoices.length > 0 && (
+          <SectionList
+            sections={paidFilteredInvoices}
+            keyExtractor={(item: any, index: any) => item + index}
+            renderItem={renderInvoiceItem}
+            renderSectionHeader={renderSectionHeader}
+            ListEmptyComponent={renderEmptyComponent}
+            contentContainerStyle={{flex: 1}}
+          />
+        )}
       </View>
     );
   };
@@ -450,6 +550,11 @@ const styles = StyleSheet.create({
     color: '#A9A9A9',
     fontSize: 14,
     fontWeight: '400',
+  },
+  paidText: {
+    color: Colors.appColor,
+    fontSize: 14,
+    fontWeight: '500',
   },
   sectionHeaderContain: {
     flexDirection: 'row',

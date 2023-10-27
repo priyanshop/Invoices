@@ -1,5 +1,7 @@
+//@ts-nocheck
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
+  Alert,
   FlatList,
   ScrollView,
   StatusBar,
@@ -24,7 +26,10 @@ import {getScreenDimensions} from '../../Helper/ScreenDimension';
 import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
-import {addNewInvoice} from '../../redux/reducers/user/UserReducer';
+import {
+  addNewInvoice,
+  setInvoiceList,
+} from '../../redux/reducers/user/UserReducer';
 import {setNewInvoiceInList} from '../../Constant';
 import EmptyHistory from '../../CustomComponent/EmptyHistory';
 
@@ -80,6 +85,7 @@ const importedData: any = {
     invoice_tax_type: '',
     invoice_total: 0,
     invoice_total_tax_amount: 0,
+    signature: '',
   },
 };
 
@@ -137,6 +143,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
   const [visible, setVisible] = React.useState(false);
   const [paymentDue, setPaymentDue] = useState([]);
   const [RequestReview, setRequestReview] = useState(false);
+  const [isMarkPaid, setIsMarkPaid] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -150,11 +157,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
 
   useEffect(() => {
     if (route.params.status === 'create') {
-      console.log('ssssssjkkk');
-
       if (selector.token === 'Guest') {
-        console.log('sssjkkk');
-
         offline();
       } else {
         createInvoiceCall();
@@ -171,7 +174,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         getInvoiceCall(route?.params?.data);
       }
     }
-  }, [route?.params]);
+  }, [route?.params, isFocused]);
 
   const findIndexById = (id: any, data: any) => {
     return data.findIndex((item: any) => item.index === id);
@@ -201,6 +204,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       );
       if (data.status === 'success') {
         const element = data.data;
+        setIsMarkPaid(element.is_paid);
         setGlobalData(element);
         fetchPaymentDue(element);
       }
@@ -220,18 +224,115 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     } catch (error) {}
   };
 
+  const duplicateInvoice = async () => {
+    try {
+      if (selector.token === 'Guest') {
+        const tempPayload = {
+          index: new Date().getTime(),
+        };
+        const payload = {
+          ...tempPayload,
+          ...globalData,
+        };
+        dispatch(addNewInvoice(payload));
+
+        Alert.alert('', 'Duplicate invoice is created successfully');
+      } else {
+        const data = await FetchAPI(
+          'post',
+          endpoint.duplicateInvoice(route?.params?.data?._id),
+          null,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+          Alert.alert('', 'Duplicate invoice is created successfully');
+        }
+      }
+    } catch (error) {}
+  };
+
+  const markPaid = async () => {
+    try {
+      if (selector.token === 'Guest') {
+        const tempPayload = {
+          is_paid: !route?.params?.data.is_paid,
+        };
+        const updatedArray = selector.invoiceList.map((item: any) => {
+          if (item.index === route?.params?.data.index) {
+            return {
+              ...item,
+              ...tempPayload,
+            };
+          }
+          return item;
+        });
+        setIsMarkPaid(!route?.params?.data.is_paid);
+        dispatch(setInvoiceList(updatedArray));
+      } else {
+        const data = await FetchAPI(
+          'patch',
+          endpoint.markPaidInvoice(route?.params?.data?._id),
+          null,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+          setIsMarkPaid(data.data.is_paid);
+        }
+      }
+    } catch (error) {}
+  };
+
+  const deleteInvoice = async () => {
+    try {
+      if (selector.token === 'Guest') {
+        const arr = [...selector.invoiceList];
+
+        const indexOfObject = arr.findIndex(object => {
+          return object.index === route?.params?.data.index;
+        });
+
+        if (indexOfObject !== -1) {
+          arr.splice(indexOfObject, 1);
+        }
+        navigation.navigate(t('bottomNav.Invoices'));
+
+        Alert.alert('', 'Invoice is deleted successfully');
+        setTimeout(() => {
+          dispatch(setInvoiceList(arr));
+        }, 500);
+      } else {
+        const data = await FetchAPI(
+          'delete',
+          endpoint.deleteInvoice(route?.params?.data?._id),
+          null,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+          Alert.alert('', 'Invoice is deleted successfully');
+          navigation.navigate(t('bottomNav.Invoices'));
+        }
+      }
+    } catch (error) {}
+  };
+
   const fetchPaymentDue = (element: any) => {
     setPaymentDue([
       {
         key: 'first',
         title: t('Discount'),
-        value: '$' + (element.invoice_discount_amount || 0),
+        value: '$' + (element?.invoice_discount_amount || 0),
         onPress: () => navigateToDiscountScreen(),
       },
       {
         key: 'second',
         title: t('Tax'),
-        value: '$' + (element.invoice_total_tax_amount || 0),
+        value: '$' + (element?.invoice_total_tax_amount || 0),
         onPress: () => navigateToTaxScreen(),
       },
 
@@ -241,9 +342,9 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         value:
           '$' +
           (
-            parseFloat(element.invoice_total_tax_amount || 0) +
-            parseFloat(element.invoice_total || 0) -
-            parseFloat(element.invoice_discount_amount || 0)
+            parseFloat(element?.invoice_total_tax_amount || 0) +
+            parseFloat(element?.invoice_total || 0) -
+            parseFloat(element?.invoice_discount_amount || 0)
           ).toFixed(2),
       },
       {
@@ -260,7 +361,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     navigation.navigate('Settings');
   }
 
-  function navigateToBusinessDetails() {
+  const navigateToBusinessDetails = () => {
     if (route.params.status === 'update') {
       navigation.navigate('BusinessDetails', {
         invoiceUpdate: true,
@@ -273,7 +374,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         invoiceID: globalData._id,
       });
     }
-  }
+  };
 
   function navigateToDiscountScreen() {
     navigation.navigate('DiscountScreen', {
@@ -334,6 +435,14 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     });
   }
 
+  function navigateToAddPhotoScreen2(item) {
+    navigation.navigate('AddPhotoScreen', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+      data: item,
+    });
+  }
+
   function navigateToPaymentInfo() {
     navigation.navigate('PaymentInfo', {
       invoiceUpdate: true,
@@ -354,11 +463,17 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     navigation.navigate('InvoiceNumber', {
       invoiceUpdate: true,
       invoiceID: globalData._id,
+      invoiceData: globalData
     });
   }
 
   function navigateToSignaturePad() {
-    navigation.navigate('SignaturePad');
+    navigation.navigate('SignaturePad', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+      signature: globalData.signature,
+      data: globalData
+    });
   }
 
   const AllRoute = () => {
@@ -378,8 +493,16 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
             </Text>
           </View>
           <View style={{justifyContent: 'space-between', width: '50%'}}>
-            <View style={styles.dueBox}>
-              <Text style={styles.dueTxt}>{t('Due on Receipt')}</Text>
+            <View
+              style={[
+                styles.dueBox,
+                isMarkPaid && {borderColor: Colors.landingColor},
+              ]}>
+              {isMarkPaid ? (
+                <Text style={styles.paidTxt}>{t('Paid')}</Text>
+              ) : (
+                <Text style={styles.dueTxt}>{t('Due on Receipt')}</Text>
+              )}
             </View>
             <Text style={styles.dueDate}>
               {moment(globalData.invoice_date).format(
@@ -474,11 +597,26 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
           </View>
         </View>
 
-        <View style={styles.photoContainer}>
-          <Text style={styles.photoText}>{t('Add photo')}</Text>
-          <TouchableOpacity onPress={navigateToAddPhotoScreen}>
-            <Icon name="attach" size={22} style={styles.photoIcon} />
-          </TouchableOpacity>
+        <View style={styles.photoContainer2}>
+          {globalData.photos?.length > 0 &&
+            globalData.photos.map((item: any) => {
+              return (
+                <TouchableOpacity
+                  onPress={() => navigateToAddPhotoScreen2(item)}
+                  style={styles.photoElement}>
+                  <Text style={styles.notesText3}>
+                    {item.photo_description}
+                  </Text>
+                  <Text style={styles.notesText4}>{item.photo_notes}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          <View style={styles.photoContainer}>
+            <Text style={styles.photoText}>{t('Add photo')}</Text>
+            <TouchableOpacity onPress={navigateToAddPhotoScreen}>
+              <Icon name="attach" size={22} style={styles.photoIcon} />
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.notesContainer}>
@@ -504,9 +642,15 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
             )}
           </TouchableOpacity>
           <View style={styles.notesRow}>
-            <Text onPress={navigateToSignaturePad} style={styles.notesText}>
-              {t('Signature')}
-            </Text>
+            {globalData.signature ? (
+              <Text onPress={navigateToSignaturePad} style={styles.notesText2}>
+                {'Signed'}
+              </Text>
+            ) : (
+              <Text onPress={navigateToSignaturePad} style={styles.notesText}>
+                {t('Signature')}
+              </Text>
+            )}
           </View>
           <TouchableOpacity
             onPress={navigateToAdditionalDetails}
@@ -539,9 +683,11 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
           {/* </View> */}
         </View>
 
-        <View style={styles.paidContainer}>
-          <Text style={styles.paidText}>{t('Mark Paid')}</Text>
-        </View>
+        <TouchableOpacity onPress={markPaid} style={styles.paidContainer}>
+          <Text style={styles.paidText}>
+            {isMarkPaid ? 'Mark Unpaid' : t('Mark Paid')}
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     );
   };
@@ -579,13 +725,16 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
             onDismiss={closeMenu}
             anchor={{x: screenWidth - 15, y: -10}}
             style={{width: 200}}>
-            <Menu.Item onPress={() => {}} title={t('Delete')} />
+            <Menu.Item onPress={deleteInvoice} title={t('Delete')} />
             <Menu.Item onPress={() => {}} title={t('Open In ..')} />
             <Menu.Item onPress={() => {}} title={t('Share')} />
             <Menu.Item onPress={() => {}} title={t('Print')} />
-            <Menu.Item onPress={() => {}} title={t('Get Link')} />
-            <Menu.Item onPress={() => {}} title={t('Mark Paid')} />
-            <Menu.Item onPress={() => {}} title={t('Duplicate')} />
+            {/* <Menu.Item onPress={() => {}} title={t('Get Link')} /> */}
+            <Menu.Item
+              onPress={markPaid}
+              title={isMarkPaid ? 'Mark Unpaid' : t('Mark Paid')}
+            />
+            <Menu.Item onPress={duplicateInvoice} title={t('Duplicate')} />
           </Menu>
           <TabView
             navigationState={{index, routes}}
@@ -850,6 +999,8 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   dueTxt: {fontSize: 14, fontWeight: '400', color: 'grey'},
+  paidTxt: {fontSize: 14, fontWeight: '400', color: Colors.landingColor},
+
   dueDate: {
     fontSize: 18,
     fontWeight: '400',
@@ -949,10 +1100,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     borderRadius: 8,
-    padding: 12,
+    paddingHorizontal: 12,
     marginVertical: 5,
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingVertical: 5,
+  },
+  photoElement: {
+    borderBottomWidth: 1,
+    paddingHorizontal: 12,
+    borderBottomColor: '#d1d1d1',
+    paddingVertical: 7,
+  },
+  photoContainer2: {
+    // flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    // paddingVertical: 12,
+    marginVertical: 5,
+    justifyContent: 'space-between',
+    // alignItems: 'center',
   },
   photoText: {
     fontSize: 16,
@@ -984,6 +1151,21 @@ const styles = StyleSheet.create({
   },
   notesText: {
     fontSize: 16,
+    fontWeight: '400',
+    color: '#d1d1d1',
+  },
+  notesText2: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#000',
+  },
+  notesText3: {
+    fontSize: 15,
+    fontWeight: '400',
+    color: '#000',
+  },
+  notesText4: {
+    fontSize: 14,
     fontWeight: '400',
     color: '#d1d1d1',
   },

@@ -19,9 +19,15 @@ import {getScreenDimensions} from '../../Helper/ScreenDimension';
 import {Colors} from '../../Helper/Colors';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
-import {saveUserData, setToken} from '../../redux/reducers/user/UserReducer';
+import {
+  saveUserData,
+  setBusinessDetail,
+  setToken,
+} from '../../redux/reducers/user/UserReducer';
 import {useTranslation} from 'react-i18next';
 import {CheckBox} from 'react-native-elements';
+import ImagePickerComponent from '../../CustomComponent/ImagePickerComponent';
+import {Image} from 'react-native';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -50,6 +56,28 @@ function SignUpScreen({navigation}: any): JSX.Element {
   const [terms, setTerms] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const pages = [{index: 1}, {index: 2}, {index: 3}];
+  const [openModal, setOpenModal] = useState(false);
+  const [BusinessImage, setBusinessImage] = useState(null);
+
+  const closeBottomSheet = () => {
+    setOpenModal(!openModal);
+  };
+
+  const addInfo = async () => {
+    try {
+      const payload: any = {
+        name: businessName,
+        email: email,
+        phone_number: phoneNumber,
+        address1: address1,
+        address2: address2,
+        address3: address3,
+        business_logo: BusinessImage,
+      };
+
+      dispatch(setBusinessDetail(payload));
+    } catch (error) {}
+  };
 
   const handlePrevious = () => {
     if (activeSlide === 0) {
@@ -75,10 +103,6 @@ function SignUpScreen({navigation}: any): JSX.Element {
       carouselRef.current.snapToNext();
     }
   };
-
-  useEffect(() => {
-    console.log(selector.userData);
-  }, [selector.userData]);
 
   const validateEmail = (text: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -178,6 +202,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
             style={[styles.input, styles.businessName]}
             placeholder={'Business Name'}
             placeholderTextColor={'grey'}
+            onEndEditing={addInfo}
           />
 
           <TextInput
@@ -187,6 +212,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
             keyboardType={'email-address'}
             onChangeText={validateEmail}
             placeholderTextColor={'grey'}
+            onEndEditing={addInfo}
           />
           {/* {emailError.trim() !== '' && (
             <View style={styles.errorView}>
@@ -257,6 +283,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
             placeholder={'Phone'}
             placeholderTextColor={'grey'}
             keyboardType={'phone-pad'}
+            onEndEditing={addInfo}
           />
           <TextInput
             value={address1}
@@ -264,6 +291,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
             style={[styles.input, styles.addressInput1]}
             placeholder={'Address Line 1'}
             placeholderTextColor={'grey'}
+            onEndEditing={addInfo}
           />
           <TextInput
             value={address2}
@@ -271,6 +299,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
             style={[styles.input, styles.addressInput]}
             placeholder={'Address Line 2'}
             placeholderTextColor={'grey'}
+            onEndEditing={addInfo}
           />
           <TextInput
             value={address3}
@@ -278,6 +307,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
             style={[styles.input, styles.lastAddressInput]}
             placeholder={'Address Line 3'}
             placeholderTextColor={'grey'}
+            onEndEditing={addInfo}
           />
           <View
             style={{
@@ -339,7 +369,16 @@ function SignUpScreen({navigation}: any): JSX.Element {
           <Ionicons name="ios-images-outline" color={'#fff'} size={45} />
           <Text style={styles.title}>{t('businessLogo.title')}</Text>
           <Text style={styles.paragraph}>{t('businessLogo.description')}</Text>
-          <TouchableOpacity style={styles.btn}>
+          {BusinessImage ? (
+            <Image
+              source={{uri: BusinessImage}}
+              resizeMode="contain"
+              style={styles.businessImage}
+            />
+          ) : null}
+          <TouchableOpacity
+            onPress={() => setOpenModal(true)}
+            style={styles.btn}>
             <Text style={styles.btnTxt}>
               {t('businessLogo.chooseImageBtn')}
             </Text>
@@ -356,7 +395,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
           />
           <Text style={styles.title}>{t('allSet.title')}</Text>
           <Text style={styles.paragraph}>{t('allSet.description')}</Text>
-          <TouchableOpacity style={styles.btn}>
+          <TouchableOpacity onPress={navigateToAddInvoice} style={styles.btn}>
             <Text style={styles.btnTxt}>{t('allSet.createInvoiceBtn')}</Text>
           </TouchableOpacity>
         </View>
@@ -364,6 +403,22 @@ function SignUpScreen({navigation}: any): JSX.Element {
     }
   };
 
+  const saveImage = image => {
+    setBusinessImage(image);
+    addInfo();
+  };
+  
+  const navigateToAddInvoice = () => {
+    dispatch(setToken('Guest'));
+    dispatch(saveUserData({email: 'Guest'}));
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'Dashboard'}],
+    });
+    setTimeout(() => {
+      navigation.navigate('InvoiceCreation', {status: 'create'});
+    }, 1000);
+  };
   return (
     <>
       <ModalActivityIndicator
@@ -405,6 +460,11 @@ function SignUpScreen({navigation}: any): JSX.Element {
           onSnapToItem={(index: number) => setActiveSlide(index)}
           inactiveSlideOpacity={1}
           inactiveSlideScale={1}
+        />
+        <ImagePickerComponent
+          openModal={openModal}
+          closeBottomSheet={closeBottomSheet}
+          setImage={saveImage}
         />
       </SafeAreaView>
     </>
@@ -528,6 +588,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  businessImage: {
+    width: 200,
+    height: 200,
   },
 });
 

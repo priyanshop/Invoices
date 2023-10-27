@@ -287,7 +287,8 @@
   "Total Payments": "Total de Pagamentos",
   "emptyInvoiceHistory": "O histórico de emails de faturas aparecerá aqui",
   "emptyEstimateHistory": "O histórico de emails de orçamentos aparecerá aqui",
-  "Mark Invoice": "Marcar Fatura",
+  "Make Invoice": "Fazer fatura",
   "Menu": "Cardápio",
-  "Sign Up" :"Inscrever-se"
+  "Sign Up" :"Inscrever-se",
+  "Create account" :"Criar conta."
 }

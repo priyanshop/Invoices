@@ -66,7 +66,6 @@ const AddClientScreen = ({navigation, route}: any) => {
   }, []);
 
   useEffect(() => {
-    console.log('route.params', JSON.stringify(route.params));
     if (selector.token === 'Guest') {
       if (route.params?.invoiceUpdate) {
         fetchClient2(route.params?.invoiceData);
@@ -308,8 +307,6 @@ const AddClientScreen = ({navigation, route}: any) => {
       if (!selection) {
         return null;
       }
-      console.log(JSON.stringify(selection));
-
       let {contact, selectedPhone} = selection;
       setClientName(contact.name);
       setMobile(selectedPhone.number);
