@@ -39,6 +39,12 @@
 	<string>Invoices app uses your contacts to add client</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSCameraUsageDescription</key>
+	<string>Access to take a photo by camera</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Access to pick a photo</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Access to pick a photo</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>fonts/AntDesign.ttf</string>
