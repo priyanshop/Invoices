@@ -80,7 +80,7 @@ function SignUpOriginal({navigation}: any): JSX.Element {
     }
 
     if (!isPasswordValid(Password)) {
-      Alert.alert('', t('businessInfo.verifyPassword'));
+      Alert.alert('', t('businessInfo.passwordFormat'));
 
       setPasswordError(t('businessInfo.passwordFormat'));
       return;
@@ -111,10 +111,21 @@ function SignUpOriginal({navigation}: any): JSX.Element {
     }
   };
 
+  const handlePrevious = () => {
+    navigation.goBack();
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{flexGrow: 1, backgroundColor: Colors.landingColor}}>
+    <View style={{width: '20%', marginLeft: 15, marginTop: 10}}>
+      <TouchableOpacity onPress={handlePrevious}>
+        <Ionicons name="arrow-back" color={'#fff'} size={25} />
+      </TouchableOpacity>
+    </View>
+    <View style={styles.container}>
       <StatusBar backgroundColor={Colors.landingColor} />
       <Text style={[styles.title, {marginBottom: 20}]}>{'Sign Up'}</Text>
+      <View>
       <TextInput
         value={email}
         style={[styles.input, styles.addressInput1]}
@@ -183,6 +194,8 @@ function SignUpOriginal({navigation}: any): JSX.Element {
         style={[styles.input, styles.lastAddressInput]}>
         <Text style={styles.loginBtnTxt}>{t('Sign Up')}</Text>
       </TouchableOpacity>
+      </View>
+      
       <Text style={styles.description}>
         {'By signing up, you agree to the '}
         <Text style={{textDecorationLine: 'underline'}} onPress={() => {}}>
@@ -193,6 +206,7 @@ function SignUpOriginal({navigation}: any): JSX.Element {
           {'privacy policy'}
         </Text>
       </Text>
+    </View>
     </SafeAreaView>
   );
 }

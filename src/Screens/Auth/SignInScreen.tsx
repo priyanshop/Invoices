@@ -67,11 +67,17 @@ function SignInScreen({navigation}: any): JSX.Element {
       }
     } catch (error: any) {
       Alert.alert('', error.message);
+      console.log("error",error);
+      
     }
   };
 
   const handlePrevious = () => {
     navigation.goBack();
+  };
+
+  const SignUP = () => {
+    navigation.navigate('SignUpOriginal');
   };
   return (
     <SafeAreaView style={{flexGrow: 1, backgroundColor: Colors.landingColor}}>
@@ -131,7 +137,9 @@ function SignInScreen({navigation}: any): JSX.Element {
         </View>
         <View style={styles.hyperlinkView}>
           <Text style={styles.hyperlink}>{t('ForgotPassword')}</Text>
-          <Text style={styles.hyperlink}>{t('ContactSupport')}</Text>
+          <Text onPress={SignUP} style={styles.hyperlink}>
+            {t('Create account')}
+          </Text>
         </View>
       </View>
     </SafeAreaView>

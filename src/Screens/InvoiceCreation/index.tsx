@@ -192,6 +192,8 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
   };
 
   const setOffline = (payload: any) => {
+    console.log('payload',payload);
+
     setGlobalData(payload);
     fetchPaymentDue(payload);
   };
@@ -476,6 +478,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       invoiceUpdate: true,
       invoiceID: globalData._id,
       signature: globalData.signature,
+      data: globalData
     });
   }
 

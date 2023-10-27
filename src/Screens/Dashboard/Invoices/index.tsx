@@ -22,8 +22,9 @@ import {endpoint} from '../../../Networking/endpoint';
 import {useSelector, useDispatch} from 'react-redux';
 import {useIsFocused} from '@react-navigation/native';
 import {ScrollView} from 'react-native-gesture-handler';
-import {offlineLimit} from '../../../Constant';
+import {offlineLimit, setNewInvoiceInList} from '../../../Constant';
 import Loader from '../../../CustomComponent/Loader';
+import {addNewInvoice} from '../../../redux/reducers/user/UserReducer';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -146,17 +147,17 @@ function InvoicesScreen({navigation}: any): JSX.Element {
       .filter(yearData => yearData?.data?.length > 0);
 
   useEffect(() => {
-    setTrue()
+    setTrue();
     if (selector.token === 'Guest') {
       if (selector.invoiceList?.length >= 0) {
         const savedData: any = convertData(selector.invoiceList);
         setAllData(savedData);
-        setFalse()
+        setFalse();
       }
     } else {
       apiCall();
     }
-  }, [isFocused,selector.invoiceList]);
+  }, [isFocused, selector.invoiceList]);
 
   const apiCall = async () => {
     try {
@@ -167,10 +168,12 @@ function InvoicesScreen({navigation}: any): JSX.Element {
         if (data.data) {
           const savedData: any = convertData(data.data);
           setAllData(savedData);
-          setFalse()
+          setFalse();
         }
       }
-    } catch (error) {setFalse}
+    } catch (error) {
+      setFalse;
+    }
   };
 
   const convertData = inputData => {
@@ -226,7 +229,12 @@ function InvoicesScreen({navigation}: any): JSX.Element {
   const navigateToAddInvoice = () => {
     if (selector.token === 'Guest') {
       if (selector.invoiceList.length <= offlineLimit) {
-        navigation.navigate('InvoiceCreation', {status: 'create'});
+        const payload = setNewInvoiceInList(selector);
+        dispatch(addNewInvoice(payload));
+        navigation.navigate('InvoiceCreation', {
+          status: 'update',
+          data: payload,
+        });
       }
     } else {
       createInvoiceCall();
@@ -431,7 +439,6 @@ function InvoicesScreen({navigation}: any): JSX.Element {
         }}
       />
       <FloatingButton onPress={navigateToAddInvoice} />
-      
     </SafeAreaView>
   );
 }

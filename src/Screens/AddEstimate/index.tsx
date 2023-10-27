@@ -384,7 +384,8 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     navigation.navigate('SignaturePad',{
       estimateUpdate: true,
       estimateID: globalData._id,
-      signature: globalData.signature
+      signature: globalData.signature,
+      data: globalData
   });
   }
 
