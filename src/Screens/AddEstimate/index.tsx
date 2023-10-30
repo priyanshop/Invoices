@@ -125,7 +125,6 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   }, [navigation]);
 
   useEffect(() => {
-    console.log('Isfcuse', isFocused);
     if (!created && route.params.status === 'create') {
       if (selector.token === 'Guest') {
         offline();
@@ -135,7 +134,6 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     }
     if (route.params.status === 'update') {
       if (selector.token === 'Guest') {
-        console.log('ssssss');
         console.log(
           'selector.estimateList==',
           JSON.stringify(selector.estimateList),
@@ -144,7 +142,6 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
           route?.params?.data.index,
           selector.estimateList,
         );
-        console.log('index', index);
         setOffline(selector.estimateList[index]);
       } else {
         getEstimateCall(route?.params?.data);
@@ -176,7 +173,6 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
 
   const offline = () => {
     const payload = setNewEstimateInList(selector);
-    console.log('sskskksks', payload);
 
     dispatch(addNewEstimate(payload));
     setGlobalData(payload);
@@ -345,7 +341,6 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   }
 
   const navigateToAddItemScreen = () => {
-    console.log('ssss', globalData._id);
     navigation.navigate('AddItemScreen', {
       estimateUpdate: true,
       estimateID: globalData._id,
@@ -384,7 +379,8 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     navigation.navigate('SignaturePad',{
       estimateUpdate: true,
       estimateID: globalData._id,
-      signature: globalData.signature
+      signature: globalData.signature,
+      data: globalData
   });
   }
 
@@ -398,8 +394,6 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   }
 
   const navigateToTaxScreen = () => {
-    console.log(JSON.stringify(globalData));
-
     navigation.navigate('TaxScreen', {
       estimateUpdate: true,
       estimateID: globalData._id,

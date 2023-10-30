@@ -186,7 +186,7 @@ const SettingScreen = ({navigation}: any) => {
           title: 'Switch Account',
           titleTxt: t('Settings.SwitchAccount'),
           description: '',
-          onPress: () => accountAction('SignIn'),
+          onPress: () => accountAction('LandingPage'),
         },
         {
           title: 'Sign Up',

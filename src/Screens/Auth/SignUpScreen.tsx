@@ -104,10 +104,6 @@ function SignUpScreen({navigation}: any): JSX.Element {
     }
   };
 
-  useEffect(() => {
-    console.log(selector.userData);
-  }, [selector.userData]);
-
   const validateEmail = (text: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(text)) {

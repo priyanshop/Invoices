@@ -49,7 +49,6 @@ function AddGlobalItemScreen({navigation, route}: any): JSX.Element {
   }, [navigation]);
 
   useEffect(() => {
-    console.log('route.params', JSON.stringify(route.params));
     if (route?.params?.ItemId && selector.token !== 'Guest') {
       setId(route.params?.ItemId);
       getItem(route.params?.ItemId);

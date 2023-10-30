@@ -1,6 +1,6 @@
 //@ts-nocheck
 import {useEffect, useRef, useState} from 'react';
-import {StyleSheet, View, useWindowDimensions} from 'react-native';
+import {Alert, StyleSheet, View, useWindowDimensions} from 'react-native';
 import Orientation from 'react-native-orientation-locker';
 // import SignatureScreen from 'react-native-signature-canvas';
 import {Colors} from '../../Helper/Colors';
@@ -8,13 +8,19 @@ import {useTranslation} from 'react-i18next';
 import SignatureScreen from '../../Library/react-native-signature-canvas';
 import {endpoint} from '../../Networking/endpoint';
 import FetchAPI, {IMAGE_BASE_URL} from '../../Networking';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import ToastService from '../../Helper/ToastService';
 import {Images} from '../../assets';
 import {TouchableOpacity, Image} from 'react-native';
+import {
+  setEstimateList,
+  setInvoiceList,
+} from '../../redux/reducers/user/UserReducer';
 
 const Sign = ({navigation, route}: any) => {
   const ref = useRef();
+  const dispatch = useDispatch();
+
   const {t, i18n} = useTranslation();
   const {width, height} = useWindowDimensions();
   const selector = useSelector((state: any) => state.user);
@@ -55,21 +61,28 @@ const Sign = ({navigation, route}: any) => {
       Orientation.unlockAllOrientations();
     };
   }, []);
+
   useEffect(() => {
     if (route.params.signature) {
-      console.log('route.params.signature', route.params.signature);
-      convertImageUrlToBase64(IMAGE_BASE_URL + route.params.signature);
-      // setAlreadyExist(true);
-      setImageURL(route.params.signature);
+      if (selector.token === 'Guest') {
+        setBase64Image(route.params.signature);
+        setAlreadyExist(true);
+        setImageURL(route.params.signature);
+      } else {
+        convertImageUrlToBase64(IMAGE_BASE_URL + route.params.signature);
+        // setAlreadyExist(true);
+        setImageURL(route.params.signature);
+      }
     } else {
       setAlreadyExist(true);
     }
-  }, [route.params]);
+  }, [route.params,selector]);
 
   const successMessage = () => {
     ToastService.showToast('Updated Successfully');
     navigation.goBack();
   };
+
   const getImage = async imageData => {
     try {
       const data = await FetchAPI(
@@ -87,6 +100,49 @@ const Sign = ({navigation, route}: any) => {
     } catch (error) {}
   };
 
+  const checkUpdate = () => {
+    if (route?.params?.invoiceUpdate) {
+      if (selector.token === 'Guest') {
+        offlineInvoiceUpdate();
+      } else {
+        addImage(image);
+      }
+    }
+    if (route?.params?.estimateUpdate) {
+      if (selector.token === 'Guest') {
+        offlineEstimateUpdate();
+      } else {
+        addImageET(image);
+      }
+    }
+  };
+  const offlineInvoiceUpdate = () => {
+    const updatedArray = selector.invoiceList.map((item: any) => {
+      if (item.index === route?.params?.data?.index) {
+        return {
+          ...item,
+          signature: image,
+        };
+      }
+      return item;
+    });    
+    dispatch(setInvoiceList(updatedArray));
+    successMessage();
+  };
+
+  const offlineEstimateUpdate = () => {
+    const updatedArray = selector.estimateList.map((item: any) => {
+      if (item.index === route?.params?.data?.index) {
+        return {
+          ...item,
+          signature: image,
+        };
+      }
+      return item;
+    });
+    dispatch(setEstimateList(updatedArray));
+    successMessage();
+  };
   const addImage = async imageData => {
     try {
       const formData = new FormData();
@@ -168,12 +224,14 @@ const Sign = ({navigation, route}: any) => {
   };
 
   const handleData = data => {
-    console.log(data);
-    handleCondition();
+    if(image){
+      checkUpdate();
+    }else{
+      Alert.alert("", "Please do the signature before saving")
+    }
   };
 
   const handleCancel = () => {
-    console.log('Empty');
     navigation.goBack();
   };
 
