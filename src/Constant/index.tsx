@@ -80,11 +80,40 @@ const importedInvoice: any = {
   },
 };
 
+function extractInvoiceNumbers(data: any) {
+  const regex = /INV(\d+)/g;
+  const invoiceNumbers: any = [];
+
+  // Flatten the nested structure (it seems there are extra square brackets)
+  data = data.flat(Infinity);
+
+  data.forEach((item: any) => {
+    const itemStr = JSON.stringify(item);
+    let match;
+
+    while ((match = regex.exec(itemStr)) !== null) {
+      invoiceNumbers.push(match[1]);
+    }
+  });
+
+  return invoiceNumbers;
+}
+
 export const setNewInvoiceInList = (selector: any) => {
   const temp = {
     _id: '',
     user: '',
-    invoice_number: 'INV' + (selector.invoiceList.length + 1),
+    invoice_number: 'INV'.concat(
+      selector.invoiceList.length > 0
+        ? (
+            parseInt(
+              extractInvoiceNumbers(selector.invoiceList)[
+                extractInvoiceNumbers(selector.invoiceList).length - 1
+              ],
+            ) + 1
+          ).toString()
+        : '1',
+    ),
     invoice_date: new Date(),
     b_id: '',
     b_name: selector.businessDetails.name,
@@ -148,6 +177,5 @@ export const setNewEstimateInList = (selector: any) => {
   };
   return temp;
 };
-
 
 export const offlineLimit = 5;
