@@ -92,6 +92,7 @@ function SignUpScreen({navigation}: any): JSX.Element {
       // if (email.trim() !== '') {
       //   validation();
       // } else {
+      addInfo();
       dispatch(setToken('Guest'));
       dispatch(saveUserData({email: 'Guest'}));
       navigation.reset({
@@ -405,7 +406,6 @@ function SignUpScreen({navigation}: any): JSX.Element {
 
   const saveImage = image => {
     setBusinessImage(image);
-    addInfo();
   };
   
   const navigateToAddInvoice = () => {

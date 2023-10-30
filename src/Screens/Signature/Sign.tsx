@@ -28,6 +28,7 @@ const Sign = ({navigation, route}: any) => {
   const [alreadyExist, setAlreadyExist] = useState(false);
   const [imageURL, setImageURL] = useState('');
   const [base64Image, setBase64Image] = useState('');
+  const [alreadyExist2, setAlreadyExist2] = useState(false);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setImageUrl(event.target.value);
@@ -64,19 +65,23 @@ const Sign = ({navigation, route}: any) => {
 
   useEffect(() => {
     if (route.params.signature) {
+      console.log("route.params.signature",route.params.signature);
+      
       if (selector.token === 'Guest') {
         setBase64Image(route.params.signature);
         setAlreadyExist(true);
+        setAlreadyExist2(true);
         setImageURL(route.params.signature);
       } else {
         convertImageUrlToBase64(IMAGE_BASE_URL + route.params.signature);
         // setAlreadyExist(true);
+        setAlreadyExist2(true);
         setImageURL(route.params.signature);
       }
     } else {
       setAlreadyExist(true);
     }
-  }, [route.params,selector]);
+  }, [route.params, selector]);
 
   const successMessage = () => {
     ToastService.showToast('Updated Successfully');
@@ -125,7 +130,7 @@ const Sign = ({navigation, route}: any) => {
         };
       }
       return item;
-    });    
+    });
     dispatch(setInvoiceList(updatedArray));
     successMessage();
   };
@@ -136,6 +141,33 @@ const Sign = ({navigation, route}: any) => {
         return {
           ...item,
           signature: image,
+        };
+      }
+      return item;
+    });
+    dispatch(setEstimateList(updatedArray));
+    successMessage();
+  };
+
+  const DeleteIN = () => {
+    const updatedArray = selector.invoiceList.map((item: any) => {
+      if (item.index === route?.params?.data?.index) {
+        return {
+          ...item,
+          signature: image,
+        };
+      }
+      return item;
+    });
+    dispatch(setInvoiceList(updatedArray));
+    successMessage();
+  };
+  const DeleteET = () => {
+    const updatedArray = selector.estimateList.map((item: any) => {
+      if (item.index === route?.params?.data?.index) {
+        return {
+          ...item,
+          signature: "",
         };
       }
       return item;
@@ -216,7 +248,23 @@ const Sign = ({navigation, route}: any) => {
   };
 
   const handleClear = () => {
-    console.log('clear success!');
+    if (alreadyExist2) {
+      if (route?.params?.invoiceUpdate) {
+        if (selector.token === 'Guest') {
+          DeleteIN();
+        } else {
+          // addImage(image);
+        }
+      }
+      if (route?.params?.estimateUpdate) {
+        if (selector.token === 'Guest') {
+          DeleteET();
+        } else {
+          // addImageET(image);
+        }
+      }
+    }
+    
   };
 
   const handleEnd = () => {
@@ -224,10 +272,10 @@ const Sign = ({navigation, route}: any) => {
   };
 
   const handleData = data => {
-    if(image){
+    if (image) {
       checkUpdate();
-    }else{
-      Alert.alert("", "Please do the signature before saving")
+    } else {
+      Alert.alert('', 'Please do the signature before saving');
     }
   };
 
@@ -292,7 +340,7 @@ const Sign = ({navigation, route}: any) => {
           onGetData={handleData}
           onCancel={handleCancel}
           descriptionText={''}
-          clearText={t('Clear')}
+          clearText={alreadyExist2 ? t('Delete') : t('Clear')}
           confirmText={t('Save')}
           cancelText={t('Cancel')}
           style={{flex: 1}}

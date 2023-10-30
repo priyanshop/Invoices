@@ -62,9 +62,13 @@ const BusinessDetails = ({navigation, route}: any) => {
     if (route?.params?.invoiceUpdate || route?.params?.estimateUpdate) {
       if (route.params.data) {
         const businessDetails = route.params.data;
-        setBusinessImage(
-          IMAGE_BASE_URL.concat(businessDetails.b_business_logo),
-        );
+        if (selector.token === 'Guest') {
+          setBusinessImage(businessDetails.b_business_logo);
+        } else {
+          setBusinessImage(
+            IMAGE_BASE_URL.concat(businessDetails.b_business_logo),
+          );
+        }
         setAlreadyExist(true);
         setPhone(businessDetails.b_phone_number);
         setAddress1(businessDetails.b_address1);
@@ -100,7 +104,7 @@ const BusinessDetails = ({navigation, route}: any) => {
       setWebsite(businessDetails.website);
       setOwnerName(businessDetails.owner_name);
       setMobile(businessDetails.mobile_number);
-      setBusinessImage(businessDetails.business_logo)
+      setBusinessImage(businessDetails.business_logo);
     } else {
       getInfo();
     }
@@ -173,7 +177,7 @@ const BusinessDetails = ({navigation, route}: any) => {
       setPhoneError('');
     }
 
-    if (!Mobile.match(/^\d+$/)) {
+    if (Mobile && !Mobile.match(/^\d+$/)) {
       setMobileError('Invalid mobile number');
       isValid = false;
     } else {
@@ -188,6 +192,7 @@ const BusinessDetails = ({navigation, route}: any) => {
     // }
 
     if (
+      Website &&
       !Website.match(
         /^(https?:\/\/)?([a-zA-Z0-9-]+\.)?[a-zA-Z0-9][a-zA-Z0-9-]+\.[a-z]{2,}$/i,
       )
@@ -244,7 +249,7 @@ const BusinessDetails = ({navigation, route}: any) => {
         address1: address1,
         address2: address2,
         address3: address3,
-        business_logo: 'xyz.png',
+        business_logo: BusinessImage,
         business_number: businessNumber,
         website: Website,
         owner_name: ownerName,
@@ -305,7 +310,7 @@ const BusinessDetails = ({navigation, route}: any) => {
         address1: address1,
         address2: address2,
         address3: address3,
-        business_logo: 'xyz.png',
+        business_logo: BusinessImage,
         business_number: businessNumber,
         website: Website,
         owner_name: ownerName,

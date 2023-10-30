@@ -28,10 +28,19 @@ const SettingScreen = ({navigation}: any) => {
 
   const apiCall = async () => {
     try {
-      const data = await FetchAPI('delete', endpoint.deleteUser, null, {
-        Authorization: 'Bearer ' + selector.token,
-      });
-      if (data.status === 'success') {
+      if (selector.token !== 'Guest') {
+        const data = await FetchAPI('delete', endpoint.deleteUser, null, {
+          Authorization: 'Bearer ' + selector.token,
+        });
+        if (data.status === 'success') {
+          dispatch(removeUserData());
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'LandingPage'}],
+          });
+          ToastService.showToast('Account Deleted Successfully');
+        }
+      } else {
         dispatch(removeUserData());
         navigation.reset({
           index: 0,
@@ -123,7 +132,7 @@ const SettingScreen = ({navigation}: any) => {
           title: 'Export as Spreadsheet',
           titleTxt: t('Settings.ExportAsSpreadsheet'),
           description: '',
-          onPress: ()=>handleDownloadAndShare(),
+          onPress: () => handleDownloadAndShare(),
         },
         {
           title: 'Customize',
@@ -235,32 +244,29 @@ const SettingScreen = ({navigation}: any) => {
 
   const handleDownloadAndShare = async () => {
     try {
-      
-      const response = await FetchAPI(
-        'get',
-        endpoint.exportSpreadSheet,
-        null,
-        {
-          Authorization: 'Bearer ' + selector.token,
-        },
-      );
+      const response = await FetchAPI('get', endpoint.exportSpreadSheet, null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
       const data = response.data;
       const ws = XLSX.utils.json_to_sheet(data);
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'DataSheet');
       const excelFilePath = `${RNFS.DocumentDirectoryPath}/data.xlsx`;
-      RNFS.writeFile(excelFilePath, XLSX.write(wb, { bookType: 'xlsx', type: 'base64' }), 'base64')
-        .then(() => {
-          Share.open({
-            url: `file://${excelFilePath}`,
-            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            title: 'Share Excel File',
-          });
+      RNFS.writeFile(
+        excelFilePath,
+        XLSX.write(wb, {bookType: 'xlsx', type: 'base64'}),
+        'base64',
+      ).then(() => {
+        Share.open({
+          url: `file://${excelFilePath}`,
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          title: 'Share Excel File',
         });
+      });
     } catch (error) {
       console.error('Error downloading and sharing Excel file', error);
     }
-  }
+  };
 
   const renderSectionHeader = ({section}: any) => (
     <View style={styles.headerView}>
