@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TextInput} from 'react-native';
+import {View, Text, StyleSheet, TextInput,TouchableOpacity} from 'react-native';
 import TermsComponent from '../../CustomComponent/TermsComponent';
 import DatePicker from 'react-native-date-picker';
 import {useTranslation} from 'react-i18next';
 import moment from 'moment';
-import {useSelector} from 'react-redux';
-import {TouchableOpacity} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import {GlobalStyle} from '../../Helper/GlobalStyle';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';

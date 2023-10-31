@@ -1,5 +1,5 @@
-import {createSlice} from '@reduxjs/toolkit';
-import {IUserState} from './UserInterface';
+import { createSlice } from '@reduxjs/toolkit';
+import { IUserState } from './UserInterface';
 
 // user redusre store user data and all types of token
 const initialState: IUserState = {
@@ -65,6 +65,47 @@ const UserReducer = createSlice({
     removeUserData: state => {
       state.userData = null;
       state.token = null;
+      state.clientList = [];
+      state.itemsList = [];
+      state.businessDetails = {
+        name: '',
+        email: '',
+        phone_number: '',
+        address1: '',
+        address2: '',
+        address3: '',
+        business_logo: '',
+        business_number: '',
+        website: '',
+        owner_name: '',
+        mobile_number: '',
+      },
+        state.customizeLabels = {
+          invoice_title: '',
+          estimate_title: '',
+          business_number: '',
+          quantity_label: '',
+          rate_label: '',
+          quantityAndUnitCost: true,
+        },
+        state.paymentInfo = {
+          paypal_email: '',
+          make_checks_payable: '',
+          payment_instructions: '',
+          additional_payment_instructions: '',
+        },
+        state.defaultNotes = {
+          invoices: '',
+          estimates: '',
+        },
+        state.defaultInvoiceFormat = {
+          invoice_number_prefix: '',
+          estimate_number_prefix: '',
+        },
+        state.globalDateFormat = 'yyyy-MM-DD',
+        state.invoiceList = [],
+        state.estimateList = [],
+        state.defaultEmailMessage = ""
     },
     addClientInList: (state, action) => {
       state.clientList = [...state.clientList, action.payload];

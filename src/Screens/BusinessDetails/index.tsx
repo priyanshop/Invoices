@@ -62,9 +62,13 @@ const BusinessDetails = ({navigation, route}: any) => {
     if (route?.params?.invoiceUpdate || route?.params?.estimateUpdate) {
       if (route.params.data) {
         const businessDetails = route.params.data;
-        setBusinessImage(
-          IMAGE_BASE_URL.concat(businessDetails.b_business_logo),
-        );
+        if (selector.token === 'Guest') {
+          setBusinessImage(businessDetails.b_business_logo);
+        } else {
+          setBusinessImage(
+            IMAGE_BASE_URL.concat(businessDetails.b_business_logo),
+          );
+        }
         setAlreadyExist(true);
         setPhone(businessDetails.b_phone_number);
         setAddress1(businessDetails.b_address1);
@@ -100,7 +104,7 @@ const BusinessDetails = ({navigation, route}: any) => {
       setWebsite(businessDetails.website);
       setOwnerName(businessDetails.owner_name);
       setMobile(businessDetails.mobile_number);
-      setBusinessImage(businessDetails.business_logo)
+      setBusinessImage(businessDetails.business_logo);
     } else {
       getInfo();
     }
@@ -145,12 +149,12 @@ const BusinessDetails = ({navigation, route}: any) => {
     let isValid = true;
 
     // Email validation
-    if (!email.match(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/)) {
-      setEmailError('Invalid email address');
-      isValid = false;
-    } else {
-      setEmailError('');
-    }
+    // if (!email.match(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/)) {
+    //   setEmailError('Invalid email address');
+    //   isValid = false;
+    // } else {
+    //   setEmailError('');
+    // }
 
     if (businessName.trim() === '') {
       setBusinessNameError('Business name is required');
@@ -166,19 +170,19 @@ const BusinessDetails = ({navigation, route}: any) => {
       setBusinessNumberError('');
     }
 
-    if (!isValidPhoneNumber(Phone)) {
-      setPhoneError('Invalid phone number');
-      isValid = false;
-    } else {
-      setPhoneError('');
-    }
+    // if (!isValidPhoneNumber(Phone)) {
+    //   setPhoneError('Invalid phone number');
+    //   isValid = false;
+    // } else {
+    //   setPhoneError('');
+    // }
 
-    if (!Mobile.match(/^\d+$/)) {
-      setMobileError('Invalid mobile number');
-      isValid = false;
-    } else {
-      setMobileError('');
-    }
+    // if (Mobile && !Mobile.match(/^\d+$/)) {
+    //   setMobileError('Invalid mobile number');
+    //   isValid = false;
+    // } else {
+    //   setMobileError('');
+    // }
 
     // if (!Website.match(/^(http|https):\/\/.+/i)) {
     //   setWebsiteError('Invalid website URL');
@@ -188,6 +192,7 @@ const BusinessDetails = ({navigation, route}: any) => {
     // }
 
     if (
+      Website &&
       !Website.match(
         /^(https?:\/\/)?([a-zA-Z0-9-]+\.)?[a-zA-Z0-9][a-zA-Z0-9-]+\.[a-z]{2,}$/i,
       )
@@ -244,7 +249,7 @@ const BusinessDetails = ({navigation, route}: any) => {
         address1: address1,
         address2: address2,
         address3: address3,
-        business_logo: 'xyz.png',
+        business_logo: BusinessImage,
         business_number: businessNumber,
         website: Website,
         owner_name: ownerName,
@@ -273,6 +278,7 @@ const BusinessDetails = ({navigation, route}: any) => {
       formData.append('address3', address3);
       if (selector.token === 'Guest') {
         dispatch(setBusinessDetail(payload2));
+        successMessage();
       } else {
         const data = await FetchAPI('post', endpoint.businessInfo, formData, {
           Authorization: 'Bearer ' + selector.token,
@@ -305,7 +311,7 @@ const BusinessDetails = ({navigation, route}: any) => {
         address1: address1,
         address2: address2,
         address3: address3,
-        business_logo: 'xyz.png',
+        business_logo: BusinessImage,
         business_number: businessNumber,
         website: Website,
         owner_name: ownerName,
@@ -335,6 +341,7 @@ const BusinessDetails = ({navigation, route}: any) => {
       formData.append('address3', address3);
       if (selector.token === 'Guest') {
         dispatch(setBusinessDetail(payload2));
+        successMessage();
       } else {
         const data = await FetchAPI(
           'patch',
@@ -444,6 +451,7 @@ const BusinessDetails = ({navigation, route}: any) => {
       return item;
     });
     dispatch(setInvoiceList(updatedArray));
+    successMessage();
   };
 
   const offlineEstimateUpdate = () => {
@@ -568,11 +576,15 @@ const BusinessDetails = ({navigation, route}: any) => {
       case 'phone':
         if (!isValidPhoneNumber(Phone)) {
           setPhoneError('Invalid phone number');
+        } else {
+          setPhoneError('');
         }
         break;
       case 'mobile':
         if (!isValidPhoneNumber(Mobile)) {
           setMobileError('Invalid mobile number');
+        } else {
+          setMobileError('');
         }
         break;
       case 'website':

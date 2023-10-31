@@ -12,7 +12,7 @@ const API_TYPE = {
 export const endpoint = {
   login: `${API_BASE_URL}/${API_TYPE.USERS}/login`,
   register: `${API_BASE_URL}/${API_TYPE.USERS}/register`,
-  deleteUser: `${API_BASE_URL}/${API_TYPE.USERS}/delete-user`,
+  deleteUser: `${API_BASE_URL}/${API_TYPE.USERS}/delete/user`,
   addClient: `${API_BASE_URL}/${API_TYPE.CLIENTS}`,
   updateClient: (id: any) => `${API_BASE_URL}/${API_TYPE.CLIENTS}/${id}`,
   getClient: (id: any) => `${API_BASE_URL}/${API_TYPE.CLIENTS}/${id}`,
