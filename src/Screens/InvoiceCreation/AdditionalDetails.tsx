@@ -14,7 +14,11 @@ import {useSelector, useDispatch} from 'react-redux';
 import FetchAPI from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {Colors} from '../../Helper/Colors';
-import { setEstimateList, setInvoiceList } from '../../redux/reducers/user/UserReducer';
+import {
+  setDefaultNotes,
+  setEstimateList,
+  setInvoiceList,
+} from '../../redux/reducers/user/UserReducer';
 
 function AdditionalDetails({navigation, route}: any): JSX.Element {
   const dispatch = useDispatch();
@@ -25,10 +29,10 @@ function AdditionalDetails({navigation, route}: any): JSX.Element {
 
   useEffect(() => {
     if (route?.params?.invoiceUpdate) {
-      setAdditionalDetails(route?.params?.invoiceData?.notes)
+      setAdditionalDetails(route?.params?.invoiceData?.notes);
     }
     if (route?.params?.estimateUpdate) {
-      setAdditionalDetails(route?.params?.estimateData?.notes)
+      setAdditionalDetails(route?.params?.estimateData?.notes);
     }
   }, [route?.params]);
 
@@ -67,15 +71,13 @@ function AdditionalDetails({navigation, route}: any): JSX.Element {
     dispatch(setInvoiceList(updatedArray));
   };
 
- 
-
   const updateETNotesDetail = async () => {
     try {
       const payload: any = {
         notes: additionalDetails,
       };
       if (selector.token === 'Guest') {
-        offlineEStimateUpdate()
+        offlineEStimateUpdate();
       } else {
         const data = await FetchAPI(
           'patch',
@@ -108,12 +110,49 @@ function AdditionalDetails({navigation, route}: any): JSX.Element {
     setAdditionalDetails(text);
     if (route?.params?.invoiceUpdate) {
       updateIVNotesDetail();
+      addInfo();
     } else if (route?.params?.estimateUpdate) {
       updateETNotesDetail();
-    }else{
+      addInfoET();
+    } else {
     }
   };
 
+  const addInfo = async () => {
+    try {
+      const payload: any = {
+        invoices: additionalDetails,
+        estimates: selector.defaultNotes.estimates,
+      };
+      if (selector.token === 'Guest') {
+        dispatch(setDefaultNotes(payload));
+      } else {
+        const data = await FetchAPI('post', endpoint.defaultNotes, payload, {
+          Authorization: 'Bearer ' + selector.token,
+        });
+        if (data.status === 'success') {
+        }
+      }
+    } catch (error) {}
+  };
+
+  const addInfoET = async () => {
+    try {
+      const payload: any = {
+        invoices: selector.defaultNotes.invoices,
+        estimates: additionalDetails,
+      };
+      if (selector.token === 'Guest') {
+        dispatch(setDefaultNotes(payload));
+      } else {
+        const data = await FetchAPI('post', endpoint.defaultNotes, payload, {
+          Authorization: 'Bearer ' + selector.token,
+        });
+        if (data.status === 'success') {
+        }
+      }
+    } catch (error) {}
+  };
   return (
     <>
       <StatusBar backgroundColor={Colors.appColor} />

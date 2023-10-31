@@ -149,12 +149,12 @@ const BusinessDetails = ({navigation, route}: any) => {
     let isValid = true;
 
     // Email validation
-    // if (!email.match(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/)) {
-    //   setEmailError('Invalid email address');
-    //   isValid = false;
-    // } else {
-    //   setEmailError('');
-    // }
+    if (!email.match(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/)) {
+      setEmailError('Invalid email address');
+      isValid = false;
+    } else {
+      setEmailError('');
+    }
 
     if (businessName.trim() === '') {
       setBusinessNameError('Business name is required');
@@ -163,7 +163,7 @@ const BusinessDetails = ({navigation, route}: any) => {
       setBusinessNameError('');
     }
 
-    if (!businessNumber.match(/^\d+$/)) {
+    if (businessNumber && !businessNumber.match(/^\d+$/)) {
       setBusinessNumberError('Invalid business number');
       isValid = false;
     } else {
@@ -574,18 +574,18 @@ const BusinessDetails = ({navigation, route}: any) => {
         setBusinessNumberError('');
         break;
       case 'phone':
-        if (!isValidPhoneNumber(Phone)) {
-          setPhoneError('Invalid phone number');
-        } else {
-          setPhoneError('');
-        }
+        // if (!isValidPhoneNumber(Phone)) {
+        setPhoneError('');
+        // } else {
+        //   setPhoneError('');
+        // }
         break;
       case 'mobile':
-        if (!isValidPhoneNumber(Mobile)) {
-          setMobileError('Invalid mobile number');
-        } else {
-          setMobileError('');
-        }
+        // if (!isValidPhoneNumber(Mobile)) {
+        //   setMobileError('Invalid mobile number');
+        // } else {
+        setMobileError('');
+        // }
         break;
       case 'website':
         setWebsiteError('');
