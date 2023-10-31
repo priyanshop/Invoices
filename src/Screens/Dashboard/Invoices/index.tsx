@@ -183,7 +183,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
       const year = invoiceDate.getFullYear();
       const client = item.c_name || 'No Client';
       const invoiceNumber = item.invoice_number;
-      const price = item.invoice_total || 0;
+      const price =  parseFloat(item.invoice_total || 0);
       const date = invoiceDate.toISOString().split('T')[0];
       const existingYearData = transformedData.find(data => data.year === year);
 
@@ -195,11 +195,11 @@ function InvoicesScreen({navigation}: any): JSX.Element {
           date,
           ...item,
         });
-        existingYearData.totalInvoiceAmount += price;
+        existingYearData.totalInvoiceAmount += parseFloat(price);
         if (item.is_paid) {
-          existingYearData.totalPaidAmount += price;
+          existingYearData.totalPaidAmount += parseFloat(price);
         } else {
-          existingYearData.totalUnpaidAmount += price;
+          existingYearData.totalUnpaidAmount += parseFloat(price);
         }
       } else {
         transformedData.push({
