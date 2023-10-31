@@ -289,6 +289,10 @@
   "emptyEstimateHistory": "O histórico de emails de orçamentos aparecerá aqui",
   "Make Invoice": "Fazer fatura",
   "Menu": "Cardápio",
-  "Sign Up" :"Inscrever-se",
-  "Create account" :"Criar conta."
+  "Sign Up": "Inscrever-se",
+  "Create account": "Criar conta.",
+  "confirmDeleteAccount": "Tem certeza de que deseja excluir sua conta?",
+  "sureButton": "Claro",
+  "cancelButton": "Cancelar",
+  "Re-Sign": "Demitir-se"
 }

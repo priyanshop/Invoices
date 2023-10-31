@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   SectionList,
@@ -20,12 +20,16 @@ import ToastService from '../../Helper/ToastService';
 import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
 import XLSX from 'xlsx';
+import {Dialog} from 'react-native-elements';
 
 const SettingScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
   const selector = useSelector((state: any) => state.user);
   const {t, i18n} = useTranslation();
-
+  const [visible2, setVisible2] = useState(false);
+  const toggleDialog2 = () => {
+    setVisible2(!visible2);
+  };
   const apiCall = async () => {
     try {
       if (selector.token !== 'Guest') {
@@ -207,7 +211,10 @@ const SettingScreen = ({navigation}: any) => {
           title: 'Delete Account',
           titleTxt: t('Settings.DeleteAccount'),
           description: '',
-          onPress: () => apiCall(),
+          onPress: () => {
+            // apiCall();
+            toggleDialog2();
+          },
         },
         {
           title: 'Logout',
@@ -325,6 +332,23 @@ const SettingScreen = ({navigation}: any) => {
         stickySectionHeadersEnabled={false}
         contentContainerStyle={{paddingBottom: 40}}
       />
+      <Dialog isVisible={visible2} onBackdropPress={toggleDialog2}>
+        {/* <Dialog.Title title=""/> */}
+        <Text>{t('confirmDeleteAccount')}</Text>
+        <Dialog.Actions>
+          <Dialog.Button
+            title={t('sureButton')}
+            onPress={() => {
+              apiCall();
+              toggleDialog2();
+            }}
+          />
+          <Dialog.Button
+            title={t('cancelButton')}
+            onPress={() => toggleDialog2()}
+          />
+        </Dialog.Actions>
+      </Dialog>
     </View>
   );
 };

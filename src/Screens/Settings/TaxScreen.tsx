@@ -33,18 +33,20 @@ function TaxScreen({navigation, route}: any): JSX.Element {
   const [selectedTax, setSelectedTax] = useState('On The Total');
   const [Taxable, setTaxable] = useState(false);
   const [taxRate, setTaxRate] = useState('');
-
-  useEffect(() => {
+  const [taxLabel, setTaxLabel] = useState('GST');
+  useEffect(() => {    
     if (route.params?.invoiceUpdate) {
-      if (route.params?.invoiceData?.invoice_discount_type) {
+      if (route.params?.invoiceData?.invoice_discount_type !== "") {        
+        setTaxLabel(route.params.invoiceData.invoice_tax_label || '');
         setSelectedTax(route.params.invoiceData.invoice_tax_type);
         setTaxRate(route.params.invoiceData.invoice_tax_rate?.toString());
       }
     }
     if (route.params?.estimateUpdate) {
-      if (route.params?.estimateData?.estimate_tax_type) {
+      if (route.params?.estimateData?.estimate_tax_type !== "") {
         setSelectedTax(route.params.estimateData.estimate_tax_type);
         setTaxRate(route.params.estimateData.estimate_tax_rate?.toString());
+        setTaxLabel(route.params.estimateData.invoice_tax_label || '');
       }
     }
   }, [route.params]);
@@ -78,7 +80,7 @@ function TaxScreen({navigation, route}: any): JSX.Element {
 
     const payload: any = {
       invoice_tax_type: selectedTax,
-      invoice_tax_label: 'GST',
+      invoice_tax_label: taxLabel,
       invoice_tax_rate: selectedTax === 'On The Total' ? taxRate : '',
       is_invoice_tax_inclusive: 'false',
       invoice_total_tax_amount:
@@ -122,7 +124,7 @@ function TaxScreen({navigation, route}: any): JSX.Element {
     const totalTax = getTotalTaxAmount(route.params.estimateData.items);
     const payload: any = {
       estimate_tax_type: selectedTax,
-      estimate_tax_label: 'GST',
+      estimate_tax_label: taxLabel,
       estimate_tax_rate: selectedTax === 'On The Total' ? taxRate : '',
       is_estimate_tax_inclusive: 'false',
       estimate_total_tax_amount:
@@ -146,12 +148,12 @@ function TaxScreen({navigation, route}: any): JSX.Element {
           ...item,
           ...tempPayload,
         };
-      }      
+      }
       return item;
     });
     const updatedArray2 = selector.estimateList.filter(
       (item: any) => item.index === route?.params?.estimateData.index,
-    );    
+    );
     dispatch(setEstimateList(updatedArray));
     setTimeout(() => {
       navigation.goBack();
@@ -217,11 +219,14 @@ function TaxScreen({navigation, route}: any): JSX.Element {
               <Text style={styles.label}>{t('Label')}: </Text>
               <View style={styles.inputContainer}>
                 <TextInput
-                  value={t('GST')}
+                  value={taxLabel}
                   style={styles.input}
                   placeholder={''}
                   placeholderTextColor={'grey'}
-                  editable={false}
+                  // editable={false}
+                  onChangeText={text => {
+                    setTaxLabel(text);
+                  }}
                 />
               </View>
             </View>

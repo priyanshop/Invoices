@@ -317,7 +317,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     );
 
     const renderInvoiceItem = ({item}: any) => (
-      <View style={styles.invoiceItem}>
+      <TouchableOpacity  onPress={() => navigateToInvoice(item)} style={styles.invoiceItem}>
         <View>
           <Text style={styles.clientText}>{`${item.client}`}</Text>
           <Text
@@ -331,7 +331,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
             <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
           )}
         </View>
-      </View>
+      </TouchableOpacity>
     );
 
     const renderSectionHeader = ({section: {year, totalInvoiceAmount}}) => (
@@ -343,7 +343,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     return (
       <ScrollView nestedScrollEnabled style={[styles.scene]}>
         <Loader visible={isLoading} size="large" color={Colors.landingColor} />
-        {outStandFilteredInvoices.length > 0 && (
+        {outStandFilteredInvoices.length > 0? (
           <SectionList
             sections={outStandFilteredInvoices}
             keyExtractor={(item: any, index: any) => item + index}
@@ -351,10 +351,8 @@ function InvoicesScreen({navigation}: any): JSX.Element {
             renderSectionHeader={renderSectionHeader}
             ListEmptyComponent={renderEmptyComponent}
             contentContainerStyle={{flex: 1}}
-            style={{flex: 1}}
-            nestedScrollEnabled
           />
-        )}
+        ): renderEmptyComponent()}
       </ScrollView>
     );
   };
@@ -365,7 +363,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     );
 
     const renderInvoiceItem = ({item}: any) => (
-      <View style={styles.invoiceItem}>
+      <TouchableOpacity  onPress={() => navigateToInvoice(item)} style={styles.invoiceItem}>
         <View>
           <Text style={styles.clientText}>{`${item.client}`}</Text>
           <Text
@@ -379,7 +377,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
             <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
           )}
         </View>
-      </View>
+      </TouchableOpacity>
     );
 
     const renderSectionHeader = ({section: {year, totalInvoiceAmount}}) => (
@@ -391,7 +389,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     return (
       <View style={[styles.scene]}>
         <Loader visible={isLoading} size="large" color={Colors.landingColor} />
-        {paidFilteredInvoices.length > 0 && (
+        {paidFilteredInvoices.length > 0 ? (
           <SectionList
             sections={paidFilteredInvoices}
             keyExtractor={(item: any, index: any) => item + index}
@@ -400,7 +398,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
             ListEmptyComponent={renderEmptyComponent}
             contentContainerStyle={{flex: 1}}
           />
-        )}
+        ):renderEmptyComponent()}
       </View>
     );
   };

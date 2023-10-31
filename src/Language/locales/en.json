@@ -290,5 +290,9 @@
   "Make Invoice": "Make Invoice",
   "Menu": "Menu",
   "Sign Up": "Sign Up",
-  "Create account" :"Create account"
+  "Create account": "Create account",
+  "confirmDeleteAccount": "Are you sure you want to delete your account?",
+  "sureButton": "Sure",
+  "cancelButton": "Cancel",
+  "Re-Sign": "Re-Sign"
 }
