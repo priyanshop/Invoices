@@ -19,6 +19,8 @@ import {
   setEstimateList,
   setInvoiceList,
 } from '../../redux/reducers/user/UserReducer';
+import {GlobalStyle} from '../../Helper/GlobalStyle';
+import ToastService from '../../Helper/ToastService';
 
 function AdditionalDetails({navigation, route}: any): JSX.Element {
   const dispatch = useDispatch();
@@ -53,6 +55,7 @@ function AdditionalDetails({navigation, route}: any): JSX.Element {
           },
         );
         if (data.status === 'success') {
+          successMessage();
         }
       }
     } catch (error) {}
@@ -69,8 +72,12 @@ function AdditionalDetails({navigation, route}: any): JSX.Element {
       return item;
     });
     dispatch(setInvoiceList(updatedArray));
+    successMessage();
   };
-
+  const successMessage = () => {
+    ToastService.showToast('Updated Successfully');
+    navigation.goBack();
+  };
   const updateETNotesDetail = async () => {
     try {
       const payload: any = {
@@ -88,6 +95,7 @@ function AdditionalDetails({navigation, route}: any): JSX.Element {
           },
         );
         if (data.status === 'success') {
+          successMessage();
         }
       }
     } catch (error) {}
@@ -104,18 +112,18 @@ function AdditionalDetails({navigation, route}: any): JSX.Element {
       return item;
     });
     dispatch(setEstimateList(updatedArray));
+    successMessage();
   };
 
-  const checkCondition = (text: any) => {
-    setAdditionalDetails(text);
+  const checkCondition = () => {
     if (route?.params?.invoiceUpdate) {
       updateIVNotesDetail();
       addInfo();
-    } else if (route?.params?.estimateUpdate) {
+    }
+    if (route?.params?.estimateUpdate) {
       updateETNotesDetail();
       addInfoET();
-    } else {
-    }
+    } 
   };
 
   const addInfo = async () => {
@@ -161,7 +169,7 @@ function AdditionalDetails({navigation, route}: any): JSX.Element {
         <View style={styles.detailView}>
           <TextInput
             value={additionalDetails}
-            onChangeText={checkCondition}
+            onChangeText={text => setAdditionalDetails(text)}
             placeholder={t('Additional Details')}
             style={styles.detailText}
             numberOfLines={4}
@@ -179,6 +187,12 @@ function AdditionalDetails({navigation, route}: any): JSX.Element {
             />
           </View>
         </View>
+
+        <TouchableOpacity
+          onPress={() => checkCondition()}
+          style={GlobalStyle.statementBtn}>
+          <Text style={[GlobalStyle.titleTxt2]}>{t('Update')}</Text>
+        </TouchableOpacity>
       </ScrollView>
     </>
   );

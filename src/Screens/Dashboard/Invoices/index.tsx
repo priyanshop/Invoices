@@ -183,7 +183,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
       const year = invoiceDate.getFullYear();
       const client = item.c_name || 'No Client';
       const invoiceNumber = item.invoice_number;
-      const price =  parseFloat(item.invoice_total || 0);
+      const price = parseFloat(item.invoice_total || 0);
       const date = invoiceDate.toISOString().split('T')[0];
       const existingYearData = transformedData.find(data => data.year === year);
 
@@ -317,7 +317,9 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     );
 
     const renderInvoiceItem = ({item}: any) => (
-      <TouchableOpacity  onPress={() => navigateToInvoice(item)} style={styles.invoiceItem}>
+      <TouchableOpacity
+        onPress={() => navigateToInvoice(item)}
+        style={styles.invoiceItem}>
         <View>
           <Text style={styles.clientText}>{`${item.client}`}</Text>
           <Text
@@ -343,7 +345,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     return (
       <ScrollView nestedScrollEnabled style={[styles.scene]}>
         <Loader visible={isLoading} size="large" color={Colors.landingColor} />
-        {outStandFilteredInvoices.length > 0? (
+        {outStandFilteredInvoices.length > 0 ? (
           <SectionList
             sections={outStandFilteredInvoices}
             keyExtractor={(item: any, index: any) => item + index}
@@ -352,7 +354,9 @@ function InvoicesScreen({navigation}: any): JSX.Element {
             ListEmptyComponent={renderEmptyComponent}
             contentContainerStyle={{flex: 1}}
           />
-        ): renderEmptyComponent()}
+        ) : (
+          renderEmptyComponent()
+        )}
       </ScrollView>
     );
   };
@@ -363,7 +367,9 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     );
 
     const renderInvoiceItem = ({item}: any) => (
-      <TouchableOpacity  onPress={() => navigateToInvoice(item)} style={styles.invoiceItem}>
+      <TouchableOpacity
+        onPress={() => navigateToInvoice(item)}
+        style={styles.invoiceItem}>
         <View>
           <Text style={styles.clientText}>{`${item.client}`}</Text>
           <Text
@@ -398,10 +404,17 @@ function InvoicesScreen({navigation}: any): JSX.Element {
             ListEmptyComponent={renderEmptyComponent}
             contentContainerStyle={{flex: 1}}
           />
-        ):renderEmptyComponent()}
+        ) : (
+          renderEmptyComponent()
+        )}
       </View>
     );
   };
+  useEffect(() => {
+    if (!searchStart) {
+      setSearchText('');
+    }
+  }, [searchStart]);
 
   return (
     <SafeAreaView style={styles.container}>

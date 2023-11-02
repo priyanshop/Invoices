@@ -432,14 +432,17 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     navigation.navigate('AddPhotoScreen', {
       invoiceUpdate: true,
       invoiceID: globalData._id,
+      invoiceData: globalData,
     });
   }
 
-  function navigateToAddPhotoScreen2(item) {
+  function navigateToAddPhotoScreen2(item, index) {
     navigation.navigate('AddPhotoScreen', {
       invoiceUpdate: true,
       invoiceID: globalData._id,
       data: item,
+      invoiceData: globalData,
+      selectItemID: index,
     });
   }
 
@@ -463,7 +466,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     navigation.navigate('InvoiceNumber', {
       invoiceUpdate: true,
       invoiceID: globalData._id,
-      invoiceData: globalData
+      invoiceData: globalData,
     });
   }
 
@@ -472,7 +475,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       invoiceUpdate: true,
       invoiceID: globalData._id,
       signature: globalData.signature,
-      data: globalData
+      data: globalData,
     });
   }
 
@@ -599,10 +602,10 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
 
         <View style={styles.photoContainer2}>
           {globalData.photos?.length > 0 &&
-            globalData.photos.map((item: any) => {
+            globalData.photos.map((item: any, index: number) => {
               return (
                 <TouchableOpacity
-                  onPress={() => navigateToAddPhotoScreen2(item)}
+                  onPress={() => navigateToAddPhotoScreen2(item, index)}
                   style={styles.photoElement}>
                   <Text style={styles.notesText3}>
                     {item.photo_description}
@@ -611,12 +614,14 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
                 </TouchableOpacity>
               );
             })}
-          <View style={styles.photoContainer}>
+          <TouchableOpacity
+            onPress={navigateToAddPhotoScreen}
+            style={styles.photoContainer}>
             <Text style={styles.photoText}>{t('Add photo')}</Text>
             <TouchableOpacity onPress={navigateToAddPhotoScreen}>
               <Icon name="attach" size={22} style={styles.photoIcon} />
             </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.notesContainer}>

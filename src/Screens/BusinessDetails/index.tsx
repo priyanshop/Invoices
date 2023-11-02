@@ -16,7 +16,6 @@ import {useSelector, useDispatch} from 'react-redux';
 import {useIsFocused} from '@react-navigation/native';
 import ImagePickerComponent from '../../CustomComponent/ImagePickerComponent';
 import ModalActivityIndicator from '../../CustomComponent/Loader';
-
 import {Colors} from '../../Helper/Colors';
 import FetchAPI, {IMAGE_BASE_URL} from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
@@ -255,8 +254,8 @@ const BusinessDetails = ({navigation, route}: any) => {
         owner_name: ownerName,
         mobile_number: Mobile,
       };
-      const formData = new FormData();
-      const localImageUri = BusinessImage;
+      const formData: any = new FormData();
+      const localImageUri: any = BusinessImage;
       const imageFileName = localImageUri.split('/').pop();
       const extension = localImageUri.split('.').pop();
       formData.append('business_logo', {
@@ -317,9 +316,9 @@ const BusinessDetails = ({navigation, route}: any) => {
         owner_name: ownerName,
         mobile_number: Mobile,
       };
-      const formData = new FormData();
+      const formData: any = new FormData();
 
-      const localImageUri = BusinessImage;
+      const localImageUri: any = BusinessImage;
       const imageFileName = localImageUri.split('/').pop();
       const extension = localImageUri.split('.').pop();
       formData.append('business_logo', {
@@ -386,9 +385,9 @@ const BusinessDetails = ({navigation, route}: any) => {
         b_address3: address3,
         b_business_logo: 'logo.png ',
       };
-      const formData = new FormData();
+      const formData: any = new FormData();
 
-      const localImageUri = BusinessImage;
+      const localImageUri: any = BusinessImage;
       const imageFileName = localImageUri.split('/').pop();
       const extension = localImageUri.split('.').pop();
       formData.append('b_business_logo', {
@@ -445,7 +444,7 @@ const BusinessDetails = ({navigation, route}: any) => {
           b_address1: address1,
           b_address2: address2,
           b_address3: address3,
-          b_business_logo: 'logo.png ',
+          b_business_logo: BusinessImage,
         };
       }
       return item;
@@ -469,7 +468,7 @@ const BusinessDetails = ({navigation, route}: any) => {
           b_address1: address1,
           b_address2: address2,
           b_address3: address3,
-          b_business_logo: 'logo.png ',
+          b_business_logo: BusinessImage,
         };
       }
       return item;
@@ -493,9 +492,9 @@ const BusinessDetails = ({navigation, route}: any) => {
         b_address3: address3,
         b_business_logo: 'logo.png ',
       };
-      const formData = new FormData();
+      const formData: any = new FormData();
 
-      const localImageUri = BusinessImage;
+      const localImageUri: any = BusinessImage;
       const imageFileName = localImageUri.split('/').pop();
       const extension = localImageUri.split('.').pop();
       formData.append('b_business_logo', {
