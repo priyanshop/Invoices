@@ -1,5 +1,6 @@
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
+  Alert,
   Image,
   ScrollView,
   StatusBar,
@@ -34,7 +35,8 @@ function AddPhotoScreen({navigation, route}: any): JSX.Element {
   const selector = useSelector((state: any) => state.user);
   const [openModal, setOpenModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [descriptionError, setDescriptionError] = useState('');
+  const [additionalDetailsError, setAdditionalDetailsError] = useState('');
   const setTrue = () => setIsLoading(true);
   const setFalse = () => setIsLoading(false);
   useLayoutEffect(() => {
@@ -63,6 +65,24 @@ function AddPhotoScreen({navigation, route}: any): JSX.Element {
     }
   }, [route.params]);
 
+  const validation = () => {
+    let isValid = true;
+    if (image.trim() == '') {
+      Alert.alert(t('imageError'));
+      isValid = false;
+    }
+    if (description.trim() == '') {
+      setDescriptionError(t('descriptionError'));
+      isValid = false;
+    }
+    if (additionalDetails.trim() == '') {
+      setAdditionalDetailsError(t('additionalDetailsError'));
+      isValid = false;
+    }
+    if (isValid) {
+      handleCondition();
+    }
+  };
   const handleCondition = () => {
     setTrue();
     if (route?.params?.estimateUpdate) {
@@ -276,7 +296,17 @@ function AddPhotoScreen({navigation, route}: any): JSX.Element {
                   style={[styles.input, {textAlign: 'left'}]}
                   placeholder={t('Description')}
                   placeholderTextColor={'grey'}
+                  onBlur={() => {
+                    if (description.trim() == '') {
+                      setDescriptionError(t('descriptionError'));
+                    } else {
+                      setDescriptionError('');
+                    }
+                  }}
                 />
+                {descriptionError ? (
+                  <Text style={styles.errorText}>{descriptionError}</Text>
+                ) : null}
               </View>
             </View>
             <View style={styles.mainView}>
@@ -287,14 +317,24 @@ function AddPhotoScreen({navigation, route}: any): JSX.Element {
                 placeholderTextColor={'grey'}
                 style={styles.detailText}
                 numberOfLines={4}
+                onBlur={() => {
+                  if (additionalDetails.trim() == '') {
+                    setAdditionalDetailsError(t('additionalDetailsError'));
+                  } else {
+                    setAdditionalDetailsError('');
+                  }
+                }}
                 multiline
               />
             </View>
+            <View style={{marginLeft: 8, marginBottom: 8}}>
+              {additionalDetailsError ? (
+                <Text style={styles.errorText}>{additionalDetailsError}</Text>
+              ) : null}
+            </View>
           </View>
         </View>
-        <TouchableOpacity
-          onPress={handleCondition}
-          style={GlobalStyle.statementBtn}>
+        <TouchableOpacity onPress={validation} style={GlobalStyle.statementBtn}>
           <Text style={[GlobalStyle.titleTxt2]}>{t('Update')}</Text>
         </TouchableOpacity>
         <ImagePickerComponent
@@ -375,6 +415,10 @@ const styles = StyleSheet.create({
   cameraIcon: {
     fontSize: 50,
     color: '#d4d4d4',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
   },
 });
 

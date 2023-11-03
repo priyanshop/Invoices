@@ -123,7 +123,7 @@ function AdditionalDetails({navigation, route}: any): JSX.Element {
     if (route?.params?.estimateUpdate) {
       updateETNotesDetail();
       addInfoET();
-    } 
+    }
   };
 
   const addInfo = async () => {
@@ -132,13 +132,15 @@ function AdditionalDetails({navigation, route}: any): JSX.Element {
         invoices: additionalDetails,
         estimates: selector.defaultNotes.estimates,
       };
-      if (selector.token === 'Guest') {
-        dispatch(setDefaultNotes(payload));
-      } else {
-        const data = await FetchAPI('post', endpoint.defaultNotes, payload, {
-          Authorization: 'Bearer ' + selector.token,
-        });
-        if (data.status === 'success') {
+      if (addToItem) {
+        if (selector.token === 'Guest') {
+          dispatch(setDefaultNotes(payload));
+        } else {
+          const data = await FetchAPI('post', endpoint.defaultNotes, payload, {
+            Authorization: 'Bearer ' + selector.token,
+          });
+          if (data.status === 'success') {
+          }
         }
       }
     } catch (error) {}
@@ -150,13 +152,15 @@ function AdditionalDetails({navigation, route}: any): JSX.Element {
         invoices: selector.defaultNotes.invoices,
         estimates: additionalDetails,
       };
-      if (selector.token === 'Guest') {
-        dispatch(setDefaultNotes(payload));
-      } else {
-        const data = await FetchAPI('post', endpoint.defaultNotes, payload, {
-          Authorization: 'Bearer ' + selector.token,
-        });
-        if (data.status === 'success') {
+      if (addToItem) {
+        if (selector.token === 'Guest') {
+          dispatch(setDefaultNotes(payload));
+        } else {
+          const data = await FetchAPI('post', endpoint.defaultNotes, payload, {
+            Authorization: 'Bearer ' + selector.token,
+          });
+          if (data.status === 'success') {
+          }
         }
       }
     } catch (error) {}
