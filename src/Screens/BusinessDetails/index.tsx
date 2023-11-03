@@ -28,6 +28,7 @@ import {useTranslation} from 'react-i18next';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {GlobalStyle} from '../../Helper/GlobalStyle';
 import ToastService from '../../Helper/ToastService';
+import {Avatar, Accessory} from 'react-native-elements';
 
 const BusinessDetails = ({navigation, route}: any) => {
   const {t, i18n} = useTranslation();
@@ -608,11 +609,19 @@ const BusinessDetails = ({navigation, route}: any) => {
           <View style={styles.content}>
             <TouchableOpacity onPress={closeBottomSheet}>
               {BusinessImage ? (
-                <Image
-                  source={{uri: BusinessImage}}
-                  resizeMode="contain"
-                  style={styles.businessImage}
-                />
+                <Avatar
+                  source={{
+                    uri: BusinessImage,
+                  }}
+                  style={styles.businessImage}>
+                  <Accessory
+                    size={30}
+                    onPress={() => {
+                      setBusinessImage(null);
+                    }}
+                    name="delete"
+                  />
+                </Avatar>
               ) : (
                 <Feather name="camera" style={styles.cameraIcon} />
               )}
@@ -839,6 +848,7 @@ const styles = StyleSheet.create({
   businessImage: {
     width: 200,
     height: 250,
+    resizeMode: 'contain',
   },
   cameraIcon: {
     fontSize: 50,
