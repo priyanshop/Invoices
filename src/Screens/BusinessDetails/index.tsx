@@ -16,7 +16,6 @@ import {useSelector, useDispatch} from 'react-redux';
 import {useIsFocused} from '@react-navigation/native';
 import ImagePickerComponent from '../../CustomComponent/ImagePickerComponent';
 import ModalActivityIndicator from '../../CustomComponent/Loader';
-
 import {Colors} from '../../Helper/Colors';
 import FetchAPI, {IMAGE_BASE_URL} from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
@@ -29,6 +28,7 @@ import {useTranslation} from 'react-i18next';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {GlobalStyle} from '../../Helper/GlobalStyle';
 import ToastService from '../../Helper/ToastService';
+import {Avatar, Accessory} from 'react-native-elements';
 
 const BusinessDetails = ({navigation, route}: any) => {
   const {t, i18n} = useTranslation();
@@ -255,8 +255,8 @@ const BusinessDetails = ({navigation, route}: any) => {
         owner_name: ownerName,
         mobile_number: Mobile,
       };
-      const formData = new FormData();
-      const localImageUri = BusinessImage;
+      const formData: any = new FormData();
+      const localImageUri: any = BusinessImage;
       const imageFileName = localImageUri.split('/').pop();
       const extension = localImageUri.split('.').pop();
       formData.append('business_logo', {
@@ -317,9 +317,9 @@ const BusinessDetails = ({navigation, route}: any) => {
         owner_name: ownerName,
         mobile_number: Mobile,
       };
-      const formData = new FormData();
+      const formData: any = new FormData();
 
-      const localImageUri = BusinessImage;
+      const localImageUri: any = BusinessImage;
       const imageFileName = localImageUri.split('/').pop();
       const extension = localImageUri.split('.').pop();
       formData.append('business_logo', {
@@ -386,9 +386,9 @@ const BusinessDetails = ({navigation, route}: any) => {
         b_address3: address3,
         b_business_logo: 'logo.png ',
       };
-      const formData = new FormData();
+      const formData: any = new FormData();
 
-      const localImageUri = BusinessImage;
+      const localImageUri: any = BusinessImage;
       const imageFileName = localImageUri.split('/').pop();
       const extension = localImageUri.split('.').pop();
       formData.append('b_business_logo', {
@@ -445,7 +445,7 @@ const BusinessDetails = ({navigation, route}: any) => {
           b_address1: address1,
           b_address2: address2,
           b_address3: address3,
-          b_business_logo: 'logo.png ',
+          b_business_logo: BusinessImage,
         };
       }
       return item;
@@ -469,7 +469,7 @@ const BusinessDetails = ({navigation, route}: any) => {
           b_address1: address1,
           b_address2: address2,
           b_address3: address3,
-          b_business_logo: 'logo.png ',
+          b_business_logo: BusinessImage,
         };
       }
       return item;
@@ -493,9 +493,9 @@ const BusinessDetails = ({navigation, route}: any) => {
         b_address3: address3,
         b_business_logo: 'logo.png ',
       };
-      const formData = new FormData();
+      const formData: any = new FormData();
 
-      const localImageUri = BusinessImage;
+      const localImageUri: any = BusinessImage;
       const imageFileName = localImageUri.split('/').pop();
       const extension = localImageUri.split('.').pop();
       formData.append('b_business_logo', {
@@ -609,11 +609,19 @@ const BusinessDetails = ({navigation, route}: any) => {
           <View style={styles.content}>
             <TouchableOpacity onPress={closeBottomSheet}>
               {BusinessImage ? (
-                <Image
-                  source={{uri: BusinessImage}}
-                  resizeMode="contain"
-                  style={styles.businessImage}
-                />
+                <Avatar
+                  source={{
+                    uri: BusinessImage,
+                  }}
+                  style={styles.businessImage}>
+                  <Accessory
+                    size={30}
+                    onPress={() => {
+                      setBusinessImage(null);
+                    }}
+                    name="delete"
+                  />
+                </Avatar>
               ) : (
                 <Feather name="camera" style={styles.cameraIcon} />
               )}
@@ -840,6 +848,7 @@ const styles = StyleSheet.create({
   businessImage: {
     width: 200,
     height: 250,
+    resizeMode: 'contain',
   },
   cameraIcon: {
     fontSize: 50,

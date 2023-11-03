@@ -58,7 +58,7 @@ const tempData = {
   createdAt: '',
   updatedAt: '',
   __v: 0,
-  signature:""
+  signature: '',
 };
 function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   const {t, i18n} = useTranslation();
@@ -300,7 +300,6 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
-
   const {open} = state;
 
   function navigateToSetting() {
@@ -349,9 +348,10 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   };
 
   function navigateToAddPhotoScreen() {
-    navigation.navigate('AddPhotoScreen',{
+    navigation.navigate('AddPhotoScreen', {
       estimateUpdate: true,
       estimateID: globalData._id,
+      data: globalData,
     });
   }
 
@@ -368,7 +368,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   }
 
   function navigateToInvoiceNumber() {
-    navigation.navigate('EstimationNumber',{
+    navigation.navigate('EstimationNumber', {
       estimateUpdate: true,
       estimateID: globalData._id,
       estimateData: globalData,
@@ -376,12 +376,12 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   }
 
   function navigateToSignaturePad() {
-    navigation.navigate('SignaturePad',{
+    navigation.navigate('SignaturePad', {
       estimateUpdate: true,
       estimateID: globalData._id,
       signature: globalData.signature,
-      data: globalData
-  });
+      data: globalData,
+    });
   }
 
   function navigateToDiscountScreen() {
@@ -558,9 +558,9 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
 
         <View style={styles.notesContainer}>
           <View style={styles.notesRow}>
-          {globalData.signature ? (
+            {globalData.signature ? (
               <Text onPress={navigateToSignaturePad} style={styles.notesText2}>
-                {"Signed"}
+                {'Signed'}
               </Text>
             ) : (
               <Text onPress={navigateToSignaturePad} style={styles.notesText}>

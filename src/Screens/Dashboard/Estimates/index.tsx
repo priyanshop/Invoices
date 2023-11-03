@@ -285,7 +285,7 @@ function EstimatesScreen({ navigation }: any): JSX.Element {
     const renderSectionHeader = ({ section: { year } }) => (
       <View style={styles.sectionHeaderContain}>
         <Text style={styles.sectionHeader}>{year}</Text>
-        <Text style={styles.sectionHeader}>{'$635'}</Text>
+        <Text style={styles.sectionHeader}>{'$0'}</Text>
       </View>
     );
     return (
@@ -329,6 +329,11 @@ function EstimatesScreen({ navigation }: any): JSX.Element {
       }
     } catch (error) { }
   };
+  useEffect(() => {
+    if (!searchStart) {
+      setSearchText('');
+    }
+  }, [searchStart]);
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Colors.appColor} />
