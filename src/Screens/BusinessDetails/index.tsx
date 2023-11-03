@@ -233,15 +233,6 @@ const BusinessDetails = ({navigation, route}: any) => {
 
   const addInfo = async () => {
     try {
-      const payload: any = {
-        name: businessName,
-        email: email,
-        phone_number: Phone,
-        address1: address1,
-        address2: address2,
-        address3: address3,
-        business_logo: 'xyz.png',
-      };
       const payload2: any = {
         name: businessName,
         email: email,
@@ -255,31 +246,32 @@ const BusinessDetails = ({navigation, route}: any) => {
         owner_name: ownerName,
         mobile_number: Mobile,
       };
-      const formData: any = new FormData();
-      const localImageUri: any = BusinessImage;
-      const imageFileName = localImageUri.split('/').pop();
-      const extension = localImageUri.split('.').pop();
-      formData.append('business_logo', {
-        uri: localImageUri,
-        name: imageFileName,
-        type: `image/${extension}`,
-      });
-
-      // Append other fields
-      formData.append('name', businessName);
-      formData.append('owner_name', ownerName);
-      formData.append('business_number', businessNumber);
-      formData.append('email', email);
-      formData.append('phone_number', Phone);
-      formData.append('mobile_number', Mobile);
-      formData.append('website', Website);
-      formData.append('address1', address1);
-      formData.append('address2', address2);
-      formData.append('address3', address3);
       if (selector.token === 'Guest') {
         dispatch(setBusinessDetail(payload2));
         successMessage();
       } else {
+        const formData: any = new FormData();
+        const localImageUri: any = BusinessImage;
+        const imageFileName = localImageUri.split('/').pop();
+        const extension = localImageUri.split('.').pop();
+        formData.append('business_logo', {
+          uri: localImageUri,
+          name: imageFileName,
+          type: `image/${extension}`,
+        });
+
+        // Append other fields
+        formData.append('name', businessName);
+        formData.append('owner_name', ownerName);
+        formData.append('business_number', businessNumber);
+        formData.append('email', email);
+        formData.append('phone_number', Phone);
+        formData.append('mobile_number', Mobile);
+        formData.append('website', Website);
+        formData.append('address1', address1);
+        formData.append('address2', address2);
+        formData.append('address3', address3);
+
         const data = await FetchAPI('post', endpoint.businessInfo, formData, {
           Authorization: 'Bearer ' + selector.token,
           'Content-Type': 'multipart/form-data',
@@ -295,15 +287,6 @@ const BusinessDetails = ({navigation, route}: any) => {
 
   const updateInfo = async () => {
     try {
-      const payload: any = {
-        name: businessName,
-        email: email,
-        phone_number: Phone,
-        address1: address1,
-        address2: address2,
-        address3: address3,
-        business_logo: 'xyz.png',
-      };
       const payload2: any = {
         name: businessName,
         email: email,
@@ -317,32 +300,33 @@ const BusinessDetails = ({navigation, route}: any) => {
         owner_name: ownerName,
         mobile_number: Mobile,
       };
-      const formData: any = new FormData();
-
-      const localImageUri: any = BusinessImage;
-      const imageFileName = localImageUri.split('/').pop();
-      const extension = localImageUri.split('.').pop();
-      formData.append('business_logo', {
-        uri: localImageUri,
-        name: imageFileName,
-        type: `image/${extension}`,
-      });
-
-      // Append other fields
-      formData.append('name', businessName);
-      formData.append('owner_name', ownerName);
-      formData.append('business_number', businessNumber);
-      formData.append('email', email);
-      formData.append('phone_number', Phone);
-      formData.append('mobile_number', Mobile);
-      formData.append('website', Website);
-      formData.append('address1', address1);
-      formData.append('address2', address2);
-      formData.append('address3', address3);
       if (selector.token === 'Guest') {
         dispatch(setBusinessDetail(payload2));
         successMessage();
       } else {
+        const formData: any = new FormData();
+
+        const localImageUri: any = BusinessImage;
+        const imageFileName = localImageUri.split('/').pop();
+        const extension = localImageUri.split('.').pop();
+        formData.append('business_logo', {
+          uri: localImageUri,
+          name: imageFileName,
+          type: `image/${extension}`,
+        });
+
+        // Append other fields
+        formData.append('name', businessName);
+        formData.append('owner_name', ownerName);
+        formData.append('business_number', businessNumber);
+        formData.append('email', email);
+        formData.append('phone_number', Phone);
+        formData.append('mobile_number', Mobile);
+        formData.append('website', Website);
+        formData.append('address1', address1);
+        formData.append('address2', address2);
+        formData.append('address3', address3);
+
         const data = await FetchAPI(
           'patch',
           endpoint.updateBusinessInfo(businessId),
