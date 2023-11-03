@@ -183,7 +183,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
       const year = invoiceDate.getFullYear();
       const client = item.c_name || 'No Client';
       const invoiceNumber = item.invoice_number;
-      const price = item.invoice_total || 0;
+      const price = parseFloat(item.invoice_total || 0);
       const date = invoiceDate.toISOString().split('T')[0];
       const existingYearData = transformedData.find(data => data.year === year);
 
@@ -195,11 +195,11 @@ function InvoicesScreen({navigation}: any): JSX.Element {
           date,
           ...item,
         });
-        existingYearData.totalInvoiceAmount += price;
+        existingYearData.totalInvoiceAmount += parseFloat(price);
         if (item.is_paid) {
-          existingYearData.totalPaidAmount += price;
+          existingYearData.totalPaidAmount += parseFloat(price);
         } else {
-          existingYearData.totalUnpaidAmount += price;
+          existingYearData.totalUnpaidAmount += parseFloat(price);
         }
       } else {
         transformedData.push({
@@ -317,7 +317,9 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     );
 
     const renderInvoiceItem = ({item}: any) => (
-      <View style={styles.invoiceItem}>
+      <TouchableOpacity
+        onPress={() => navigateToInvoice(item)}
+        style={styles.invoiceItem}>
         <View>
           <Text style={styles.clientText}>{`${item.client}`}</Text>
           <Text
@@ -331,7 +333,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
             <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
           )}
         </View>
-      </View>
+      </TouchableOpacity>
     );
 
     const renderSectionHeader = ({section: {year, totalInvoiceAmount}}) => (
@@ -343,7 +345,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     return (
       <ScrollView nestedScrollEnabled style={[styles.scene]}>
         <Loader visible={isLoading} size="large" color={Colors.landingColor} />
-        {outStandFilteredInvoices.length > 0 && (
+        {outStandFilteredInvoices.length > 0 ? (
           <SectionList
             sections={outStandFilteredInvoices}
             keyExtractor={(item: any, index: any) => item + index}
@@ -351,9 +353,9 @@ function InvoicesScreen({navigation}: any): JSX.Element {
             renderSectionHeader={renderSectionHeader}
             ListEmptyComponent={renderEmptyComponent}
             contentContainerStyle={{flex: 1}}
-            style={{flex: 1}}
-            nestedScrollEnabled
           />
+        ) : (
+          renderEmptyComponent()
         )}
       </ScrollView>
     );
@@ -365,7 +367,9 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     );
 
     const renderInvoiceItem = ({item}: any) => (
-      <View style={styles.invoiceItem}>
+      <TouchableOpacity
+        onPress={() => navigateToInvoice(item)}
+        style={styles.invoiceItem}>
         <View>
           <Text style={styles.clientText}>{`${item.client}`}</Text>
           <Text
@@ -379,7 +383,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
             <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
           )}
         </View>
-      </View>
+      </TouchableOpacity>
     );
 
     const renderSectionHeader = ({section: {year, totalInvoiceAmount}}) => (
@@ -391,7 +395,7 @@ function InvoicesScreen({navigation}: any): JSX.Element {
     return (
       <View style={[styles.scene]}>
         <Loader visible={isLoading} size="large" color={Colors.landingColor} />
-        {paidFilteredInvoices.length > 0 && (
+        {paidFilteredInvoices.length > 0 ? (
           <SectionList
             sections={paidFilteredInvoices}
             keyExtractor={(item: any, index: any) => item + index}
@@ -400,10 +404,17 @@ function InvoicesScreen({navigation}: any): JSX.Element {
             ListEmptyComponent={renderEmptyComponent}
             contentContainerStyle={{flex: 1}}
           />
+        ) : (
+          renderEmptyComponent()
         )}
       </View>
     );
   };
+  useEffect(() => {
+    if (!searchStart) {
+      setSearchText('');
+    }
+  }, [searchStart]);
 
   return (
     <SafeAreaView style={styles.container}>

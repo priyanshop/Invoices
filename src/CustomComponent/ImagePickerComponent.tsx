@@ -16,15 +16,18 @@ const ImagePickerComponent = ({
   const {t, i18n} = useTranslation();
 
   const captureImage = async () => {
+    console.log("SSLSLS");
+    
     let options = {
       mediaType: 'photo',
       quality: 1,
     };
     let isCameraPermitted = await requestCameraPermission();
-    let isStoragePermitted = await requestExternalWritePermission();
+    // let isStoragePermitted = await requestExternalWritePermission();
+    console.log("chooseFile",isCameraPermitted);
 
-    if (isCameraPermitted && isStoragePermitted) {
-      launchCamera(options, response => {
+    if (isCameraPermitted) {
+       launchCamera(options, response => {
         console.log('Response = ', response);
 
         if (response.didCancel) {
@@ -54,13 +57,16 @@ const ImagePickerComponent = ({
   };
 
   const chooseFile = async () => {
+    console.log("chooseFile");
+
     let options = {
       mediaType: 'photo',
       quality: 1,
     };
-    let isCameraPermitted = await requestCameraPermission();
+    // let isCameraPermitted = await requestCameraPermission();
     let isStoragePermitted = await requestExternalWritePermission();
-    if (isCameraPermitted && isStoragePermitted) {
+    console.log("chooseFile",isStoragePermitted);
+    if (isStoragePermitted) {
       launchImageLibrary(options, response => {
         console.log('Response = ', response);
 

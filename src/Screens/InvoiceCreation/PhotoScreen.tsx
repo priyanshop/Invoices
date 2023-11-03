@@ -14,15 +14,20 @@ import {Colors} from '../../Helper/Colors';
 import {useTranslation} from 'react-i18next';
 import FetchAPI, {IMAGE_BASE_URL} from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Feather from 'react-native-vector-icons/Feather';
 import ImagePickerComponent from '../../CustomComponent/ImagePickerComponent';
 import {GlobalStyle} from '../../Helper/GlobalStyle';
 import ToastService from '../../Helper/ToastService';
 import Loader from '../../CustomComponent/Loader';
+import {
+  setEstimateList,
+  setInvoiceList,
+} from '../../redux/reducers/user/UserReducer';
 
 function AddPhotoScreen({navigation, route}: any): JSX.Element {
   const {t, i18n} = useTranslation();
+  const dispatch = useDispatch();
   const [image, setImage] = useState('');
   const [description, setDescription] = useState('');
   const [additionalDetails, setAdditionalDetails] = useState('');
@@ -35,7 +40,11 @@ function AddPhotoScreen({navigation, route}: any): JSX.Element {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <TouchableOpacity style={{marginRight: 10}} onPress={() => {}}>
+        <TouchableOpacity
+          style={{marginRight: 10}}
+          onPress={() => {
+            DeletedImage();
+          }}>
           <Icon name="delete" size={20} color="#fff" />
         </TouchableOpacity>
       ),
@@ -46,23 +55,126 @@ function AddPhotoScreen({navigation, route}: any): JSX.Element {
     if (route.params?.data) {
       setDescription(route.params?.data?.photo_description);
       setAdditionalDetails(route.params?.data?.photo_notes);
-      setImage(IMAGE_BASE_URL + route.params?.data?.file_url);
+      if (selector.token === 'Guest') {
+        setImage(route.params?.data?.photo);
+      } else {
+        setImage(IMAGE_BASE_URL + route.params?.data?.file_url);
+      }
     }
   }, [route.params]);
 
   const handleCondition = () => {
     setTrue();
     if (route?.params?.estimateUpdate) {
-      addImageET();
+      if (selector.token === 'Guest') {
+        offlineEstimateUpdate();
+      } else {
+        addImageET();
+      }
     }
     if (route?.params?.invoiceUpdate) {
-      addImage();
+      if (selector.token === 'Guest') {
+        offlineInvoiceUpdate();
+      } else {
+        addImage();
+      }
     }
+  };
+
+  const DeletedImage = () => {
+    if (route?.params?.invoiceUpdate) {
+      if (selector.token === 'Guest') {
+        offlineInvoiceDelete();
+      } else {
+      }
+    }
+    if (route?.params?.estimateUpdate) {
+      if (selector.token === 'Guest') {
+        offlineEStimateDelete();
+      } else {
+      }
+    }
+  };
+
+  const offlineInvoiceDelete = () => {
+    const updatedArray = selector.invoiceList.map((item: any) => {
+      if (item.index === route?.params?.invoiceData?.index) {
+        const myArray = [...item.photos];
+        const indexToDelete = route.params.selectItemID;
+        myArray.splice(indexToDelete, 1);
+        return {
+          ...item,
+          photos: myArray,
+        };
+      }
+      return item;
+    });
+    dispatch(setInvoiceList(updatedArray));
+    successMessage();
+  };
+
+  const offlineEStimateDelete = () => {
+    const updatedArray = selector.estimateList.map((item: any) => {
+      if (item.index === route?.params?.estimateData.index) {
+        const myArray = [...item.photos];
+        const indexToDelete = route.params.selectItemID;
+        myArray.splice(indexToDelete, 1);
+        return {
+          ...item,
+          photos: myArray,
+        };
+      }
+      return item;
+    });
+    dispatch(setEstimateList(updatedArray));
+    successMessage();
+  };
+
+  const offlineEstimateUpdate = () => {
+    const updatedArray = selector.estimateList.map((item: any) => {
+      if (item.index === route?.params?.invoiceData?.index) {
+        return {
+          ...item,
+          photos: [
+            ...item.photos,
+            {
+              photo_notes: additionalDetails,
+              photo_description: description,
+              photo: image,
+            },
+          ],
+        };
+      }
+      return item;
+    });
+    dispatch(setEstimateList(updatedArray));
+    successMessage();
+  };
+
+  const offlineInvoiceUpdate = () => {
+    const updatedArray = selector.invoiceList.map((item: any) => {
+      if (item.index === route?.params?.invoiceData?.index) {
+        return {
+          ...item,
+          photos: [
+            ...item.photos,
+            {
+              photo_notes: additionalDetails,
+              photo_description: description,
+              photo: image,
+            },
+          ],
+        };
+      }
+      return item;
+    });
+    dispatch(setInvoiceList(updatedArray));
+    successMessage();
   };
 
   const addImage = async () => {
     try {
-      const formData = new FormData();
+      const formData: any = new FormData();
 
       const localImageUri = image;
       const imageFileName = localImageUri.split('/').pop();
@@ -94,7 +206,7 @@ function AddPhotoScreen({navigation, route}: any): JSX.Element {
 
   const addImageET = async () => {
     try {
-      const formData = new FormData();
+      const formData: any = new FormData();
 
       const localImageUri = image;
       const imageFileName = localImageUri.split('/').pop();
@@ -123,13 +235,16 @@ function AddPhotoScreen({navigation, route}: any): JSX.Element {
       setFalse;
     }
   };
+
   const closeBottomSheet = () => {
     setOpenModal(!openModal);
   };
+
   const successMessage = () => {
     ToastService.showToast('Updated Successfully');
     navigation.goBack();
   };
+
   return (
     <>
       <StatusBar backgroundColor={Colors.appColor} />

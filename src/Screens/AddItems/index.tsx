@@ -620,8 +620,12 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
         ),
         invoice_total: totalAmount,
       };
+      
       if (selector.token === 'Guest') {
         updateCallOffline(tempPayload);
+        if (saveToItem) {
+          createGlobal();
+        }
       } else {
         updateCall(tempPayload);
         if (saveToItem) {
@@ -734,6 +738,9 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
       };
       if (selector.token === 'Guest') {
         updateEstimateCallOffline(tempPayload);
+        if (saveToItem) {
+          createGlobal();
+        }
       } else {
         updateETCall(tempPayload);
         if (saveToItem) {
@@ -817,9 +824,8 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
         is_taxable: Taxable.toString(),
         notes: Notes,
       };
-      if (selector.token === 'Guest') {
+      if (selector.token === 'Guest') {        
         dispatch(addItemInList(payload));
-        navigation.goBack();
       } else {
         const data = await FetchAPI('post', endpoint.addItems, payload, {
           Authorization: 'Bearer ' + selector.token,
