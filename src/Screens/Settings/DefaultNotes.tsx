@@ -45,10 +45,10 @@ const DefaultNotes = ({navigation}: any) => {
         Authorization: 'Bearer ' + selector.token,
       });
       if (data.status === 'success') {
+        setModalFalse();
         const element = data.data.default_notes;
         setEstimate(element.estimates);
         setInvoices(element.invoices);
-        setModalFalse();
       }
     } catch (error) {
       setModalFalse;

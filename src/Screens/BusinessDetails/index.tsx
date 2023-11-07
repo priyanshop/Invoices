@@ -65,9 +65,11 @@ const BusinessDetails = ({navigation, route}: any) => {
         if (selector.token === 'Guest') {
           setBusinessImage(businessDetails.b_business_logo);
         } else {
-          setBusinessImage(
-            IMAGE_BASE_URL.concat(businessDetails.b_business_logo),
-          );
+          if (businessDetails.b_business_logo) {
+            setBusinessImage(
+              IMAGE_BASE_URL.concat(businessDetails.b_business_logo),
+            );
+          }
         }
         setAlreadyExist(true);
         setPhone(businessDetails.b_phone_number);
@@ -131,7 +133,9 @@ const BusinessDetails = ({navigation, route}: any) => {
         setAddress2(element.address2);
         setAddress3(element.address3);
         setBusinessName(element.name);
-        setBusinessImage(IMAGE_BASE_URL.concat(element.business_logo));
+        if (element.business_logo) {
+          setBusinessImage(IMAGE_BASE_URL.concat(element.business_logo));
+        }
         setWebsite(element.website);
         setMobile(element.mobile_number);
         setEmail(element.email);
@@ -149,14 +153,14 @@ const BusinessDetails = ({navigation, route}: any) => {
     let isValid = true;
 
     // Email validation
-    if (!email.match(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/)) {
+    if (email && !email.match(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/)) {
       setEmailError('Invalid email address');
       isValid = false;
     } else {
       setEmailError('');
     }
 
-    if (businessName.trim() === '') {
+    if (businessName && businessName.trim() === '') {
       setBusinessNameError('Business name is required');
       isValid = false;
     } else {
@@ -251,14 +255,18 @@ const BusinessDetails = ({navigation, route}: any) => {
         successMessage();
       } else {
         const formData: any = new FormData();
-        const localImageUri: any = BusinessImage;
-        const imageFileName = localImageUri.split('/').pop();
-        const extension = localImageUri.split('.').pop();
-        formData.append('business_logo', {
-          uri: localImageUri,
-          name: imageFileName,
-          type: `image/${extension}`,
-        });
+        if (BusinessImage) {
+          const localImageUri: any = BusinessImage;
+          const imageFileName = localImageUri.split('/').pop();
+          const extension = localImageUri.split('.').pop();
+          formData.append('business_logo', {
+            uri: localImageUri,
+            name: imageFileName,
+            type: `image/${extension}`,
+          });
+        } else {
+          formData.append('business_logo', null);
+        }
 
         // Append other fields
         formData.append('name', businessName);
@@ -305,15 +313,19 @@ const BusinessDetails = ({navigation, route}: any) => {
         successMessage();
       } else {
         const formData: any = new FormData();
-
-        const localImageUri: any = BusinessImage;
-        const imageFileName = localImageUri.split('/').pop();
-        const extension = localImageUri.split('.').pop();
-        formData.append('business_logo', {
-          uri: localImageUri,
-          name: imageFileName,
-          type: `image/${extension}`,
-        });
+        if (BusinessImage) {
+          const localImageUri: any = BusinessImage;
+          const imageFileName = localImageUri.split('/').pop();
+          const extension = localImageUri.split('.').pop();
+          formData.append('business_logo', {
+            uri: localImageUri,
+            name: imageFileName,
+            type: `image/${extension}`,
+          });
+        } else {
+          deleteImage()
+          formData.append('business_logo', null);
+        }
 
         // Append other fields
         formData.append('name', businessName);
@@ -372,14 +384,18 @@ const BusinessDetails = ({navigation, route}: any) => {
       };
       const formData: any = new FormData();
 
-      const localImageUri: any = BusinessImage;
-      const imageFileName = localImageUri.split('/').pop();
-      const extension = localImageUri.split('.').pop();
-      formData.append('b_business_logo', {
-        uri: localImageUri,
-        name: imageFileName,
-        type: `image/${extension}`,
-      });
+      if (BusinessImage) {
+        const localImageUri: any = BusinessImage;
+        const imageFileName = localImageUri.split('/').pop();
+        const extension = localImageUri.split('.').pop();
+        formData.append('b_business_logo', {
+          uri: localImageUri,
+          name: imageFileName,
+          type: `image/${extension}`,
+        });
+      } else {
+        formData.append('b_business_logo', null);
+      }
 
       // Append other fields
       formData.append('b_name', businessName);
@@ -478,15 +494,18 @@ const BusinessDetails = ({navigation, route}: any) => {
         b_business_logo: 'logo.png ',
       };
       const formData: any = new FormData();
-
-      const localImageUri: any = BusinessImage;
-      const imageFileName = localImageUri.split('/').pop();
-      const extension = localImageUri.split('.').pop();
-      formData.append('b_business_logo', {
-        uri: localImageUri,
-        name: imageFileName,
-        type: `image/${extension}`,
-      });
+      if (BusinessImage) {
+        const localImageUri: any = BusinessImage;
+        const imageFileName = localImageUri.split('/').pop();
+        const extension = localImageUri.split('.').pop();
+        formData.append('b_business_logo', {
+          uri: localImageUri,
+          name: imageFileName,
+          type: `image/${extension}`,
+        });
+      } else {
+        formData.append('b_business_logo', null);
+      }
 
       // Append other fields
       formData.append('b_name', businessName);
@@ -543,6 +562,23 @@ const BusinessDetails = ({navigation, route}: any) => {
       default:
         break;
     }
+  };
+
+  const deleteImage = async () => {
+    try {
+      const data = await FetchAPI(
+        'delete',
+        endpoint.deleteBusinessImage(businessId),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+          'Content-Type': 'multipart/form-data',
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+      }
+    } catch (error) {}
   };
 
   // Handle onBlur event

@@ -35,6 +35,8 @@ export const endpoint = {
   getCustomize: `${API_BASE_URL}/${API_TYPE.SETTINGS}/customize-info`,
   getEmailMessage: `${API_BASE_URL}/${API_TYPE.SETTINGS}/default-email-msg`,
   addEmailMessage: `${API_BASE_URL}/${API_TYPE.SETTINGS}/default-email-msg`,
+  deleteBusinessImage: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.SETTINGS}/business-info/${id}/delete/logo`,
 
   createInvoice: `${API_BASE_URL}/${API_TYPE.INVOICES}/create`,
   getInvoiceList: `${API_BASE_URL}/${API_TYPE.INVOICES}`,
@@ -57,7 +59,13 @@ export const endpoint = {
   addSignatureIN: (id: any) =>
     `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/signature`,
   addPhotoIN: (id: any) => `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/photo`,
-  updateIVNumber: (id: any) => `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/edit/invoice/number`,
+  deletePhotoIN: (id: any, id2: any) =>
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/photo/${id2}/delete/photo`,
+  updatePhotoIN: (id: any, id2: any) =>
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/photo/${id2}/update/photo`,
+
+  updateIVNumber: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/edit/invoice/number`,
 
   createEstimate: `${API_BASE_URL}/${API_TYPE.ESTIMATE}/create`,
   getEstimateList: `${API_BASE_URL}/${API_TYPE.ESTIMATE}`,
@@ -80,6 +88,13 @@ export const endpoint = {
   addSignatureET: (id: any) =>
     `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/signature`,
   addPhotoET: (id: any) => `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/photo`,
-  updateETNumber: (id: any) => `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/edit/estimate/number`,
-  exportSpreadSheet : `${API_BASE_URL}/${API_TYPE.INVOICES}/export/excel`
+  updatePhotoET: (id: any, id2: any) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/photo/${id2}/update/photo`,
+
+  updateETNumber: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/edit/estimate/number`,
+  deletePhotoET: (id: any, id2: any) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/photo/${id2}/delete/photo`,
+
+  exportSpreadSheet: `${API_BASE_URL}/${API_TYPE.INVOICES}/export/excel`,
 };

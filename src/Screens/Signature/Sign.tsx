@@ -46,6 +46,7 @@ const Sign = ({navigation, route}: any) => {
           }`;
 
           setBase64Image(base64WithMimeType);
+          setImage(base64WithMimeType);
           setAlreadyExist(true);
         };
         reader.readAsDataURL(blob);
@@ -65,13 +66,14 @@ const Sign = ({navigation, route}: any) => {
 
   useEffect(() => {
     if (route.params.signature) {
-      console.log("route.params.signature",route.params.signature);
-      
+      console.log('route.params.signature', route.params.signature);
+
       if (selector.token === 'Guest') {
         setBase64Image(route.params.signature);
         setAlreadyExist(true);
         setAlreadyExist2(true);
         setImageURL(route.params.signature);
+        setImage(route.params.signature);
       } else {
         convertImageUrlToBase64(IMAGE_BASE_URL + route.params.signature);
         // setAlreadyExist(true);
@@ -167,7 +169,7 @@ const Sign = ({navigation, route}: any) => {
       if (item.index === route?.params?.data?.index) {
         return {
           ...item,
-          signature: "",
+          signature: '',
         };
       }
       return item;
@@ -175,6 +177,42 @@ const Sign = ({navigation, route}: any) => {
     dispatch(setEstimateList(updatedArray));
     successMessage();
   };
+  const deleteImage = async () => {
+    try {
+      const data = await FetchAPI(
+        'delete',
+        endpoint.addSignatureIN(route?.params?.invoiceID),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+          'Content-Type': 'multipart/form-data',
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+        successMessage();
+      }
+    } catch (error) {}
+  };
+
+  const deleteImageET = async () => {
+    try {
+      const data = await FetchAPI(
+        'delete',
+        endpoint.addSignatureET(route?.params?.estimateID),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+          'Content-Type': 'multipart/form-data',
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+        successMessage();
+      }
+    } catch (error) {}
+  };
+
   const addImage = async imageData => {
     try {
       const formData = new FormData();
@@ -239,7 +277,7 @@ const Sign = ({navigation, route}: any) => {
   };
 
   const handleSignature = signature => {
-    console.log(signature);
+    console.log('signature', signature);
     setImage(signature);
   };
 
@@ -253,18 +291,17 @@ const Sign = ({navigation, route}: any) => {
         if (selector.token === 'Guest') {
           DeleteIN();
         } else {
-          // addImage(image);
+          deleteImage();
         }
       }
       if (route?.params?.estimateUpdate) {
         if (selector.token === 'Guest') {
           DeleteET();
         } else {
-          // addImageET(image);
+          deleteImageET();
         }
       }
     }
-    
   };
 
   const handleEnd = () => {
