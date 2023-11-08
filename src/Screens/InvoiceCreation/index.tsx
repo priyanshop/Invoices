@@ -32,6 +32,7 @@ import {
 } from '../../redux/reducers/user/UserReducer';
 import {setNewInvoiceInList} from '../../Constant';
 import EmptyHistory from '../../CustomComponent/EmptyHistory';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -144,6 +145,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
   const [paymentDue, setPaymentDue] = useState([]);
   const [RequestReview, setRequestReview] = useState(false);
   const [isMarkPaid, setIsMarkPaid] = useState(false);
+  const [link, setLink] = useState('');
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -190,6 +192,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
   const setOffline = (payload: any) => {
     setGlobalData(payload);
     fetchPaymentDue(payload);
+    setLink(payload.review_link || '');
   };
 
   const getInvoiceCall = async (invoiceDetail: any) => {
@@ -207,6 +210,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         setIsMarkPaid(element.is_paid);
         setGlobalData(element);
         fetchPaymentDue(element);
+        setLink(element.review_link);
       }
     } catch (error) {}
   };
@@ -479,9 +483,56 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     });
   }
 
+  const handleCondition = (linkSend: any) => {
+    if (selector.token === 'Guest') {
+      offlineInvoiceUpdate(linkSend);
+    } else {
+      updateReviewLink(linkSend);
+    }
+  };
+
+  const offlineInvoiceUpdate = linkSend => {
+    const updatedArray = selector.invoiceList.map((item: any) => {
+      if (item.index === route?.params?.data?.index) {
+        return {
+          ...item,
+          review_link: linkSend,
+        };
+      }
+      return item;
+    });
+    dispatch(setInvoiceList(updatedArray));
+  };
+  const updateReviewLink = async (linkSend: any) => {
+    try {
+      const payload: any = {
+        review_link: linkSend,
+      };
+      const data = await FetchAPI(
+        'post',
+        endpoint.updateReviewIN(route?.params?.data._id),
+        payload,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+      }
+    } catch (error) {}
+  };
+
   const AllRoute = () => {
+    const [reviewLink, setReviewLink] = useState('');
+
+    useEffect(() => {
+      if (link) {
+        setReviewLink(link);
+      }
+    }, [link]);
+
     return (
-      <ScrollView
+      <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         style={[styles.scene, {backgroundColor: Colors.commonBg, padding: 8}]}>
         <TouchableOpacity
@@ -681,9 +732,15 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
           </View>
           {/* <View style={styles.requestLinkRow}> */}
           <TextInput
+            value={reviewLink}
             placeholder={t('Review Link')}
             style={styles.requestLinkText}
             placeholderTextColor={'#d1d1d1'}
+            editable={RequestReview}
+            onChangeText={text => {
+              setReviewLink(text);
+            }}
+            onBlur={() => handleCondition(reviewLink)}
           />
           {/* </View> */}
         </View>
@@ -693,7 +750,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
             {isMarkPaid ? 'Mark Unpaid' : t('Mark Paid')}
           </Text>
         </TouchableOpacity>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     );
   };
 

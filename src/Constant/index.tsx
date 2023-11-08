@@ -174,6 +174,7 @@ export const setNewEstimateInList = (selector: any) => {
     index: new Date().getTime(),
     estimate_number: 'EST' + (selector.estimateList.length + 1),
     is_estimate_tax_inclusive: true,
+    status:"open"
   };
   return temp;
 };

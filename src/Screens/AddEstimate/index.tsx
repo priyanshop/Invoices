@@ -33,6 +33,7 @@ import {
 } from '../../redux/reducers/user/UserReducer';
 import EmptyHistory from '../../CustomComponent/EmptyHistory';
 import {FlatList} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -113,6 +114,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   const [visible, setVisible] = React.useState(false);
   const [paymentDue, setPaymentDue] = useState([]);
   const [created, setCreated] = useState(false);
+  const [link, setLink] = useState('');
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -167,6 +169,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         const element = data.data;
         setGlobalData(element);
         fetchPaymentDue(element);
+        setLink(element.review_link);
       }
     } catch (error) {}
   };
@@ -183,6 +186,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   const setOffline = (payload: any) => {
     setGlobalData(payload);
     fetchPaymentDue(payload);
+    setLink(payload.review_link || '');
   };
 
   const createEstimateCall = async () => {
@@ -217,16 +221,33 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
 
   const createInvoice = async () => {
     try {
-      const data = await FetchAPI(
-        'post',
-        endpoint.makeInvoiceET(route?.params?.data?._id),
-        null,
-        {
-          Authorization: 'Bearer ' + selector.token,
-        },
-      );
-      if (data.status === 'success') {
-        //  Alert.alert("","Duplicate Estimate is created successfully")
+      if (selector.token === 'Guest') {
+        const tempPayload = {
+          status: 'close',
+        };
+        const updatedArray = selector.estimateList.map((item: any) => {
+          if (item.index === route?.params?.data.index) {
+            return {
+              ...item,
+              ...tempPayload,
+            };
+          }
+          return item;
+        });
+        dispatch(setEstimateList(updatedArray));
+        Alert.alert('', 'Invoice Created is created successfully');
+      } else {
+        const data = await FetchAPI(
+          'post',
+          endpoint.makeInvoiceET(route?.params?.data?._id),
+          null,
+          {
+            Authorization: 'Bearer ' + selector.token,
+          },
+        );
+        if (data.status === 'success') {
+          Alert.alert('', 'Invoice Created is created successfully');
+        }
       }
     } catch (error) {}
   };
@@ -351,7 +372,17 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     navigation.navigate('AddPhotoScreen', {
       estimateUpdate: true,
       estimateID: globalData._id,
-      data: globalData,
+      estimateData: globalData,
+    });
+  }
+
+  function navigateToAddPhotoScreen2(item, index) {
+    navigation.navigate('AddPhotoScreen', {
+      estimateUpdate: true,
+      estimateID: globalData._id,
+      data: item,
+      estimateData: globalData,
+      selectItemID: index,
     });
   }
 
@@ -427,9 +458,55 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     {key: 'third', title: t('Total'), value: '$0.00'},
   ];
 
+  const handleCondition = linkSend => {
+    if (selector.token === 'Guest') {
+      offlineEstimateUpdate(linkSend);
+    } else {
+      updateReviewLink(linkSend);
+    }
+  };
+
+  const offlineEstimateUpdate = linkSend => {
+    const updatedArray = selector.estimateList.map((item: any) => {
+      if (item.index === route?.params?.data?.index) {
+        return {
+          ...item,
+          review_link: linkSend,
+        };
+      }
+      return item;
+    });
+    dispatch(setEstimateList(updatedArray));
+  };
+
+  const updateReviewLink = async () => {
+    try {
+      const payload: any = {
+        review_link: reviewLink,
+      };
+      const data = await FetchAPI(
+        'post',
+        endpoint.updateReviewET(route?.params?.data._id),
+        payload,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+      }
+    } catch (error) {}
+  };
+
   const AllRoute = () => {
+    const [reviewLink, setReviewLink] = useState('');
+    useEffect(() => {
+      if (link) {
+        setReviewLink(link);
+      }
+    }, [link]);
     return (
-      <ScrollView
+      <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         style={[styles.scene, {backgroundColor: Colors.commonBg, padding: 8}]}>
         <TouchableOpacity
@@ -540,20 +617,24 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
           {globalData.photos?.length > 0 &&
             globalData.photos.map((item: any) => {
               return (
-                <View style={styles.photoElement}>
+                <TouchableOpacity
+                  onPress={() => navigateToAddPhotoScreen2(item, index)}
+                  style={styles.photoElement}>
                   <Text style={styles.notesText3}>
                     {item.photo_description}
                   </Text>
                   <Text style={styles.notesText4}>{item.photo_notes}</Text>
-                </View>
+                </TouchableOpacity>
               );
             })}
-          <View style={styles.photoContainer}>
+          <TouchableOpacity
+            onPress={navigateToAddPhotoScreen}
+            style={styles.photoContainer}>
             <Text style={styles.photoText}>{t('Add photo')}</Text>
-            <TouchableOpacity onPress={navigateToAddPhotoScreen}>
+            <View>
               <Icon name="attach" size={22} style={styles.photoIcon} />
-            </TouchableOpacity>
-          </View>
+            </View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.notesContainer}>
@@ -592,9 +673,13 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
           </View>
           {/* <View style={styles.requestLinkRow}> */}
           <TextInput
+            value={reviewLink}
             placeholder={t('Review Link')}
             style={styles.requestLinkText}
+            editable={RequestReview}
             placeholderTextColor={'#d1d1d1'}
+            onChangeText={text => setReviewLink(text)}
+            onBlur={() => handleCondition(reviewLink)}
           />
           {/* </View> */}
         </View>
@@ -602,7 +687,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         <TouchableOpacity onPress={createInvoice} style={styles.paidContainer}>
           <Text style={styles.paidText}>{t('Make Invoice')}</Text>
         </TouchableOpacity>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     );
   };
 

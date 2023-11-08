@@ -60,7 +60,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
   }, [navigation]);
 
   useEffect(() => {    
-    if (!route.params.invoiceData.items[route.params.index]) {
+    if (route.params.index === "New") {
       setTempNew(true)
     }
     if (selector.token === 'Guest') {
@@ -82,6 +82,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
       ) {
         const temp = route.params.invoiceData.items[route.params.index];
         fetchData(temp);
+        
       }
     }
   }, [route.params]);
