@@ -63,7 +63,8 @@ export const endpoint = {
     `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/photo/${id2}/delete/photo`,
   updatePhotoIN: (id: any, id2: any) =>
     `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/photo/${id2}/update/photo`,
-
+  updateReviewIN: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/review/link`,
   updateIVNumber: (id: any) =>
     `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/edit/invoice/number`,
 
@@ -95,6 +96,7 @@ export const endpoint = {
     `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/edit/estimate/number`,
   deletePhotoET: (id: any, id2: any) =>
     `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/photo/${id2}/delete/photo`,
-
+  updateReviewET: (id: any) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/review/link`,
   exportSpreadSheet: `${API_BASE_URL}/${API_TYPE.INVOICES}/export/excel`,
 };

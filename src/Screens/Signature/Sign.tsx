@@ -219,7 +219,7 @@ const Sign = ({navigation, route}: any) => {
       formData.append('signature', {
         uri: imageData,
         type: 'image/png',
-        name: 'image.png',
+        name: `image${route?.params?.invoiceID}.png`,
       });
 
       const data = await FetchAPI(
@@ -244,7 +244,7 @@ const Sign = ({navigation, route}: any) => {
       formData.append('signature', {
         uri: imageData,
         type: 'image/png',
-        name: 'image.png',
+        name: `image${route?.params?.estimateID}.png`,
       });
 
       const data = await FetchAPI(

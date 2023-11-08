@@ -388,13 +388,13 @@ const BusinessDetails = ({navigation, route}: any) => {
         const localImageUri: any = BusinessImage;
         const imageFileName = localImageUri.split('/').pop();
         const extension = localImageUri.split('.').pop();
-        formData.append('b_business_logo', {
+        formData.append('business_logo', {
           uri: localImageUri,
           name: imageFileName,
           type: `image/${extension}`,
         });
       } else {
-        formData.append('b_business_logo', null);
+        // formData.append('b_business_logo', null);
       }
 
       // Append other fields
@@ -498,13 +498,13 @@ const BusinessDetails = ({navigation, route}: any) => {
         const localImageUri: any = BusinessImage;
         const imageFileName = localImageUri.split('/').pop();
         const extension = localImageUri.split('.').pop();
-        formData.append('b_business_logo', {
+        formData.append('business_logo', {
           uri: localImageUri,
           name: imageFileName,
           type: `image/${extension}`,
         });
       } else {
-        formData.append('b_business_logo', null);
+        // formData.append('b_business_logo', null);
       }
 
       // Append other fields
