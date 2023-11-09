@@ -42,6 +42,7 @@ import SelectItemScreen from '../Screens/Dashboard/Items/SelectItem';
 import Sign from '../Screens/Signature/Sign';
 import SplashScreen2 from '../Screens/SplashScreen/SplashScreen2';
 import SignUpOriginal from '../Screens/Auth/SignUpOriginal';
+import SubscriptionScreen from '../Screens/Subscriptions/Subscribe';
 
 const headerStyle = {
   headerStyle: {
@@ -133,8 +134,16 @@ function MainNavigator() {
     },
   });
   const screenConfigurations = [
+    // {
+    //   name: 'SplashScreen',
+    //   component: SubscriptionScreen,
+    //   options: {
+    //     headerTitle: t('Subscribe'),
+    //     ...headerStyle,
+    //   },
+    // },
     {
-      name: 'SplashScreen',
+      name: 'SplashScreens',
       component: SplashScreen2,
       options: {headerShown: false, cardStyleInterpolator: forFade},
     },

@@ -9,7 +9,7 @@ import {useTranslation} from 'react-i18next';
 // Define a functional component named Greeting
 const SplashScreen2: React.FC = ({navigation}: any) => {
   const {t, i18n} = useTranslation();
-  const selector = useSelector(state => state.user);
+  const selector = useSelector((state:any) => state.user);
 
   useEffect(() => {
     SplashScreen.hide(); //hides the splash screen on app load.
