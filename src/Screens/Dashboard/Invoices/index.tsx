@@ -352,7 +352,6 @@ function InvoicesScreen({navigation}: any): JSX.Element {
             renderItem={renderInvoiceItem}
             renderSectionHeader={renderSectionHeader}
             ListEmptyComponent={renderEmptyComponent}
-            contentContainerStyle={{flex: 1}}
           />
         ) : (
           renderEmptyComponent()

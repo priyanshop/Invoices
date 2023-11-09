@@ -89,14 +89,22 @@ function AddPhotoScreen({navigation, route}: any): JSX.Element {
       if (selector.token === 'Guest') {
         offlineEstimateUpdate();
       } else {
-        addImageET();
+        if (route?.params?.data?._id) {
+          updateImageET();
+        } else {
+          addImageET();
+        }
       }
     }
     if (route?.params?.invoiceUpdate) {
       if (selector.token === 'Guest') {
         offlineInvoiceUpdate();
       } else {
-        addImage();
+        if (route?.params?.data?._id) {
+          updateImage();
+        } else {
+          addImage();
+        }
       }
     }
   };
@@ -106,12 +114,14 @@ function AddPhotoScreen({navigation, route}: any): JSX.Element {
       if (selector.token === 'Guest') {
         offlineInvoiceDelete();
       } else {
+        deleteImage();
       }
     }
     if (route?.params?.estimateUpdate) {
       if (selector.token === 'Guest') {
         offlineEStimateDelete();
       } else {
+        deleteImageET();
       }
     }
   };
@@ -192,7 +202,7 @@ function AddPhotoScreen({navigation, route}: any): JSX.Element {
     successMessage();
   };
 
-  const addImage = async () => {
+  const updateImage = async () => {
     try {
       const formData: any = new FormData();
 
@@ -208,6 +218,70 @@ function AddPhotoScreen({navigation, route}: any): JSX.Element {
       formData.append('photo_notes', additionalDetails);
       const data = await FetchAPI(
         'patch',
+        endpoint.updatePhotoIN(route?.params?.invoiceID,route?.params?.data?._id),
+        formData,
+        {
+          Authorization: 'Bearer ' + selector.token,
+          'Content-Type': 'multipart/form-data',
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+        successMessage();
+      }
+    } catch (error) {
+      setFalse;
+    }
+  };
+
+  const updateImageET = async () => {
+    try {
+      const formData: any = new FormData();
+
+      const localImageUri = image;
+      const imageFileName = localImageUri.split('/').pop();
+      const extension = localImageUri.split('.').pop();
+      formData.append('photo', {
+        uri: localImageUri,
+        name: imageFileName,
+        type: `image/${extension}`,
+      });
+      formData.append('photo_description', description);
+      formData.append('photo_notes', additionalDetails);
+      const data = await FetchAPI(
+        'patch',
+        endpoint.updatePhotoET(route?.params?.estimateID,route?.params?.data?._id),
+        formData,
+        {
+          Authorization: 'Bearer ' + selector.token,
+          'Content-Type': 'multipart/form-data',
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+        successMessage();
+      }
+    } catch (error) {
+      setFalse;
+    }
+  };
+
+  const addImage = async () => {
+    try {
+      const formData: any = new FormData();
+
+      const localImageUri = image;
+      const imageFileName = localImageUri.split('/').pop();
+      const extension = localImageUri.split('.').pop();
+      formData.append('photo', {
+        uri: localImageUri,
+        name: imageFileName,
+        type: `image/${extension}`,
+      });
+      formData.append('photo_description', description);
+      formData.append('photo_notes', additionalDetails);
+      const data = await FetchAPI(
+        'post',
         endpoint.addPhotoIN(route?.params?.invoiceID),
         formData,
         {
@@ -239,9 +313,55 @@ function AddPhotoScreen({navigation, route}: any): JSX.Element {
       formData.append('photo_description', description);
       formData.append('photo_notes', additionalDetails);
       const data = await FetchAPI(
-        'patch',
+        'post',
         endpoint.addPhotoET(route?.params?.estimateID),
         formData,
+        {
+          Authorization: 'Bearer ' + selector.token,
+          'Content-Type': 'multipart/form-data',
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+        successMessage();
+      }
+    } catch (error) {
+      setFalse;
+    }
+  };
+
+  const deleteImage = async () => {
+    try {
+      const data = await FetchAPI(
+        'patch',
+        endpoint.deletePhotoIN(
+          route?.params?.invoiceID,
+          route.params?.data?._id,
+        ),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+          'Content-Type': 'multipart/form-data',
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+        successMessage();
+      }
+    } catch (error) {
+      setFalse;
+    }
+  };
+
+  const deleteImageET = async () => {
+    try {
+      const data = await FetchAPI(
+        'patch',
+        endpoint.deletePhotoET(
+          route?.params?.estimateID,
+          route.params?.data?._id,
+        ),
+        null,
         {
           Authorization: 'Bearer ' + selector.token,
           'Content-Type': 'multipart/form-data',
