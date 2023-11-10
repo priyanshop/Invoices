@@ -59,9 +59,20 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
     });
   }, [navigation]);
 
-  useEffect(() => {    
-    if (route.params.index === "New") {
-      setTempNew(true)
+  useEffect(() => {
+    console.log('route.params', route.params);
+    if (route.params?.newGlobalData) {
+      const temp = route.params?.newGlobalData;
+      setDescription(temp.description);
+      setNotes(temp.notes);
+      setUnitCost(temp.rate.toString());
+      setUnit(temp.unit);
+    }
+  }, [route.params]);
+
+  useEffect(() => {
+    if (route.params.index === 'New') {
+      setTempNew(true);
     }
     if (selector.token === 'Guest') {
       if (
@@ -82,7 +93,6 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
       ) {
         const temp = route.params.invoiceData.items[route.params.index];
         fetchData(temp);
-        
       }
     }
   }, [route.params]);
@@ -129,7 +139,22 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
   };
 
   function navigateToAddPhotoScreen() {
-    navigation.navigate('SelectItemScreen');
+    if (route.params.invoiceUpdate) {
+      navigation.navigate('SelectItemScreen', {
+        invoiceUpdate: route.params.invoiceUpdate,
+        invoiceID: route.params.invoiceID,
+        invoiceData: route.params.invoiceData,
+        index: route.params.index,
+      });
+    }
+    if (route.params.estimateUpdate) {
+      navigation.navigate('SelectItemScreen', {
+        estimateUpdate: route.params.estimateUpdate,
+        estimateID: route.params.estimateID,
+        estimateData: route.params.estimateData,
+        index: route.params.index,
+      });
+    }
   }
 
   const handleTextInputChange = (value: any, setter: any) => {
@@ -621,7 +646,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
         ),
         invoice_total: totalAmount,
       };
-      
+
       if (selector.token === 'Guest') {
         updateCallOffline(tempPayload);
         if (saveToItem) {
@@ -825,7 +850,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
         is_taxable: Taxable.toString(),
         notes: Notes,
       };
-      if (selector.token === 'Guest') {        
+      if (selector.token === 'Guest') {
         dispatch(addItemInList(payload));
       } else {
         const data = await FetchAPI('post', endpoint.addItems, payload, {

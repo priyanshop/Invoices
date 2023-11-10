@@ -10,7 +10,7 @@ import {
 import {useSelector, useDispatch} from 'react-redux';
 import {useTranslation} from 'react-i18next';
 import {useIsFocused} from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import FloatingButton from '../../../CustomComponent/FloatingButton';
 import {Colors} from '../../../Helper/Colors';
 import CustomHeader from '../../../CustomComponent/CustomHeader';
@@ -18,12 +18,11 @@ import EmptyViewComponent from '../../../CustomComponent/EmptyViewComponent';
 import FetchAPI from '../../../Networking';
 import {endpoint} from '../../../Networking/endpoint';
 
-
-function SelectItemScreen({navigation}: any): JSX.Element {
+function SelectItemScreen({navigation, route}: any): JSX.Element {
   const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
-  const selector = useSelector(state => state.user);
+  const selector = useSelector((state: any) => state.user);
   const [searchStart, setSearchStart] = useState(false);
   const [itemList, setItemList] = useState([]);
   const [searchItemList, setSearchItemList] = useState([]);
@@ -55,9 +54,9 @@ function SelectItemScreen({navigation}: any): JSX.Element {
     } catch (error) {}
   };
 
-  const handleSearch = (query): any => {
+  const handleSearch = (query: any) => {
     setSearchQuery(query);
-    const filtered = itemList.filter(item =>
+    const filtered = itemList.filter((item: any) =>
       item.description.toLowerCase().includes(query.toLowerCase()),
     );
     setSearchItemList(filtered);
@@ -85,39 +84,61 @@ function SelectItemScreen({navigation}: any): JSX.Element {
     //   selectedItem: item,
     //   index: index,
     // });
-    updateInvoice(item)
+    updateInvoice(item);
   }
 
   const updateInvoice = async (temp: any) => {
     try {
-      const payload: any = {
-        c_name: temp.name,
-        c_email: temp.email,
-        c_mobile_number: temp.mobile_number,
-        c_phone_number: temp.phone_number,
-        c_fax: temp.fax,
-        c_contact: temp.contact,
-        c_address1: temp.address1,
-        c_address2: temp.address2,
-        c_address3: temp.address3,
-      };
-      if (selector.token === 'Guest') {
-        // dispatch(setBusinessDetail(payload));
-      } else {
-        const data = await FetchAPI(
-          'patch',
-          endpoint.updateIVClient(route?.params?.invoiceID),
-          payload,
-          {
-            Authorization: 'Bearer ' + selector.token,
-          },
-        );
-        if (data.status === 'success') {
-          navigateToSetting();
-        }
-      }
+      // const payload: any = {
+      //   c_name: temp.name,
+      //   c_email: temp.email,
+      //   c_mobile_number: temp.mobile_number,
+      //   c_phone_number: temp.phone_number,
+      //   c_fax: temp.fax,
+      //   c_contact: temp.contact,
+      //   c_address1: temp.address1,
+      //   c_address2: temp.address2,
+      //   c_address3: temp.address3,
+      // };
+      navigateToItemScreen(temp);
+      // if (selector.token === 'Guest') {
+      //   // dispatch(setBusinessDetail(payload));
+      // } else {
+      //   const data = await FetchAPI(
+      //     'patch',
+      //     endpoint.updateIVClient(route?.params?.invoiceID),
+      //     payload,
+      //     {
+      //       Authorization: 'Bearer ' + selector.token,
+      //     },
+      //   );
+      //   if (data.status === 'success') {
+      //     navigateToSetting();
+      //   }
+      // }
     } catch (error) {}
   };
+
+  function navigateToItemScreen(item: any) {
+    if (route.params.invoiceUpdate) {
+      navigation.navigate('AddItemScreen', {
+        newGlobalData: item,
+        invoiceUpdate: route.params.invoiceUpdate,
+        invoiceID: route.params.invoiceID,
+        invoiceData: route.params.invoiceData,
+        index: route.params.index,
+      });
+    }
+    if (route.params.estimateUpdate) {
+      navigation.navigate('AddItemScreen', {
+        newGlobalData: item,
+        estimateUpdate: route.params.estimateUpdate,
+        estimateID: route.params.estimateID,
+        estimateData: route.params.estimateData,
+        index: route.params.index,
+      });
+    }
+  }
 
   const renderItem = ({item, index}: any) => (
     <TouchableOpacity
