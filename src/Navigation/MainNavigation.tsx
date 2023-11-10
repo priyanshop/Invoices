@@ -135,7 +135,7 @@ function MainNavigator() {
   });
   const screenConfigurations = [
     // {
-    //   name: 'SplashScreen',
+    //   name: 'Subscribe',
     //   component: SubscriptionScreen,
     //   options: {
     //     headerTitle: t('Subscribe'),
@@ -165,6 +165,14 @@ function MainNavigator() {
       name: 'Settings',
       component: SettingScreen,
       options: {headerTitle: t('Menu'), ...headerStyle},
+    },
+    {
+      name: 'Subscribe',
+      component: SubscriptionScreen,
+      options: {
+        headerTitle: t('Subscribe'),
+        ...headerStyle,
+      },
     },
     {
       name: 'InvoiceCreation',

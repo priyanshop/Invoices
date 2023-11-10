@@ -297,5 +297,6 @@
   "Re-Sign": "Re-Sign",
   "imageError": "Please select an image",
   "descriptionError": "Please enter a description",
-  "additionalDetailsError": "Please provide additional details"
+  "additionalDetailsError": "Please provide additional details",
+  "Subscribe":"Subscribe"
 }

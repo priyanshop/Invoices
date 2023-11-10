@@ -191,6 +191,12 @@ const SettingScreen = ({navigation}: any) => {
           description: '',
         },
         {
+          title: 'Subscribe',
+          titleTxt: t('Subscribe'),
+          description: '',
+          onPress: () => navigation.navigate('Subscribe'),
+        },
+        {
           title: 'Check Subscriptions',
           titleTxt: t('Settings.CheckSubscriptions'),
           description: '',
