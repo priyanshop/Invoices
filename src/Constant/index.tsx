@@ -179,4 +179,4 @@ export const setNewEstimateInList = (selector: any) => {
   return temp;
 };
 
-export const offlineLimit = 5;
+export const offlineLimit = 4;

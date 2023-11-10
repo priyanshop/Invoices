@@ -235,6 +235,8 @@ function InvoicesScreen({navigation}: any): JSX.Element {
           status: 'update',
           data: payload,
         });
+      } else {
+        navigation.navigate('Subscribe');
       }
     } else {
       createInvoiceCall();

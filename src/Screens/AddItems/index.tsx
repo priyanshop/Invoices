@@ -67,6 +67,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
       setNotes(temp.notes);
       setUnitCost(temp.rate.toString());
       setUnit(temp.unit);
+      setTaxable(temp.is_taxable);
     }
   }, [route.params]);
 

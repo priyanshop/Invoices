@@ -198,12 +198,12 @@ function EstimatesScreen({navigation}: any): JSX.Element {
           date,
           ...item,
         });
-        
+
         existingYearData.totalInvoiceAmount += parseFloat(price);
-        if (item.status === "open") {
+        if (item.status === 'open') {
           existingYearData.totalUnpaidAmount += parseFloat(price);
-        } 
-        if (item.status === "close") {
+        }
+        if (item.status === 'close') {
           existingYearData.totalPaidAmount += parseFloat(price);
         }
       } else {
@@ -219,8 +219,8 @@ function EstimatesScreen({navigation}: any): JSX.Element {
             },
           ],
           totalInvoiceAmount: price,
-          totalPaidAmount: item.status !== "open" ? price : 0,
-          totalUnpaidAmount: item.status !== "open" ? 0 : price,
+          totalPaidAmount: item.status !== 'open' ? price : 0,
+          totalUnpaidAmount: item.status !== 'open' ? 0 : price,
         });
       }
     });
@@ -358,6 +358,8 @@ function EstimatesScreen({navigation}: any): JSX.Element {
         const payload = setNewEstimateInList(selector);
         dispatch(addNewEstimate(payload));
         navigateToEstimate(payload);
+      } else {
+        navigation.navigate('Subscribe');
       }
     } else {
       createEstimateCall();
