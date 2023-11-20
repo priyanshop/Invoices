@@ -34,6 +34,7 @@ import {
 import EmptyHistory from '../../CustomComponent/EmptyHistory';
 import {FlatList} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { handleShareEmail, handleShareMessage } from '../../Share/share';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -81,7 +82,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         />
       ),
       label: t('Text'),
-      onPress: () => console.log('Pressed notifications'),
+      onPress: () => handleShareMessage("Hi"),
       style: {backgroundColor: '#fff', borderRadius: 50},
       color: '#000',
       labelTextColor: '#000',
@@ -93,7 +94,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     {
       icon: () => <Fontisto name="email" size={22} color="#000" />,
       label: t('Email'),
-      onPress: () => console.log('Pressed email'),
+      onPress: () => handleShareEmail("hi"),
       style: {backgroundColor: '#fff', borderRadius: 50},
       color: '#000',
       labelTextColor: '#000',

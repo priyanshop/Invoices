@@ -1,5 +1,5 @@
 //@ts-nocheck
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {
   Alert,
   FlatList,
@@ -33,6 +33,9 @@ import {
 import {setNewInvoiceInList} from '../../Constant';
 import EmptyHistory from '../../CustomComponent/EmptyHistory';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import WebView from 'react-native-webview';
+import {handleShareEmail, handleShareMessage} from '../../Share/share';
+import {preview4} from '../../Web/index4';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -110,7 +113,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         />
       ),
       label: t('Text'),
-      onPress: () => console.log('Pressed notifications'),
+      onPress: () => handleShareMessage('Hi'),
       style: {backgroundColor: '#fff', borderRadius: 50},
       color: '#000',
       labelTextColor: '#000',
@@ -122,7 +125,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     {
       icon: () => <Fontisto name="email" size={22} color="#000" />,
       label: t('Email'),
-      onPress: () => console.log('Pressed email'),
+      onPress: () => handleShareEmail('hi'),
       style: {backgroundColor: '#fff', borderRadius: 50},
       color: '#000',
       labelTextColor: '#000',
@@ -146,6 +149,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
   const [RequestReview, setRequestReview] = useState(false);
   const [isMarkPaid, setIsMarkPaid] = useState(false);
   const [link, setLink] = useState('');
+  const webViewRef = useRef(null);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -190,6 +194,8 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
   };
 
   const setOffline = (payload: any) => {
+    console.log('payload', JSON.stringify(payload));
+
     setGlobalData(payload);
     fetchPaymentDue(payload);
     setLink(payload.review_link || '');
@@ -756,7 +762,14 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
 
   const OutStandingRoute = () => {
     return (
-      <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}></View>
+      <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}>
+        <WebView
+          ref={webViewRef}
+          originWhitelist={['*']}
+          // style={{flex: 1}}
+          source={{html: preview4(globalData)}}
+        />
+      </View>
     );
   };
 
