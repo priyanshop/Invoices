@@ -173,7 +173,7 @@ const MyWebViewScreen = () => {
               alignItems: 'center',
               paddingVertical: 10,
             }}>
-            <Text style={styles.text}>{'Colors'}</Text>
+            <Text style={styles.text}>{t('colors')}</Text>
             <View style={styles.row}>
               <TouchableOpacity
                 onPress={() => setSelectedColor(null)}
@@ -226,9 +226,9 @@ const MyWebViewScreen = () => {
             </View>
             {selectedColor === 'edit' && (
               <TextInputWithLabel
-                label="Color Hex"
+                label={t('colorHex')}
                 prefix="#" // Add your desired prefix here
-                placeholder="Enter value"
+                placeholder=""
                 value={inputValue}
                 onChangeText={(text: React.SetStateAction<string>) =>
                   setInputValue(text)

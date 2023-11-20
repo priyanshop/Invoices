@@ -276,9 +276,9 @@ function InvoicesScreen({navigation}: any): JSX.Element {
         <View>
           <Text style={styles.priceText}>{`$${item.price}`}</Text>
           {item.is_paid ? (
-            <Text style={styles.paidText}>{`Paid: ${item.date}`}</Text>
+            <Text style={styles.paidText}>{`${t('Paid')}: ${item.date}`}</Text>
           ) : (
-            <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
+            <Text style={styles.dateText}>{`${t('Due')}: ${item.date}`}</Text>
           )}
         </View>
       </TouchableOpacity>
@@ -330,9 +330,9 @@ function InvoicesScreen({navigation}: any): JSX.Element {
         <View>
           <Text style={styles.priceText}>{`$${item.price}`}</Text>
           {item.is_paid ? (
-            <Text style={styles.paidText}>{`Paid: ${item.date}`}</Text>
+            <Text style={styles.paidText}>{`${t('Paid')}: ${item.date}`}</Text>
           ) : (
-            <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
+            <Text style={styles.dateText}>{`${t('Due')}: ${item.date}`}</Text>
           )}
         </View>
       </TouchableOpacity>
@@ -379,9 +379,9 @@ function InvoicesScreen({navigation}: any): JSX.Element {
         <View>
           <Text style={styles.priceText}>{`$${item.price}`}</Text>
           {item.is_paid ? (
-            <Text style={styles.paidText}>{`Paid: ${item.date}`}</Text>
+            <Text style={styles.paidText}>{`${t('Paid')}: ${item.date}`}</Text>
           ) : (
-            <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
+            <Text style={styles.dateText}>{`${t('Due')}: ${item.date}`}</Text>
           )}
         </View>
       </TouchableOpacity>

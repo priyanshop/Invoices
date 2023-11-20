@@ -693,7 +693,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
                 numberOfLines={1}
                 onPress={navigateToPaymentInfo}
                 style={styles.toTxt}>
-                {'Payment:  '}
+                {t('Payment')+':  '}
                 {globalData.paypal_email && 'PayPal,'}{' '}
                 {globalData.make_checks_payable && 'Check,'}{' '}
                 {globalData.payment_instructions && 'Payment Instruction,'}{' '}
@@ -753,7 +753,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
 
         <TouchableOpacity onPress={markPaid} style={styles.paidContainer}>
           <Text style={styles.paidText}>
-            {isMarkPaid ? 'Mark Unpaid' : t('Mark Paid')}
+            {isMarkPaid ? t('markUnpaid') : t('Mark Paid')}
           </Text>
         </TouchableOpacity>
       </KeyboardAwareScrollView>
@@ -807,7 +807,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
             {/* <Menu.Item onPress={() => {}} title={t('Get Link')} /> */}
             <Menu.Item
               onPress={markPaid}
-              title={isMarkPaid ? 'Mark Unpaid' : t('Mark Paid')}
+              title={isMarkPaid ? t('markUnpaid') : t('Mark Paid')}
             />
             <Menu.Item onPress={duplicateInvoice} title={t('Duplicate')} />
           </Menu>

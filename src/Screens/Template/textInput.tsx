@@ -7,15 +7,10 @@ const TextInputWithLabel = ({
   placeholder,
   value,
   onChangeText,
-}:any) => {
+}: any) => {
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignSelf: 'flex-start',
-          marginTop: 5,
-        }}>
+      <View style={styles.labelView}>
         <Text style={styles.label}>{label}</Text>
       </View>
       <View style={styles.inputContainer}>
@@ -60,6 +55,11 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 18,
     paddingVertical: 8,
+  },
+  labelView: {
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    marginTop: 5,
   },
 });
 
