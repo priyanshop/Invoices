@@ -15,6 +15,7 @@ import org.wonday.orientation.OrientationPackage;
 import org.wonday.orientation.OrientationActivityLifecycle;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.rnfs.RNFSPackage;
+import com.dooboolab.rniap.RNIapPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -34,6 +35,7 @@ public class MainApplication extends Application implements ReactApplication {
           new OrientationPackage();
           new SplashScreenReactPackage();
           new RNFSPackage();
+          new RNIapPackage();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
           return packages;

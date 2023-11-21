@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  Pressable,
 } from 'react-native';
 import {Colors} from '../../Helper/Colors';
 import {Images} from '../../assets';
@@ -14,6 +15,18 @@ import {RadioButton} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import Entypo from 'react-native-vector-icons/Entypo';
+
+import {
+  initConnection,
+  flushFailedPurchasesCachedAsPendingAndroid,
+  requestPurchase, 
+  requestSubscription,
+  endConnection,
+  finishTransaction,
+  purchaseUpdatedListener,
+  purchaseErrorListener,
+  getProducts,
+} from 'react-native-iap';
 
 const featuresArray: any = [
   {
@@ -92,7 +105,90 @@ const SubscriptionScreen = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [monthly, setMonthly] = useState(true);
   const [yearly, setYearly] = useState(false);
-  const [stopScroll, setStopScroll] = useState(false);
+  const [products, setProducts] = useState([]);
+
+  
+  useEffect(() => {
+    const initializeConnection = async () => {
+      try {
+        await initConnection();
+        if (Platform.OS === "android") {
+          await flushFailedPurchasesCachedAsPendingAndroid();
+        }
+      } catch (error) {
+        console.error("An error occurred", error.message);
+      }
+    }
+    const purchaseUpdate = purchaseUpdatedListener(
+      async (purchase) => {
+        const receipt = purchase.transactionReceipt;
+
+        if (receipt) {
+          try {
+            await finishTransaction({ purchase, isConsumable: true });
+          } catch (error) {
+            console.error("An error occurred", error.message);
+          }
+        }
+      });
+
+    const purchaseError = purchaseErrorListener((error) =>
+      console.error('Purchase error', error.message));
+    initializeConnection();
+    purchaseUpdate();
+    purchaseError();
+    fetchProducts();
+    return () => {
+      endConnection();
+      purchaseUpdate.remove();
+      purchaseError.remove();
+    }
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const products = await getProducts({
+        skus: Platform.select({
+          ios: ['com.rniap.product10', 'com.rniap.product20'],
+          android: ['com.rniap.product100', 'com.rniap.product200'],
+        })
+      });
+      setProducts(products);
+    } catch (error) {
+      console.error("Error occurred while fetching products", error.message);
+    }
+  };
+  const makePurchase = async (sku) => {
+    try {
+      requestPurchase({ sku })
+    } catch (error) {
+      console.error("Error making purchase", error.message);
+    }
+  }
+
+
+  const purchase = async (sku) => {
+    try {
+      await requestPurchase({
+        sku,
+        andDangerouslyFinishTransactionAutomaticallyIOS: false,
+      });
+    } catch (err) {
+      console.warn(err.code, err.message);
+    }
+  };
+
+  const subscribe = async (sku, offerToken) => {
+    try {
+      await requestSubscription({
+        sku,
+        ...(offerToken && { subscriptionOffers: [{ sku, offerToken }] }),
+      });
+    } catch (err) {
+      console.warn(err.code, err.message);
+    }
+  };
+
   const switchVisible = () => {
     setIsVisible(!isVisible);
   };
@@ -157,7 +253,13 @@ const SubscriptionScreen = () => {
                 }>{`to unlock the invoice tool with exactly what you need, nothing you don't`}</Text>
             </View>
           </View>
-
+          {
+        products.map((product) => (
+          <View key={product.vendorProductId} style={styles.row}>
+            <Text>{product.localizedTitle}</Text>
+            <Pressable onPress={() => makePurchase(product)}>Buy Product</Pressable></View>
+        ))
+      }
           {featuresArray.map((item: any) => (
             <View style={styles.feaArrayView}>
               <Image source={item.image} style={[styles.image2]} />
@@ -338,7 +440,10 @@ const SubscriptionScreen = () => {
         )}
       </ScrollView>
       <View style={styles.bottomBtnView}>
-        <TouchableOpacity style={styles.submitBtn}>
+        <TouchableOpacity onPress={()=>{
+
+Product.subscriptionOfferDetails
+        }} style={styles.submitBtn}>
           <Text style={styles.upgradeNowText}>Upgrade Now</Text>
           <Text style={styles.bellowTxt}>
             {'Plus yearly plan - bill $9.99 yearly'}
@@ -609,6 +714,10 @@ const styles = StyleSheet.create({
     color: '#000',
     fontSize: 15,
     fontWeight: '400',
+  },row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
