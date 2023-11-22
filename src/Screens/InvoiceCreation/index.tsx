@@ -2,6 +2,7 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {
   Alert,
+  BackHandler,
   FlatList,
   ScrollView,
   StatusBar,
@@ -15,6 +16,7 @@ import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Switch, FAB, Portal, Provider, Menu} from 'react-native-paper';
 import {useTranslation} from 'react-i18next';
@@ -159,7 +161,26 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         </TouchableOpacity>
       ),
     });
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity style={{marginLeft: 10}} onPress={goBack}>
+          <Feather name="chevron-left" size={30} color="#fff" />
+        </TouchableOpacity>
+      ),
+    });
   }, [navigation]);
+
+  const goBack = () => {
+    if (selector.token === 'Guest') {
+      navigation.goBack()
+      setTimeout(() => {
+        navigation.navigate('Subscribe');
+      }, 1000);
+    }
+    else{
+      navigation.goBack()
+    }
+  }
 
   useEffect(() => {
     if (route.params.status === 'create') {
@@ -366,6 +387,8 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
   };
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
+
+ 
 
   function navigateToSetting() {
     navigation.navigate('Settings');

@@ -14,6 +14,7 @@ import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Switch, FAB, Portal, Provider, Menu} from 'react-native-paper';
 import {useTranslation} from 'react-i18next';
@@ -125,8 +126,27 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         </TouchableOpacity>
       ),
     });
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity style={{marginLeft: 10}} onPress={goBack}>
+          <Feather name="chevron-left" size={30} color="#fff" />
+        </TouchableOpacity>
+      ),
+    });
   }, [navigation]);
 
+  const goBack = () => {
+    if (selector.token === 'Guest') {
+      navigation.goBack()
+      setTimeout(() => {
+        navigation.navigate('Subscribe');
+      }, 1000);
+    }
+    else{
+      navigation.goBack()
+    }
+  }
+  
   useEffect(() => {
     if (!created && route.params.status === 'create') {
       if (selector.token === 'Guest') {
