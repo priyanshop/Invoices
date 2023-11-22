@@ -37,6 +37,7 @@ export const endpoint = {
   addEmailMessage: `${API_BASE_URL}/${API_TYPE.SETTINGS}/default-email-msg`,
   deleteBusinessImage: (id: any) =>
     `${API_BASE_URL}/${API_TYPE.SETTINGS}/business-info/${id}/delete/logo`,
+  contactUs: `${API_BASE_URL}/${API_TYPE.SETTINGS}/contact`,
 
   createInvoice: `${API_BASE_URL}/${API_TYPE.INVOICES}/create`,
   getInvoiceList: `${API_BASE_URL}/${API_TYPE.INVOICES}`,
