@@ -156,7 +156,7 @@ function EstimatesScreen({navigation}: any): JSX.Element {
     } else {
       apiCall();
     }
-  }, [isFocused]);
+  }, [isFocused,selector.estimateList]);
 
   const apiCall = async () => {
     try {
