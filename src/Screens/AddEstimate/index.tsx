@@ -35,7 +35,7 @@ import {
 import EmptyHistory from '../../CustomComponent/EmptyHistory';
 import {FlatList} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import { handleShareEmail, handleShareMessage } from '../../Share/share';
+import {handleShareEmail, handleShareMessage} from '../../Share/share';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -62,6 +62,8 @@ const tempData = {
   updatedAt: '',
   __v: 0,
   signature: '',
+  due_amount: 0,
+  paid_amount: 0,
 };
 function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   const {t, i18n} = useTranslation();
@@ -83,7 +85,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         />
       ),
       label: t('Text'),
-      onPress: () => handleShareMessage("Hi"),
+      onPress: () => handleShareMessage('Hi'),
       style: {backgroundColor: '#fff', borderRadius: 50},
       color: '#000',
       labelTextColor: '#000',
@@ -95,7 +97,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     {
       icon: () => <Fontisto name="email" size={22} color="#000" />,
       label: t('Email'),
-      onPress: () => handleShareEmail("hi"),
+      onPress: () => handleShareEmail('hi'),
       style: {backgroundColor: '#fff', borderRadius: 50},
       color: '#000',
       labelTextColor: '#000',
@@ -137,16 +139,15 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
 
   const goBack = () => {
     if (selector.token === 'Guest') {
-      navigation.goBack()
+      navigation.goBack();
       setTimeout(() => {
         navigation.navigate('Subscribe');
       }, 1000);
+    } else {
+      navigation.goBack();
     }
-    else{
-      navigation.goBack()
-    }
-  }
-  
+  };
+
   useEffect(() => {
     if (!created && route.params.status === 'create') {
       if (selector.token === 'Guest') {
@@ -334,8 +335,17 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
       },
       {
         key: 'fourth',
-        title: t('Total Payments'),
-        value: '$0.00',
+        title:
+          element.payments.length > 0
+            ? t('Paid') +
+              ' (' +
+              moment(element.payments[0]?.payment_date).format(
+                selector.globalDateFormat,
+              ) +
+              ')'
+            : t('Total Payments'),
+        value: element?.paid_amount ? '$' + element?.paid_amount : '$ 0.00',
+        onPress: () => navigateToPayment(),
       },
     ]);
   };
@@ -343,6 +353,32 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   const closeMenu = () => setVisible(false);
 
   const {open} = state;
+  const handlePress = key => {
+    switch (key) {
+      case 'first':
+        navigateToDiscountScreen();
+        break;
+      case 'second':
+        navigateToTaxScreen();
+        break;
+      case 'third':
+        // Handle Total case (if needed)
+        break;
+      case 'fourth':
+        navigateToPayment();
+        break;
+      default:
+        break;
+    }
+  };
+
+  function navigateToPayment() {
+    navigation.navigate('PaymentDetail', {
+      estimateUpdate: true,
+      estimateID: globalData._id,
+      estimateData: globalData,
+    });
+  }
 
   function navigateToSetting() {
     navigation.navigate('Settings');
@@ -618,7 +654,9 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
           {paymentDue.map((selectedItem: any) => (
             <View style={styles.dueBalContent}>
               <TouchableOpacity
-                onPress={selectedItem.onPress}
+                onPress={() => {
+                  handlePress(selectedItem.key);
+                }}
                 style={styles.dueBalRow}>
                 <Text style={styles.dueBalText}>{selectedItem.title}</Text>
                 <Text style={styles.dueBalText}>{selectedItem.value}</Text>
@@ -628,8 +666,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
           <View style={styles.dueBalFooter}>
             <Text style={styles.dueBalFooterText}>{t('Balance Due')}</Text>
             <Text style={styles.dueBalFooterText}>
-              {parseFloat(globalData.estimate_total_tax_amount || 0) +
-                parseFloat(globalData.estimate_total || 0)}
+              {globalData?.due_amount?.toString() || '0'}
             </Text>
           </View>
         </View>

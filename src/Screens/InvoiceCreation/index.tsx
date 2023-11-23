@@ -92,6 +92,8 @@ const importedData: any = {
     invoice_total: 0,
     invoice_total_tax_amount: 0,
     signature: '',
+    due_amount: 0,
+    paid_amount: 0,
   },
 };
 
@@ -172,15 +174,14 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
 
   const goBack = () => {
     if (selector.token === 'Guest') {
-      navigation.goBack()
+      navigation.goBack();
       setTimeout(() => {
         navigation.navigate('Subscribe');
       }, 1000);
+    } else {
+      navigation.goBack();
     }
-    else{
-      navigation.goBack()
-    }
-  }
+  };
 
   useEffect(() => {
     if (route.params.status === 'create') {
@@ -380,15 +381,47 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       },
       {
         key: 'fourth',
-        title: t('Total Payments'),
-        value: '$0.00',
+        title:
+          element.payments.length > 0
+            ? t('Paid') +
+              ' (' +
+              moment(element.payments[0]?.payment_date).format(
+                selector.globalDateFormat,
+              ) +
+              ')'
+            : t('Total Payments'),
+        value: element?.paid_amount ? '$' + element?.paid_amount : '$ 0.00',
+        onPress: () => navigateToPayment(),
       },
     ]);
   };
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
-
- 
+  const handlePress = key => {
+    switch (key) {
+      case 'first':
+        navigateToDiscountScreen();
+        break;
+      case 'second':
+        navigateToTaxScreen();
+        break;
+      case 'third':
+        // Handle Total case (if needed)
+        break;
+      case 'fourth':
+        navigateToPayment();
+        break;
+      default:
+        break;
+    }
+  };
+  const navigateToPayment = () => {
+    navigation.navigate('PaymentDetail', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+      invoiceData: globalData,
+    });
+  };
 
   function navigateToSetting() {
     navigation.navigate('Settings');
@@ -661,7 +694,9 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
           {paymentDue.map((selectedItem: any) => (
             <View style={styles.dueBalContent}>
               <TouchableOpacity
-                onPress={selectedItem.onPress}
+                onPress={() => {
+                  handlePress(selectedItem.key);
+                }}
                 style={styles.dueBalRow}>
                 <Text style={styles.dueBalText}>{selectedItem.title}</Text>
                 <Text style={styles.dueBalText}>{selectedItem.value}</Text>
@@ -671,11 +706,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
           <View style={styles.dueBalFooter}>
             <Text style={styles.dueBalFooterText}>{t('Balance Due')}</Text>
             <Text style={styles.dueBalFooterText}>
-              {(
-                parseFloat(globalData.invoice_total_tax_amount || 0) +
-                parseFloat(globalData.invoice_total || 0) -
-                parseFloat(globalData.invoice_discount_amount || 0)
-              ).toFixed(2)}
+              {globalData?.due_amount?.toString() || '0'}
             </Text>
           </View>
         </View>
@@ -716,7 +747,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
                 numberOfLines={1}
                 onPress={navigateToPaymentInfo}
                 style={styles.toTxt}>
-                {t('Payment')+':  '}
+                {t('Payment') + ':  '}
                 {globalData.paypal_email && 'PayPal,'}{' '}
                 {globalData.make_checks_payable && 'Check,'}{' '}
                 {globalData.payment_instructions && 'Payment Instruction,'}{' '}

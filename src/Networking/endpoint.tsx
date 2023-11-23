@@ -68,6 +68,12 @@ export const endpoint = {
     `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/review/link`,
   updateIVNumber: (id: any) =>
     `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/edit/invoice/number`,
+  getInvoicePayments: (invoiceId: string) =>
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${invoiceId}/payment`,
+  updateInvoicePayment: (invoiceId: string, paymentId: string) =>
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${invoiceId}/payment/${paymentId}/update/payment`,
+  deleteInvoicePayment: (invoiceId: string, paymentId: string) =>
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${invoiceId}/payment/${paymentId}/delete/payment`,
 
   createEstimate: `${API_BASE_URL}/${API_TYPE.ESTIMATE}/create`,
   getEstimateList: `${API_BASE_URL}/${API_TYPE.ESTIMATE}`,
@@ -100,4 +106,10 @@ export const endpoint = {
   updateReviewET: (id: any) =>
     `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/review/link`,
   exportSpreadSheet: `${API_BASE_URL}/${API_TYPE.INVOICES}/export/excel`,
+  deleteEstimatePayment: (estimateId: string, paymentId: string) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${estimateId}/payment/${paymentId}/delete/payment`,
+  updateEstimatePayment: (estimateId: string, paymentId: string) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${estimateId}/payment/${paymentId}/update/payment`,
+  getEstimatePayments: (estimateId: string) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${estimateId}/payment`,
 };

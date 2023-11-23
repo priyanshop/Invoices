@@ -162,7 +162,7 @@ function AddPhotoScreen({navigation, route}: any): JSX.Element {
 
   const offlineEstimateUpdate = () => {
     const updatedArray = selector.estimateList.map((item: any) => {
-      if (item.index === route?.params?.invoiceData?.index) {
+      if (item.index === route?.params?.estimateData?.index) {
         return {
           ...item,
           photos: [
