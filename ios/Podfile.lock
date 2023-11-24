@@ -374,22 +374,18 @@ PODS:
   - React-jsinspector (0.72.1)
   - React-logger (0.72.1):
     - glog
-  - react-native-contacts (7.0.5):
+  - react-native-contacts (7.0.8):
     - React-Core
-  - react-native-date-picker (4.2.13):
+  - react-native-date-picker (4.3.3):
     - React-Core
-  - react-native-image-picker (5.6.0):
+  - react-native-image-picker (5.7.0):
     - React-Core
-  - react-native-orientation-locker (1.5.0):
+  - react-native-orientation-locker (1.6.0):
     - React-Core
-  - react-native-pager-view (6.2.0):
+  - react-native-pager-view (6.2.2):
     - React-Core
-  - react-native-safe-area-context (4.6.4):
-    - RCT-Folly
-    - RCTRequired
-    - RCTTypeSafety
+  - react-native-safe-area-context (4.7.4):
     - React-Core
-    - ReactCommon/turbomodule/core
   - react-native-select-contact (1.6.3):
     - React-Core
   - react-native-simple-toast (3.0.2):
@@ -509,17 +505,18 @@ PODS:
     - React-jsi (= 0.72.1)
     - React-logger (= 0.72.1)
     - React-perflogger (= 0.72.1)
-  - RNCAsyncStorage (1.19.0):
+  - RNCAsyncStorage (1.19.6):
     - React-Core
   - RNCMaskedView (0.2.9):
     - React-Core
   - RNFS (2.20.0):
     - React-Core
-  - RNGestureHandler (2.12.0):
+  - RNGestureHandler (2.13.4):
+    - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - RNScreens (3.22.0):
+  - RNScreens (3.27.0):
+    - RCT-Folly (= 2021.07.22.00)
     - React-Core
-    - React-RCTImage
   - RNShare (9.4.1):
     - React-Core
   - SocketRocket (0.6.1)
@@ -774,12 +771,12 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 184eae1ecdedc7a083194bd9ff809c93f08fd34c
   React-jsinspector: d0b5bfd1085599265f4212034321e829bdf83cc0
   React-logger: b8103c9b04e707b50cdd2b1aeb382483900cbb37
-  react-native-contacts: 0aa99963d8f29099d4725cd0d2f8b6ef5f0d9a2d
-  react-native-date-picker: 04e866ba4e7857f83abd504ad42e787f0f02ae00
-  react-native-image-picker: db60857e03d63721f19b6f4027de20429ddd9cba
-  react-native-orientation-locker: 851f6510d8046ea2f14aa169b1e01fcd309a94ba
-  react-native-pager-view: 0ccb8bf60e2ebd38b1f3669fa3650ecce81db2df
-  react-native-safe-area-context: 68b07eabfb0d14547d36f6929c0e98d818064f02
+  react-native-contacts: cb4f3b823550adbce0802901b9e63bf1526ec0af
+  react-native-date-picker: 1d61c76315098a6ad4c643a356f005916c7d4875
+  react-native-image-picker: 3269f75c251cdcd61ab51b911dd30d6fff8c6169
+  react-native-orientation-locker: 4409c5b12b65f942e75449872b4f078b6f27af81
+  react-native-pager-view: 02a5c4962530f7efc10dd51ee9cdabeff5e6c631
+  react-native-safe-area-context: 2cd91d532de12acdb0a9cbc8d43ac72a8e4c897c
   react-native-select-contact: f88ccd9dbee6c4d1c32507291b431cf558a2ed42
   react-native-simple-toast: d54bd028da3e842e6b1b7a60f407e29df589229f
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
@@ -801,11 +798,11 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 67707a955b9ecc628cc38bdc721fbc498910f0fd
   React-utils: 0a70ea97d4e2749f336b450c082905be1d389435
   ReactCommon: e593d19c9e271a6da4d0bd7f13b28cfeae5d164b
-  RNCAsyncStorage: 4b98ac3c64efa4e35c1197cb0c5ca5e9f5d4c666
+  RNCAsyncStorage: 191a99459b4a6d174cfe51579d34b5267201bbf3
   RNCMaskedView: 949696f25ec596bfc697fc88e6f95cf0c79669b6
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
-  RNGestureHandler: dec4645026e7401a0899f2846d864403478ff6a5
-  RNScreens: 68fd1060f57dd1023880bf4c05d74784b5392789
+  RNGestureHandler: 6e46dde1f87e5f018a54fe5d40cd0e0b942b49ee
+  RNScreens: 3c2d122f5e08c192e254c510b212306da97d2581
   RNShare: 32e97adc8d8c97d4a26bcdd3c45516882184f8b6
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
