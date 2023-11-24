@@ -3,21 +3,12 @@ import {
   View,
   Text,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {Colors} from '../../Helper/Colors';
-import FetchAPI from '../../Networking';
-import {endpoint} from '../../Networking/endpoint';
-import {
-  setInvoiceList,
-  setPaymentInfo,
-} from '../../redux/reducers/user/UserReducer';
 import {useTranslation} from 'react-i18next';
-import {GlobalStyle} from '../../Helper/GlobalStyle';
 import ModalActivityIndicator from '../../CustomComponent/Loader';
-import ToastService from '../../Helper/ToastService';
 import moment from 'moment';
 
 const PaymentDetail = ({navigation, route}: any) => {
@@ -28,7 +19,7 @@ const PaymentDetail = ({navigation, route}: any) => {
   const [latestList, setLatestList] = useState([]);
   const [totalAmount, setTotalAmount] = useState('0.00');
   const [duePayment, setDuePayment] = useState('0.00');
-
+  const [billTotal, setBillTotal] = useState('0.00')
   useEffect(() => {}, [selector.token]);
 
   useEffect(() => {
@@ -41,6 +32,7 @@ const PaymentDetail = ({navigation, route}: any) => {
       setTotalAmount(
         route?.params?.invoiceData?.paid_amount?.toString() || '0.00',
       );
+      setBillTotal(route?.params?.invoiceData?.invoice_total?.toString() || '0.00',)
     }
 
     if (route?.params?.estimateUpdate) {
@@ -52,6 +44,7 @@ const PaymentDetail = ({navigation, route}: any) => {
       setTotalAmount(
         route?.params?.estimateData?.paid_amount?.toString() || '0.00',
       );
+      setBillTotal(route?.params?.estimateData?.estimate_total?.toString() || '0.00')
     }
   }, [route?.params]);
 
@@ -106,7 +99,7 @@ const PaymentDetail = ({navigation, route}: any) => {
         <View style={styles.businessContainer}>
           <View style={styles.header}>
             <Text style={styles.headerText}>{t('Total')}</Text>
-            <Text style={styles.headerText}>{'$' + totalAmount}</Text>
+            <Text style={styles.headerText}>{'$' + billTotal}</Text>
           </View>
           {latestList.length > 0
             ? latestList.map((item: any, index: number) => (
@@ -144,7 +137,7 @@ const PaymentDetail = ({navigation, route}: any) => {
         <View style={styles.businessContainer}>
           <View style={styles.header}>
             <Text style={styles.headerText}>{t('Paid')}</Text>
-            <Text style={styles.headerText}>{t('Paid')}</Text>
+            <Text style={styles.headerText}>{'$' + totalAmount}</Text>
           </View>
           <View style={styles.rowView}>
             <Text style={{...styles.titleTxt}}>{'Balance due'}</Text>

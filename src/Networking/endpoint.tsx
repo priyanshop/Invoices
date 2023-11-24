@@ -7,6 +7,7 @@ const API_TYPE = {
   SETTINGS: 'settings',
   INVOICES: 'invoices',
   ESTIMATE: 'estimates',
+  REPORT: 'report',
 };
 
 export const endpoint = {
@@ -17,7 +18,7 @@ export const endpoint = {
   updateClient: (id: any) => `${API_BASE_URL}/${API_TYPE.CLIENTS}/${id}`,
   getClient: (id: any) => `${API_BASE_URL}/${API_TYPE.CLIENTS}/${id}`,
   getAllClient: (id: any) =>
-    `${API_BASE_URL}/${API_TYPE.CLIENTS}/${id}/clientlist`,
+    `${API_BASE_URL}/${API_TYPE.CLIENTS}`,
   deleteClient: (id: any) => `${API_BASE_URL}/${API_TYPE.CLIENTS}/${id}`,
   addItems: `${API_BASE_URL}/${API_TYPE.ITEMS}`,
   updateItems: (id: any) => `${API_BASE_URL}/${API_TYPE.ITEMS}/${id}`,
@@ -112,4 +113,9 @@ export const endpoint = {
     `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${estimateId}/payment/${paymentId}/update/payment`,
   getEstimatePayments: (estimateId: string) =>
     `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${estimateId}/payment`,
+
+  paidReport: (year: string) =>
+    `${API_BASE_URL}/${API_TYPE.REPORT}/paid?year=${year}`,
+  clientReport: (year: string) =>
+    `${API_BASE_URL}/${API_TYPE.REPORT}/client?year=${year}`,
 };
