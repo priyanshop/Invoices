@@ -97,7 +97,12 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     {
       icon: () => <Fontisto name="email" size={22} color="#000" />,
       label: t('Email'),
-      onPress: () => handleShareEmail('hi'),
+      onPress: () => {
+        handleShareEmail('hi');
+        if (selector.token !== 'Guest' && selector.sendToEmail) {
+          sendCopy();
+        }
+      },
       style: {backgroundColor: '#fff', borderRadius: 50},
       color: '#000',
       labelTextColor: '#000',
@@ -225,6 +230,23 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     } catch (error) {}
   };
 
+  const sendCopy = async () => {
+    try {
+      const data = await FetchAPI(
+        'patch',
+        endpoint.sendEstimateCopyMail(globalData._id),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+      }
+    } catch (error) {
+      setFalse;
+    }
+  };
   const duplicateET = async () => {
     try {
       const data = await FetchAPI(

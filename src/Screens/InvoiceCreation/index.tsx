@@ -129,7 +129,13 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     {
       icon: () => <Fontisto name="email" size={22} color="#000" />,
       label: t('Email'),
-      onPress: () => handleShareEmail('hi'),
+      onPress: () => {
+        // handleShareEmail('hi');
+        if (selector.token !== 'Guest' && selector.sendToEmail) {
+          sendCopy();
+          sendEmail();
+        }
+      },
       style: {backgroundColor: '#fff', borderRadius: 50},
       color: '#000',
       labelTextColor: '#000',
@@ -144,11 +150,11 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
   const [searchStart, setSearchStart] = useState(false);
   const [routes] = useState(data);
   const [globalData, setGlobalData] = useState(importedData.data);
-  const [state, setState] = React.useState({open: false});
+  const [state, setState] = useState({open: false});
   const {open} = state;
 
   const onStateChange = ({open}) => setState({open});
-  const [visible, setVisible] = React.useState(false);
+  const [visible, setVisible] = useState(false);
   const [paymentDue, setPaymentDue] = useState([]);
   const [RequestReview, setRequestReview] = useState(false);
   const [isMarkPaid, setIsMarkPaid] = useState(false);
@@ -237,6 +243,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         const element = data.data;
         setIsMarkPaid(element.is_paid);
         setGlobalData(element);
+        getHistory(element._id);
         fetchPaymentDue(element);
         setLink(element.review_link);
       }
@@ -351,6 +358,60 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         }
       }
     } catch (error) {}
+  };
+
+  const sendCopy = async () => {
+    try {
+      const data = await FetchAPI(
+        'patch',
+        endpoint.sendInvoiceCopyMail(globalData._id),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+      }
+    } catch (error) {
+      setFalse;
+    }
+  };
+  const sendEmail = async () => {
+    try {
+      const data = await FetchAPI(
+        'post',
+        endpoint.sendEmailForInvoice(globalData._id),
+        {
+          email: globalData.c_email,
+        },
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+      }
+    } catch (error) {
+      setFalse;
+    }
+  };
+  const getHistory = async (id: any) => {
+    try {
+      const data = await FetchAPI(
+        'get',
+        endpoint.getEmailHistoryForInvoice(id),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+      }
+    } catch (error) {
+      setFalse;
+    }
   };
 
   const fetchPaymentDue = (element: any) => {
@@ -820,8 +881,11 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         <WebView
           ref={webViewRef}
           originWhitelist={['*']}
-          // style={{flex: 1}}
-          source={{html: preview4(globalData)}}
+          style={{flex: 1}}
+          // source={{html: preview4(globalData)}}
+          source={{ uri: endpoint.sendEmailTemplatesForInvoice(globalData._id) }}
+          // userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
+          contentMode={"desktop"}
         />
       </View>
     );
