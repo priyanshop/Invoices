@@ -38,6 +38,8 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import WebView from 'react-native-webview';
 import {handleShareEmail, handleShareMessage} from '../../Share/share';
 import {preview4} from '../../Web/index4';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'; // Import the icon library
+const formatString = 'DD-MM-YYYY HH:mm:ss';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -130,9 +132,10 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       icon: () => <Fontisto name="email" size={22} color="#000" />,
       label: t('Email'),
       onPress: () => {
-        // handleShareEmail('hi');
         if (selector.token !== 'Guest' && selector.sendToEmail) {
           sendCopy();
+        }
+        if (selector.token !== 'Guest') {
           sendEmail();
         }
       },
@@ -158,6 +161,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
   const [paymentDue, setPaymentDue] = useState([]);
   const [RequestReview, setRequestReview] = useState(false);
   const [isMarkPaid, setIsMarkPaid] = useState(false);
+  const [History, setHistory] = useState([]);
   const [link, setLink] = useState('');
   const webViewRef = useRef(null);
 
@@ -373,9 +377,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       if (data.status === 'success') {
         const element = data.data;
       }
-    } catch (error) {
-      setFalse;
-    }
+    } catch (error) {}
   };
   const sendEmail = async () => {
     try {
@@ -392,10 +394,9 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       if (data.status === 'success') {
         const element = data.data;
       }
-    } catch (error) {
-      setFalse;
-    }
+    } catch (error) {}
   };
+
   const getHistory = async (id: any) => {
     try {
       const data = await FetchAPI(
@@ -408,10 +409,9 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       );
       if (data.status === 'success') {
         const element = data.data;
+        setHistory(element);
       }
-    } catch (error) {
-      setFalse;
-    }
+    } catch (error) {}
   };
 
   const fetchPaymentDue = (element: any) => {
@@ -883,9 +883,9 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
           originWhitelist={['*']}
           style={{flex: 1}}
           // source={{html: preview4(globalData)}}
-          source={{ uri: endpoint.sendEmailTemplatesForInvoice(globalData._id) }}
+          source={{uri: endpoint.sendEmailTemplatesForInvoice(globalData._id)}}
           // userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
-          contentMode={"desktop"}
+          contentMode={'desktop'}
         />
       </View>
     );
@@ -896,11 +896,26 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       <EmptyHistory message={t('emptyInvoiceHistory')} />
     );
 
+    const renderItem = ({item}) => (
+      <View style={styles.item}>
+        <MaterialIcons
+          name={item.type === 'email' ? 'email' : 'message'}
+          size={24}
+          color={Colors.appColor}
+          style={styles.icon}
+        />
+        <View style={styles.details}>
+          <Text style={styles.sendText}>{'Sent - Share'}</Text>
+          <Text style={styles.sendTimeText}>{moment(new Date(item.createdAt)).format(formatString)}</Text>
+        </View>
+      </View>
+    );
+
     return (
       <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}>
         <FlatList
-          data={[]}
-          renderItem={() => <View />}
+          data={History}
+          renderItem={renderItem}
           ListEmptyComponent={renderEmptyComponent}
           contentContainerStyle={{flex: 1}}
         />
@@ -1410,6 +1425,30 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '400',
     color: '#000',
+  },
+  item: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    backgroundColor: '#FFF',
+  },
+  icon: {
+    marginRight: 16,
+  },
+  details: {
+    flexDirection: 'column',
+  },
+  sendText: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#000',
+  },
+  sendTimeText: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: '#ccc',
   },
 });
 

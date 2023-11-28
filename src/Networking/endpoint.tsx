@@ -124,7 +124,8 @@ export const endpoint = {
     `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${estimateId}/payment`,
   sendEstimateCopyMail: (estimateId: string) =>
     `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${estimateId}/send-copy-mail`,
-
+  sendEmailForET: (estimateId: string) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${estimateId}/send-email`,
   paidReport: (year: string) =>
     `${API_BASE_URL}/${API_TYPE.REPORT}/paid?year=${year}`,
   clientReport: (year: string) =>

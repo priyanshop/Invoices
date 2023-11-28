@@ -102,6 +102,9 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         if (selector.token !== 'Guest' && selector.sendToEmail) {
           sendCopy();
         }
+        if (selector.token !== 'Guest') {
+          sendEmail();
+        }
       },
       style: {backgroundColor: '#fff', borderRadius: 50},
       color: '#000',
@@ -124,6 +127,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   const [paymentDue, setPaymentDue] = useState([]);
   const [created, setCreated] = useState(false);
   const [link, setLink] = useState('');
+  const [History, setHistory] = useState([]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -244,8 +248,43 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         const element = data.data;
       }
     } catch (error) {
-      setFalse;
     }
+  };
+
+  const sendEmail = async () => {
+    try {
+      const data = await FetchAPI(
+        'post',
+        endpoint.sendEmailForET(globalData._id),
+        {
+          email: globalData.c_email,
+        },
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+      }
+    } catch (error) {
+    }
+  };
+  
+  const getHistory = async (id: any) => {
+    try {
+      const data = await FetchAPI(
+        'get',
+        endpoint.getEmailHistoryForInvoice(id),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+        setHistory(element);
+      }
+    } catch (error) {}
   };
   const duplicateET = async () => {
     try {
@@ -294,7 +333,8 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         }
       }
     } catch (error) {}
-  };
+  }
+  
   const deleteET = async () => {
     try {
       if (selector.token === 'Guest') {
@@ -781,12 +821,25 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     const renderEmptyComponent = () => (
       <EmptyHistory message={t('emptyEstimateHistory')} />
     );
-
+    const renderItem = ({item}) => (
+      <View style={styles.item}>
+        <MaterialIcons
+          name={item.type === 'email' ? 'email' : 'message'}
+          size={24}
+          color={Colors.appColor}
+          style={styles.icon}
+        />
+        <View style={styles.details}>
+          <Text style={styles.sendText}>{'Sent - Share'}</Text>
+          <Text style={styles.sendTimeText}>{moment(new Date(item.createdAt)).format(formatString)}</Text>
+        </View>
+      </View>
+    );
     return (
       <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}>
         <FlatList
-          data={[]}
-          renderItem={() => <View />}
+          data={History}
+          renderItem={renderItem}
           ListEmptyComponent={renderEmptyComponent}
           contentContainerStyle={{flex: 1}}
         />
@@ -1289,6 +1342,29 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '400',
     color: '#000',
+  }, item: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    backgroundColor: '#FFF',
+  },
+  icon: {
+    marginRight: 16,
+  },
+  details: {
+    flexDirection: 'column',
+  },
+  sendText: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#000',
+  },
+  sendTimeText: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: '#ccc',
   },
 });
 
