@@ -388,7 +388,7 @@ PODS:
     - React-Core
   - react-native-select-contact (1.6.3):
     - React-Core
-  - react-native-simple-toast (3.0.2):
+  - react-native-simple-toast (3.1.0):
     - React-Core
     - Toast (~> 4)
   - react-native-splash-screen (3.3.0):
@@ -505,13 +505,13 @@ PODS:
     - React-jsi (= 0.72.1)
     - React-logger (= 0.72.1)
     - React-perflogger (= 0.72.1)
-  - RNCAsyncStorage (1.19.6):
+  - RNCAsyncStorage (1.21.0):
     - React-Core
   - RNCMaskedView (0.2.9):
     - React-Core
   - RNFS (2.20.0):
     - React-Core
-  - RNGestureHandler (2.13.4):
+  - RNGestureHandler (2.14.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - RNScreens (3.27.0):
@@ -778,7 +778,7 @@ SPEC CHECKSUMS:
   react-native-pager-view: 02a5c4962530f7efc10dd51ee9cdabeff5e6c631
   react-native-safe-area-context: 2cd91d532de12acdb0a9cbc8d43ac72a8e4c897c
   react-native-select-contact: f88ccd9dbee6c4d1c32507291b431cf558a2ed42
-  react-native-simple-toast: d54bd028da3e842e6b1b7a60f407e29df589229f
+  react-native-simple-toast: 1059cc3b076a2abe14900d609c096d7682bf6e1e
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
   react-native-webview: d33e2db8925d090871ffeb232dfa50cb3a727581
   React-NativeModulesApple: 4f31a812364443cee6ef768d256c594ad3b20f53
@@ -798,10 +798,10 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 67707a955b9ecc628cc38bdc721fbc498910f0fd
   React-utils: 0a70ea97d4e2749f336b450c082905be1d389435
   ReactCommon: e593d19c9e271a6da4d0bd7f13b28cfeae5d164b
-  RNCAsyncStorage: 191a99459b4a6d174cfe51579d34b5267201bbf3
+  RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
   RNCMaskedView: 949696f25ec596bfc697fc88e6f95cf0c79669b6
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
-  RNGestureHandler: 6e46dde1f87e5f018a54fe5d40cd0e0b942b49ee
+  RNGestureHandler: 32a01c29ecc9bb0b5bf7bc0a33547f61b4dc2741
   RNScreens: 3c2d122f5e08c192e254c510b212306da97d2581
   RNShare: 32e97adc8d8c97d4a26bcdd3c45516882184f8b6
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17

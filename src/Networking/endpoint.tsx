@@ -108,7 +108,8 @@ export const endpoint = {
   addPhotoET: (id: any) => `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/photo`,
   updatePhotoET: (id: any, id2: any) =>
     `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/photo/${id2}/update/photo`,
-
+  sendInvoiceText: (invoiceId: string) =>
+    `${API_BASE_URL}/invoices/${invoiceId}/send-text`,
   updateETNumber: (id: any) =>
     `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/edit/estimate/number`,
   deletePhotoET: (id: any, id2: any) =>
@@ -126,6 +127,9 @@ export const endpoint = {
     `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${estimateId}/send-copy-mail`,
   sendEmailForET: (estimateId: string) =>
     `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${estimateId}/send-email`,
+  sendEstimateEmail: `${API_BASE_URL}/estimates/sendEstimateEmail`,
+  sendEstimateText: (estimateId: string) =>
+    `${API_BASE_URL}/estimates/${estimateId}/send-text`,
   paidReport: (year: string) =>
     `${API_BASE_URL}/${API_TYPE.REPORT}/paid?year=${year}`,
   clientReport: (year: string) =>

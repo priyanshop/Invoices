@@ -119,7 +119,14 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         />
       ),
       label: t('Text'),
-      onPress: () => handleShareMessage('Hi'),
+      onPress: () => {
+        if (selector.token !== 'Guest') {
+          handleShareMessage(
+            endpoint.sendEmailTemplatesForInvoice(globalData._id),
+          );
+          sendTxt();
+        }
+      },
       style: {backgroundColor: '#fff', borderRadius: 50},
       color: '#000',
       labelTextColor: '#000',
@@ -364,6 +371,26 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     } catch (error) {}
   };
 
+  const sendTxt = async () => {
+    try {
+      const payload = {
+        text: endpoint.sendEmailTemplatesForInvoice(globalData._id),
+      };
+      const data = await FetchAPI(
+        'post',
+        endpoint.sendInvoiceText(globalData._id),
+        payload,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+        getHistory(globalData._id);
+      }
+    } catch (error) {}
+  };
+
   const sendCopy = async () => {
     try {
       const data = await FetchAPI(
@@ -393,6 +420,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       );
       if (data.status === 'success') {
         const element = data.data;
+        getHistory(globalData._id);
       }
     } catch (error) {}
   };
@@ -906,7 +934,9 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         />
         <View style={styles.details}>
           <Text style={styles.sendText}>{'Sent - Share'}</Text>
-          <Text style={styles.sendTimeText}>{moment(new Date(item.createdAt)).format(formatString)}</Text>
+          <Text style={styles.sendTimeText}>
+            {moment(new Date(item.createdAt)).format(formatString)}
+          </Text>
         </View>
       </View>
     );

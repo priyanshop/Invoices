@@ -85,7 +85,14 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         />
       ),
       label: t('Text'),
-      onPress: () => handleShareMessage('Hi'),
+      onPress: () => {
+        if (selector.token !== 'Guest') {
+          handleShareMessage(
+            endpoint.sendEmailTemplatesForInvoice(globalData._id),
+          );
+          sendTxt();
+        }
+      },
       style: {backgroundColor: '#fff', borderRadius: 50},
       color: '#000',
       labelTextColor: '#000',
@@ -234,6 +241,26 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     } catch (error) {}
   };
 
+  const sendTxt = async () => {
+    try {
+      const payload = {
+        text: endpoint.sendEmailTemplatesForInvoice(globalData._id),
+      };
+      const data = await FetchAPI(
+        'post',
+        endpoint.sendEstimateText(globalData._id),
+        payload,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+        getHistory(globalData._id);
+      }
+    } catch (error) {}
+  };
+
   const sendCopy = async () => {
     try {
       const data = await FetchAPI(
@@ -247,8 +274,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
       if (data.status === 'success') {
         const element = data.data;
       }
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   const sendEmail = async () => {
@@ -266,10 +292,9 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
       if (data.status === 'success') {
         const element = data.data;
       }
-    } catch (error) {
-    }
+    } catch (error) {}
   };
-  
+
   const getHistory = async (id: any) => {
     try {
       const data = await FetchAPI(
@@ -333,8 +358,8 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         }
       }
     } catch (error) {}
-  }
-  
+  };
+
   const deleteET = async () => {
     try {
       if (selector.token === 'Guest') {
@@ -831,7 +856,9 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         />
         <View style={styles.details}>
           <Text style={styles.sendText}>{'Sent - Share'}</Text>
-          <Text style={styles.sendTimeText}>{moment(new Date(item.createdAt)).format(formatString)}</Text>
+          <Text style={styles.sendTimeText}>
+            {moment(new Date(item.createdAt)).format(formatString)}
+          </Text>
         </View>
       </View>
     );
@@ -1342,7 +1369,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '400',
     color: '#000',
-  }, item: {
+  },
+  item: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 12,
