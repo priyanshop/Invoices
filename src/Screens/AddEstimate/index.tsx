@@ -21,6 +21,7 @@ import {useTranslation} from 'react-i18next';
 import {useSelector, useDispatch} from 'react-redux';
 import {useIsFocused} from '@react-navigation/native';
 import moment from 'moment';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import {getScreenDimensions} from '../../Helper/ScreenDimension';
 import {Colors} from '../../Helper/Colors';
@@ -36,6 +37,7 @@ import EmptyHistory from '../../CustomComponent/EmptyHistory';
 import {FlatList} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {handleShareEmail, handleShareMessage} from '../../Share/share';
+const formatString = 'DD-MM-YYYY HH:mm:ss';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -207,6 +209,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         const element = data.data;
         setGlobalData(element);
         fetchPaymentDue(element);
+        getHistory(element._id);
         setLink(element.review_link);
       }
     } catch (error) {}
@@ -273,6 +276,8 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
       );
       if (data.status === 'success') {
         const element = data.data;
+        getHistory(globalData._id);
+
       }
     } catch (error) {}
   };
@@ -291,6 +296,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
       );
       if (data.status === 'success') {
         const element = data.data;
+        getHistory(globalData._id);
       }
     } catch (error) {}
   };
@@ -299,7 +305,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     try {
       const data = await FetchAPI(
         'get',
-        endpoint.getEmailHistoryForInvoice(id),
+        endpoint.getEmailHistoryForEstimate(id),
         null,
         {
           Authorization: 'Bearer ' + selector.token,

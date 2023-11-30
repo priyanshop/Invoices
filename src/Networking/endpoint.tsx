@@ -127,11 +127,14 @@ export const endpoint = {
     `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${estimateId}/send-copy-mail`,
   sendEmailForET: (estimateId: string) =>
     `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${estimateId}/send-email`,
-  sendEstimateEmail: `${API_BASE_URL}/estimates/sendEstimateEmail`,
+  sendEstimateEmail: (estimateId: string) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${estimateId}/sendEstimateEmail`,
   sendEstimateText: (estimateId: string) =>
     `${API_BASE_URL}/estimates/${estimateId}/send-text`,
   paidReport: (year: string) =>
     `${API_BASE_URL}/${API_TYPE.REPORT}/paid?year=${year}`,
   clientReport: (year: string) =>
     `${API_BASE_URL}/${API_TYPE.REPORT}/client?year=${year}`,
+  getEmailHistoryForEstimate: (estimateId: string) =>
+    `${API_BASE_URL}/email-history/type-id/${estimateId}/type/estimate`,
 };
