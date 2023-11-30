@@ -108,42 +108,42 @@ const SubscriptionScreen = () => {
   const [products, setProducts] = useState([]);
 
   
-  useEffect(() => {
-    const initializeConnection = async () => {
-      try {
-        await initConnection();
-        if (Platform.OS === "android") {
-          await flushFailedPurchasesCachedAsPendingAndroid();
-        }
-      } catch (error) {
-        console.error("An error occurred", error.message);
-      }
-    }
-    const purchaseUpdate = purchaseUpdatedListener(
-      async (purchase) => {
-        const receipt = purchase.transactionReceipt;
+  // useEffect(() => {
+  //   const initializeConnection = async () => {
+  //     try {
+  //       await initConnection();
+  //       if (Platform.OS === "android") {
+  //         await flushFailedPurchasesCachedAsPendingAndroid();
+  //       }
+  //     } catch (error) {
+  //       console.error("An error occurred", error.message);
+  //     }
+  //   }
+  //   const purchaseUpdate = purchaseUpdatedListener(
+  //     async (purchase) => {
+  //       const receipt = purchase.transactionReceipt;
 
-        if (receipt) {
-          try {
-            await finishTransaction({ purchase, isConsumable: true });
-          } catch (error) {
-            console.error("An error occurred", error.message);
-          }
-        }
-      });
+  //       if (receipt) {
+  //         try {
+  //           await finishTransaction({ purchase, isConsumable: true });
+  //         } catch (error) {
+  //           console.error("An error occurred", error.message);
+  //         }
+  //       }
+  //     });
 
-    const purchaseError = purchaseErrorListener((error) =>
-      console.error('Purchase error', error.message));
-    initializeConnection();
-    purchaseUpdate();
-    purchaseError();
-    fetchProducts();
-    return () => {
-      endConnection();
-      purchaseUpdate.remove();
-      purchaseError.remove();
-    }
-  }, []);
+  //   const purchaseError = purchaseErrorListener((error) =>
+  //     console.error('Purchase error', error.message));
+  //   initializeConnection();
+  //   purchaseUpdate();
+  //   purchaseError();
+  //   fetchProducts();
+  //   return () => {
+  //     endConnection();
+  //     purchaseUpdate.remove();
+  //     purchaseError.remove();
+  //   }
+  // }, []);
 
   const fetchProducts = async () => {
     try {
