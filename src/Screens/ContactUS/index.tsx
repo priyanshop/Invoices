@@ -6,12 +6,17 @@ import {
   TextInput,
   TouchableOpacity,
   Keyboard,
+  StatusBar,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {Colors} from '../../Helper/Colors';
 import {useTranslation} from 'react-i18next';
 import MessageButton from '../../CustomComponent/MessageButton';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import FetchAPI from '../../Networking';
+import {endpoint} from '../../Networking/endpoint';
+import ToastService from '../../Helper/ToastService';
+import Loader from '../../CustomComponent/Loader';
 
 const ContactUs = ({navigation}: any) => {
   const dispatch = useDispatch();
@@ -23,7 +28,16 @@ const ContactUs = ({navigation}: any) => {
   const [message, setMessage] = useState('');
   const [contactNo, setContactNo] = useState('');
   const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState({
+    name: '',
+    email: '',
+    message: '',
+    contactNo: '',
+  });
 
+  const setTrue = () => setIsLoading(true);
+  const setFalse = () => setIsLoading(false);
   const handleKeyboardShow = () => setKeyboardVisible(true);
   const handleKeyboardHide = () => setKeyboardVisible(false);
 
@@ -45,15 +59,161 @@ const ContactUs = ({navigation}: any) => {
 
   const addInfo = async () => {
     try {
-    } catch (error) {}
+      const payload: any = {
+        name: Name,
+        email: email,
+        contact: contactNo,
+        message: message,
+      };
+      if (selector.token === 'Guest') {
+        // dispatch(changeCustomize(payload));
+      } else {
+        const data = await FetchAPI('post', endpoint.contactUs, payload, {
+          Authorization: 'Bearer ' + selector.token,
+        });
+        if (data.status === 'success') {
+          successMessage();
+        }
+      }
+    } catch (error) {
+      setFalse();
+    }
   };
-
+  const successMessage = () => {
+    setIsLoading(false);
+    ToastService.showToast('Message sent successfully');
+    navigation.goBack();
+  };
   const handleTextInputChange = (value: any, setter: any) => {
     setter(value);
   };
 
+  const validateFields = () => {
+    let isValid = true;
+    const newError = {
+      name: '',
+      email: '',
+      message: '',
+      contactNo: '',
+    };
+
+    if (!Name.trim()) {
+      isValid = false;
+      newError.name = 'Name is required.';
+    } else if (!/^[a-zA-Z\s]+$/.test(Name)) {
+      isValid = false;
+      newError.name =
+        'Name can only contain alphabetical characters and spaces.';
+    }
+
+    // Email validation
+    if (!email.trim()) {
+      isValid = false;
+      newError.email = 'Email is required.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      isValid = false;
+      newError.email = 'Please enter a valid email address.';
+    }
+
+    // Message validation
+    if (!message.trim()) {
+      isValid = false;
+      newError.message = 'Message is required.';
+    } else if (message.length > 200) {
+      isValid = false;
+      newError.message = 'Message should not exceed 200 characters.';
+    }
+
+    // Contact Number validation
+    if (!contactNo.trim()) {
+      isValid = false;
+      newError.contactNo = 'Contact Number is required.';
+    } else if (!/^[0-9]+$/.test(contactNo)) {
+      isValid = false;
+      newError.contactNo =
+        'Contact Number should only contain numeric characters.';
+    }
+
+    setError(newError);
+
+    return isValid;
+  };
+
+  const handleButtonClick = () => {
+    if (validateFields()) {
+      addInfo();
+      console.log('All fields are valid. Do something here.');
+    } else {
+      console.log('Some fields are invalid. Check error messages.');
+    }
+  };
+
+  const validateField = (fieldName: any, value: any) => {
+    let isValid = true;
+    let errorMessage = '';
+
+    // Validation logic for each field
+    switch (fieldName) {
+      case 'name':
+        if (!value.trim()) {
+          isValid = false;
+          errorMessage = 'Name is required.';
+        } else if (!/^[a-zA-Z\s]+$/.test(value)) {
+          isValid = false;
+          errorMessage =
+            'Name can only contain alphabetical characters and spaces.';
+        }
+        break;
+
+      case 'email':
+        if (!value.trim()) {
+          isValid = false;
+          errorMessage = 'Email is required.';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          isValid = false;
+          errorMessage = 'Please enter a valid email address.';
+        }
+        break;
+
+      case 'message':
+        if (!value.trim()) {
+          isValid = false;
+          errorMessage = 'Message is required.';
+        } else if (value.length > 200) {
+          isValid = false;
+          errorMessage = 'Message should not exceed 200 characters.';
+        }
+        break;
+
+      case 'contactNo':
+        if (!value.trim()) {
+          isValid = false;
+          errorMessage = 'Contact Number is required.';
+        } else if (!/^[0-9]+$/.test(value)) {
+          isValid = false;
+          errorMessage =
+            'Contact Number should only contain numeric characters.';
+        }
+        break;
+
+      default:
+        break;
+    }
+
+    setError(prevError => ({
+      ...prevError,
+      [fieldName]: errorMessage,
+    }));
+
+    return isValid;
+  };
+  const handleBlur = (fieldName: any, value: any) => {
+    validateField(fieldName, value);
+  };
   return (
     <View style={styles.mainContainer}>
+      <Loader visible={isLoading} size="large" color={Colors.landingColor} />
+      <StatusBar backgroundColor={Colors.appColor} />
       <KeyboardAwareScrollView>
         <View style={styles.businessContainer}>
           <View style={styles.header}>
@@ -63,13 +223,15 @@ const ContactUs = ({navigation}: any) => {
             <TextInput
               value={Name}
               onChangeText={value => handleTextInputChange(value, setName)}
-              onBlur={addInfo}
+              onBlur={() => handleBlur('name', Name)}
               style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
               placeholder={t('Enter Name')}
               placeholderTextColor={'grey'}
             />
           </View>
         </View>
+        {error.name !== '' && <Text style={{color: 'red'}}>{error.name}</Text>}
+
         <View style={styles.businessContainer}>
           <View style={styles.header}>
             <Text style={styles.headerText}>{t('Email')}</Text>
@@ -78,13 +240,16 @@ const ContactUs = ({navigation}: any) => {
             <TextInput
               value={email}
               onChangeText={value => handleTextInputChange(value, setEmail)}
-              onBlur={addInfo}
+              onBlur={() => handleBlur('email', email)}
               style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
               placeholder={t('Enter Email')}
               placeholderTextColor={'grey'}
             />
           </View>
         </View>
+        {error.email !== '' && (
+          <Text style={{color: 'red'}}>{error.email}</Text>
+        )}
 
         <View style={styles.businessContainer}>
           <View style={styles.header}>
@@ -94,13 +259,16 @@ const ContactUs = ({navigation}: any) => {
             <TextInput
               value={contactNo}
               onChangeText={value => handleTextInputChange(value, setContactNo)}
-              onBlur={addInfo}
+              onBlur={() => handleBlur('contactNo', contactNo)}
               style={{...styles.titleTxt, flex: 1, textAlign: 'left'}}
               placeholder={t('Enter Contact No.')}
               placeholderTextColor={'grey'}
             />
           </View>
         </View>
+        {error.contactNo !== '' && (
+          <Text style={{color: 'red'}}>{error.contactNo}</Text>
+        )}
 
         <View style={styles.businessContainer}>
           <View style={styles.header}>
@@ -110,7 +278,7 @@ const ContactUs = ({navigation}: any) => {
             <TextInput
               value={message}
               onChangeText={value => handleTextInputChange(value, setMessage)}
-              onBlur={addInfo}
+              onBlur={() => handleBlur('message', message)}
               style={{
                 ...styles.titleTxt,
                 flex: 1,
@@ -125,9 +293,12 @@ const ContactUs = ({navigation}: any) => {
             />
           </View>
         </View>
+        {error.message !== '' && (
+          <Text style={{color: 'red'}}>{error.message}</Text>
+        )}
 
         <TouchableOpacity
-          // onPress={}
+          onPress={handleButtonClick}
           style={styles.statementBtn}>
           <Text style={[styles.titleTxt2, {color: '#fff', fontWeight: '600'}]}>
             {t('Send')}

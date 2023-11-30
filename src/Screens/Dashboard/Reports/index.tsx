@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -15,16 +15,98 @@ import {ToggleButton} from 'react-native-paper';
 import {Colors} from '../../../Helper/Colors';
 import ModalActivityIndicator from '../../../CustomComponent/Loader';
 import {useTranslation} from 'react-i18next';
+import FetchAPI from '../../../Networking';
+import {endpoint} from '../../../Networking/endpoint';
+import {useDispatch, useSelector} from 'react-redux';
 
 function ReportScreen({navigation}: any): JSX.Element {
   const {t, i18n} = useTranslation();
+  const selector = useSelector((state: any) => state.user);
+  const dispatch = useDispatch();
   const [value, setValue] = useState('Paid');
-  const [Year, setYear] = useState('2022');
+  const [Year, setYear] = useState('2023');
   const [loading, setLoading] = useState(false);
+  const [paidData, setPaidData] = useState([]);
+  const [paidTotal, setPaidTotal] = useState(null);
+
+  const [years, setYears] = useState([]);
+
+  useEffect(() => {
+    refresh();
+  }, []);
+
+  const refresh = () => {
+    const yearsArray: any = getCurrentAndLastYearArray();
+    setYears(yearsArray);
+    setYear(yearsArray[0]);
+    if (selector.token !== 'Guest') {
+      getPaid(yearsArray[0]);
+      getClient(yearsArray[0]);
+    }
+  };
+
+  function getCurrentAndLastYearArray() {
+    const currentYear = new Date().getFullYear();
+    const lastYear = currentYear - 1;
+
+    return [currentYear.toString(), lastYear.toString()];
+  }
+  const setTrue = () => setLoading(true);
+  const setFalse = () => setLoading(false);
 
   function navigateToSetting() {
     navigation.navigate('Settings');
   }
+
+  const getPaid = async (year: any) => {
+    try {
+      setTrue();
+      const data = await FetchAPI('get', endpoint.paidReport(year), null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        const element = data.data;
+        const resultArray: any = Object.entries(element.month).map(
+          ([month, values]: any) => ({
+            month,
+            cnt: values.cnt,
+            invoicesCount: values.invoicesCount,
+            paidAmount: values.paidAmount,
+          }),
+        );
+        setPaidTotal(element);
+        setPaidData(resultArray);
+        setFalse();
+      }
+    } catch (error) {
+      setFalse;
+    }
+  };
+
+  const getClient = async (year: any) => {
+    try {
+      setTrue();
+      const data = await FetchAPI('get', endpoint.clientReport(year), null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        const element = data.data;
+        // const resultArray: any = Object.entries(element.month).map(
+        //   ([month, values]: any) => ({
+        //     month,
+        //     cnt: values.cnt,
+        //     invoicesCount: values.invoicesCount,
+        //     paidAmount: values.paidAmount,
+        //   }),
+        // );
+        // setPaidTotal(element);
+        // setPaidData(resultArray);
+        setFalse();
+      }
+    } catch (error) {
+      setFalse;
+    }
+  };
 
   const PaidTitle = () => {
     return (
@@ -50,7 +132,9 @@ function ReportScreen({navigation}: any): JSX.Element {
         <Text style={{...styles.tableTitle, textAlign: 'center'}}>
           {t('Invoices')}
         </Text>
-        <Text style={{...styles.tableTitle, textAlign: 'right'}}>{t('Paid')}</Text>
+        <Text style={{...styles.tableTitle, textAlign: 'right'}}>
+          {t('Paid')}
+        </Text>
       </View>
     );
   };
@@ -65,7 +149,9 @@ function ReportScreen({navigation}: any): JSX.Element {
         <Text style={{...styles.tableTitle, textAlign: 'center'}}>
           {t('Quantity')}
         </Text>
-        <Text style={{...styles.tableTitle, textAlign: 'right'}}>{t('Paid')}</Text>
+        <Text style={{...styles.tableTitle, textAlign: 'right'}}>
+          {t('Paid')}
+        </Text>
       </View>
     );
   };
@@ -86,11 +172,17 @@ function ReportScreen({navigation}: any): JSX.Element {
     return (
       <View style={styles.totalView}>
         <Text style={{...styles.tableTitle, textAlign: 'left'}}>
-          {'Tax Year 2023'}
+          {'Tax Year ' + Year}
         </Text>
-        <Text style={{...styles.itemTxt, textAlign: 'center'}}>{'1'}</Text>
-        <Text style={{...styles.itemTxt, textAlign: 'center'}}>{'0'}</Text>
-        <Text style={{...styles.itemTxt, textAlign: 'right'}}>{'$0.00'}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'center'}}>
+          {paidTotal?.totalDistinctClients || '0'}
+        </Text>
+        <Text style={{...styles.itemTxt, textAlign: 'center'}}>
+          {paidTotal?.totalInvoices || '0'}
+        </Text>
+        <Text style={{...styles.itemTxt, textAlign: 'right'}}>
+          {'$' + (paidTotal?.totalPaidAmount || '0')}
+        </Text>
       </View>
     );
   };
@@ -118,13 +210,17 @@ function ReportScreen({navigation}: any): JSX.Element {
     );
   };
 
-  const Paid = () => {
+  const Paid = (item: any) => {
     return (
       <View style={styles.itemView}>
-        <Text style={{...styles.itemTxt, textAlign: 'left'}}>{'Dec'}</Text>
-        <Text style={{...styles.itemTxt, textAlign: 'center'}}>{'1'}</Text>
-        <Text style={{...styles.itemTxt, textAlign: 'center'}}>{'0'}</Text>
-        <Text style={{...styles.itemTxt, textAlign: 'right'}}>{'$0.00'}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'left'}}>{item.month}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'center'}}>{item.cnt}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'center'}}>
+          {item.invoicesCount}
+        </Text>
+        <Text style={{...styles.itemTxt, textAlign: 'right'}}>
+          {'$' + item.paidAmount}
+        </Text>
       </View>
     );
   };
@@ -140,109 +236,67 @@ function ReportScreen({navigation}: any): JSX.Element {
     );
   };
 
+  const renderToggleButton = (label: any) => (
+    <ToggleButton
+      style={{
+        ...styles.headerTab,
+        backgroundColor: value === label ? Colors.appColor : '#fff',
+      }}
+      icon={() => (
+        <View>
+          <Text
+            style={{
+              ...styles.headerTitle,
+              color: value === label ? '#fff' : Colors.appColor,
+            }}>
+            {t(label)}
+          </Text>
+        </View>
+      )}
+      value={label}
+    />
+  );
   const HeaderView = () => (
     <ToggleButton.Row
       style={{marginTop: 10}}
-      onValueChange={value => setValue(value)}
+      onValueChange={newValue => newValue && setValue(newValue)}
       value={value}>
-      <ToggleButton
-        style={{
-          ...styles.headerTab,
-          backgroundColor: value === 'Paid' ? Colors.appColor : '#fff',
-        }}
-        icon={() => (
-          <View>
-            <Text
-              style={{
-                ...styles.headerTitle,
-                color: value === 'Paid' ? '#fff' : Colors.appColor,
-              }}>
-              {t('Paid')}
-            </Text>
-          </View>
-        )}
-        value="Paid"
-      />
-      <ToggleButton
-        style={{
-          ...styles.headerTab,
-          backgroundColor: value === 'Clients' ? Colors.appColor : '#fff',
-        }}
-        icon={() => (
-          <View>
-            <Text
-              style={{
-                ...styles.headerTitle,
-                color: value === 'Clients' ? '#fff' : Colors.appColor,
-              }}>
-              {t('clients')}
-            </Text>
-          </View>
-        )}
-        value="Clients"
-      />
-      <ToggleButton
-        style={{
-          ...styles.headerTab,
-          backgroundColor: value === 'Items' ? Colors.appColor : '#fff',
-        }}
-        icon={() => (
-          <View>
-            <Text
-              style={{
-                ...styles.headerTitle,
-                color: value === 'Items' ? '#fff' : Colors.appColor,
-              }}>
-              {t('items')}
-            </Text>
-          </View>
-        )}
-        value="Items"
-      />
+      {renderToggleButton('Paid')}
+      {renderToggleButton('Clients')}
+      {renderToggleButton('Items')}
     </ToggleButton.Row>
   );
 
   const YearView = () => (
     <ToggleButton.Row
       style={{marginTop: 10}}
-      onValueChange={value => setYear(value)}
+      onValueChange={value => {
+        if (value) {
+          getPaid(value);
+          setYear(value);
+        }
+      }}
       value={Year}>
-      <ToggleButton
-        style={{
-          ...styles.headerTab,
-          backgroundColor: Year === '2023' ? Colors.appColor : '#fff',
-        }}
-        icon={() => (
-          <View>
-            <Text
-              style={{
-                ...styles.headerTitle,
-                color: Year === '2023' ? '#fff' : Colors.appColor,
-              }}>
-              2023
-            </Text>
-          </View>
-        )}
-        value="2023"
-      />
-      <ToggleButton
-        style={{
-          ...styles.headerTab,
-          backgroundColor: Year === '2022' ? Colors.appColor : '#fff',
-        }}
-        icon={() => (
-          <View>
-            <Text
-              style={{
-                ...styles.headerTitle,
-                color: Year === '2022' ? '#fff' : Colors.appColor,
-              }}>
-              2022
-            </Text>
-          </View>
-        )}
-        value="2022"
-      />
+      {years.map((item: any) => (
+        <ToggleButton
+          style={{
+            ...styles.headerTab,
+            backgroundColor: Year === item ? Colors.appColor : '#fff',
+          }}
+          icon={() => (
+            <View>
+              <Text
+                style={{
+                  ...styles.headerTitle,
+                  color: Year === item ? '#fff' : Colors.appColor,
+                }}>
+                {item}
+              </Text>
+            </View>
+          )}
+          value={item}
+        />
+      ))}
     </ToggleButton.Row>
   );
 
@@ -252,7 +306,7 @@ function ReportScreen({navigation}: any): JSX.Element {
         <>
           {PaidTitle()}
           {PaidTotal()}
-          {[0, 0, 0, 0, 0, 0, 0, 0, 0, 0].map(() => Paid())}
+          {paidData.length > 0 && paidData.map((item: any) => Paid(item))}
         </>
       )
     );
@@ -292,7 +346,7 @@ function ReportScreen({navigation}: any): JSX.Element {
           <Text style={styles.headerText}>Reports</Text>
         </View>
         <View>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={refresh}>
             <Feather name="refresh-ccw" size={18} color="#fff" />
           </TouchableOpacity>
         </View>
@@ -443,6 +497,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 15,
     fontWeight: '500',
+    color: '#000',
   },
   headerTab: {
     width: 85,
@@ -453,6 +508,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     width: '25%',
+    color: '#000',
   },
   tableTileView: {
     flexDirection: 'row',
@@ -477,6 +533,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     width: '25%',
+    color: '#000',
   },
   totalView: {
     flexDirection: 'row',

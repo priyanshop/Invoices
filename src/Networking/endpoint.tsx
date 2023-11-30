@@ -7,6 +7,7 @@ const API_TYPE = {
   SETTINGS: 'settings',
   INVOICES: 'invoices',
   ESTIMATE: 'estimates',
+  REPORT: 'report',
 };
 
 export const endpoint = {
@@ -16,8 +17,7 @@ export const endpoint = {
   addClient: `${API_BASE_URL}/${API_TYPE.CLIENTS}`,
   updateClient: (id: any) => `${API_BASE_URL}/${API_TYPE.CLIENTS}/${id}`,
   getClient: (id: any) => `${API_BASE_URL}/${API_TYPE.CLIENTS}/${id}`,
-  getAllClient: (id: any) =>
-    `${API_BASE_URL}/${API_TYPE.CLIENTS}/${id}/clientlist`,
+  getAllClient: (id: any) => `${API_BASE_URL}/${API_TYPE.CLIENTS}`,
   deleteClient: (id: any) => `${API_BASE_URL}/${API_TYPE.CLIENTS}/${id}`,
   addItems: `${API_BASE_URL}/${API_TYPE.ITEMS}`,
   updateItems: (id: any) => `${API_BASE_URL}/${API_TYPE.ITEMS}/${id}`,
@@ -37,6 +37,7 @@ export const endpoint = {
   addEmailMessage: `${API_BASE_URL}/${API_TYPE.SETTINGS}/default-email-msg`,
   deleteBusinessImage: (id: any) =>
     `${API_BASE_URL}/${API_TYPE.SETTINGS}/business-info/${id}/delete/logo`,
+  contactUs: `${API_BASE_URL}/${API_TYPE.SETTINGS}/contact`,
 
   createInvoice: `${API_BASE_URL}/${API_TYPE.INVOICES}/create`,
   getInvoiceList: `${API_BASE_URL}/${API_TYPE.INVOICES}`,
@@ -67,6 +68,22 @@ export const endpoint = {
     `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/review/link`,
   updateIVNumber: (id: any) =>
     `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/edit/invoice/number`,
+  getInvoicePayments: (invoiceId: string) =>
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${invoiceId}/payment`,
+  updateInvoicePayment: (invoiceId: string, paymentId: string) =>
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${invoiceId}/payment/${paymentId}/update/payment`,
+  deleteInvoicePayment: (invoiceId: string, paymentId: string) =>
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${invoiceId}/payment/${paymentId}/delete/payment`,
+  sendInvoiceCopyMail: (invoiceId: string) =>
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${invoiceId}/send-copy-mail`,
+  getEmailHistoryForInvoice: (invoiceId: string) =>
+    `${API_BASE_URL}/email-history/type-id/${invoiceId}/type/invoice`,
+  sendEmailForInvoice: (invoiceId: string) =>
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${invoiceId}/send-email`,
+  sendEmailTemplatesForInvoice: (invoiceId: string) =>
+    `${'http://15.236.207.148:4000' + API_BASE_URL}/${
+      API_TYPE.INVOICES
+    }/${invoiceId}/send-email-templates`,
 
   createEstimate: `${API_BASE_URL}/${API_TYPE.ESTIMATE}/create`,
   getEstimateList: `${API_BASE_URL}/${API_TYPE.ESTIMATE}`,
@@ -91,7 +108,8 @@ export const endpoint = {
   addPhotoET: (id: any) => `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/photo`,
   updatePhotoET: (id: any, id2: any) =>
     `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/photo/${id2}/update/photo`,
-
+  sendInvoiceText: (invoiceId: string) =>
+    `${API_BASE_URL}/invoices/${invoiceId}/send-text`,
   updateETNumber: (id: any) =>
     `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/edit/estimate/number`,
   deletePhotoET: (id: any, id2: any) =>
@@ -99,4 +117,24 @@ export const endpoint = {
   updateReviewET: (id: any) =>
     `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}/review/link`,
   exportSpreadSheet: `${API_BASE_URL}/${API_TYPE.INVOICES}/export/excel`,
+  deleteEstimatePayment: (estimateId: string, paymentId: string) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${estimateId}/payment/${paymentId}/delete/payment`,
+  updateEstimatePayment: (estimateId: string, paymentId: string) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${estimateId}/payment/${paymentId}/update/payment`,
+  getEstimatePayments: (estimateId: string) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${estimateId}/payment`,
+  sendEstimateCopyMail: (estimateId: string) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${estimateId}/send-copy-mail`,
+  sendEmailForET: (estimateId: string) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${estimateId}/send-email`,
+  sendEstimateEmail: (estimateId: string) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${estimateId}/sendEstimateEmail`,
+  sendEstimateText: (estimateId: string) =>
+    `${API_BASE_URL}/estimates/${estimateId}/send-text`,
+  paidReport: (year: string) =>
+    `${API_BASE_URL}/${API_TYPE.REPORT}/paid?year=${year}`,
+  clientReport: (year: string) =>
+    `${API_BASE_URL}/${API_TYPE.REPORT}/client?year=${year}`,
+  getEmailHistoryForEstimate: (estimateId: string) =>
+    `${API_BASE_URL}/email-history/type-id/${estimateId}/type/estimate`,
 };

@@ -237,6 +237,17 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
     return totalTaxAmount;
   }
 
+  const calculatePaidAmount = (payments: any) => {
+    return payments.reduce(
+      (total: any, payment: any) => total + parseFloat(payment.amount),
+      0,
+    );
+  };
+
+  const calculateDueAmount = (totalAmount: any, payments: any) => {
+    return totalAmount - calculatePaidAmount(payments);
+  };
+
   const update = async () => {
     try {
       const tempIndex = route.params.index;
@@ -572,6 +583,7 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
       );
       const percentageAmount = (tempTotal * parseFloat(discountAmount)) / 100;
       const tempIndex = route.params.index;
+
       const payload: any = {
         description: Description,
         unit: unitCost,
@@ -646,6 +658,8 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
           data.invoice_discount_value,
         ),
         invoice_total: totalAmount,
+        paid_amount: calculatePaidAmount(data.payments) + '',
+        due_amount: calculateDueAmount(totalAmount, data.payments) + '',
       };
 
       if (selector.token === 'Guest') {
@@ -762,6 +776,8 @@ function AddItemScreen({navigation, route}: any): JSX.Element {
           data.estimate_discount_value,
         ),
         estimate_total: totalAmount,
+        paid_amount: calculatePaidAmount(data.payments) + '',
+        due_amount: calculateDueAmount(totalAmount, data.payments) + '',
       };
       if (selector.token === 'Guest') {
         updateEstimateCallOffline(tempPayload);
