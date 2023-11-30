@@ -156,7 +156,7 @@ function EstimatesScreen({navigation}: any): JSX.Element {
     } else {
       apiCall();
     }
-  }, [isFocused]);
+  }, [isFocused,selector.estimateList]);
 
   const apiCall = async () => {
     try {
@@ -243,7 +243,7 @@ function EstimatesScreen({navigation}: any): JSX.Element {
         </View>
         <View>
           <Text style={styles.priceText}>{`$${item.price}`}</Text>
-          <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
+          <Text style={styles.dateText}>{`${t('Due')}: ${item.date}`}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -286,7 +286,7 @@ function EstimatesScreen({navigation}: any): JSX.Element {
         </View>
         <View>
           <Text style={styles.priceText}>{`$${item.price}`}</Text>
-          <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
+          <Text style={styles.dateText}>{`${t('Due')}: ${item.date}`}</Text>
         </View>
       </View>
     );
@@ -321,7 +321,7 @@ function EstimatesScreen({navigation}: any): JSX.Element {
         </View>
         <View>
           <Text style={styles.priceText}>{`$${item.price}`}</Text>
-          <Text style={styles.dateText}>{`Due: ${item.date}`}</Text>
+          <Text style={styles.dateText}>{`${t('Due')}: ${item.date}`}</Text>
         </View>
       </View>
     );

@@ -1,7 +1,8 @@
 //@ts-nocheck
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {
   Alert,
+  BackHandler,
   FlatList,
   ScrollView,
   StatusBar,
@@ -15,6 +16,7 @@ import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Switch, FAB, Portal, Provider, Menu} from 'react-native-paper';
 import {useTranslation} from 'react-i18next';
@@ -33,6 +35,11 @@ import {
 import {setNewInvoiceInList} from '../../Constant';
 import EmptyHistory from '../../CustomComponent/EmptyHistory';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import WebView from 'react-native-webview';
+import {handleShareEmail, handleShareMessage} from '../../Share/share';
+import {preview4} from '../../Web/index4';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'; // Import the icon library
+const formatString = 'DD-MM-YYYY HH:mm:ss';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -87,6 +94,8 @@ const importedData: any = {
     invoice_total: 0,
     invoice_total_tax_amount: 0,
     signature: '',
+    due_amount: 0,
+    paid_amount: 0,
   },
 };
 
@@ -110,7 +119,14 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         />
       ),
       label: t('Text'),
-      onPress: () => console.log('Pressed notifications'),
+      onPress: () => {
+        if (selector.token !== 'Guest') {
+          handleShareMessage(
+            endpoint.sendEmailTemplatesForInvoice(globalData._id),
+          );
+          sendTxt();
+        }
+      },
       style: {backgroundColor: '#fff', borderRadius: 50},
       color: '#000',
       labelTextColor: '#000',
@@ -122,7 +138,14 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     {
       icon: () => <Fontisto name="email" size={22} color="#000" />,
       label: t('Email'),
-      onPress: () => console.log('Pressed email'),
+      onPress: () => {
+        if (selector.token !== 'Guest' && selector.sendToEmail) {
+          sendCopy();
+        }
+        if (selector.token !== 'Guest') {
+          sendEmail();
+        }
+      },
       style: {backgroundColor: '#fff', borderRadius: 50},
       color: '#000',
       labelTextColor: '#000',
@@ -137,15 +160,17 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
   const [searchStart, setSearchStart] = useState(false);
   const [routes] = useState(data);
   const [globalData, setGlobalData] = useState(importedData.data);
-  const [state, setState] = React.useState({open: false});
+  const [state, setState] = useState({open: false});
   const {open} = state;
 
   const onStateChange = ({open}) => setState({open});
-  const [visible, setVisible] = React.useState(false);
+  const [visible, setVisible] = useState(false);
   const [paymentDue, setPaymentDue] = useState([]);
   const [RequestReview, setRequestReview] = useState(false);
   const [isMarkPaid, setIsMarkPaid] = useState(false);
+  const [History, setHistory] = useState([]);
   const [link, setLink] = useState('');
+  const webViewRef = useRef(null);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -155,7 +180,25 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         </TouchableOpacity>
       ),
     });
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity style={{marginLeft: 10}} onPress={goBack}>
+          <Feather name="chevron-left" size={30} color="#fff" />
+        </TouchableOpacity>
+      ),
+    });
   }, [navigation]);
+
+  const goBack = () => {
+    if (selector.token === 'Guest') {
+      navigation.goBack();
+      setTimeout(() => {
+        navigation.navigate('Subscribe');
+      }, 1000);
+    } else {
+      navigation.goBack();
+    }
+  };
 
   useEffect(() => {
     if (route.params.status === 'create') {
@@ -190,6 +233,8 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
   };
 
   const setOffline = (payload: any) => {
+    console.log('payload', JSON.stringify(payload));
+
     setGlobalData(payload);
     fetchPaymentDue(payload);
     setLink(payload.review_link || '');
@@ -209,6 +254,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         const element = data.data;
         setIsMarkPaid(element.is_paid);
         setGlobalData(element);
+        getHistory(element._id);
         fetchPaymentDue(element);
         setLink(element.review_link);
       }
@@ -325,6 +371,77 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     } catch (error) {}
   };
 
+  const sendTxt = async () => {
+    try {
+      const payload = {
+        text: endpoint.sendEmailTemplatesForInvoice(globalData._id),
+      };
+      const data = await FetchAPI(
+        'post',
+        endpoint.sendInvoiceText(globalData._id),
+        payload,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+        getHistory(globalData._id);
+      }
+    } catch (error) {}
+  };
+
+  const sendCopy = async () => {
+    try {
+      const data = await FetchAPI(
+        'patch',
+        endpoint.sendInvoiceCopyMail(globalData._id),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+      }
+    } catch (error) {}
+  };
+  const sendEmail = async () => {
+    try {
+      const data = await FetchAPI(
+        'post',
+        endpoint.sendEmailForInvoice(globalData._id),
+        {
+          email: globalData.c_email,
+        },
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+        getHistory(globalData._id);
+      }
+    } catch (error) {}
+  };
+
+  const getHistory = async (id: any) => {
+    try {
+      const data = await FetchAPI(
+        'get',
+        endpoint.getEmailHistoryForInvoice(id),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+        setHistory(element);
+      }
+    } catch (error) {}
+  };
+
   const fetchPaymentDue = (element: any) => {
     setPaymentDue([
       {
@@ -353,13 +470,47 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       },
       {
         key: 'fourth',
-        title: t('Total Payments'),
-        value: '$0.00',
+        title:
+          element.payments.length > 0
+            ? t('Paid') +
+              ' (' +
+              moment(element.payments[0]?.payment_date).format(
+                selector.globalDateFormat,
+              ) +
+              ')'
+            : t('Total Payments'),
+        value: element?.paid_amount ? '$' + element?.paid_amount : '$ 0.00',
+        onPress: () => navigateToPayment(),
       },
     ]);
   };
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
+  const handlePress = key => {
+    switch (key) {
+      case 'first':
+        navigateToDiscountScreen();
+        break;
+      case 'second':
+        navigateToTaxScreen();
+        break;
+      case 'third':
+        // Handle Total case (if needed)
+        break;
+      case 'fourth':
+        navigateToPayment();
+        break;
+      default:
+        break;
+    }
+  };
+  const navigateToPayment = () => {
+    navigation.navigate('PaymentDetail', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+      invoiceData: globalData,
+    });
+  };
 
   function navigateToSetting() {
     navigation.navigate('Settings');
@@ -632,7 +783,9 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
           {paymentDue.map((selectedItem: any) => (
             <View style={styles.dueBalContent}>
               <TouchableOpacity
-                onPress={selectedItem.onPress}
+                onPress={() => {
+                  handlePress(selectedItem.key);
+                }}
                 style={styles.dueBalRow}>
                 <Text style={styles.dueBalText}>{selectedItem.title}</Text>
                 <Text style={styles.dueBalText}>{selectedItem.value}</Text>
@@ -642,11 +795,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
           <View style={styles.dueBalFooter}>
             <Text style={styles.dueBalFooterText}>{t('Balance Due')}</Text>
             <Text style={styles.dueBalFooterText}>
-              {(
-                parseFloat(globalData.invoice_total_tax_amount || 0) +
-                parseFloat(globalData.invoice_total || 0) -
-                parseFloat(globalData.invoice_discount_amount || 0)
-              ).toFixed(2)}
+              {globalData?.due_amount?.toString() || '0'}
             </Text>
           </View>
         </View>
@@ -687,7 +836,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
                 numberOfLines={1}
                 onPress={navigateToPaymentInfo}
                 style={styles.toTxt}>
-                {'Payment:  '}
+                {t('Payment') + ':  '}
                 {globalData.paypal_email && 'PayPal,'}{' '}
                 {globalData.make_checks_payable && 'Check,'}{' '}
                 {globalData.payment_instructions && 'Payment Instruction,'}{' '}
@@ -747,7 +896,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
 
         <TouchableOpacity onPress={markPaid} style={styles.paidContainer}>
           <Text style={styles.paidText}>
-            {isMarkPaid ? 'Mark Unpaid' : t('Mark Paid')}
+            {isMarkPaid ? t('markUnpaid') : t('Mark Paid')}
           </Text>
         </TouchableOpacity>
       </KeyboardAwareScrollView>
@@ -756,7 +905,17 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
 
   const OutStandingRoute = () => {
     return (
-      <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}></View>
+      <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}>
+        <WebView
+          ref={webViewRef}
+          originWhitelist={['*']}
+          style={{flex: 1}}
+          // source={{html: preview4(globalData)}}
+          source={{uri: endpoint.sendEmailTemplatesForInvoice(globalData._id)}}
+          // userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
+          contentMode={'desktop'}
+        />
+      </View>
     );
   };
 
@@ -765,11 +924,28 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       <EmptyHistory message={t('emptyInvoiceHistory')} />
     );
 
+    const renderItem = ({item}) => (
+      <View style={styles.item}>
+        <MaterialIcons
+          name={item.type === 'email' ? 'email' : 'message'}
+          size={24}
+          color={Colors.appColor}
+          style={styles.icon}
+        />
+        <View style={styles.details}>
+          <Text style={styles.sendText}>{'Sent - Share'}</Text>
+          <Text style={styles.sendTimeText}>
+            {moment(new Date(item.createdAt)).format(formatString)}
+          </Text>
+        </View>
+      </View>
+    );
+
     return (
       <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}>
         <FlatList
-          data={[]}
-          renderItem={() => <View />}
+          data={History}
+          renderItem={renderItem}
           ListEmptyComponent={renderEmptyComponent}
           contentContainerStyle={{flex: 1}}
         />
@@ -794,7 +970,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
             {/* <Menu.Item onPress={() => {}} title={t('Get Link')} /> */}
             <Menu.Item
               onPress={markPaid}
-              title={isMarkPaid ? 'Mark Unpaid' : t('Mark Paid')}
+              title={isMarkPaid ? t('markUnpaid') : t('Mark Paid')}
             />
             <Menu.Item onPress={duplicateInvoice} title={t('Duplicate')} />
           </Menu>
@@ -1279,6 +1455,30 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '400',
     color: '#000',
+  },
+  item: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    backgroundColor: '#FFF',
+  },
+  icon: {
+    marginRight: 16,
+  },
+  details: {
+    flexDirection: 'column',
+  },
+  sendText: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#000',
+  },
+  sendTimeText: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: '#ccc',
   },
 });
 

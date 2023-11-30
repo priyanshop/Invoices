@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
@@ -87,7 +88,7 @@ const SubscriptionScreen = () => {
   let layout: any = null;
   const scrollViewRef = useRef();
 
-  const [view, setView] = useState('monthly'); // Initial view is set to monthly
+  const [view, setView] = useState('monthly');
   const [isVisible, setIsVisible] = useState(true);
   const [monthly, setMonthly] = useState(true);
   const [yearly, setYearly] = useState(false);

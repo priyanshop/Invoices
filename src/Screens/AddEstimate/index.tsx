@@ -14,12 +14,14 @@ import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Switch, FAB, Portal, Provider, Menu} from 'react-native-paper';
 import {useTranslation} from 'react-i18next';
 import {useSelector, useDispatch} from 'react-redux';
 import {useIsFocused} from '@react-navigation/native';
 import moment from 'moment';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import {getScreenDimensions} from '../../Helper/ScreenDimension';
 import {Colors} from '../../Helper/Colors';
@@ -34,6 +36,8 @@ import {
 import EmptyHistory from '../../CustomComponent/EmptyHistory';
 import {FlatList} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {handleShareEmail, handleShareMessage} from '../../Share/share';
+const formatString = 'DD-MM-YYYY HH:mm:ss';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -60,6 +64,8 @@ const tempData = {
   updatedAt: '',
   __v: 0,
   signature: '',
+  due_amount: 0,
+  paid_amount: 0,
 };
 function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   const {t, i18n} = useTranslation();
@@ -81,7 +87,14 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         />
       ),
       label: t('Text'),
-      onPress: () => console.log('Pressed notifications'),
+      onPress: () => {
+        if (selector.token !== 'Guest') {
+          handleShareMessage(
+            endpoint.sendEmailTemplatesForInvoice(globalData._id),
+          );
+          sendTxt();
+        }
+      },
       style: {backgroundColor: '#fff', borderRadius: 50},
       color: '#000',
       labelTextColor: '#000',
@@ -93,7 +106,15 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     {
       icon: () => <Fontisto name="email" size={22} color="#000" />,
       label: t('Email'),
-      onPress: () => console.log('Pressed email'),
+      onPress: () => {
+        handleShareEmail('hi');
+        if (selector.token !== 'Guest' && selector.sendToEmail) {
+          sendCopy();
+        }
+        if (selector.token !== 'Guest') {
+          sendEmail();
+        }
+      },
       style: {backgroundColor: '#fff', borderRadius: 50},
       color: '#000',
       labelTextColor: '#000',
@@ -115,6 +136,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   const [paymentDue, setPaymentDue] = useState([]);
   const [created, setCreated] = useState(false);
   const [link, setLink] = useState('');
+  const [History, setHistory] = useState([]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -124,7 +146,25 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         </TouchableOpacity>
       ),
     });
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity style={{marginLeft: 10}} onPress={goBack}>
+          <Feather name="chevron-left" size={30} color="#fff" />
+        </TouchableOpacity>
+      ),
+    });
   }, [navigation]);
+
+  const goBack = () => {
+    if (selector.token === 'Guest') {
+      navigation.goBack();
+      setTimeout(() => {
+        navigation.navigate('Subscribe');
+      }, 1000);
+    } else {
+      navigation.goBack();
+    }
+  };
 
   useEffect(() => {
     if (!created && route.params.status === 'create') {
@@ -169,6 +209,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
         const element = data.data;
         setGlobalData(element);
         fetchPaymentDue(element);
+        getHistory(element._id);
         setLink(element.review_link);
       }
     } catch (error) {}
@@ -203,6 +244,79 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     } catch (error) {}
   };
 
+  const sendTxt = async () => {
+    try {
+      const payload = {
+        text: endpoint.sendEmailTemplatesForInvoice(globalData._id),
+      };
+      const data = await FetchAPI(
+        'post',
+        endpoint.sendEstimateText(globalData._id),
+        payload,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+        getHistory(globalData._id);
+      }
+    } catch (error) {}
+  };
+
+  const sendCopy = async () => {
+    try {
+      const data = await FetchAPI(
+        'patch',
+        endpoint.sendEstimateCopyMail(globalData._id),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+        getHistory(globalData._id);
+
+      }
+    } catch (error) {}
+  };
+
+  const sendEmail = async () => {
+    try {
+      const data = await FetchAPI(
+        'post',
+        endpoint.sendEmailForET(globalData._id),
+        {
+          email: globalData.c_email,
+        },
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+        getHistory(globalData._id);
+      }
+    } catch (error) {}
+  };
+
+  const getHistory = async (id: any) => {
+    try {
+      const data = await FetchAPI(
+        'get',
+        endpoint.getEmailHistoryForEstimate(id),
+        null,
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+        setHistory(element);
+      }
+    } catch (error) {}
+  };
   const duplicateET = async () => {
     try {
       const data = await FetchAPI(
@@ -251,6 +365,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
       }
     } catch (error) {}
   };
+
   const deleteET = async () => {
     try {
       if (selector.token === 'Guest') {
@@ -313,8 +428,17 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
       },
       {
         key: 'fourth',
-        title: t('Total Payments'),
-        value: '$0.00',
+        title:
+          element.payments.length > 0
+            ? t('Paid') +
+              ' (' +
+              moment(element.payments[0]?.payment_date).format(
+                selector.globalDateFormat,
+              ) +
+              ')'
+            : t('Total Payments'),
+        value: element?.paid_amount ? '$' + element?.paid_amount : '$ 0.00',
+        onPress: () => navigateToPayment(),
       },
     ]);
   };
@@ -322,6 +446,32 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   const closeMenu = () => setVisible(false);
 
   const {open} = state;
+  const handlePress = key => {
+    switch (key) {
+      case 'first':
+        navigateToDiscountScreen();
+        break;
+      case 'second':
+        navigateToTaxScreen();
+        break;
+      case 'third':
+        // Handle Total case (if needed)
+        break;
+      case 'fourth':
+        navigateToPayment();
+        break;
+      default:
+        break;
+    }
+  };
+
+  function navigateToPayment() {
+    navigation.navigate('PaymentDetail', {
+      estimateUpdate: true,
+      estimateID: globalData._id,
+      estimateData: globalData,
+    });
+  }
 
   function navigateToSetting() {
     navigation.navigate('Settings');
@@ -597,7 +747,9 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
           {paymentDue.map((selectedItem: any) => (
             <View style={styles.dueBalContent}>
               <TouchableOpacity
-                onPress={selectedItem.onPress}
+                onPress={() => {
+                  handlePress(selectedItem.key);
+                }}
                 style={styles.dueBalRow}>
                 <Text style={styles.dueBalText}>{selectedItem.title}</Text>
                 <Text style={styles.dueBalText}>{selectedItem.value}</Text>
@@ -607,8 +759,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
           <View style={styles.dueBalFooter}>
             <Text style={styles.dueBalFooterText}>{t('Balance Due')}</Text>
             <Text style={styles.dueBalFooterText}>
-              {parseFloat(globalData.estimate_total_tax_amount || 0) +
-                parseFloat(globalData.estimate_total || 0)}
+              {globalData?.due_amount?.toString() || '0'}
             </Text>
           </View>
         </View>
@@ -701,12 +852,27 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     const renderEmptyComponent = () => (
       <EmptyHistory message={t('emptyEstimateHistory')} />
     );
-
+    const renderItem = ({item}) => (
+      <View style={styles.item}>
+        <MaterialIcons
+          name={item.type === 'email' ? 'email' : 'message'}
+          size={24}
+          color={Colors.appColor}
+          style={styles.icon}
+        />
+        <View style={styles.details}>
+          <Text style={styles.sendText}>{'Sent - Share'}</Text>
+          <Text style={styles.sendTimeText}>
+            {moment(new Date(item.createdAt)).format(formatString)}
+          </Text>
+        </View>
+      </View>
+    );
     return (
       <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}>
         <FlatList
-          data={[]}
-          renderItem={() => <View />}
+          data={History}
+          renderItem={renderItem}
           ListEmptyComponent={renderEmptyComponent}
           contentContainerStyle={{flex: 1}}
         />
@@ -1209,6 +1375,30 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '400',
     color: '#000',
+  },
+  item: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    backgroundColor: '#FFF',
+  },
+  icon: {
+    marginRight: 16,
+  },
+  details: {
+    flexDirection: 'column',
+  },
+  sendText: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#000',
+  },
+  sendTimeText: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: '#ccc',
   },
 });
 

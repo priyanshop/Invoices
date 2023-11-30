@@ -298,5 +298,12 @@
   "imageError": "Por favor, selecione uma imagem",
   "descriptionError": "Por favor, insira uma descrição",
   "additionalDetailsError": "Por favor, forneça detalhes adicionais",
-  "Subscribe":"se inscrever"
+  "Subscribe": "se inscrever",
+  "markUnpaid": "Marcar como não pago",
+  "colors": "Cores",
+  "colorHex": "Código de Cor",
+  "Design": "Design",
+  "Color": "Cor",
+  "Payment": "Pagamento",
+  "Due": "Vencimento"
 }

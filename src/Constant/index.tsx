@@ -99,6 +99,25 @@ function extractInvoiceNumbers(data: any) {
   return invoiceNumbers;
 }
 
+function extractETNumbers(data: any) {
+  const regex = /EST(\d+)/g;
+  const invoiceNumbers: any = [];
+
+  // Flatten the nested structure (it seems there are extra square brackets)
+  data = data.flat(Infinity);
+
+  data.forEach((item: any) => {
+    const itemStr = JSON.stringify(item);
+    let match;
+
+    while ((match = regex.exec(itemStr)) !== null) {
+      invoiceNumbers.push(match[1]);
+    }
+  });
+
+  return invoiceNumbers;
+}
+
 export const setNewInvoiceInList = (selector: any) => {
   const temp = {
     _id: '',
@@ -142,6 +161,8 @@ export const setNewInvoiceInList = (selector: any) => {
     b_phone_number: selector.businessDetails.phone_number,
     b_website: selector.businessDetails.website,
     index: new Date().getTime(),
+    due_amount: 0,
+    paid_amount: 0,
   };
   return temp;
 };
@@ -172,9 +193,21 @@ export const setNewEstimateInList = (selector: any) => {
     b_phone_number: selector.businessDetails.phone_number,
     b_website: selector.businessDetails.website,
     index: new Date().getTime(),
-    estimate_number: 'EST' + (selector.estimateList.length + 1),
+    estimate_number: 'EST'.concat(
+      selector.estimateList.length > 0
+        ? (
+            parseInt(
+              extractETNumbers(selector.estimateList)[
+                extractETNumbers(selector.estimateList).length - 1
+              ],
+            ) + 1
+          ).toString()
+        : '1',
+    ),
     is_estimate_tax_inclusive: true,
-    status:"open"
+    status:"open",
+    due_amount: 0,
+    paid_amount: 0,
   };
   return temp;
 };

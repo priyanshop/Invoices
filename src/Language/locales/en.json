@@ -298,5 +298,12 @@
   "imageError": "Please select an image",
   "descriptionError": "Please enter a description",
   "additionalDetailsError": "Please provide additional details",
-  "Subscribe":"Subscribe"
+  "Subscribe": "Subscribe",
+  "markUnpaid": "Mark Unpaid",
+  "colors": "Colors",
+  "colorHex": "Color Hex",
+  "Design": "Design",
+  "Color": "Color",
+  "Payment": "Payment",
+  "Due": "Due"
 }

@@ -43,6 +43,8 @@ import Sign from '../Screens/Signature/Sign';
 import SplashScreen2 from '../Screens/SplashScreen/SplashScreen2';
 import SignUpOriginal from '../Screens/Auth/SignUpOriginal';
 import SubscriptionScreen from '../Screens/Subscriptions/Subscribe';
+import MyWebViewScreen from '../Screens/Template/template';
+import PaymentDetail from '../Screens/Payments/PaymentDetail';
 
 const headerStyle = {
   headerStyle: {
@@ -340,6 +342,22 @@ function MainNavigator() {
       component: ContactUs,
       options: {
         headerTitle: t('navigationTitle.ContactUs'),
+        ...headerStyle,
+      },
+    },
+    {
+      name: 'Template',
+      component: MyWebViewScreen,
+      options: {
+        headerTitle: t('Settings.Template'),
+        ...headerStyle,
+      },
+    },
+    {
+      name: 'PaymentDetail',
+      component: PaymentDetail,
+      options: {
+        headerTitle: t('navigationTitle.PaymentScreen'),
         ...headerStyle,
       },
     },

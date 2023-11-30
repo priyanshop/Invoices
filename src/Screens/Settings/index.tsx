@@ -102,6 +102,7 @@ const SettingScreen = ({navigation}: any) => {
           titleTxt: t('Settings.Template'),
           description: 'Select your invoice design and color',
           descriptionTxt: t('Settings.SelectColor'),
+          onPress: () => navigation.navigate('Template'),
         },
         {
           title: 'Payment Info',
