@@ -1,6 +1,6 @@
 import moment from "moment";
 
-export const preview1 = (globalData: any) => {
+export const SampleTemplate = (globalData: any) => {
   const script = `<!DOCTYPE html>
   <html lang="en">
   
@@ -13,7 +13,7 @@ export const preview1 = (globalData: any) => {
   <body>
       <style>
           .top_rw {
-              background-color: #f4f4f4;
+              background-color: ${globalData||"#ccc"};
           }
   
           .td_w {}

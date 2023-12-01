@@ -19,6 +19,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {setColor, setTemplate} from '../../redux/reducers/user/UserReducer';
 import {endpoint} from '../../Networking/endpoint';
 import FetchAPI from '../../Networking';
+import {Images} from '../../assets';
+import {Image} from 'react-native';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -146,7 +148,7 @@ const SelectedTemplatedScreen = ({navigation, route}: any) => {
     if (selector.selectedColor) {
       setSelectedColor(route.params?.data?.background_color || '#CCC');
       setInputValue(route.params?.data?.background_color || '#CCC');
-      setSelectedWebViewIndex(parseInt(route.params.data.template_no) + 1);
+      setSelectedWebViewIndex(parseInt(route.params.data.template_no) - 1);
     }
   }, [selector, route.params]);
 
@@ -167,10 +169,14 @@ const SelectedTemplatedScreen = ({navigation, route}: any) => {
     }
   };
   const webViews = [
-    {uri: preview1(data), key: 'page1'},
-    {uri: preview2(data), key: 'page2'},
-    {uri: preview3(data), key: 'page3'},
-    {uri: preview4(data), key: 'page4'},
+    // {uri: preview1(data), key: 'page1'},
+    // {uri: preview2(data), key: 'page2'},
+    // {uri: preview3(data), key: 'page3'},
+    // {uri: preview4(data), key: 'page4'},
+    {uri: Images.template1, key: 'page1'},
+    {uri: Images.template2, key: 'page2'},
+    {uri: Images.template3, key: 'page3'},
+    {uri: Images.template4, key: 'page4'},
   ];
 
   const renderWebViewItem = ({item, index}: any) => {
@@ -180,7 +186,11 @@ const SelectedTemplatedScreen = ({navigation, route}: any) => {
       <TouchableOpacity
         onPressIn={() => handleWebViewPress(index)}
         style={[styles.webViewContainer, isSelected && styles.selectedWebView]}>
-        <WebView scalesPageToFit source={{html: item.uri}} />
+        <Image
+          source={item.uri}
+          style={styles.webViewImage}
+          resizeMode="contain"
+        />
       </TouchableOpacity>
     );
   };
@@ -407,12 +417,20 @@ const styles = StyleSheet.create({
   },
   webViewContainer: {
     flex: 1,
-    aspectRatio: 1, // Square aspect ratio for each WebView
     margin: 8,
-    overflow: 'hidden',
     borderRadius: 8,
-    borderWidth: 2,
-    borderColor: '#ccc',
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#ddd', // Add your desired border color
+    width: screenWidth / 2,
+    height: screenWidth / 2,
+    backgroundColor: '#FFF',
+  },
+  webViewImage: {
+    // flex: 1,
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#FFF',
   },
   selectedWebView: {
     borderColor: 'blue', // Change the color to your desired selection color

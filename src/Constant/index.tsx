@@ -163,6 +163,8 @@ export const setNewInvoiceInList = (selector: any) => {
     index: new Date().getTime(),
     due_amount: 0,
     paid_amount: 0,
+    background_color: '#CCC',
+    template_no: 1,
   };
   return temp;
 };
@@ -205,9 +207,11 @@ export const setNewEstimateInList = (selector: any) => {
         : '1',
     ),
     is_estimate_tax_inclusive: true,
-    status:"open",
+    status: 'open',
     due_amount: 0,
     paid_amount: 0,
+    background_color: '#CCC',
+    template_no: 1,
   };
   return temp;
 };
