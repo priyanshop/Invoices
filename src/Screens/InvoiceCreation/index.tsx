@@ -39,6 +39,7 @@ import WebView from 'react-native-webview';
 import {handleShareEmail, handleShareMessage} from '../../Share/share';
 import {preview4} from '../../Web/index4';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'; // Import the icon library
+import {GlobalStyle} from '../../Helper/GlobalStyle';
 const formatString = 'DD-MM-YYYY HH:mm:ss';
 
 const screenDimensions = getScreenDimensions();
@@ -672,7 +673,14 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       }
     } catch (error) {}
   };
-
+  const navigateToTemplate = () => {
+    navigation.navigate('SelectedTemplatedScreen', {
+      invoiceUpdate: true,
+      invoiceID: globalData._id,
+      invoiceData: globalData,
+      data:globalData
+    });
+  };
   const AllRoute = () => {
     const [reviewLink, setReviewLink] = useState('');
 
@@ -905,16 +913,21 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
 
   const OutStandingRoute = () => {
     return (
-      <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}>
+      <View style={[styles.scene, {backgroundColor: Colors.commonBg, paddingHorizontal:10}]}>
         <WebView
           ref={webViewRef}
           originWhitelist={['*']}
-          style={{flex: 1}}
+          style={{flexGrow: 1}}
           // source={{html: preview4(globalData)}}
           source={{uri: endpoint.sendEmailTemplatesForInvoice(globalData._id)}}
           // userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
           contentMode={'desktop'}
         />
+        <TouchableOpacity
+          onPress={navigateToTemplate}
+          style={[GlobalStyle.statementBtn,{marginBottom:15}]}>
+          <Text style={[GlobalStyle.titleTxt2]}>{t('Settings.Template')}</Text>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -927,7 +940,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
     const renderItem = ({item}) => (
       <View style={styles.item}>
         <MaterialIcons
-          name={item.type === 'email' ? 'email' : 'message'}
+          name={item?.category === 'email' ? 'email' : 'message'}
           size={24}
           color={Colors.appColor}
           style={styles.icon}

@@ -29,6 +29,8 @@ export interface IUserState {
   globalDateFormat: any | null;
   invoiceList: any;
   estimateList:any;
+  selectedColor: any;
+  selectedTemplate: number;
   // localChats: IChats[] | [];
   // localChatsPub: IChats2[] | [];
 }

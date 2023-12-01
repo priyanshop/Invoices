@@ -1,5 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { IUserState } from './UserInterface';
+import {createSlice} from '@reduxjs/toolkit';
+import {IUserState} from './UserInterface';
 
 // user redusre store user data and all types of token
 const initialState: IUserState = {
@@ -48,6 +48,8 @@ const initialState: IUserState = {
   globalDateFormat: 'yyyy-MM-DD',
   invoiceList: [],
   estimateList: [],
+  selectedColor: '#FF0000',
+  selectedTemplate: 1,
   // localChats: [],
   // localChatsPub: [],
 };
@@ -67,7 +69,7 @@ const UserReducer = createSlice({
       state.token = null;
       state.clientList = [];
       state.itemsList = [];
-      state.businessDetails = {
+      (state.businessDetails = {
         name: '',
         email: '',
         phone_number: '',
@@ -79,33 +81,33 @@ const UserReducer = createSlice({
         website: '',
         owner_name: '',
         mobile_number: '',
-      },
-        state.customizeLabels = {
+      }),
+        (state.customizeLabels = {
           invoice_title: '',
           estimate_title: '',
           business_number: '',
           quantity_label: '',
           rate_label: '',
           quantityAndUnitCost: true,
-        },
-        state.paymentInfo = {
+        }),
+        (state.paymentInfo = {
           paypal_email: '',
           make_checks_payable: '',
           payment_instructions: '',
           additional_payment_instructions: '',
-        },
-        state.defaultNotes = {
+        }),
+        (state.defaultNotes = {
           invoices: '',
           estimates: '',
-        },
-        state.defaultInvoiceFormat = {
+        }),
+        (state.defaultInvoiceFormat = {
           invoice_number_prefix: '',
           estimate_number_prefix: '',
-        },
-        state.globalDateFormat = 'yyyy-MM-DD',
-        state.invoiceList = [],
-        state.estimateList = [],
-        state.defaultEmailMessage = ""
+        }),
+        (state.globalDateFormat = 'yyyy-MM-DD'),
+        (state.invoiceList = []),
+        (state.estimateList = []),
+        (state.defaultEmailMessage = '');
     },
     addClientInList: (state, action) => {
       state.clientList = [...state.clientList, action.payload];
@@ -162,6 +164,12 @@ const UserReducer = createSlice({
     setEstimateList: (state, action) => {
       state.estimateList = action.payload;
     },
+    setColor: (state, action) => {
+      state.selectedColor = action.payload;
+    },
+    setTemplate: (state, action) => {
+      state.selectedTemplate = action.payload;
+    }
     // setChat: (state, action) => {
     //   state.localChats = action.payload;
     // },
@@ -195,6 +203,8 @@ export const {
   setInvoiceList,
   addNewEstimate,
   setEstimateList,
+  setColor,
+  setTemplate
   // setChat,
   // setPubChat,
   // removePubChat,

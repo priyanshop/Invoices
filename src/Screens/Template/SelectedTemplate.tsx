@@ -128,7 +128,7 @@ const colorsArray2 = [
   '#E91E63',
 ];
 
-const MyWebViewScreen = () => {
+const SelectedTemplatedScreen = ({navigation, route}: any) => {
   const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
   const [selectedWebViewIndex, setSelectedWebViewIndex] = useState(0);
@@ -144,14 +144,27 @@ const MyWebViewScreen = () => {
 
   useEffect(() => {
     if (selector.selectedColor) {
-      setSelectedColor(selector.selectedColor);
-      setSelectedWebViewIndex(selector.selectedTemplate);
+      setSelectedColor(route.params?.data?.background_color || '#CCC');
+      setInputValue(route.params?.data?.background_color || '#CCC');
+      setSelectedWebViewIndex(parseInt(route.params.data.template_no) + 1);
     }
-  }, [selector]);
+  }, [selector, route.params]);
 
   const changeColor = (color: any) => {
     setSelectedColor(color || '#CCC');
-    dispatch(setColor(color || '#CCC'));
+    if (route?.params?.invoiceUpdate) {
+      if (selector.token === 'Guest') {
+        //   offlineInvoiceUpdate();
+      } else {
+        sendInvoiceColor(color || '#CCC');
+      }
+    } else if (route?.params?.estimateUpdate) {
+      if (selector.token === 'Guest') {
+        //   offlineEstimateUpdate();
+      } else {
+        sendEstColor(color || '#CCC');
+      }
+    }
   };
   const webViews = [
     {uri: preview1(data), key: 'page1'},
@@ -174,9 +187,92 @@ const MyWebViewScreen = () => {
 
   const handleWebViewPress = (index: number) => {
     setSelectedWebViewIndex(index);
-    dispatch(setTemplate(index));
+    if (route?.params?.invoiceUpdate) {
+      if (selector.token === 'Guest') {
+        //   offlineInvoiceUpdate();
+      } else {
+        sendInvoiceTemp(index + 1);
+      }
+    } else if (route?.params?.estimateUpdate) {
+      if (selector.token === 'Guest') {
+        //   offlineEstimateUpdate();
+      } else {
+        sendEstTemp(index + 1);
+      }
+    }
   };
 
+  const sendInvoiceColor = async (newColor: any) => {
+    try {
+      const data = await FetchAPI(
+        'patch',
+        endpoint.changeColorForInvoice(route?.params?.invoiceID),
+        {
+          background_color: newColor,
+        },
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+      }
+    } catch (error) {}
+  };
+
+  const sendEstColor = async (newColor: any) => {
+    try {
+      const data = await FetchAPI(
+        'patch',
+        endpoint.changeColorForEstimate(route?.params?.estimateID),
+        {
+          background_color: newColor,
+        },
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+      }
+    } catch (error) {}
+  };
+
+  const sendInvoiceTemp = async (newValue: any) => {
+    try {
+      const data = await FetchAPI(
+        'patch',
+        endpoint.invoiceTemplateNumber(route?.params?.invoiceID),
+        {
+          template_no: newValue?.toString(),
+        },
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+      }
+    } catch (error) {}
+  };
+
+  const sendEstTemp = async (newValue: any) => {
+    try {
+      const data = await FetchAPI(
+        'patch',
+        endpoint.estimateTemplateNumber(route?.params?.estimateID),
+        {
+          template_no: newValue?.toString(),
+        },
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+      }
+    } catch (error) {}
+  };
   const AllRoute = () => {
     return (
       <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}>
@@ -357,4 +453,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyWebViewScreen;
+export default SelectedTemplatedScreen;
