@@ -1,6 +1,6 @@
 import moment from "moment";
 
-export const SampleTemplate = (globalData: any) => {
+export const SampleTemplate = (globalData: any,business_logo:any) => {
   const script = `<!DOCTYPE html>
   <html lang="en">
   
@@ -164,7 +164,7 @@ export const SampleTemplate = (globalData: any) => {
                           <table>
                               <tr>
                                   <td>
-                                      <img src="img1.png" alt="img" style="height: 120px;">
+                                      <img src="${business_logo}" alt="img" style="height: 120px;">
                                   </td>
   
                                   <td style="text-align: left">

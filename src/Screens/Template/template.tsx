@@ -208,8 +208,13 @@ const MyWebViewScreen = () => {
       <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}>
         <WebView
           // scalesPageToFit
-          style={{margin: 15, height:screenWidth*0.25}}
-          source={{html: SampleTemplate(selectedColor)}}
+          style={{margin: 15, height: screenWidth * 0.25}}
+          source={{
+            html: SampleTemplate(
+              selectedColor,
+              selector.businessDetails.business_logo,
+            ),
+          }}
         />
         <View style={styles.container3}>
           <View
@@ -278,7 +283,7 @@ const MyWebViewScreen = () => {
                 onChangeText={(text: any) => {
                   setInputValue(text);
                   if (text.length === 3 || text.length === 6) {
-                    changeColor("#"+text);
+                    changeColor('#' + text);
                   }
                 }}
               />
