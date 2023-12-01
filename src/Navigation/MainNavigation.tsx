@@ -45,6 +45,7 @@ import SignUpOriginal from '../Screens/Auth/SignUpOriginal';
 import SubscriptionScreen from '../Screens/Subscriptions/Subscribe';
 import MyWebViewScreen from '../Screens/Template/template';
 import PaymentDetail from '../Screens/Payments/PaymentDetail';
+import SelectedTemplatedScreen from '../Screens/Template/SelectedTemplate';
 
 const headerStyle = {
   headerStyle: {
@@ -358,6 +359,14 @@ function MainNavigator() {
       component: PaymentDetail,
       options: {
         headerTitle: t('navigationTitle.PaymentScreen'),
+        ...headerStyle,
+      },
+    },
+    {
+      name: 'SelectedTemplatedScreen',
+      component: SelectedTemplatedScreen,
+      options: {
+        headerTitle: t('Settings.Template'),
         ...headerStyle,
       },
     },

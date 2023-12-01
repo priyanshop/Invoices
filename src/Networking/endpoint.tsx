@@ -137,4 +137,8 @@ export const endpoint = {
     `${API_BASE_URL}/${API_TYPE.REPORT}/client?year=${year}`,
   getEmailHistoryForEstimate: (estimateId: string) =>
     `${API_BASE_URL}/email-history/type-id/${estimateId}/type/estimate`,
+  changeColorForEstimate: (estimateId: string) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${estimateId}/change-color`,
+  changeColorForInvoice: (invoiceId: string) =>
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${invoiceId}/change-color`,
 };
