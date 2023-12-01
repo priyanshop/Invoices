@@ -84,7 +84,10 @@ export const endpoint = {
     `${'http://15.236.207.148:4000' + API_BASE_URL}/${
       API_TYPE.INVOICES
     }/${invoiceId}/send-email-templates`,
-
+    sendEmailTemplatesForEST: (invoiceId: string) =>
+    `${'http://15.236.207.148:4000' + API_BASE_URL}/${
+      API_TYPE.ESTIMATE
+    }/${invoiceId}/send-email-templates`,
   createEstimate: `${API_BASE_URL}/${API_TYPE.ESTIMATE}/create`,
   getEstimateList: `${API_BASE_URL}/${API_TYPE.ESTIMATE}`,
   getEstimateDetail: (id: any) => `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${id}`,

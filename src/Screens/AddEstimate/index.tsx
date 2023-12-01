@@ -37,7 +37,7 @@ import EmptyHistory from '../../CustomComponent/EmptyHistory';
 import {FlatList} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {handleShareEmail, handleShareMessage} from '../../Share/share';
-import { GlobalStyle } from '../../Helper/GlobalStyle';
+import {GlobalStyle} from '../../Helper/GlobalStyle';
 const formatString = 'DD-MM-YYYY HH:mm:ss';
 
 const screenDimensions = getScreenDimensions();
@@ -278,7 +278,6 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
       if (data.status === 'success') {
         const element = data.data;
         getHistory(globalData._id);
-
       }
     } catch (error) {}
   };
@@ -655,7 +654,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
       estimateID: globalData._id,
       data: globalData,
     });
-  }
+  };
   const AllRoute = () => {
     const [reviewLink, setReviewLink] = useState('');
     useEffect(() => {
@@ -858,7 +857,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
           originWhitelist={['*']}
           style={{flex: 1}}
           // source={{html: preview4(globalData)}}
-          source={{uri: endpoint.sendEmailTemplatesForInvoice(globalData._id)}}
+          source={{uri: endpoint.sendEmailTemplatesForEST(globalData._id)}}
           // userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
           contentMode={'desktop'}
         />
