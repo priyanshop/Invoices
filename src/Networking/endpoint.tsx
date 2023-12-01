@@ -84,7 +84,7 @@ export const endpoint = {
     `${'http://15.236.207.148:4000' + API_BASE_URL}/${
       API_TYPE.INVOICES
     }/${invoiceId}/send-email-templates`,
-    sendEmailTemplatesForEST: (invoiceId: string) =>
+  sendEmailTemplatesForEST: (invoiceId: string) =>
     `${'http://15.236.207.148:4000' + API_BASE_URL}/${
       API_TYPE.ESTIMATE
     }/${invoiceId}/send-email-templates`,
@@ -144,4 +144,8 @@ export const endpoint = {
     `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${estimateId}/change-color`,
   changeColorForInvoice: (invoiceId: string) =>
     `${API_BASE_URL}/${API_TYPE.INVOICES}/${invoiceId}/change-color`,
+  invoiceTemplateNumber: (invoiceId: string) =>
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${invoiceId}/template-number`,
+  estimateTemplateNumber: (estimateId: string) =>
+    `${API_BASE_URL}/${API_TYPE.ESTIMATE}/${estimateId}/template-number`,
 };

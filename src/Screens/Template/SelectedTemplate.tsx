@@ -144,11 +144,11 @@ const SelectedTemplatedScreen = ({navigation, route}: any) => {
 
   useEffect(() => {
     if (selector.selectedColor) {
-      setSelectedColor(route.params?.data?.background_color||"#CCC");
-      setInputValue(route.params?.data?.background_color||"#CCC");
-      setSelectedWebViewIndex(selector.selectedTemplate);
+      setSelectedColor(route.params?.data?.background_color || '#CCC');
+      setInputValue(route.params?.data?.background_color || '#CCC');
+      setSelectedWebViewIndex(parseInt(route.params.data.template_no) + 1);
     }
-  }, [selector,route.params]);
+  }, [selector, route.params]);
 
   const changeColor = (color: any) => {
     setSelectedColor(color || '#CCC');
@@ -187,7 +187,19 @@ const SelectedTemplatedScreen = ({navigation, route}: any) => {
 
   const handleWebViewPress = (index: number) => {
     setSelectedWebViewIndex(index);
-    dispatch(setTemplate(index));
+    if (route?.params?.invoiceUpdate) {
+      if (selector.token === 'Guest') {
+        //   offlineInvoiceUpdate();
+      } else {
+        sendInvoiceTemp(index + 1);
+      }
+    } else if (route?.params?.estimateUpdate) {
+      if (selector.token === 'Guest') {
+        //   offlineEstimateUpdate();
+      } else {
+        sendEstTemp(index + 1);
+      }
+    }
   };
 
   const sendInvoiceColor = async (newColor: any) => {
@@ -226,6 +238,41 @@ const SelectedTemplatedScreen = ({navigation, route}: any) => {
     } catch (error) {}
   };
 
+  const sendInvoiceTemp = async (newValue: any) => {
+    try {
+      const data = await FetchAPI(
+        'patch',
+        endpoint.invoiceTemplateNumber(route?.params?.invoiceID),
+        {
+          template_no: newValue?.toString(),
+        },
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+      }
+    } catch (error) {}
+  };
+
+  const sendEstTemp = async (newValue: any) => {
+    try {
+      const data = await FetchAPI(
+        'patch',
+        endpoint.estimateTemplateNumber(route?.params?.estimateID),
+        {
+          template_no: newValue?.toString(),
+        },
+        {
+          Authorization: 'Bearer ' + selector.token,
+        },
+      );
+      if (data.status === 'success') {
+        const element = data.data;
+      }
+    } catch (error) {}
+  };
   const AllRoute = () => {
     return (
       <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}>
