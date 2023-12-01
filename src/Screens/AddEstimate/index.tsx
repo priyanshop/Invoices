@@ -855,7 +855,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     const renderItem = ({item}) => (
       <View style={styles.item}>
         <MaterialIcons
-          name={item.type === 'email' ? 'email' : 'message'}
+          name={item?.category === 'email' ? 'email' : 'message'}
           size={24}
           color={Colors.appColor}
           style={styles.icon}

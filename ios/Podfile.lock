@@ -382,7 +382,8 @@ PODS:
     - React-Core
   - react-native-orientation-locker (1.6.0):
     - React-Core
-  - react-native-pager-view (6.2.2):
+  - react-native-pager-view (6.2.3):
+    - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - react-native-safe-area-context (4.7.4):
     - React-Core
@@ -775,7 +776,7 @@ SPEC CHECKSUMS:
   react-native-date-picker: 1d61c76315098a6ad4c643a356f005916c7d4875
   react-native-image-picker: 3269f75c251cdcd61ab51b911dd30d6fff8c6169
   react-native-orientation-locker: 4409c5b12b65f942e75449872b4f078b6f27af81
-  react-native-pager-view: 02a5c4962530f7efc10dd51ee9cdabeff5e6c631
+  react-native-pager-view: e26d35e382d86950c936f8917e3beb9188115ccc
   react-native-safe-area-context: 2cd91d532de12acdb0a9cbc8d43ac72a8e4c897c
   react-native-select-contact: f88ccd9dbee6c4d1c32507291b431cf558a2ed42
   react-native-simple-toast: 1059cc3b076a2abe14900d609c096d7682bf6e1e
