@@ -25,6 +25,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {offlineLimit, setNewInvoiceInList} from '../../../Constant';
 import Loader from '../../../CustomComponent/Loader';
 import {addNewInvoice} from '../../../redux/reducers/user/UserReducer';
+import InAppReview from 'react-native-in-app-review';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -416,6 +417,27 @@ function InvoicesScreen({navigation}: any): JSX.Element {
       setSearchText('');
     }
   }, [searchStart]);
+
+  useEffect(() => {
+    InAppReview.isAvailable();
+    InAppReview.RequestInAppReview()
+      .then(hasFlowFinishedSuccessfully => {
+        console.log('InAppReview in android', hasFlowFinishedSuccessfully);
+
+        console.log(
+          'InAppReview in ios has launched successfully',
+          hasFlowFinishedSuccessfully,
+        );
+
+        if (hasFlowFinishedSuccessfully) {
+          // do something for ios
+          // do something for android
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

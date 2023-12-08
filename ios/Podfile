@@ -31,6 +31,7 @@ target 'Invoices' do
   pod 'react-native-contacts', :path => '../node_modules/react-native-contacts'
   pod 'react-native-webview', :path => '../node_modules/react-native-webview'
   pod 'RNFS', :path => '../node_modules/react-native-fs'
+  pod 'react-native-in-app-review', :path => '../node_modules/react-native-in-app-review'
 
   # Flags change depending on the env values.
   flags = get_default_flags()

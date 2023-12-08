@@ -366,6 +366,24 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
     } catch (error) {}
   };
 
+  const showAlert = () => {
+    Alert.alert(
+      'Confirmation',
+      'Do you want to delete this Estimation?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Confirm',
+          onPress: () => deleteET(),
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   const deleteET = async () => {
     try {
       if (selector.token === 'Guest') {
@@ -912,7 +930,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
             onDismiss={closeMenu}
             anchor={{x: screenWidth - 15, y: -10}}
             style={{width: 200}}>
-            <Menu.Item onPress={deleteET} title={t('Delete')} />
+            <Menu.Item onPress={showAlert} title={t('Delete')} />
             <Menu.Item onPress={() => {}} title={t('Open In ..')} />
             <Menu.Item onPress={() => {}} title={t('Share')} />
             <Menu.Item onPress={() => {}} title={t('Print')} />
