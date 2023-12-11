@@ -1,5 +1,5 @@
 //@ts-nocheck
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {
   Alert,
   ScrollView,
@@ -38,6 +38,7 @@ import {FlatList} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {handleShareEmail, handleShareMessage} from '../../Share/share';
 import {GlobalStyle} from '../../Helper/GlobalStyle';
+import WebView from 'react-native-webview';
 const formatString = 'DD-MM-YYYY HH:mm:ss';
 
 const screenDimensions = getScreenDimensions();
@@ -138,6 +139,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
   const [created, setCreated] = useState(false);
   const [link, setLink] = useState('');
   const [History, setHistory] = useState([]);
+  const webViewRef = useRef(null);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -380,7 +382,7 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
           onPress: () => deleteET(),
         },
       ],
-      { cancelable: false }
+      {cancelable: false},
     );
   };
 
@@ -866,25 +868,57 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
       </KeyboardAwareScrollView>
     );
   };
+  const disableResponsiveCode = `
+  var viewport = document.querySelector("meta[name=viewport]");
+  if (viewport) {
+    viewport.parentNode.removeChild(viewport);
+    var newViewport = document.createElement('meta');
+    newViewport.name = "viewport";
+    newViewport.content = "width=1024"; // Set a fixed width or other desired values
+    document.getElementsByTagName('head')[0].appendChild(newViewport);
+  }
+`;
 
   const OutStandingRoute = () => {
     return (
-      <ScrollView style={[styles.scene, {backgroundColor: Colors.commonBg}]}>
-        <WebView
-          ref={webViewRef}
-          originWhitelist={['*']}
-          style={{flex: 1}}
-          // source={{html: preview4(globalData)}}
-          source={{uri: endpoint.sendEmailTemplatesForEST(globalData._id)}}
-          // userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
-          contentMode={'desktop'}
-        />
+      <View
+        style={[
+          styles.scene,
+          {backgroundColor: Colors.commonBg, paddingHorizontal: 10},
+        ]}>
+        {selector.token === 'Guest' ? (
+          <WebView
+            ref={webViewRef}
+            originWhitelist={['*']}
+            scalesPageToFit={true}
+            style={{flex: 1}}
+            injectedJavaScript={disableResponsiveCode}
+            javaScriptEnabledAndroid={true}
+            source={{html: invoicePreview(globalData, selector.SelectedColor)}}
+            contentMode={'desktop'}
+          />
+        ) : (
+          <WebView
+            ref={webViewRef}
+            originWhitelist={['*']}
+            scalesPageToFit={true}
+            style={{flexGrow: 1}}
+            injectedJavaScript={disableResponsiveCode}
+            javaScriptEnabledAndroid={true}
+            // source={{html: preview4(globalData)}}
+            source={{
+              uri: endpoint.sendEmailTemplatesForEST(globalData._id),
+            }}
+            // userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
+            contentMode={'desktop'}
+          />
+        )}
         <TouchableOpacity
           onPress={navigateToTemplate}
           style={GlobalStyle.statementBtn}>
           <Text style={[GlobalStyle.titleTxt2]}>{t('Settings.Template')}</Text>
         </TouchableOpacity>
-      </ScrollView>
+      </View>
     );
   };
 

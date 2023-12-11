@@ -21,6 +21,7 @@ import {endpoint} from '../../Networking/endpoint';
 import FetchAPI from '../../Networking';
 import {Images} from '../../assets';
 import {Image} from 'react-native';
+import {invoicePreview} from '../../Web/invoice';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -296,14 +297,44 @@ const SelectedTemplatedScreen = ({navigation, route}: any) => {
     );
   };
 
+  const disableResponsiveCode = `
+  var viewport = document.querySelector("meta[name=viewport]");
+  if (viewport) {
+    viewport.parentNode.removeChild(viewport);
+    var newViewport = document.createElement('meta');
+    newViewport.name = "viewport";
+    newViewport.content = "width=1024"; // Set a fixed width or other desired values
+    document.getElementsByTagName('head')[0].appendChild(newViewport);
+  }
+`;
+
   const OutStandingRoute = () => {
     return (
       <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}>
-        <WebView
+        {/* <WebView
           scalesPageToFit
           style={{margin: 15, flex: 0.8, flexGrow: 1}}
           source={{html: preview1(data)}}
-        />
+        /> */}
+        {selector.token === 'Guest' ? (
+          <WebView
+            style={{margin: 15, height: screenWidth * 0.25}}
+            injectedJavaScript={disableResponsiveCode}
+            javaScriptEnabledAndroid={true}
+            source={{
+              html: invoicePreview(route.params.data, selector.SelectedColor),
+            }}
+          />
+        ) : (
+          <WebView
+            style={{margin: 15, height: screenWidth * 0.25}}
+            injectedJavaScript={disableResponsiveCode}
+            javaScriptEnabledAndroid={true}
+            source={{
+              uri: endpoint.sendEmailTemplatesForInvoice(route.params.data._id),
+            }}
+          />
+        )}
         <View style={styles.container3}>
           <View
             style={{

@@ -202,13 +202,24 @@ const MyWebViewScreen = () => {
       </View>
     );
   };
-
+  const disableResponsiveCode = `
+  var viewport = document.querySelector("meta[name=viewport]");
+  if (viewport) {
+    viewport.parentNode.removeChild(viewport);
+    var newViewport = document.createElement('meta');
+    newViewport.name = "viewport";
+    newViewport.content = "width=1024"; // Set a fixed width or other desired values
+    document.getElementsByTagName('head')[0].appendChild(newViewport);
+  }
+`;
   const OutStandingRoute = () => {
     return (
       <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}>
         <WebView
           // scalesPageToFit
           style={{margin: 15, height: screenWidth * 0.25}}
+          injectedJavaScript={disableResponsiveCode}
+          javaScriptEnabledAndroid={true}
           source={{
             html: SampleTemplate(
               selectedColor,

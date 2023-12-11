@@ -256,6 +256,8 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         const element = data.data;
         setIsMarkPaid(element.is_paid);
         setGlobalData(element);
+        console.log(endpoint.sendEmailTemplatesForInvoice(element._id));
+
         getHistory(element._id);
         fetchPaymentDue(element);
         setLink(element.review_link);
@@ -351,10 +353,10 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
           onPress: () => deleteInvoice(),
         },
       ],
-      { cancelable: false }
+      {cancelable: false},
     );
   };
-  
+
   const deleteInvoice = async () => {
     try {
       if (selector.token === 'Guest') {
@@ -928,6 +930,16 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       </KeyboardAwareScrollView>
     );
   };
+  const disableResponsiveCode = `
+    var viewport = document.querySelector("meta[name=viewport]");
+    if (viewport) {
+      viewport.parentNode.removeChild(viewport);
+      var newViewport = document.createElement('meta');
+      newViewport.name = "viewport";
+      newViewport.content = "width=1024"; // Set a fixed width or other desired values
+      document.getElementsByTagName('head')[0].appendChild(newViewport);
+    }
+  `;
 
   const OutStandingRoute = () => {
     return (
@@ -940,16 +952,21 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
           <WebView
             ref={webViewRef}
             originWhitelist={['*']}
+            scalesPageToFit={true}
             style={{flex: 1}}
+            injectedJavaScript={disableResponsiveCode}
+            javaScriptEnabledAndroid={true}
             source={{html: invoicePreview(globalData, selector.SelectedColor)}}
-            userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
             contentMode={'desktop'}
           />
         ) : (
           <WebView
             ref={webViewRef}
             originWhitelist={['*']}
+            scalesPageToFit={true}
             style={{flexGrow: 1}}
+            injectedJavaScript={disableResponsiveCode}
+            javaScriptEnabledAndroid={true}
             // source={{html: preview4(globalData)}}
             source={{
               uri: endpoint.sendEmailTemplatesForInvoice(globalData._id),
