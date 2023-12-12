@@ -40,6 +40,7 @@ import {handleShareEmail, handleShareMessage} from '../../Share/share';
 import {preview4} from '../../Web/index4';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'; // Import the icon library
 import {GlobalStyle} from '../../Helper/GlobalStyle';
+import {invoicePreview} from '../../Web/invoice';
 const formatString = 'DD-MM-YYYY HH:mm:ss';
 
 const screenDimensions = getScreenDimensions();
@@ -255,6 +256,8 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         const element = data.data;
         setIsMarkPaid(element.is_paid);
         setGlobalData(element);
+        console.log(endpoint.sendEmailTemplatesForInvoice(element._id));
+
         getHistory(element._id);
         fetchPaymentDue(element);
         setLink(element.review_link);
@@ -335,6 +338,23 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
         }
       }
     } catch (error) {}
+  };
+  const showAlert = () => {
+    Alert.alert(
+      'Confirmation',
+      'Do you want to delete this Invoice?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Confirm',
+          onPress: () => deleteInvoice(),
+        },
+      ],
+      {cancelable: false},
+    );
   };
 
   const deleteInvoice = async () => {
@@ -678,7 +698,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       invoiceUpdate: true,
       invoiceID: globalData._id,
       invoiceData: globalData,
-      data:globalData
+      data: globalData,
     });
   };
   const AllRoute = () => {
@@ -910,22 +930,54 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       </KeyboardAwareScrollView>
     );
   };
+  const disableResponsiveCode = `
+    var viewport = document.querySelector("meta[name=viewport]");
+    if (viewport) {
+      viewport.parentNode.removeChild(viewport);
+      var newViewport = document.createElement('meta');
+      newViewport.name = "viewport";
+      newViewport.content = "width=1024"; // Set a fixed width or other desired values
+      document.getElementsByTagName('head')[0].appendChild(newViewport);
+    }
+  `;
 
   const OutStandingRoute = () => {
     return (
-      <View style={[styles.scene, {backgroundColor: Colors.commonBg, paddingHorizontal:10}]}>
-        <WebView
-          ref={webViewRef}
-          originWhitelist={['*']}
-          style={{flexGrow: 1}}
-          // source={{html: preview4(globalData)}}
-          source={{uri: endpoint.sendEmailTemplatesForInvoice(globalData._id)}}
-          // userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
-          contentMode={'desktop'}
-        />
+      <View
+        style={[
+          styles.scene,
+          {backgroundColor: Colors.commonBg, paddingHorizontal: 10},
+        ]}>
+        {selector.token === 'Guest' ? (
+          <WebView
+            ref={webViewRef}
+            originWhitelist={['*']}
+            scalesPageToFit={true}
+            style={{flex: 1}}
+            injectedJavaScript={disableResponsiveCode}
+            javaScriptEnabledAndroid={true}
+            source={{html: invoicePreview(globalData, selector.SelectedColor)}}
+            contentMode={'desktop'}
+          />
+        ) : (
+          <WebView
+            ref={webViewRef}
+            originWhitelist={['*']}
+            scalesPageToFit={true}
+            style={{flexGrow: 1}}
+            injectedJavaScript={disableResponsiveCode}
+            javaScriptEnabledAndroid={true}
+            // source={{html: preview4(globalData)}}
+            source={{
+              uri: endpoint.sendEmailTemplatesForInvoice(globalData._id),
+            }}
+            // userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
+            contentMode={'desktop'}
+          />
+        )}
         <TouchableOpacity
           onPress={navigateToTemplate}
-          style={[GlobalStyle.statementBtn,{marginBottom:15}]}>
+          style={[GlobalStyle.statementBtn, {marginBottom: 15}]}>
           <Text style={[GlobalStyle.titleTxt2]}>{t('Settings.Template')}</Text>
         </TouchableOpacity>
       </View>
@@ -976,7 +1028,7 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
             onDismiss={closeMenu}
             anchor={{x: screenWidth - 15, y: -10}}
             style={{width: 200}}>
-            <Menu.Item onPress={deleteInvoice} title={t('Delete')} />
+            <Menu.Item onPress={showAlert} title={t('Delete')} />
             <Menu.Item onPress={() => {}} title={t('Open In ..')} />
             <Menu.Item onPress={() => {}} title={t('Share')} />
             <Menu.Item onPress={() => {}} title={t('Print')} />

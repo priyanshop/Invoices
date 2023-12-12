@@ -19,6 +19,9 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {setColor, setTemplate} from '../../redux/reducers/user/UserReducer';
 import {endpoint} from '../../Networking/endpoint';
 import FetchAPI from '../../Networking';
+import {Image} from 'react-native';
+import {Images} from '../../assets';
+import {SampleTemplate} from '../../Web/sample';
 
 const screenDimensions = getScreenDimensions();
 const screenWidth = screenDimensions.width;
@@ -154,10 +157,14 @@ const MyWebViewScreen = () => {
     dispatch(setColor(color || '#CCC'));
   };
   const webViews = [
-    {uri: preview1(data), key: 'page1'},
-    {uri: preview2(data), key: 'page2'},
-    {uri: preview3(data), key: 'page3'},
-    {uri: preview4(data), key: 'page4'},
+    // {uri: preview1(data), key: 'page1'},
+    // {uri: preview2(data), key: 'page2'},
+    // {uri: preview3(data), key: 'page3'},
+    // {uri: preview4(data), key: 'page4'},
+    {uri: Images.template1, key: 'page1'},
+    {uri: Images.template2, key: 'page2'},
+    {uri: Images.template3, key: 'page3'},
+    {uri: Images.template4, key: 'page4'},
   ];
 
   const renderWebViewItem = ({item, index}: any) => {
@@ -167,14 +174,20 @@ const MyWebViewScreen = () => {
       <TouchableOpacity
         onPressIn={() => handleWebViewPress(index)}
         style={[styles.webViewContainer, isSelected && styles.selectedWebView]}>
-        <WebView scalesPageToFit source={{html: item.uri}} />
+        <Image
+          source={item.uri}
+          style={styles.webViewImage}
+          resizeMode="contain"
+        />
       </TouchableOpacity>
     );
   };
 
   const handleWebViewPress = (index: number) => {
-    setSelectedWebViewIndex(index);
-    dispatch(setTemplate(index));
+    if (selector.token !== 'Guest') {
+      setSelectedWebViewIndex(index);
+      dispatch(setTemplate(index));
+    }
   };
 
   const AllRoute = () => {
@@ -189,14 +202,30 @@ const MyWebViewScreen = () => {
       </View>
     );
   };
-
+  const disableResponsiveCode = `
+  var viewport = document.querySelector("meta[name=viewport]");
+  if (viewport) {
+    viewport.parentNode.removeChild(viewport);
+    var newViewport = document.createElement('meta');
+    newViewport.name = "viewport";
+    newViewport.content = "width=1024"; // Set a fixed width or other desired values
+    document.getElementsByTagName('head')[0].appendChild(newViewport);
+  }
+`;
   const OutStandingRoute = () => {
     return (
       <View style={[styles.scene, {backgroundColor: Colors.commonBg}]}>
         <WebView
-          scalesPageToFit
-          style={{margin: 15, flex: 0.8, flexGrow: 1}}
-          source={{html: preview1(data)}}
+          // scalesPageToFit
+          style={{margin: 15, height: screenWidth * 0.25}}
+          injectedJavaScript={disableResponsiveCode}
+          javaScriptEnabledAndroid={true}
+          source={{
+            html: SampleTemplate(
+              selectedColor,
+              selector.businessDetails.business_logo,
+            ),
+          }}
         />
         <View style={styles.container3}>
           <View
@@ -264,9 +293,8 @@ const MyWebViewScreen = () => {
                 value={inputValue}
                 onChangeText={(text: any) => {
                   setInputValue(text);
-
                   if (text.length === 3 || text.length === 6) {
-                    changeColor(text);
+                    changeColor('#' + text);
                   }
                 }}
               />
@@ -311,12 +339,20 @@ const styles = StyleSheet.create({
   },
   webViewContainer: {
     flex: 1,
-    aspectRatio: 1, // Square aspect ratio for each WebView
     margin: 8,
-    overflow: 'hidden',
     borderRadius: 8,
-    borderWidth: 2,
-    borderColor: '#ccc',
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#ddd', // Add your desired border color
+    width: screenWidth / 2,
+    height: screenWidth / 2,
+    backgroundColor: '#FFF',
+  },
+  webViewImage: {
+    // flex: 1,
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#FFF',
   },
   selectedWebView: {
     borderColor: 'blue', // Change the color to your desired selection color
@@ -340,7 +376,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   container3: {
-    flex: 1,
+    flex: 0.2,
     justifyContent: 'flex-end',
     // alignItems: 'center',
   },
