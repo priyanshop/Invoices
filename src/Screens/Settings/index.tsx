@@ -128,11 +128,11 @@ const SettingScreen = ({navigation}: any) => {
           description: '',
           onPress: () => navigation.navigate('GlobalInvoiceNumber'),
         },
-        {
-          title: 'Export Expense Summary',
-          titleTxt: t('Settings.ExportExpenseSummary'),
-          description: '',
-        },
+        // {
+        //   title: 'Export Expense Summary',
+        //   titleTxt: t('Settings.ExportExpenseSummary'),
+        //   description: '',
+        // },
         {
           title: 'Export as Spreadsheet',
           titleTxt: t('Settings.ExportAsSpreadsheet'),

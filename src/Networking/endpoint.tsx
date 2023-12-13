@@ -56,7 +56,7 @@ export const endpoint = {
     `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/duplicate`,
   deleteInvoice: (id: any) => `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}`,
   markPaidInvoice: (id: any) =>
-    `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/marked`,
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/mark-paid`,
   addSignatureIN: (id: any) =>
     `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/signature`,
   addPhotoIN: (id: any) => `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/photo`,
