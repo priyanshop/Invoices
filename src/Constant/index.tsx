@@ -217,3 +217,6 @@ export const setNewEstimateInList = (selector: any) => {
 };
 
 export const offlineLimit = 4;
+
+
+export const API_KEY = "";

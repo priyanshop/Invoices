@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  Alert,
 } from 'react-native';
 import {Colors} from '../../Helper/Colors';
 import {Images} from '../../assets';
@@ -14,6 +15,7 @@ import {RadioButton} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import Entypo from 'react-native-vector-icons/Entypo';
+import Purchases from 'react-native-purchases';
 
 const featuresArray: any = [
   {
@@ -93,6 +95,26 @@ const SubscriptionScreen = () => {
   const [monthly, setMonthly] = useState(true);
   const [yearly, setYearly] = useState(false);
   const [stopScroll, setStopScroll] = useState(false);
+  const [packages, setPackages] = useState([]);
+  const [isPurchasing, setIsPurchasing] = useState(false);
+
+  useEffect(() => {
+    // Get current available packages
+    const getPackages = async () => {
+      try {
+        const offerings = await Purchases.getOfferings();
+        if (offerings.current !== null && offerings.current.availablePackages.length !== 0) {
+          setPackages(offerings.current.availablePackages);
+        }
+      } catch (e) {
+        Alert.alert('Error getting offers', e.message);
+      }
+    };
+
+    getPackages();
+  }, []);
+
+
   const switchVisible = () => {
     setIsVisible(!isVisible);
   };
