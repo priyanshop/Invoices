@@ -305,7 +305,7 @@ const ContactUs = ({navigation}: any) => {
           </Text>
         </TouchableOpacity>
       </KeyboardAwareScrollView>
-      {!keyboardVisible && <MessageButton />}
+      {/* {!keyboardVisible && <MessageButton />} */}
     </View>
   );
 };
