@@ -36,7 +36,12 @@ import {setNewInvoiceInList} from '../../Constant';
 import EmptyHistory from '../../CustomComponent/EmptyHistory';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import WebView from 'react-native-webview';
-import {handleShareEmail, handleShareMessage} from '../../Share/share';
+import {
+  handleShareEmail,
+  handleShareMessage,
+  sendEmailCall,
+  sendSMSWithoutNumber,
+} from '../../Share/share';
 import {preview4} from '../../Web/index4';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'; // Import the icon library
 import {GlobalStyle} from '../../Helper/GlobalStyle';
@@ -123,7 +128,10 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       label: t('Text'),
       onPress: () => {
         if (selector.token !== 'Guest') {
-          handleShareMessage(
+          // handleShareMessage(
+          //   endpoint.sendEmailTemplatesForInvoice(globalData._id),
+          // );
+          sendSMSWithoutNumber(
             endpoint.sendEmailTemplatesForInvoice(globalData._id),
           );
           sendTxt();
@@ -141,6 +149,11 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
       icon: () => <Fontisto name="email" size={22} color="#000" />,
       label: t('Email'),
       onPress: () => {
+        sendEmailCall(
+          '',
+          'Greeting!',
+          endpoint.sendEmailTemplatesForInvoice(globalData._id),
+        );
         if (selector.token !== 'Guest' && selector.sendToEmail) {
           sendCopy();
         }
@@ -1030,7 +1043,14 @@ function InvoiceCreationScreen({navigation, route}: any): JSX.Element {
             style={{width: 200}}>
             <Menu.Item onPress={showAlert} title={t('Delete')} />
             <Menu.Item onPress={() => {}} title={t('Open In ..')} />
-            <Menu.Item onPress={() => {}} title={t('Share')} />
+            <Menu.Item
+              onPress={() => {
+                sendSMSWithoutNumber(
+                  endpoint.sendEmailTemplatesForInvoice(globalData._id),
+                );
+              }}
+              title={t('Share')}
+            />
             <Menu.Item onPress={() => {}} title={t('Print')} />
             {/* <Menu.Item onPress={() => {}} title={t('Get Link')} /> */}
             <Menu.Item

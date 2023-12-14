@@ -64,8 +64,8 @@ function Customize({navigation}: any): JSX.Element {
       if (data.status === 'success') {
         setFalse();
         const element = data.data.customize;
-        setEstimate(element.invoice_title);
-        setInvoices(element.estimate_title);
+        setInvoices(element.invoice_title);
+        setEstimate(element.estimate_title);
         setBusinessNumber(element.business_number);
         setQuantityLabel(element.quantity_label);
         setUnitCostLabel(element.rate_label);
