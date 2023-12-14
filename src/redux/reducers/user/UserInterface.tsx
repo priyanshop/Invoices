@@ -31,6 +31,7 @@ export interface IUserState {
   estimateList:any;
   selectedColor: any;
   selectedTemplate: number;
+  ratingAsked: boolean;
   // localChats: IChats[] | [];
   // localChatsPub: IChats2[] | [];
 }

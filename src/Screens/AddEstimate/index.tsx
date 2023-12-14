@@ -36,7 +36,12 @@ import {
 import EmptyHistory from '../../CustomComponent/EmptyHistory';
 import {FlatList} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {handleShareEmail, handleShareMessage} from '../../Share/share';
+import {
+  handleShareEmail,
+  handleShareMessage,
+  sendEmailCall,
+  sendSMSWithoutNumber,
+} from '../../Share/share';
 import {GlobalStyle} from '../../Helper/GlobalStyle';
 import WebView from 'react-native-webview';
 const formatString = 'DD-MM-YYYY HH:mm:ss';
@@ -91,8 +96,11 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
       label: t('Text'),
       onPress: () => {
         if (selector.token !== 'Guest') {
-          handleShareMessage(
-            endpoint.sendEmailTemplatesForInvoice(globalData._id),
+          // handleShareMessage(
+          //   endpoint.sendEmailTemplatesForInvoice(globalData._id),
+          // );
+          sendSMSWithoutNumber(
+            endpoint.sendEmailTemplatesForEST(globalData._id),
           );
           sendTxt();
         }
@@ -109,7 +117,12 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
       icon: () => <Fontisto name="email" size={22} color="#000" />,
       label: t('Email'),
       onPress: () => {
-        handleShareEmail('hi');
+        // handleShareEmail('hi');
+        sendEmailCall(
+          '',
+          'Greeting!',
+          endpoint.sendEmailTemplatesForEST(globalData._id),
+        );
         if (selector.token !== 'Guest' && selector.sendToEmail) {
           sendCopy();
         }
@@ -966,7 +979,14 @@ function EstimationCreationScreen({navigation, route}: any): JSX.Element {
             style={{width: 200}}>
             <Menu.Item onPress={showAlert} title={t('Delete')} />
             <Menu.Item onPress={() => {}} title={t('Open In ..')} />
-            <Menu.Item onPress={() => {}} title={t('Share')} />
+            <Menu.Item
+              onPress={() => {
+                sendSMSWithoutNumber(
+                  endpoint.sendEmailTemplatesForEST(globalData._id),
+                );
+              }}
+              title={t('Share')}
+            />
             <Menu.Item onPress={() => {}} title={t('Print')} />
             {/* <Menu.Item onPress={() => {}} title={t('Get Link')} /> */}
             <Menu.Item onPress={createInvoice} title={t('Make Invoice')} />

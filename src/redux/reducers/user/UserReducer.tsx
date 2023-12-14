@@ -50,6 +50,7 @@ const initialState: IUserState = {
   estimateList: [],
   selectedColor: '#FF0000',
   selectedTemplate: 1,
+  ratingAsked : false
   // localChats: [],
   // localChatsPub: [],
 };
@@ -69,6 +70,7 @@ const UserReducer = createSlice({
       state.token = null;
       state.clientList = [];
       state.itemsList = [];
+      state.ratingAsked = false;
       (state.businessDetails = {
         name: '',
         email: '',
@@ -169,6 +171,9 @@ const UserReducer = createSlice({
     },
     setTemplate: (state, action) => {
       state.selectedTemplate = action.payload;
+    },
+    setRatingAsked: (state, action) => {
+      state.ratingAsked = action.payload;
     }
     // setChat: (state, action) => {
     //   state.localChats = action.payload;
@@ -204,7 +209,8 @@ export const {
   addNewEstimate,
   setEstimateList,
   setColor,
-  setTemplate
+  setTemplate,
+  setRatingAsked
   // setChat,
   // setPubChat,
   // removePubChat,

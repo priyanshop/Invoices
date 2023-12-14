@@ -45,6 +45,10 @@
 	<string>Access to pick a photo</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Access to pick a photo</string>
+	<key>LSApplicationQueriesSchemes</key>  
+	<array>         
+	    <string>mailto</string>            
+	</array>
 	<key>UIAppFonts</key>
 	<array>
 		<string>fonts/AntDesign.ttf</string>

@@ -24,7 +24,7 @@ import {useIsFocused} from '@react-navigation/native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {offlineLimit, setNewInvoiceInList} from '../../../Constant';
 import Loader from '../../../CustomComponent/Loader';
-import {addNewInvoice} from '../../../redux/reducers/user/UserReducer';
+import {addNewInvoice, setRatingAsked} from '../../../redux/reducers/user/UserReducer';
 import InAppReview from 'react-native-in-app-review';
 
 const screenDimensions = getScreenDimensions();
@@ -147,12 +147,39 @@ function InvoicesScreen({navigation}: any): JSX.Element {
       }))
       .filter(yearData => yearData?.data?.length > 0);
 
+      const rating = ()=>{
+        if (!selector.ratingAsked) {
+        InAppReview.isAvailable();
+        InAppReview.RequestInAppReview()
+          .then(hasFlowFinishedSuccessfully => {
+            console.log('InAppReview in android', hasFlowFinishedSuccessfully);
+    
+            console.log(
+              'InAppReview in ios has launched successfully',
+              hasFlowFinishedSuccessfully,
+            );
+    
+            if (hasFlowFinishedSuccessfully) {
+              // do something for ios
+              // do something for android
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          }).finally(()=>{
+            dispatch(setRatingAsked(true));
+          });
+        }
+      }
   useEffect(() => {
     setTrue();
     if (selector.token === 'Guest') {
       if (selector.invoiceList?.length >= 0) {
         const savedData: any = convertData(selector.invoiceList);
         setAllData(savedData);
+        if (savedData.length ===1) {
+          rating();
+        }
         setFalse();
       }
     } else {
@@ -169,6 +196,9 @@ function InvoicesScreen({navigation}: any): JSX.Element {
         if (data.data) {
           const savedData: any = convertData(data.data);
           setAllData(savedData);
+          if (savedData.length === 1) {
+            rating()
+          }
           setFalse();
         }
       }
@@ -419,24 +449,24 @@ function InvoicesScreen({navigation}: any): JSX.Element {
   }, [searchStart]);
 
   useEffect(() => {
-    InAppReview.isAvailable();
-    InAppReview.RequestInAppReview()
-      .then(hasFlowFinishedSuccessfully => {
-        console.log('InAppReview in android', hasFlowFinishedSuccessfully);
+    // InAppReview.isAvailable();
+    // InAppReview.RequestInAppReview()
+    //   .then(hasFlowFinishedSuccessfully => {
+    //     console.log('InAppReview in android', hasFlowFinishedSuccessfully);
 
-        console.log(
-          'InAppReview in ios has launched successfully',
-          hasFlowFinishedSuccessfully,
-        );
+    //     console.log(
+    //       'InAppReview in ios has launched successfully',
+    //       hasFlowFinishedSuccessfully,
+    //     );
 
-        if (hasFlowFinishedSuccessfully) {
-          // do something for ios
-          // do something for android
-        }
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    //     if (hasFlowFinishedSuccessfully) {
+    //       // do something for ios
+    //       // do something for android
+    //     }
+    //   })
+    //   .catch(error => {
+    //     console.log(error);
+    //   });
   }, []);
 
   return (
