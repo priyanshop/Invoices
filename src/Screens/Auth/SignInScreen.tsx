@@ -66,7 +66,7 @@ function SignInScreen({navigation}: any): JSX.Element {
         });
       }
     } catch (error: any) {
-      Alert.alert('', error.message);      
+      Alert.alert('', error.message);
     }
   };
 
