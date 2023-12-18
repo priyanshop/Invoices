@@ -376,7 +376,7 @@ PODS:
     - glog
   - react-native-contacts (7.0.8):
     - React-Core
-  - react-native-date-picker (4.3.3):
+  - react-native-date-picker (4.3.4):
     - React-Core
   - react-native-image-picker (5.7.0):
     - React-Core
@@ -387,13 +387,15 @@ PODS:
   - react-native-pager-view (6.2.3):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - react-native-safe-area-context (4.7.4):
+  - react-native-safe-area-context (4.8.1):
     - React-Core
   - react-native-select-contact (1.6.3):
     - React-Core
   - react-native-simple-toast (3.1.0):
     - React-Core
     - Toast (~> 4)
+  - react-native-sms (1.11.0):
+    - React
   - react-native-splash-screen (3.3.0):
     - React-Core
   - react-native-webview (11.23.1):
@@ -517,7 +519,7 @@ PODS:
   - RNGestureHandler (2.14.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - RNScreens (3.27.0):
+  - RNScreens (3.29.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - RNShare (9.4.1):
@@ -583,6 +585,7 @@ DEPENDENCIES:
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-select-contact (from `../node_modules/react-native-select-contact`)
   - react-native-simple-toast (from `../node_modules/react-native-simple-toast`)
+  - react-native-sms (from `../node_modules/react-native-sms`)
   - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -690,6 +693,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-select-contact"
   react-native-simple-toast:
     :path: "../node_modules/react-native-simple-toast"
+  react-native-sms:
+    :path: "../node_modules/react-native-sms"
   react-native-splash-screen:
     :path: "../node_modules/react-native-splash-screen"
   react-native-webview:
@@ -778,14 +783,15 @@ SPEC CHECKSUMS:
   React-jsinspector: d0b5bfd1085599265f4212034321e829bdf83cc0
   React-logger: b8103c9b04e707b50cdd2b1aeb382483900cbb37
   react-native-contacts: cb4f3b823550adbce0802901b9e63bf1526ec0af
-  react-native-date-picker: 1d61c76315098a6ad4c643a356f005916c7d4875
+  react-native-date-picker: db26a4dc48fe4e7c3c3afd5008519fad1091c524
   react-native-image-picker: 3269f75c251cdcd61ab51b911dd30d6fff8c6169
   react-native-in-app-review: db8bb167a5f238e7ceca5c242d6b36ce8c4404a4
   react-native-orientation-locker: 4409c5b12b65f942e75449872b4f078b6f27af81
   react-native-pager-view: e26d35e382d86950c936f8917e3beb9188115ccc
-  react-native-safe-area-context: 2cd91d532de12acdb0a9cbc8d43ac72a8e4c897c
+  react-native-safe-area-context: cd1169d797a2ef722a00bfc5af10748d5b6c94f9
   react-native-select-contact: f88ccd9dbee6c4d1c32507291b431cf558a2ed42
   react-native-simple-toast: 1059cc3b076a2abe14900d609c096d7682bf6e1e
+  react-native-sms: 31fbb9d6ebb565ad32e409eaf9dc70329936a129
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
   react-native-webview: d33e2db8925d090871ffeb232dfa50cb3a727581
   React-NativeModulesApple: 4f31a812364443cee6ef768d256c594ad3b20f53
@@ -809,7 +815,7 @@ SPEC CHECKSUMS:
   RNCMaskedView: 949696f25ec596bfc697fc88e6f95cf0c79669b6
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 32a01c29ecc9bb0b5bf7bc0a33547f61b4dc2741
-  RNScreens: 3c2d122f5e08c192e254c510b212306da97d2581
+  RNScreens: 3c5b9f4a9dcde752466854b6109b79c0e205dad3
   RNShare: 32e97adc8d8c97d4a26bcdd3c45516882184f8b6
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196

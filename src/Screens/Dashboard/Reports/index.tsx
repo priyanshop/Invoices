@@ -28,7 +28,10 @@ function ReportScreen({navigation}: any): JSX.Element {
   const [loading, setLoading] = useState(false);
   const [paidData, setPaidData] = useState([]);
   const [paidTotal, setPaidTotal] = useState(null);
-
+  const [clientData, setClientData] = useState([]);
+  const [clientTotal, setClientTotal] = useState(null);
+  const [itemData, setItemData] = useState([]);
+  const [itemTotal, setItemTotal] = useState(null);
   const [years, setYears] = useState([]);
 
   useEffect(() => {
@@ -42,6 +45,7 @@ function ReportScreen({navigation}: any): JSX.Element {
     if (selector.token !== 'Guest') {
       getPaid(yearsArray[0]);
       getClient(yearsArray[0]);
+      getItems(yearsArray[0]);
     }
   };
 
@@ -56,6 +60,22 @@ function ReportScreen({navigation}: any): JSX.Element {
 
   function navigateToSetting() {
     navigation.navigate('Settings');
+  }
+
+  function getTotalPaidAndInvCount(data: any) {
+    let totalPaidAmount = 0;
+    let totalInvCount = 0;
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].hasOwnProperty('paid_amount')) {
+        totalPaidAmount += data[i].paid_amount;
+      }
+
+      if (data[i].hasOwnProperty('inv')) {
+        totalInvCount++;
+      }
+    }
+
+    return {totalPaidAmount, totalInvCount};
   }
 
   const getPaid = async (year: any) => {
@@ -91,16 +111,8 @@ function ReportScreen({navigation}: any): JSX.Element {
       });
       if (data.status === 'success') {
         const element = data.data;
-        // const resultArray: any = Object.entries(element.month).map(
-        //   ([month, values]: any) => ({
-        //     month,
-        //     cnt: values.cnt,
-        //     invoicesCount: values.invoicesCount,
-        //     paidAmount: values.paidAmount,
-        //   }),
-        // );
-        // setPaidTotal(element);
-        // setPaidData(resultArray);
+        setClientTotal(getTotalPaidAndInvCount(element));
+        setClientData(element);
         setFalse();
       }
     } catch (error) {
@@ -108,6 +120,30 @@ function ReportScreen({navigation}: any): JSX.Element {
     }
   };
 
+  const getItems = async (year: any) => {
+    try {
+      setTrue();
+      const data = await FetchAPI('get', endpoint.clientItem(year), null, {
+        Authorization: 'Bearer ' + selector.token,
+      });
+      if (data.status === 'success') {
+        const element = data.data;
+        const resultArray: any = Object.entries(element.month).map(
+          ([month, values]: any) => ({
+            month,
+            quantity: values.quantity,
+            invoicesCount: values.invoicesCount,
+            paidAmount: values.paidAmount,
+          }),
+        );
+        setItemTotal(element);
+        setItemData(resultArray);
+        setFalse();
+      }
+    } catch (error) {
+      setFalse;
+    }
+  };
   const PaidTitle = () => {
     return (
       <View style={styles.tableTileView}>
@@ -160,10 +196,14 @@ function ReportScreen({navigation}: any): JSX.Element {
     return (
       <View style={styles.totalView}>
         <Text style={{...styles.tableTitle, textAlign: 'left'}}>
-          {'Tax Year 2023'}
+          {'Tax Year ' + Year}
         </Text>
-        <Text style={{...styles.itemTxt, textAlign: 'center'}}>{'1'}</Text>
-        <Text style={{...styles.itemTxt, textAlign: 'right'}}>{'$0.00'}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'center'}}>
+          {clientTotal?.totalInvCount}
+        </Text>
+        <Text style={{...styles.itemTxt, textAlign: 'right'}}>
+          {'$ ' + clientTotal?.totalPaidAmount}
+        </Text>
       </View>
     );
   };
@@ -191,21 +231,33 @@ function ReportScreen({navigation}: any): JSX.Element {
     return (
       <View style={styles.totalView}>
         <Text style={{...styles.tableTitle, textAlign: 'left'}}>
-          {'Tax Year 2023'}
+          {'Tax Year ' + Year}
         </Text>
-        <Text style={{...styles.itemTxt, textAlign: 'center'}}>{'1'}</Text>
-        <Text style={{...styles.itemTxt, textAlign: 'center'}}>{'0'}</Text>
-        <Text style={{...styles.itemTxt, textAlign: 'right'}}>{'$0.00'}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'center'}}>
+          {itemTotal?.totalInvoices}
+        </Text>
+        <Text style={{...styles.itemTxt, textAlign: 'center'}}>
+          {itemTotal?.totalDistinctClients}
+        </Text>
+        <Text style={{...styles.itemTxt, textAlign: 'right'}}>
+          {'$ ' + itemTotal?.totalPaidAmount}
+        </Text>
       </View>
     );
   };
 
-  const Clients = () => {
+  const Clients = (item: any) => {
     return (
       <View style={styles.itemView}>
-        <Text style={{...styles.itemTxt, textAlign: 'left'}}>{'Dec'}</Text>
-        <Text style={{...styles.itemTxt, textAlign: 'center'}}>{'1'}</Text>
-        <Text style={{...styles.itemTxt, textAlign: 'right'}}>{'$0.00'}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'left'}}>
+          {item?.name || ''}
+        </Text>
+        <Text style={{...styles.itemTxt, textAlign: 'center'}}>
+          {item?.inv}
+        </Text>
+        <Text style={{...styles.itemTxt, textAlign: 'right'}}>
+          {'$ ' + item?.paid_amount}
+        </Text>
       </View>
     );
   };
@@ -225,13 +277,19 @@ function ReportScreen({navigation}: any): JSX.Element {
     );
   };
 
-  const Items = () => {
+  const Items = (item: any) => {
     return (
       <View style={styles.itemView}>
-        <Text style={{...styles.itemTxt, textAlign: 'left'}}>{'Dec'}</Text>
-        <Text style={{...styles.itemTxt, textAlign: 'center'}}>{'1'}</Text>
-        <Text style={{...styles.itemTxt, textAlign: 'center'}}>{'0'}</Text>
-        <Text style={{...styles.itemTxt, textAlign: 'right'}}>{'$0.00'}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'left'}}>{item.month}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'center'}}>
+          {item.invoicesCount}
+        </Text>
+        <Text style={{...styles.itemTxt, textAlign: 'center'}}>
+          {item.quantity}
+        </Text>
+        <Text style={{...styles.itemTxt, textAlign: 'right'}}>
+          {'$ ' + item.paidAmount}
+        </Text>
       </View>
     );
   };
@@ -273,6 +331,8 @@ function ReportScreen({navigation}: any): JSX.Element {
       onValueChange={value => {
         if (value) {
           getPaid(value);
+          getClient(value);
+          getItems(value);
           setYear(value);
         }
       }}
@@ -318,7 +378,8 @@ function ReportScreen({navigation}: any): JSX.Element {
         <>
           {ClientTitle()}
           {ClientTotal()}
-          {[0, 0, 0, 0, 0, 0, 0, 0, 0, 0].map(() => Clients())}
+          {clientData.length > 0 &&
+            clientData.map((item: any) => Clients(item))}
         </>
       )
     );
@@ -330,7 +391,7 @@ function ReportScreen({navigation}: any): JSX.Element {
         <>
           {ItemsTitle()}
           {ItemTotal()}
-          {[0, 0, 0, 0, 0, 0, 0, 0, 0, 0].map(() => Items())}
+          {itemData.length > 0 && itemData.map((item: any) => Items(item))}
         </>
       )
     );
