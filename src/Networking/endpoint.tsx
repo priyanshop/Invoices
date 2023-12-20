@@ -138,6 +138,8 @@ export const endpoint = {
     `${API_BASE_URL}/${API_TYPE.REPORT}/paid?year=${year}`,
   clientReport: (year: string) =>
     `${API_BASE_URL}/${API_TYPE.REPORT}/client?year=${year}`,
+  clientItem: (year: string) =>
+    `${API_BASE_URL}/${API_TYPE.REPORT}/item?year=${year}`,
   getEmailHistoryForEstimate: (estimateId: string) =>
     `${API_BASE_URL}/email-history/type-id/${estimateId}/type/estimate`,
   changeColorForEstimate: (estimateId: string) =>
