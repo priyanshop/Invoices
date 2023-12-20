@@ -21,9 +21,7 @@ const FetchAPI = async (
       headers,
     };
 
-    const response = await api.request(config);
-    console.log("ttete",response);
-    
+    const response = await api.request(config);    
     return response.data;
   } catch (error) {
     // Handle error here
