@@ -163,12 +163,12 @@ const SettingScreen = ({navigation}: any) => {
       sectionName2: t('Settings.Account'),
       sectionType: 'Guest',
       data: [
-        {
-          title: 'Sync',
-          titleTxt: t('Settings.Sync'),
-          descriptionTxt: 'last synced 0 seconds ago',
-          description: 'last synced 0 seconds ago',
-        },
+        // {
+        //   title: 'Sync',
+        //   titleTxt: t('Settings.Sync'),
+        //   descriptionTxt: 'last synced 0 seconds ago',
+        //   description: 'last synced 0 seconds ago',
+        // },
         {
           title: 'Region',
           titleTxt: t('Settings.Region'),
