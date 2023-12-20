@@ -13,7 +13,7 @@ import {
   changeSendToEmail,
   removeUserData,
 } from '../../redux/reducers/user/UserReducer';
-import FetchAPI from '../../Networking';
+import FetchAPI, { API_BASE_URL } from '../../Networking';
 import {endpoint} from '../../Networking/endpoint';
 import {useTranslation} from 'react-i18next';
 import ToastService from '../../Helper/ToastService';
@@ -257,26 +257,31 @@ const SettingScreen = ({navigation}: any) => {
   ];
 
   const handleDownloadAndShare = async () => {
-    try {
-      const response = await FetchAPI('get', endpoint.exportSpreadSheet, null, {
-        Authorization: 'Bearer ' + selector.token,
-      });
-      const data = response.data;
-      const ws = XLSX.utils.json_to_sheet(data);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'DataSheet');
-      const excelFilePath = `${RNFS.DocumentDirectoryPath}/data.xlsx`;
-      RNFS.writeFile(
-        excelFilePath,
-        XLSX.write(wb, {bookType: 'xlsx', type: 'base64'}),
-        'base64',
-      ).then(() => {
-        Share.open({
-          url: `file://${excelFilePath}`,
-          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-          title: 'Share Excel File',
-        });
-      });
+    const excelFilePath = `${RNFS.DocumentDirectoryPath}/output.xlsx`;    
+    try {RNFS.downloadFile({
+      fromUrl:API_BASE_URL+endpoint.exportSpreadSheet,
+      toFile: excelFilePath,
+      headers: {
+        "Authorization": 'Bearer ' + selector.token,
+      },
+    }).promise.then((response) => {
+        if (response.statusCode == 200) {
+          Share.open({
+            url: `file://${excelFilePath}`,
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            title: 'Share Excel File',
+          });
+          console.log('FILES UPLOADED!',response); // response.statusCode, response.headers, response.body
+        } else {
+          console.log('SERVER ERROR');
+        }
+      })
+      .catch((err) => {
+        if(err.description === "cancelled") {
+          // cancelled by user
+        }
+        console.log(err);
+      })
     } catch (error) {
       console.error('Error downloading and sharing Excel file', error);
     }
