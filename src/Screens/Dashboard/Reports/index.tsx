@@ -78,6 +78,30 @@ function ReportScreen({navigation}: any): JSX.Element {
     return {totalPaidAmount, totalInvCount};
   }
 
+  function getGrandTotal(data:any) {
+    let grandTotal = {
+      total: 0,
+      invoicesCount: 0,
+      quantity: 0
+    };
+  
+    // Iterate through the data array
+    for (let i = 0; i < data.length; i++) {
+      // Check if the properties exist in the current object
+      if (data[i].hasOwnProperty('total')) {
+        grandTotal.total += data[i].total;
+      }
+      if (data[i].hasOwnProperty('invoicesCount')) {
+        grandTotal.invoicesCount += data[i].invoicesCount;
+      }
+      if (data[i].hasOwnProperty('quantity')) {
+        grandTotal.quantity += data[i].quantity;
+      }
+    }
+  
+    return grandTotal;
+  }
+  
   const getPaid = async (year: any) => {
     try {
       setTrue();
@@ -128,16 +152,18 @@ function ReportScreen({navigation}: any): JSX.Element {
       });
       if (data.status === 'success') {
         const element = data.data;
-        const resultArray: any = Object.entries(element.month).map(
-          ([month, values]: any) => ({
-            month,
-            quantity: values.quantity,
-            invoicesCount: values.invoicesCount,
-            paidAmount: values.paidAmount,
-          }),
-        );
-        setItemTotal(element);
-        setItemData(resultArray);
+        // const resultArray: any = Object.entries(element.month).map(
+        //   ([month, values]: any) => ({
+        //     month,
+        //     quantity: values.quantity,
+        //     invoicesCount: values.invoicesCount,
+        //     paidAmount: values.paidAmount,
+        //     discr
+        //   }),
+        // );
+        
+        setItemTotal(getGrandTotal(element));
+        setItemData(element);
         setFalse();
       }
     } catch (error) {
@@ -234,13 +260,13 @@ function ReportScreen({navigation}: any): JSX.Element {
           {'Tax Year ' + Year}
         </Text>
         <Text style={{...styles.itemTxt, textAlign: 'center'}}>
-          {itemTotal?.totalInvoices}
+          {itemTotal?.invoicesCount}
         </Text>
         <Text style={{...styles.itemTxt, textAlign: 'center'}}>
-          {itemTotal?.totalDistinctClients}
+          {itemTotal?.quantity}
         </Text>
         <Text style={{...styles.itemTxt, textAlign: 'right'}}>
-          {'$ ' + itemTotal?.totalPaidAmount}
+          {'$ ' + itemTotal?.total || "0"}
         </Text>
       </View>
     );
@@ -280,7 +306,7 @@ function ReportScreen({navigation}: any): JSX.Element {
   const Items = (item: any) => {
     return (
       <View style={styles.itemView}>
-        <Text style={{...styles.itemTxt, textAlign: 'left'}}>{item.month}</Text>
+        <Text style={{...styles.itemTxt, textAlign: 'left'}}>{item.description}</Text>
         <Text style={{...styles.itemTxt, textAlign: 'center'}}>
           {item.invoicesCount}
         </Text>
@@ -288,7 +314,7 @@ function ReportScreen({navigation}: any): JSX.Element {
           {item.quantity}
         </Text>
         <Text style={{...styles.itemTxt, textAlign: 'right'}}>
-          {'$ ' + item.paidAmount}
+          {'$ ' + item.total}
         </Text>
       </View>
     );
