@@ -124,7 +124,7 @@ const BusinessDetails = ({navigation, route}: any) => {
       });
       if (data.status === 'success') {
         const element = data.data.business_details;
-        if (element.email) {
+        if (data.data._id) {
           setAlreadyExist(true);
           setBusinessId(data.data._id);
         }
@@ -243,7 +243,7 @@ const BusinessDetails = ({navigation, route}: any) => {
       }
     } else {
       if (alreadyExist) {
-        updateInfo();
+        addInfo();
       } else {
         addInfo();
       }
@@ -355,7 +355,7 @@ const BusinessDetails = ({navigation, route}: any) => {
         formData.append('address3', address3);
 
         const data = await FetchAPI(
-          'patch',
+          'post',
           endpoint.updateBusinessInfo(businessId),
           formData,
           {
