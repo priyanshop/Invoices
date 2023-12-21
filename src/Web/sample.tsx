@@ -66,7 +66,7 @@ export const SampleTemplate = (globalData: any,business_logo:any) => {
           }
   
           .invoice-box table tr.heading td {
-              background: #eee;
+              background: ${globalData||"#ccc"};
               border-bottom: 1px solid #ddd;
               font-weight: bold;
               font-size: 12px;
