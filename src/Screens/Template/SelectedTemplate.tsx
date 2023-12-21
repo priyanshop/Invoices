@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, FlatList, TouchableOpacity, Text} from 'react-native';
 import {WebView} from 'react-native-webview';
 import {BorderlessButton} from 'react-native-gesture-handler';
@@ -144,6 +144,7 @@ const SelectedTemplatedScreen = ({navigation, route}: any) => {
   const [inputValue, setInputValue] = useState('');
   const [selectedColor, setSelectedColor] = useState(null);
   const selector = useSelector((state: any) => state.user);
+  const webViewRef = useRef();
 
   useEffect(() => {
     if (selector.selectedColor) {
@@ -226,7 +227,9 @@ const SelectedTemplatedScreen = ({navigation, route}: any) => {
         },
       );
       if (data.status === 'success') {
-        const element = data.data;
+        console.log("element",data);
+        
+        webViewRef.current.reload();
       }
     } catch (error) {}
   };
@@ -245,6 +248,7 @@ const SelectedTemplatedScreen = ({navigation, route}: any) => {
       );
       if (data.status === 'success') {
         const element = data.data;
+        webViewRef.current.reload();
       }
     } catch (error) {}
   };
@@ -333,6 +337,7 @@ const SelectedTemplatedScreen = ({navigation, route}: any) => {
             source={{
               uri: endpoint.sendEmailTemplatesForInvoice(route.params.data._id),
             }}
+            ref={webViewRef}
           />
         )}
         <View style={styles.container3}>

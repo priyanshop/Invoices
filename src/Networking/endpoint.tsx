@@ -45,7 +45,7 @@ export const endpoint = {
   updateIVBusiness: (id: any) =>
     `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/businessinfo-details`,
   updateIVPayment: (id: any) =>
-    `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/paymentinfo-details`,
+    `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/payment-info-details`,
   updateIVNotes: (id: any) =>
     `${API_BASE_URL}/${API_TYPE.INVOICES}/${id}/notes-details`,
   updateIVClient: (id: any) =>

@@ -18,6 +18,7 @@ import {useTranslation} from 'react-i18next';
 import {GlobalStyle} from '../../Helper/GlobalStyle';
 import ModalActivityIndicator from '../../CustomComponent/Loader';
 import ToastService from '../../Helper/ToastService';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const PaymentInfo = ({navigation, route}: any) => {
   const dispatch = useDispatch();
@@ -173,7 +174,7 @@ const PaymentInfo = ({navigation, route}: any) => {
         size="large"
         color={Colors.landingColor}
       />
-      <View style={styles.mainContainer}>
+      <KeyboardAwareScrollView style={styles.mainContainer}>
         <View>
           <Text style={styles.titleTxt}>
             {t('Settings.SensitiveInformation')}
@@ -275,7 +276,7 @@ const PaymentInfo = ({navigation, route}: any) => {
             {isUpdate ? t('Update') : t('Add')}
           </Text>
         </TouchableOpacity>
-      </View>
+      </KeyboardAwareScrollView>
     </>
   );
 };
