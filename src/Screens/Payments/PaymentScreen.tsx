@@ -410,17 +410,24 @@ const PaymentScreen = ({navigation, route}: any) => {
     <>
       <Loader visible={isLoading} size="large" color={Colors.landingColor} />
       <View style={styles.mainContainer}>
-        <View style={{borderRadius: 8, backgroundColor: '#fff', padding: 8}}>
-          <View style={styles.rowView}>
+        <View style={{borderRadius: 8, backgroundColor: '#fff', padding: 10}}>
+          <View style={[styles.rowView,{paddingVertical:2}]}>
             <Text style={styles.titleTxt}>Amount : </Text>
-            <View style={{width: '50%'}}>
+            <View style={styles.inputContainer}>
               <TextInput
                 value={amount}
                 placeholder="$0.00"
                 onChangeText={setAmount}
                 keyboardType={'number-pad'}
                 placeholderTextColor={'#d2d2d2'}
-                style={{...styles.titleTxt, flex: 1, textAlign: 'right'}}
+                style={{
+                  fontSize: 18,
+                  fontWeight: '400',
+                  color: '#000',
+                  height: 40,
+                  width: '100%',
+                  textAlign:'right'
+                }}
               />
             </View>
           </View>
@@ -496,7 +503,8 @@ const styles = StyleSheet.create({
   rowView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 5,
+    alignItems: 'center',
+    paddingVertical: 10,
   },
   titleTxt: {fontSize: 16, color: '#000', fontWeight: '500'},
   detailView: {
@@ -512,6 +520,10 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#000',
     textAlignVertical: 'top',
+  },
+  inputContainer: {
+    width: '50%',
+    justifyContent: 'center',
   },
 });
 
