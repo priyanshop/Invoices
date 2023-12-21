@@ -29,7 +29,7 @@ export const endpoint = {
   defaultNotes: `${API_BASE_URL}/${API_TYPE.SETTINGS}/default-note`,
   businessInfo: `${API_BASE_URL}/${API_TYPE.SETTINGS}/business-info`,
   updateBusinessInfo: (id: any) =>
-    `${API_BASE_URL}/${API_TYPE.SETTINGS}/business-info/${id}`,
+    `${API_BASE_URL}/${API_TYPE.SETTINGS}/business-info`,
   invoiceNumber: `${API_BASE_URL}/${API_TYPE.SETTINGS}/invoice-number`,
   addCustomize: `${API_BASE_URL}/${API_TYPE.SETTINGS}/customize-info`,
   getCustomize: `${API_BASE_URL}/${API_TYPE.SETTINGS}/customize-info`,

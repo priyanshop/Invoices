@@ -124,7 +124,7 @@ const BusinessDetails = ({navigation, route}: any) => {
       });
       if (data.status === 'success') {
         const element = data.data.business_details;
-        if (element.email) {
+        if (data.data._id) {
           setAlreadyExist(true);
           setBusinessId(data.data._id);
         }
@@ -142,7 +142,9 @@ const BusinessDetails = ({navigation, route}: any) => {
         setOwnerName(element.owner_name);
         setBusinessNumber(element.business_number?.toString());
       }
-    } catch (error) {}
+    } catch (error) {
+      setFalse()
+    }
   };
   const phoneRegex = /^\d{10}$/;
 
@@ -153,6 +155,9 @@ const BusinessDetails = ({navigation, route}: any) => {
     let isValid = true;
 
     // Email validation
+    // Assuming email, businessName, and businessNumber are your input values.
+
+    // Email validation
     if (email && !email.match(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/)) {
       setEmailError('Invalid email address');
       isValid = false;
@@ -160,33 +165,43 @@ const BusinessDetails = ({navigation, route}: any) => {
       setEmailError('');
     }
 
-    if (businessName && businessName.trim() === '') {
+    // Business name validation
+    if (!businessName || businessName.trim() === '') {
       setBusinessNameError('Business name is required');
       isValid = false;
     } else {
       setBusinessNameError('');
     }
 
+    // Business number validation
+    // if (!businessNumber) {
+    //   setBusinessNumberError('Business number is required');
+    //   isValid = false;
+    // } else 
     if (businessNumber && !businessNumber.match(/^\d+$/)) {
       setBusinessNumberError('Invalid business number');
       isValid = false;
     } else {
       setBusinessNumberError('');
     }
+// Assuming Phone and Mobile are your input values.
 
-    // if (!isValidPhoneNumber(Phone)) {
-    //   setPhoneError('Invalid phone number');
-    //   isValid = false;
-    // } else {
-    //   setPhoneError('');
-    // }
+// Phone number validation
+// if (!Phone) {
+//   setPhoneError('Phone number is required');
+//   isValid = false;
+// } else {
+//   setPhoneError('');
+// }
 
-    // if (Mobile && !Mobile.match(/^\d+$/)) {
-    //   setMobileError('Invalid mobile number');
-    //   isValid = false;
-    // } else {
-    //   setMobileError('');
-    // }
+// // Mobile number validation
+// if (!Mobile) {
+//   setMobileError('Mobile number is required');
+//   isValid = false;
+// } else {
+//   setMobileError('');
+// }
+
 
     // if (!Website.match(/^(http|https):\/\/.+/i)) {
     //   setWebsiteError('Invalid website URL');
@@ -228,7 +243,7 @@ const BusinessDetails = ({navigation, route}: any) => {
       }
     } else {
       if (alreadyExist) {
-        updateInfo();
+        addInfo();
       } else {
         addInfo();
       }
@@ -265,7 +280,7 @@ const BusinessDetails = ({navigation, route}: any) => {
             type: `image/${extension}`,
           });
         } else {
-          formData.append('business_logo', null);
+          // formData.append('business_logo', null);
         }
 
         // Append other fields
@@ -289,7 +304,7 @@ const BusinessDetails = ({navigation, route}: any) => {
         }
       }
     } catch (error) {
-      setFalse;
+      setFalse();
     }
   };
 
@@ -323,8 +338,8 @@ const BusinessDetails = ({navigation, route}: any) => {
             type: `image/${extension}`,
           });
         } else {
-          deleteImage()
-          formData.append('business_logo', null);
+          deleteImage();
+          // formData.append('business_logo', null);
         }
 
         // Append other fields
@@ -340,7 +355,7 @@ const BusinessDetails = ({navigation, route}: any) => {
         formData.append('address3', address3);
 
         const data = await FetchAPI(
-          'patch',
+          'post',
           endpoint.updateBusinessInfo(businessId),
           formData,
           {
@@ -353,7 +368,7 @@ const BusinessDetails = ({navigation, route}: any) => {
         }
       }
     } catch (error) {
-      setFalse;
+      setFalse();
     }
   };
 
@@ -426,7 +441,7 @@ const BusinessDetails = ({navigation, route}: any) => {
         }
       }
     } catch (error) {
-      setFalse;
+      setFalse();
     }
   };
 
@@ -535,7 +550,7 @@ const BusinessDetails = ({navigation, route}: any) => {
         }
       }
     } catch (error) {
-      setFalse;
+      setFalse();
     }
   };
 
@@ -578,7 +593,7 @@ const BusinessDetails = ({navigation, route}: any) => {
       if (data.status === 'success') {
         const element = data.data;
       }
-    } catch (error) {}
+    } catch (error) {setFalse()}
   };
 
   // Handle onBlur event

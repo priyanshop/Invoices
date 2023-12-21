@@ -48,6 +48,10 @@
 	<string>need for invoice location</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Access to take a photo by camera</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Invoices would like to save photos from the app to your gallery</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Invoices would like to access your photo gallery for uploading images to the app</string>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>Access to pick a photo</string>
 	<key>NSPhotoLibraryUsageDescription</key>
