@@ -75,6 +75,8 @@ PODS:
   - hermes-engine/Pre-built (0.72.1)
   - libevent (2.1.12)
   - OpenSSL-Universal (1.1.1100)
+  - PurchasesHybridCommon (8.1.1):
+    - RevenueCat (= 4.31.2)
   - RCT-Folly (2021.07.22.00):
     - boost
     - DoubleConversion
@@ -510,6 +512,7 @@ PODS:
     - React-jsi (= 0.72.1)
     - React-logger (= 0.72.1)
     - React-perflogger (= 0.72.1)
+  - RevenueCat (4.31.2)
   - RNCAsyncStorage (1.21.0):
     - React-Core
   - RNCMaskedView (0.2.9):
@@ -518,6 +521,9 @@ PODS:
     - React-Core
   - RNGestureHandler (2.14.0):
     - RCT-Folly (= 2021.07.22.00)
+    - React-Core
+  - RNPurchases (7.5.1):
+    - PurchasesHybridCommon (= 8.1.1)
     - React-Core
   - RNScreens (3.29.0):
     - RCT-Folly (= 2021.07.22.00)
@@ -609,6 +615,7 @@ DEPENDENCIES:
   - "RNCMaskedView (from `../node_modules/@react-native-masked-view/masked-view`)"
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNPurchases (from `../node_modules/react-native-purchases`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNShare (from `../node_modules/react-native-share`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -627,6 +634,8 @@ SPEC REPOS:
     - fmt
     - libevent
     - OpenSSL-Universal
+    - PurchasesHybridCommon
+    - RevenueCat
     - SocketRocket
     - Toast
     - YogaKit
@@ -741,6 +750,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNPurchases:
+    :path: "../node_modules/react-native-purchases"
   RNScreens:
     :path: "../node_modules/react-native-screens"
   RNShare:
@@ -767,6 +778,7 @@ SPEC CHECKSUMS:
   hermes-engine: 9df83855a0fd15ef8eb61694652bae636b0c466e
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
+  PurchasesHybridCommon: 2439f6e671fb4d60878a652e4377fa7e588368e6
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
   RCTRequired: c52ee8fb2b35c1b54031dd8e92d88ad4dba8f2ce
   RCTTypeSafety: 75fa444becadf0ebfa0a456b8c64560c7c89c7df
@@ -811,10 +823,12 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 67707a955b9ecc628cc38bdc721fbc498910f0fd
   React-utils: 0a70ea97d4e2749f336b450c082905be1d389435
   ReactCommon: e593d19c9e271a6da4d0bd7f13b28cfeae5d164b
+  RevenueCat: 63f6f4ae6916095561b90b2e1de86a492af67493
   RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
   RNCMaskedView: 949696f25ec596bfc697fc88e6f95cf0c79669b6
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 32a01c29ecc9bb0b5bf7bc0a33547f61b4dc2741
+  RNPurchases: 6460a884756442e75b2d25a1d7e58cd39ebbffe6
   RNScreens: 3c5b9f4a9dcde752466854b6109b79c0e205dad3
   RNShare: 32e97adc8d8c97d4a26bcdd3c45516882184f8b6
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17

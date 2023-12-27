@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* InvoicesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* InvoicesTests.m */; };
+		0106FFC62B3AEF45001B5322 /* INVOICE SIMPLE.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 0106FFC52B3AEF45001B5322 /* INVOICE SIMPLE.storekit */; };
+		0106FFC72B3AEF45001B5322 /* INVOICE SIMPLE.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 0106FFC52B3AEF45001B5322 /* INVOICE SIMPLE.storekit */; };
+		0106FFCA2B3AF0BA001B5322 /* StoreKitTestCertificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = 0106FFC92B3AF0BA001B5322 /* StoreKitTestCertificate.cer */; };
 		0C80B921A6F3F58F76C31292 /* libPods-Invoices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-Invoices.a */; };
 		0F625C502A5F093700C6560C /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0F625C4F2A5F093700C6560C /* Launch Screen.storyboard */; };
 		0F67F2FB2A5674DE0039D413 /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = 0F67F2FA2A5674DE0039D413 /* fonts */; };
@@ -39,6 +42,8 @@
 		00E356EE1AD99517003FC87E /* InvoicesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InvoicesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* InvoicesTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InvoicesTests.m; sourceTree = "<group>"; };
+		0106FFC52B3AEF45001B5322 /* INVOICE SIMPLE.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = "INVOICE SIMPLE.storekit"; sourceTree = "<group>"; };
+		0106FFC92B3AF0BA001B5322 /* StoreKitTestCertificate.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = StoreKitTestCertificate.cer; sourceTree = "<group>"; };
 		0F625C4F2A5F093700C6560C /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		0F67F2FA2A5674DE0039D413 /* fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = fonts; sourceTree = "<group>"; };
 		0FD592D32A5EE1AE0075F722 /* SplashScreen.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SplashScreen.xcodeproj; path = "../node_modules/react-native-splash-screen/ios/SplashScreen.xcodeproj"; sourceTree = "<group>"; };
@@ -138,6 +143,8 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				0106FFC52B3AEF45001B5322 /* INVOICE SIMPLE.storekit */,
+				0106FFC92B3AF0BA001B5322 /* StoreKitTestCertificate.cer */,
 				0F67F2FA2A5674DE0039D413 /* fonts */,
 				13B07FAE1A68108700A75B9A /* Invoices */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -274,6 +281,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0106FFC72B3AEF45001B5322 /* INVOICE SIMPLE.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -283,8 +291,10 @@
 			files = (
 				0F67F2FB2A5674DE0039D413 /* fonts in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				0106FFC62B3AEF45001B5322 /* INVOICE SIMPLE.storekit in Resources */,
 				0F625C502A5F093700C6560C /* Launch Screen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				0106FFCA2B3AF0BA001B5322 /* StoreKitTestCertificate.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

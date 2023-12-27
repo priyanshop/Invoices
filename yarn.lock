@@ -1874,6 +1874,11 @@
     redux-thunk "^2.4.2"
     reselect "^4.1.8"
 
+"@revenuecat/purchases-typescript-internal@8.1.1":
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/@revenuecat/purchases-typescript-internal/-/purchases-typescript-internal-8.1.1.tgz#2f91d71a7c9680954143ecd8adbc0e63407f7fff"
+  integrity sha512-U3H+WsU6MYiCwK9HwaPjFWDeNcZhc3cPTrJ/NbSIw8dqR1xD7Mr71AoDTUW0pDVh/87E0/9FACRPPH6iVVHZ/Q==
+
 "@rneui/base-edge@github:react-native-elements/react-native-elements#base":
   version "4.0.0-rc.7"
   resolved "https://codeload.github.com/react-native-elements/react-native-elements/tar.gz/d42432d9581b3c1d4a3413e2861ff8be12c700b6"
@@ -6529,6 +6534,13 @@ react-native-paper@^5.9.1:
     "@callstack/react-theme-provider" "^3.0.9"
     color "^3.1.2"
     use-latest-callback "^0.1.5"
+
+react-native-purchases@^7.5.1:
+  version "7.5.1"
+  resolved "https://registry.yarnpkg.com/react-native-purchases/-/react-native-purchases-7.5.1.tgz#58dd4129e3eeb7702abcdcaaf201acf69cf0ef08"
+  integrity sha512-zSKLcEUHVm0ja/ZGUl3y8IeB3BG0eZGM2Z/B6Lft73fcOF+l9UHjfKrK+uvhMDBuxwjlr+2CbRl4NQTOSRFQ0Q==
+  dependencies:
+    "@revenuecat/purchases-typescript-internal" "8.1.1"
 
 react-native-ratings@8.0.4:
   version "8.0.4"
